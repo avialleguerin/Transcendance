@@ -1,0 +1,53 @@
+
+
+
+Transcendance
+|
+|── .envPy
+|
+|── ressource
+|
+|
+|
+|
+|
+|── transcendence/
+|	├── docker-compose.yml			# Configuration de Docker Compose
+|	├── Dockerfile					# Image Docker pour Django
+|	├── requirements.txt			# Dépendances Python
+|	├── manage.py					# Script principal de Django
+|	|
+|	├── transcendence/				# Dossier principal du projet Django
+|	│	├── __init__.py
+|	│	├── asgi.py
+|	│	├── settings.py				# Configuration principale de Django
+|	│	├── urls.py					# Routes principales du projet
+|	│	├── wsgi.py
+|	|
+|	├── apps/						# (Facultatif) Regroupe les apps du projet
+|	│	├── app1/				 	# Exemple d'une app Django
+|	│	│	├── __init__.py
+|	│	│	├── admin.py			# Configuration de l'admin pour l'app
+|	│	│	├── apps.py				# Configuration de l'app
+|	│	│	├── migrations/			# Fichiers de migration de la base
+|	│	│	│	├── __init__.py
+|	│	│	├── models.py			# Modèles de données
+|	│	│	├── tests.py			# Tests pour l'app
+|	│	│	├── views.py			# Vues pour l'app
+|	│	├── app2/					# Autre app (si nécessaire)
+|	|
+|	├── templates/					# Fichiers HTML globaux
+|	│   ├── base.html				# Template principal
+|	│   ├── app1/					# Templates spécifiques à app1
+|	│   │   ├── index.html
+|	│   │   ├── detail.html
+|	│   ├── app2/					# Templates spécifiques à app2
+|	|
+|	├── static/						# Fichiers statiques globaux (CSS, JS, images)
+|	│   ├── css/
+|	│   ├── js/
+|	│   ├── images/
+|	|
+|	├── media/						# Fichiers téléchargés par les utilisateurs
+|	├── postgres_data/				# Volume de données pour PostgreSQL (persistant)
+|	└── README.md					# Documentation de ton projet

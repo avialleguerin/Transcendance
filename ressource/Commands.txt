@@ -13,7 +13,19 @@ pip freeze > requirements.txt
 Puis pour le reutiliser :
 pip uninstall django
 pip install -r requirements.txt
-
-
 si la commande django-admin ne fonctionne pas cest qu'il faut sourcer (etre en mode source voir README.md ou voir le tuto)
+
+Utiliser Django:
+django-admin permet de tout faire
+django-admin startproject transcendence
+django-admin --help
+
+
+Pour lancer le serveur:
+python manage.py migrate
+python manage.py runserver
+
+
+PostgreSQL:
+install psycopg2
 
