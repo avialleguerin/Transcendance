@@ -6,7 +6,6 @@ Transcendance
 |
 |── Django/
 |	├── docker-compose.yml			# Configuration de Docker Compose
-|	├── Dockerfile					# Image Docker pour Django
 |	├── manage.py					# Script principal de Django
 |	|
 |	├── transcendence/				# Dossier principal du projet Django
@@ -37,3 +36,138 @@ Transcendance
 |
 ├── vault/							# Dossier pour la configuration de HashiCorp Vault
 │	└── vault-config.hcl			# Configuration de Vault
+
+
+Deepseek:
+
+Transcendance/
+|
+|── Ressource/
+|	└── requirements.txt			# Dépendances Python
+|
+|── Django/							# Renommer Django/ en app/ ou backend/
+|	├── docker-compose.yml			# Configuration de Docker Compose
+|	├── manage.py					# Script principal de Django
+|	|
+|	├── transcendence/				# Dossier principal du projet Django
+|	│	├── __init__.py
+|	│	├── asgi.py
+|	│	├── settings.py				# Configuration principale de Django
+|	│	├── urls.py					# Routes principales du projet
+|	│	├── wsgi.py
+|	│	├── app1/					# Application 1
+|	│	│	├── templates/			# Templates spécifiques à app1
+|	│	│	│	├── app1/
+|	│	│	│	│	├── index.html
+|	│	│	│	│	├── detail.html
+|	│	│	├── static/				# Fichiers statiques spécifiques à app1
+|	│	│	│	├── app1/
+|	│	│	│	│	├── css/
+|	│	│	│	│	├── js/
+|	│	│	│	│	├── images/
+|	│	├── app2/					# Application 2
+|	│	│	├── templates/			# Templates spécifiques à app2
+|	│	│	│	├── app2/
+|	│	│	│	│	├── index.html
+|	│	│	│	│	├── detail.html
+|	│	│	├── static/				# Fichiers statiques spécifiques à app2
+|	│	│	│	├── app2/
+|	│	│	│	│	├── css/
+|	│	│	│	│	├── js/
+|	│	│	│	│	├── images/
+|	|
+|	├── static/						# Fichiers statiques globaux (CSS, JS, images)
+|	│	├── css/
+|	│	├── js/
+|	│	├── images/
+|	|
+|	├── media/						# Fichiers téléchargés par les utilisateurs
+|	├── README.md					# Documentation de ton projet
+|
+|── data/							# Dossier pour les données persistantes
+|	└── postgres_data/				# Volume de données pour PostgreSQL (persistant)
+|
+|── nginx/							# Dossier de configuration Nginx
+|	└── default.conf				# Fichier de configuration de Nginx pour Django
+|
+|── vault/							# Dossier pour la configuration de HashiCorp Vault
+|	└── vault-config.hcl			# Configuration de Vault
+
+
+
+Transcendance/
+|
+|── README.md
+|
+|── frontend/
+|	├── public/
+|	│	├── index.html
+|	│	├── assets/
+|	├── src/
+|	│	├── css/
+|	│	├── js/
+|	│	├── threejs/
+|	│	├── components/
+|	│	├── views/
+|	│	└── app.js
+|
+|── backend/
+|	├── django/
+|	│	├── Dockerfile
+|	│	├── manage.py
+|	│	├── requirements.txt
+|	│	├── transcendence/
+|	│	│	├── __init__.py
+|	│	│	├── settings.py
+|	│	│	├── urls.py
+|	│	│	├── asgi.py
+|	│	│	├── wsgi.py
+|	│	│	├── apps/
+|	│	│	│	├── app1/
+|	│	│	│	└── app2/
+|	│	│	├── templates/
+|	│	│	└── static/
+|	├── nginx/
+|	│	└── default.conf
+|	├── postgresql/
+|	│	└── init.sql
+|	└── docker-compose.yml
+|
+|── devops/
+|	├── grafana/
+|	│	├── dashboards/
+|	│	└── provisioning/
+|	├── prometheus/
+|	│	└── prometheus.yml
+|	├── elk/
+|	│	├── elasticsearch/
+|	│	├── logstash/
+|	│	└── kibana/
+|	└── docker-compose.yml
+|
+|── securite/
+|	├── modsecurity/
+|	│	└── modsecurity.conf
+|	├── vault/
+|	│	├── vault-config.hcl
+|	│	└── policies/
+|	├── sonarqube/
+|	│	└── sonar-project.properties
+|	├── dependency-check/
+|	│	└── dependency-check-config.yml
+|	└── docker-compose.yml
+|
+|── data/
+|	├── postgres_data/
+|	├── vault_data/
+|	├── elasticsearch_data/
+|	└── prometheus_data/
+|
+|── scripts/
+|	├── backup.sh
+|	├── deploy.sh
+|	└── monitor.sh
+|
+|── .env
+|── .gitignore
+|── docker-compose.yml
