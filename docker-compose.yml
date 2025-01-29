@@ -1,8 +1,77 @@
-version: '3.9'
+####################################
+# Notes
+# Tous les outils doivent etre nomme en entier (exception pour vault),
+#   minuscule, sans separation.
+# transcendence sera toujours orthographe avec un 'e', pour la version anglaise.
+# l'ordre doit etre toujours:
+#   - image:
+#   - extends:
+#   - ports:
+#   - depends_on:
+#   - volumes:
+#   - environnement:
+#   - networks:
+#       - doitetreuneliste
+####################################
+
+# version: '3.8'    #Depuis Docker Compose v2, l'attribut version n'est plus nécessaire.
 
 services:
-	django:
-		
+
+  # Backend (Django + PostgreSQL + Nginx)
+  django:
+    extends:
+      file: Backend/docker-compose.yml
+      service: django
+    depends_on:
+      - postgresql
+    networks:
+      - transcendence-network
+
+  postgresql:
+    image: postgres:13
+    volumes:
+      - ./Data/postgresql_data:/var/lib/postgresql/data
+    environment:
+      POSTGRESQL_USER: ${POSTGRESQL_USER}
+      POSTGRESQL_PASSWORD: ${POSTGRESQL_PASSWORD}
+      POSTGRESQL_DB: ${POSTGRESQL_DB}
+    networks:
+      - transcendence-network
+
+  nginx:
+    extends:
+      file: Backend/docker-compose.yml
+      service: nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - django
+    networks:
+      - transcendence-network
+
+  # Devops (Grafana + Prometheus + ELK) - À activer plus tard
+  # grafana:
+  #   extends:
+  #     file: Devops/docker-compose.yml
+  #     service: grafana
+  #   networks:
+  #     - transcendence-network
+
+  # Sécurité (Vault + SonarQube) - À activer plus tard
+  # vault:
+  #   extends:
+  #     file: Security/docker-compose.yml
+  #     service: vault
+  #   networks:
+  #     - transcendence-network
+
+networks:
+  transcendence-network:
+     driver: bridge
 
 volumes:
-  postgres_data:
+  postgresql_data:
+    driver: bridge
+  vault_data:
+    driver: bridge

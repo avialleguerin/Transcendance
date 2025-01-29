@@ -112,21 +112,41 @@ Transcendance/
 |	│	└── app.js
 |
 |── backend/
-|	├── django/
-|	│	├── Dockerfile
-|	│	├── manage.py
-|	│	├── requirements.txt
-|	│	├── transcendence/
-|	│	│	├── __init__.py
-|	│	│	├── settings.py
-|	│	│	├── urls.py
-|	│	│	├── asgi.py
-|	│	│	├── wsgi.py
-|	│	│	├── apps/
-|	│	│	│	├── app1/
-|	│	│	│	└── app2/
-|	│	│	├── templates/
-|	│	│	└── static/
+│	├── django/
+│	│	├── Dockerfile
+│	│	├── manage.py
+│	│	├── requirements.txt
+│	│	│
+│	│	├── Transcendence/					# Projet principal (settings/urls)
+│	│	│	├── __init__.py
+│	│	│	├── settings.py
+│	│	│	├── urls.py
+│	│	│	├── asgi.py
+│	│	│	└── wsgi.py
+│	│	│
+│	│	├── apps/							# Dossier pour les applications
+│	│	│	├── Authentication/				# App 1
+│	│	│	│	├── migrations/
+│	│	│	│	├── __init__.py
+│	│	│	│	├── models.py
+│	│	│	│	└── views.py
+│	│	│	│
+│	│	│	├── Payment/					# App 2
+│	│	│	│	├── migrations/
+│	│	│	│	├── __init__.py
+│	│	│	│	├── models.py
+│	│	│	│	└── views.py
+│	│	│	│
+│	│	│	└── Core/						# App 3 (logique principale)
+│	│	│		 ├── migrations/
+│	│	│		 ├── __init__.py
+│	│	│		 ├── models.py
+│	│	│		 └── views.py
+│	│	│
+│	│	├── static/
+│	│	├── media/
+│	│	└── templates/
+│	│
 |	├── nginx/
 |	│	└── default.conf
 |	├── postgresql/
