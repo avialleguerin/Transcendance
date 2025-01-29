@@ -1,4 +1,9 @@
-installer django:
+##To install venv :
+python3.9 -m venv .env
+source .envPy/bin/activate (ensuite pour sourcer)
+which python (pour verifier)
+
+##installer django:
 pip install --upgrade pip (maj)
 pip install django==3.1.6
 python -m django --version (verifier)
@@ -8,20 +13,20 @@ python -m django --version (verifier)
 >> exit()'
 
 
-Pour Geler notre environnement et sauvegarder nos configurations :
+##Pour Geler notre environnement et sauvegarder nos configurations :
 pip freeze > requirements.txt
 Puis pour le reutiliser :
 pip uninstall django
 pip install -r requirements.txt
 si la commande django-admin ne fonctionne pas cest qu'il faut sourcer (etre en mode source voir README.md ou voir le tuto)
 
-Utiliser Django:
+##Utiliser Django:
 django-admin permet de tout faire
 django-admin startproject transcendence
 django-admin --help
 
 
-Pour lancer le serveur:
+##Pour lancer le serveur:
 python manage.py migrate
 python manage.py runserver
 

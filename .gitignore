@@ -4,5 +4,5 @@ db.sqlite3
 *.out
 *.o
 
-.envPy
+.env
 am_dj
