@@ -1,14 +1,21 @@
 import Fastify from 'fastify'
- 
-// On crée une instance de fastify en activant les logs
+import firstRoute from './ozan.js'
+
+
+
+
+/**
+ * On crée une instance de fastify en activant les logs
+ * @type {import('fastify').FastifyInstance} Instance of Fastify
+ */
 const fastify = Fastify({ logger: true })
  
 // On enregistre une route GET
-fastify.get('/',
-	function (request, reply) {
-		reply.send({ hello: 'world' })
-	}
-)
+// fastify.get('/',
+// 	function (request, reply) {
+// 		reply.send({ hello: 'world' })
+// 	}
+// )
 
 // Run the server!
 const start = async () => {
