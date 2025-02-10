@@ -1,4 +1,103 @@
+The Last Version:
 
+
+Transcendance/
+|
+|── README.md
+|
+|── frontend/
+|	├── public/
+|	│	├── index.html
+|	│	└── assets/
+|	├── src/
+|	│	├── css/
+|	│	│	└── tailwind.css			 # Fichier de base avec les directives Tailwind
+|	│	├── js/
+|	│	├── babylonjs/					 # Remplace le dossier threejs par celui pour Babylon.js
+|	│	├── components/
+|	│	├── views/
+|	│	└── app.js
+|	├── package.json						# Pour gérer les dépendances (ex: Tailwind, PostCSS…)
+|	├── tailwind.config.js				# Configuration de Tailwind
+|	└── postcss.config.js				 # Configuration de PostCSS (si nécessaire)
+|
+|── backend/
+|	├── fastify/							 # Nouvelle application Fastify
+|	│	├── Dockerfile
+|	│	├── package.json				# Dépendances Node.js (Fastify, plugins, etc.)
+|	│	├── server.js					  # Point d’entrée du serveur Fastify
+|	│	├── config/
+|	│	│	└── default.js				# Configuration générale (ports, environnement, etc.)
+|	│	├── plugins/
+|	│	│	└── db.js					  # Plugin pour initialiser la connexion à SQLite
+|	│	├── routes/						 # Définition des routes
+|	│	│	├── authRoutes.js			# Exemple : routes pour l’authentification
+|	│	│	├── paymentRoutes.js		# Exemple : routes pour le paiement
+|	│	│	└── coreRoutes.js			# Exemple : routes pour la logique principale
+|	│	├── controllers/				  # Logique métier et gestion des requêtes
+|	│	│	├── authController.js
+|	│	│	├── paymentController.js
+|	│	│	└── coreController.js
+|	│	└── models/						 # Définition des modèles et accès à SQLite
+|	│		 ├── userModel.js
+|	│		 ├── paymentModel.js
+|	│		 └── coreModel.js
+|	├── nginx/
+|	│	└── default.conf				  # Configuration de Nginx (à adapter pour pointer sur Fastify)
+|	└── docker-compose.yml				# Pour orchestrer l’application Fastify et Nginx
+|
+|── devops/
+|	├── grafana/
+|	│	├── dashboards/
+|	│	└── provisioning/
+|	├── prometheus/
+|	│	└── prometheus.yml
+|	├── elk/
+|	│	├── elasticsearch/
+|	│	├── logstash/
+|	│	└── kibana/
+|	└── docker-compose.yml
+|
+|── securite/
+|	├── modsecurity/
+|	│	└── modsecurity.conf
+|	├── vault/
+|	│	├── vault-config.hcl
+|	│	└── policies/
+|	├── sonarqube/
+|	│	└── sonar-project.properties
+|	├── dependency-check/
+|	│	└── dependency-check-config.yml
+|	└── docker-compose.yml
+|
+|── data/
+|	├── sqlite_data/					 # Répertoire pour stocker la base SQLite (remplace postgres_data)
+|	├── vault_data/
+|	├── elasticsearch_data/
+|	└── prometheus_data/
+|
+|── scripts/
+|	├── backup.sh
+|	├── deploy.sh
+|	└── monitor.sh
+|
+|── .env
+|── .gitignore
+|── docker-compose.yml				  # Docker Compose global (si nécessaire pour orchestrer l’ensemble)
+
+
+
+
+
+
+
+
+
+
+
+
+
+============================================
 Transcendance
 |
 |── Ressource/

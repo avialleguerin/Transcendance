@@ -18,31 +18,37 @@
 
 services:
 
-
-
-
-  # Backend (Fastify + PostgreSQL + Nginx)
-  fastify:
+  # Backend (Django + PostgreSQL + Nginx)
+  django:
     extends:
       file: Backend/docker-compose.yml
-      service: fastify
-    # depends_on:
-    #   - postgresql
-    volumes:
-      - ./Data/sqlite_data:/app/sqlite_data
+      service: django
+    depends_on:
+      - postgresql
     networks:
       - transcendence-network
 
-  # nginx:
-  #   extends:
-  #     file: Backend/docker-compose.yml
-  #     service: nginx
-  #   ports:
-  #     - "80:80"
-  #   depends_on:
-  #     - fastify
-  #   networks:
-  #     - transcendence-network
+  postgresql:
+    image: postgres:13
+    volumes:
+      - ./Data/postgresql_data:/var/lib/postgresql/data
+    environment:
+      POSTGRESQL_USER: ${POSTGRESQL_USER}
+      POSTGRESQL_PASSWORD: ${POSTGRESQL_PASSWORD}
+      POSTGRESQL_DB: ${POSTGRESQL_DB}
+    networks:
+      - transcendence-network
+
+  nginx:
+    extends:
+      file: Backend/docker-compose.yml
+      service: nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - django
+    networks:
+      - transcendence-network
 
   # Devops (Grafana + Prometheus + ELK) - À activer plus tard
   # grafana:
@@ -65,9 +71,7 @@ networks:
      driver: bridge
 
 volumes:
-  # postgresql_data:
-  #   driver: local
-  sqlite_data:
-    driver: local
+  postgresql_data:
+    driver: bridge
   vault_data:
-    driver: local
+    driver: bridge
