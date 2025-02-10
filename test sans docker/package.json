@@ -1,0 +1,9 @@
+{
+  "type": "module",
+  "dependencies": {
+    "fastify": "^5.2.1"
+  },
+  "scripts": {
+    "start": "node --watch server.js"
+  }
+}
