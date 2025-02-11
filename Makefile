@@ -17,18 +17,22 @@ CYAN		:=	\e[36m
 # Variables
 DOCKER_COMPOSE = docker-compose -f docker-compose.yml
 
-DATA_DIRS	=	data \
-				data/nginx \
-				data/django \
-				data/postgresql \
-				data/hashicorp_vault
+DATA_DIRS	=	Data \
+				Data/nginx_data \
+				Data/django_data \
+				Data/postgresql_data \
+				Data/hashicorp_vault_data
 
 # Commands
 RM			:=	rm -rf
 
 ## RULES --
 
+
 # Docker
+exp:
+	export PATH="".docker/cli-plugins:PATH"
+
 build:
 	$(DOCKER_COMPOSE) build
 
@@ -58,3 +62,5 @@ clean:
 
 fclean: clean
 	$(RM) .env .envPy
+
+.PHONY: export

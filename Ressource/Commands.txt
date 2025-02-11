@@ -34,3 +34,5 @@ python manage.py runserver
 PostgreSQL:
 install psycopg2
 
+
+

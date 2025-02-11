@@ -24,7 +24,7 @@ services:
   # Backend (Fastify + PostgreSQL + Nginx)
   fastify:
     extends:
-      file: Backend/docker-compose.yml
+      file: MiniBackend/docker-compose.yml
       service: fastify
     # depends_on:
     #   - postgresql
@@ -69,5 +69,5 @@ volumes:
   #   driver: local
   sqlite_data:
     driver: local
-  vault_data:
-    driver: local
+  # vault_data:
+  #   driver: local

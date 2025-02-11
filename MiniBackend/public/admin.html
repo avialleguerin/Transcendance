@@ -1,0 +1,106 @@
+<!-- public/admin.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin - Gestion des Users</title>
+  <!-- Chargement de Tailwind CSS via le CDN remote -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800">
+  <header class="bg-blue-600 text-white p-4">
+    <div class="container mx-auto">
+      <h1 class="text-3xl font-bold">Administration - Gestion des Users</h1>
+    </div>
+  </header>
+
+  <main class="container mx-auto p-4">
+    <h2 class="text-xl font-semibold mb-4">Liste des Utilisateurs</h2>
+    <table class="min-w-full bg-white shadow-md rounded">
+      <thead>
+        <tr>
+          <th class="px-4 py-2 border">ID</th>
+          <th class="px-4 py-2 border">Nom</th>
+          <th class="px-4 py-2 border">Email</th>
+          <th class="px-4 py-2 border">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="users-table">
+        <!-- Les utilisateurs seront insérés ici dynamiquement -->
+      </tbody>
+    </table>
+  </main>
+
+  <script>
+    async function fetchUsers() {
+      try {
+        const response = await fetch('/users');
+        const users = await response.json();
+        const tbody = document.getElementById('users-table');
+        tbody.innerHTML = '';
+        users.forEach(user => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td class="border px-4 py-2">${user.id}</td>
+            <td class="border px-4 py-2">${user.name}</td>
+            <td class="border px-4 py-2">${user.email}</td>
+            <td class="border px-4 py-2">
+              <button class="bg-red-500 text-white px-2 py-1 rounded" onclick="deleteUser(${user.id})">Supprimer</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        console.error('Erreur lors de la récupération des utilisateurs :', err);
+      }
+    }
+
+    async function deleteUser(id) {
+      if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
+        try {
+          const response = await fetch(`/users/${id}`, { method: 'DELETE' });
+          if (response.ok) {
+            alert('Utilisateur supprimé avec succès.');
+            fetchUsers();
+          } else {
+            const error = await response.json();
+            alert('Erreur : ' + error.error);
+          }
+        } catch (err) {
+          console.error('Erreur lors de la suppression :', err);
+        }
+      }
+    }
+
+    // Charger la liste des utilisateurs lors du chargement de la page
+    window.addEventListener('DOMContentLoaded', fetchUsers);
+  </script>
+
+<header class="bg-blue-600 text-white p-4">
+    <div class="container mx-auto">
+      <h1 class="text-3xl font-bold">Administration - Gestion des Users</h1>
+    </div>
+  </header>
+
+  <main class="container mx-auto p-4">
+    <h2 class="text-xl font-semibold mb-4">Liste des Utilisateurs</h2>
+    <table class="min-w-full bg-white shadow-md rounded">
+      <thead>
+        <tr>
+          <th class="px-4 py-2 border">ID</th>
+          <th class="px-4 py-2 border">Nom</th>
+          <th class="px-4 py-2 border">Email</th>
+          <th class="px-4 py-2 border">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="users-table">
+        <!-- Les utilisateurs seront insérés ici dynamiquement -->
+      </tbody>
+    </table>
+  </main>
+
+   <!-- Inclusion du script externe -->
+  <script src="admin.js"></script>
+</body>
+</html>
