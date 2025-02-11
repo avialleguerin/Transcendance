@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Transcendance - Projet 42</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "#1E40AF",
+          },
+        },
+      },
+    }
+  </script>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 text-gray-800">
+  <!-- Header avec gradient -->
+  <header class="bg-gradient-to-r from-primary to-blue-800 text-white p-8 shadow-lg">
+    <div class="container mx-auto flex items-center justify-between">
+      <div>
+        <h1 class="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-200">Transcendance</h1>
+        <p class="mt-2 text-xl text-blue-100">Projet 42 - Une aventure technologique</p>
+      </div>
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXfAZMOWHDQ3DKE63A9jWhIqQaKcKqUIXvzg&s" alt="Logo 42" class="rounded-full shadow-lg w-16 h-16"/>
+    </div>
+  </header>
+
+  <main class="container mx-auto p-6">
+    <!-- Section Présentation avec carte -->
+    <section class="my-12 bg-white rounded-xl shadow-lg p-8 transform hover:scale-[1.02] transition-transform">
+      <h2 class="text-3xl font-semibold mb-6 text-primary">Présentation du Projet</h2>
+      <div class="grid md:grid-cols-2 gap-8 items-center">
+        <div>
+          <p class="mb-4 text-lg">
+            Bienvenue sur le projet <strong>Transcendance</strong>, une initiative exceptionnelle du campus 42 qui repousse les limites de la technologie et de l'innovation.
+          </p>
+          <p class="mb-4">
+            Chaque ligne de code incarne la passion et la rigueur propres à notre école.
+          </p>
+        </div>
+        <img src="/api/placeholder/400/300" alt="Illustration du projet" class="rounded-lg shadow-md"/>
+      </div>
+    </section>
+
+    <!-- Section Fonctionnalités avec cards -->
+    <section class="my-12">
+      <h2 class="text-3xl font-semibold mb-8 text-primary">Fonctionnalités Clés</h2>
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-gradient-to-br from-white to-blue-50 p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow">
+          <img src="/api/placeholder/80/80" alt="UI" class="mb-4 rounded"/>
+          <h3 class="font-semibold mb-2">Interface Responsive</h3>
+          <p>Design adaptatif pour tous les appareils</p>
+        </div>
+        <div class="bg-gradient-to-br from-white to-blue-50 p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow">
+          <img src="/api/placeholder/80/80" alt="Data" class="mb-4 rounded"/>
+          <h3 class="font-semibold mb-2">Temps Réel</h3>
+          <p>Données actualisées en direct</p>
+        </div>
+        <div class="bg-gradient-to-br from-white to-blue-50 p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow">
+          <img src="/api/placeholder/80/80" alt="API" class="mb-4 rounded"/>
+          <h3 class="font-semibold mb-2">API Innovantes</h3>
+          <p>Intégration de services modernes</p>
+        </div>
+        <div class="bg-gradient-to-br from-white to-blue-50 p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow">
+          <img src="/api/placeholder/80/80" alt="UX" class="mb-4 rounded"/>
+          <h3 class="font-semibold mb-2">UX Optimisée</h3>
+          <p>Expérience utilisateur fluide</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section Contact -->
+    <section class="my-12 bg-gradient-to-br from-blue-50 to-white rounded-xl shadow-lg p-8">
+      <h2 class="text-3xl font-semibold mb-6 text-primary">Contact & Suivi</h2>
+      <div class="flex flex-col md:flex-row items-center justify-between">
+        <div class="space-y-4">
+          <p class="text-lg">Pour en savoir plus ou participer au projet :</p>
+          <div class="space-y-2">
+            <a href="mailto:contact@transcendance42.fr" class="flex items-center text-blue-600 hover:text-blue-800 transition-colors">
+              <span class="mr-2">📧</span> contact@transcendance42.fr
+            </a>
+            <a href="https://www.42.fr" target="_blank" class="flex items-center text-blue-600 hover:text-blue-800 transition-colors">
+              <span class="mr-2">🌐</span> 42 Network
+            </a>
+          </div>
+        </div>
+        <img src="/api/placeholder/200/200" alt="Contact" class="mt-6 md:mt-0 rounded-lg shadow-md"/>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer avec gradient -->
+  <footer class="bg-gradient-to-r from-gray-800 to-gray-900 text-gray-200 p-6 mt-8">
+    <div class="container mx-auto text-center">
+      <p>&copy; 2025 Transcendance - Projet 42. Tous droits réservés.</p>
+    </div>
+  </footer>
+</body>
+</html>
