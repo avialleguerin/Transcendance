@@ -1,0 +1,40 @@
+body {
+	margin: 0;
+	padding: 0;
+	font-family: Arial, sans-serif;
+}
+
+/* Les boutons en haut qui ne bougent jamais */
+.navbar {
+	position: fixed; /* Rendre la barre de navigation fixe */
+	top: 0;
+	left: 0;
+	width: 100%;
+	background-color: #333;
+	padding: 10px 0;
+	display: flex;
+	justify-content: center; /* Centrer les boutons */
+	z-index: 1000;
+}
+
+.navbar button {
+	background-color: #4CAF50;
+	border: none;
+	color: white;
+	padding: 10px 20px;
+	margin: 0 10px;
+	font-size: 16px;
+	cursor: pointer;
+	border-radius: 5px;
+	transition: background-color 0.3s;
+}
+
+.navbar button:hover {
+	background-color: #45a049;
+}
+
+/* Le contenu principal en dessous des boutons */
+#threejs-container {
+	margin-top: 60px; /* Créer un espace sous les boutons pour ne pas les cacher */
+	height: calc(100vh - 60px); /* Remplir le reste de la page */
+}
