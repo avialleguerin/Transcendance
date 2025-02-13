@@ -1,105 +1,118 @@
+<!-- <!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>test</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="./static/js/css/index.css"> -->
+        <!-- <style>
+            * {
+                outline: 1px solid red;
+            }
+        </style> -->
+<!-- </head>
+<body>
+    <button data-view="vue1">Vue 1</button>
+    <button data-view="vue2">Vue 2</button>
+    <button data-view="vue3">Vue 3</button>
+    <button data-view="vue4">Vue 4</button>
+    <button data-view="vue5">Vue 5</button>
+
+    <script type="module" src="/static/js/index.js"></script>
+    <div id="app"></div>
+    
+    <div id="threejs-container" style="height: 100vh;"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script type="module" src="test.js"></script>
+    <script type="module" src="../app.js"></script>
+</body>
+</html> -->
+
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Transcendance - Projet 42</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: "#1E40AF",
-          },
-        },
-      },
-    }
-  </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <style>
+        /* Style global */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Les boutons en haut qui ne bougent jamais */
+        .navbar {
+            position: fixed; /* Rendre la barre de navigation fixe */
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #000000;
+            padding: 10px 0;
+            display: flex;
+            justify-content: center; /* Centrer les boutons */
+            z-index: 1000;
+        }
+
+        .navbar button {
+            background-color: #180247;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            margin: 0 10px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .navbar button:hover {
+            background-color: #6f45a0;
+        }
+
+        /* Le contenu principal en dessous des boutons */
+        #renderCanvas {
+            margin-top: 60px; /* Créer un espace sous les boutons pour ne pas les cacher */
+            height: calc(100vh - 60px); /* Remplir le reste de la page */
+        }
+    </style>
 </head>
-<body class="bg-gradient-to-br from-gray-50 to-gray-100 text-gray-800">
-  <!-- MOn Script de reload -->
-  <script src="http://localhost:35729/livereload.js"></script>
-  <!-- Header avec gradient -->
-  <header class="bg-gradient-to-r from-primary to-blue-800 text-white p-8 shadow-lg">
-    <div class="container mx-auto flex items-center justify-between">
-      <div>
-        <h1 class="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-200">Transcendance</h1>
-        <p class="mt-2 text-xl text-blue-100">Projet 42 - Une aventure technologique</p>
-      </div>
-      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXfAZMOWHDQ3DKE63A9jWhIqQaKcKqUIXvzg&s" alt="Logo 42" class=" shadow-lg w-16 h-16"/>
+
+<body>
+
+    <!-- Barre de navigation fixe en haut -->
+    <div class="navbar">
+        <button data-view="vue1">Vue 1</button>
+        <button data-view="vue2">Vue 2</button>
+        <button data-view="vue3">
+            <a href="/jouer" class="nav-link" data-link>Jouer</a>
+        </button>
+		<button data-view="vue4">Vue 4</button>
+		<button data-view="vue5">Vue 5</button>
     </div>
-  </header>
 
-  <main class="container mx-auto p-6">
-    <!-- Section Présentation avec carte -->
-    <section class="my-12 bg-white rounded-xl shadow-lg p-8 transform hover:scale-[1.02] transition-transform">
-      <h2 class="text-3xl font-semibold mb-6 text-primary">Présentation du Projet</h2>
-      <div class="grid md:grid-cols-2 gap-8 items-center">
-        <div>
-          <p class="mb-4 text-lg">
-            Bienvenue sur le projet <strong>Transcendance</strong>, une initiative exceptionnelle du campus 42 qui repousse les limites de la technologie et de l'innovation.
-          </p>
-          <p class="mb-4">
-            Chaque ligne de code incarne la passion et la rigueur propres à notre école.
-          </p>
-        </div>
-        <img src="https://media.discordapp.net/attachments/1328340966779650078/1338525413755981866/Screenshot_from_2025-02-10_16-01-37.png?ex=67ac0f2f&is=67aabdaf&hm=f488d14911c1c6b6a1c96c935630a7b843f169cb1d6951d2c5c0f8294077c847&=&format=webp&quality=lossless&width=674&height=308" alt="Illustration du projet" class="rounded-lg shadow-md"/>
-      </div>
-    </section>
+    <!-- <button><a href="/jouer" class="nav-link" data-link>Jouer</a></button> -->
 
-    <!-- Section Fonctionnalités avec cards -->
-    <section class="my-12">
-      <h2 class="text-3xl font-semibold mb-8 text-primary">Fonctionnalités Clés</h2>
-      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="bg-gradient-to-br from-white to-blue-50 p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow">
-          <img src="https://cdn-icons-png.flaticon.com/512/6047/6047946.png" alt="UI" class="mb-4 rounded w-8 h-8"/>
-          <h3 class="font-semibold mb-2">Interface Responsive</h3>
-          <p>Design adaptatif pour tous les appareils</p>
-        </div>
-        <div class="bg-gradient-to-br from-white to-blue-50 p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow">
-          <img src="https://static.vecteezy.com/system/resources/previews/029/345/981/non_2x/database-icon-data-analytics-icon-monitoring-big-data-analysis-containing-database-free-png.png" alt="Data" class="mb-4 rounded w-8 h-8"/>
-          <h3 class="font-semibold mb-2">Temps Réel</h3>
-          <p>Données actualisées en direct</p>
-        </div>
-        <div class="bg-gradient-to-br from-white to-blue-50 p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow">
-          <img src="https://cdn-icons-png.flaticon.com/512/2165/2165004.png" alt="API" class="mb-4 rounded w-8 h-8"/>
-          <h3 class="font-semibold mb-2">API Innovantes</h3>
-          <p>Intégration de services modernes</p>
-        </div>
-        <div class="bg-gradient-to-br from-white to-blue-50 p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow">
-          <img src="https://banner2.cleanpng.com/20180715/ujy/aav04zsms.webp" alt="UX" class="mb-4 rounded w-8 h-8"/>
-          <h3 class="font-semibold mb-2">UX Optimisée</h3>
-          <p>Expérience utilisateur fluide</p>
-        </div>
-      </div>
-    </section>
+    <!-- Conteneur Three.js -->
+    <div id="threejs-container"></div>
+	<canvas id="renderCanvas" style="width: 100%; height: 100vh;"></canvas>
 
-    <!-- Section Contact -->
-    <section class="my-12 bg-gradient-to-br from-blue-50 to-white rounded-xl shadow-lg p-8">
-      <h2 class="text-3xl font-semibold mb-6 text-primary">Contact & Suivi</h2>
-      <div class="flex flex-col md:flex-row items-center justify-between">
-        <div class="space-y-4">
-          <p class="text-lg">Pour en savoir plus ou participer au projet :</p>
-          <div class="space-y-2">
-            <a href="mailto:contact@transcendance42.fr" class="flex items-center text-blue-600 hover:text-blue-800 transition-colors">
-              <span class="mr-2">📧</span> contact@transcendance42.fr
-            </a>
-            <a href="https://www.42.fr" target="_blank" class="flex items-center text-blue-600 hover:text-blue-800 transition-colors">
-              <span class="mr-2">🌐</span> 42 Network
-            </a>
-          </div>
-        </div>
-        <img src="https://plus.unsplash.com/premium_photo-1684761875683-b66e09ad44c2?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Y29udGFjdHxlbnwwfDF8MHx8fDA%3D" alt="Contact" class="mt-6 md:mt-0 rounded-lg shadow-md w-48 h-100"/>
-      </div>
-    </section>
-  </main>
+    <!-- Le reste des scripts nécessaires -->
+    <script type="module" src="/static/js/index.js"></script>
+    <!-- <div id="app"></div> -->
 
-  <!-- Footer avec gradient -->
-  <footer class="bg-gradient-to-r from-gray-800 to-gray-900 text-gray-200 p-6 mt-8">
-    <div class="container mx-auto text-center">
-      <p>&copy; 2025 Transcendance - Projet 42. Tous droits réservés.</p>
-    </div>
-  </footer>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script> -->
+    <!-- <script type="module" src="../app.js"></script> -->
+	<script src="https://cdn.babylonjs.com/babylon.js"></script>
+	<script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script> <!-- Ajoute ceci -->
+	<script type="module" src="../babylon.js"></script>
+    <script type="module" src="test.js"></script>
+
 </body>
+
 </html>

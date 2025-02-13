@@ -1,0 +1,25 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Lancer le serveur Node",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"server.js"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"presentation": {
+				"reveal": "always",
+				"panel": "shared",
+				"focus": false
+			},
+			"runOptions": {
+				"runOn": "folderOpen"
+			}
+		},
+	]
+  }
