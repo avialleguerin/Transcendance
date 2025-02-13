@@ -1,4 +1,4 @@
-.DEFAULT_GOAL := up
+.DEFAULT_GOAL := all
 
 # Colors and Styles
 RESET		:=	\e[0m

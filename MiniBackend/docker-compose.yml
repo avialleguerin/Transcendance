@@ -5,3 +5,13 @@ services:
     build: .
     ports:
       - "3000:3000"
+    networks:
+      - transcendence-network
+
+  nginx:
+    ports:
+      - "80:80"
+    depends_on:
+      - fastify
+    networks:
+      - transcendence-network

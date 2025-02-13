@@ -3,10 +3,8 @@ FROM node:18-alpine
 WORKDIR /app
 
 
-RUN npm i fastify &&\
-	npm i @fastify/static &&\
-	npm i better-sqlite3 &&\
-	npm i livereload connect-livereload
+RUN npm i fastify && npm i @fastify/static &&\
+	npm i better-sqlite3
 
 
 COPY . .
