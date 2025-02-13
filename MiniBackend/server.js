@@ -1,144 +1,99 @@
-//ESM
+// ecriture ESM
 import Fastify from "fastify";
-
 // Pour post du html
-import path from "path";
-import { fileURLToPath } from 'url';
-import fastifyStatic from '@fastify/static';
-
+import { join } from "path";
 //Pour SQLite
 import Database from "better-sqlite3";
+// Pour que le nav et le server reload auto
+import livereload from "livereload";
+import connectLivereload from "connect-livereload";
+// les autres pages js
+import Routes from "./routes.js"
+import { CREATE_USERS_TABLE, INSERT_USER, GET_ALL_USERS, GET_USER_BY_ID, DELETE_USER } from './queries.js';
+import registerPlugins from './register.js';
 
-//commonJS (CJS)
-// const path = require('path');
-
-// VARIABLES
 const fastify = Fastify({ logger: true })
-
 const db = new Database('database.sqlite', { verbose: console.log });
+const liveReloadServer = livereload.createServer();
 
+// fastify.register(Routes)
+fastify.register(Routes, {db})
+await registerPlugins(fastify);
 
-// FUNCTIONS
-db.prepare(`
-  CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    email TEXT UNIQUE NOT NULL
-  )
-`).run();
+// db.prepare(`
+//   CREATE TABLE IF NOT EXISTS users (
+//     id INTEGER PRIMARY KEY AUTOINCREMENT,
+//     name TEXT NOT NULL,
+//     email TEXT UNIQUE NOT NULL
+//   )
+// `).run();
 
+db.prepare(CREATE_USERS_TABLE).run();
 
- 
-// Pour obtenir __dirname en ESM
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-// Enregistrement du plugin pour servir les fichiers statiques depuis le dossier "public"
-fastify.register(fastifyStatic, {
-  root: path.join(__dirname, 'public'),
-  prefix: '/', // URL de base pour accéder aux fichiers statiques
+// pour le laisser surveiiler par LiveReload :
+liveReloadServer.watch(join(process.cwd(), "public")); // Surveille le dossier public
+fastify.addHook("onRequest", async (request, reply) => {
+	connectLivereload()(request.raw, reply.raw, () => {});
 });
 
-//a essayer :
-// Servir les fichiers statiques depuis le dossier public
-// fastify.register(fastifyStatic, {
-//     root: join(process.cwd(), "public"),
-//     prefix: "/", // Les fichiers seront accessibles directement depuis la racine
-// });
-//--
 
-// On enregistre une route GET sans fichier html
-// fastify.get('/',
-// 	function (request, reply) {
-// 		reply.send({ hello: 'world' })
-// 	}
-// )
-
-/* ADMINN */
-
-// Route POST pour ajouter un utilisateur
-fastify.post('/admin', async (request, reply) => {
+export default async function insertUser (request, reply) {
 	const { name, email } = request.body;
 	try {
-	  const stmt = db.prepare('INSERT INTO users (name, email) VALUES (?, ?)');
-	  const info = stmt.run(name, email);
-	  reply.code(201);
-	  return { id: info.lastInsertRowid, name, email };
+		// const stmt = options.db.prepare('INSERT INTO users (name, email) VALUES (?, ?)');
+		const stmt = db.prepare(INSERT_USER);
+		const info = stmt.run(name, email);
+		reply.code(201);
+		return reply.send({ success: true, id: info.lastInsertRowid, name, email });
 	} catch (err) {
-	  fastify.log.error(err);
-	  reply.code(500);
-	  return { error: err.message };
+		fastify.log.error(err);
+		reply.code(500);
+		return { error: err.message };
 	}
-  });
+}
 
-// Route GET pour lister tous les utilisateurs
-// fastify.get('/admin', async (request, reply) => {
-// 	try {
-// 	  const users = db.prepare('SELECT * FROM users').all();
-// 	  return users;
-// 	} catch (err) {
-// 	  fastify.log.error(err);
-// 	  reply.code(500);
-// 	  return { error: err.message };
-// 	}
-//   });
-
-// Route DELETE pour supprimer un utilisateur par son id
-fastify.delete('/admin/:id', async (request, reply) => {
-	const { id } = request.params;
+export async function selectUsers (request, reply) {
 	try {
-	  const stmt = db.prepare('DELETE FROM users WHERE id = ?');
-	  const info = stmt.run(id);
-	  if (info.changes === 0) {
-		reply.code(404);
-		return { error: 'Utilisateur non trouvé' };
-	  }
-	  return { message: 'Utilisateur supprimé avec succès' };
+		const users = db.prepare(GET_ALL_USERS).all();
+		return users;
 	} catch (err) {
-	  fastify.log.error(err);
-	  reply.code(500);
-	  return { error: err.message };
+		fastify.log.error(err);
+		reply.code(500);
+		return { error: err.message };
 	}
-  });
+}
 
-// Optionnel : Route GET pour servir la page d'administration
-fastify.get('/admin', async (request, reply) => {
-	return reply.sendFile('admin.html');
-  });
+export async function deleteUsers(request, reply) {
+	const { id } = request.params; // mode destructuration
+	// const id = request.params.id;
 
-/* USERSSS */
-
-// Route POST pour ajouter un utilisateur
-fastify.post('/users',
-	async (request, reply) => {
-		const {name, email} = request.body;
-		const stmt = db.prepare('INSERT INTO users (name, email) VALUES (?, ?)');
-		const info = stmt.run (name, email);
-		return { id: info.lastInsertRowid, name, email };
-});
-
-// Route GET pour récupérer tous les utilisateurs
-fastify.get('/users', async (request, reply) => {
-	const users = db.prepare('SELECT * FROM users').all();
-	return users;
-  });
-
-fastify.get('/',
-	function (request, reply) {
-		reply.sendFile('index.html')
+	if (!id) {
+		return reply.code(400).send({ error: "L'identifiant de l'utilisateur est requis." });
 	}
-)
 
+	try {
+		const stmt = db.prepare(DELETE_USER);
+		const info = stmt.run(id);
 
-// Run the server!
+		if (info.changes === 0) {
+			return reply.code(404).send({ error: "Utilisateur introuvable." });
+		}
+
+		return reply.send({ success: true, message: "Utilisateur supprime avec succes. "});
+	} catch (err) {
+		fastify.log.error(err)
+		return reply.code(500).send({ error: err.message })
+	}
+}
+
 /**
+ * Main function for run the server
  * @explication Pour Fastify dans docker, il faut ecouter sur toutes les IP, donc: 0.0.0.0
  * @type test
  */
 const start = async () => {
 	try {
 		await fastify.listen({ port: 3000, host: '0.0.0.0' })
-		
 	} catch (err) {
 		fastify.log.error(err)
 		process.exit(1)
