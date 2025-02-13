@@ -12,6 +12,8 @@ scene.clearColor = new BABYLON.Color4(0, 0, 0, 1);
 scene.imageProcessingConfiguration.contrast = 1.2;
 scene.imageProcessingConfiguration.exposure = 1.0;
 scene.imageProcessingConfiguration.toneMappingEnabled = true;
+// scene.collisionsEnabled = true;
+
 
 
 
@@ -330,37 +332,86 @@ borderBottom.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
 
 
 const paddle_left = new BABYLON.MeshBuilder.CreateBox("padle_left", {
-    width: 6.5,
+    width: 10,
     height: 1.5,
     depth: 1.5
 }, scene);
 
-paddle_left.position = new BABYLON.Vector3(-7, 300, -120);
+paddle_left.position = new BABYLON.Vector3(-7, 301, -120);
+paddle_left.checkPaddleCollision = true;
 
 const paddle_right = new BABYLON.MeshBuilder.CreateBox("padle_right", {
-    width: 6.5,
+    width: 10,
     height: 1.5,
     depth: 1.5
 }, scene);
 
-paddle_right.position = new BABYLON.Vector3(-7, 300, -24);
+paddle_right.position = new BABYLON.Vector3(-7, 301, -24);
+paddle_right.checkPaddleCollision = true;
 
 const ball = new BABYLON.MeshBuilder.CreateSphere("ball", {
     diameter: 3
 }, scene);
 
 ball.position = new BABYLON.Vector3(-7, 301.5, -72.5);
-const paddleSpeed = 0.8;
-const keys = {}; // Stocke l'état des touches enfoncées
+ball.checkPaddleCollision = true;
 
+const paddleSpeed = 1.1;
+const keys = {}; 
+
+// Constantes pour les limites du terrain
 const minX = borderBottom.position.x + (borderBottom.scaling.x / 2) + 4.5;
 const maxX = borderTop.position.x - (borderTop.scaling.x / 2) - 4.5;
+const FIELD_LEFT = -40;
+const FIELD_RIGHT = 25;
+const FIELD_TOP = -14;
+const FIELD_BOTTOM = -130;
+const BALL_RADIUS = 1.5;
+const PADDLE_WIDTH = 10;    // Largeur du paddle
+const PADDLE_HEIGHT = 1.5;  // Hauteur du paddle
+const MAX_BALL_SPEED = 1;
 
-// Met à jour les touches enfoncées
+// Variables pour la vitesse de la balle
+let ballSpeedX = 0.3;
+let ballSpeedY = 0.3;
+let baseSpeed = 0.3;
+
+// Écouteurs d'événements pour les touches
 addEventListener("keydown", (event) => keys[event.key] = true);
 addEventListener("keyup", (event) => keys[event.key] = false);
 
-// Met à jour la position des paddles
+// Fonction pour vérifier les collisions avec les paddles
+// Créer une boîte de collision pour la balle
+const ballCollisionBox = BABYLON.MeshBuilder.CreateBox("ballCollisionBox", {
+    width: BALL_RADIUS * 2,   // Largeur de la boîte de collision
+    height: BALL_RADIUS * 2,  // Hauteur de la boîte de collision
+    depth: BALL_RADIUS * 2    // Profondeur de la boîte de collision
+}, scene);
+
+ballCollisionBox.isPickable = false;  // La boîte de collision ne doit pas être sélectionnable
+ballCollisionBox.visibility = 0;      // La boîte de collision est invisible (pour le débogage)
+
+ballCollisionBox.position = ball.position;  // On synchronise la position de la boîte avec la balle
+
+// Fonction pour vérifier les collisions avec les paddles
+function checkPaddleCollision(paddle) {
+    const paddleTop = paddle.position.z + (paddle.scaling.z + 4) / 2;  // Profondeur ajustée
+    const paddleBottom = paddle.position.z - (paddle.scaling.z + 4) / 2;  
+    const paddleLeft = paddle.position.x - (paddle.scaling.x + 12) / 2; // Largeur ajustée
+    const paddleRight = paddle.position.x + (paddle.scaling.x + 12) / 2; 
+    const paddleHeight = paddle.position.y + (paddle.scaling.y + 10) / 2; // Augmenter la hauteur ici
+    const paddleBottomHeight = paddle.position.y - (paddle.scaling.y + 10) / 2;
+
+    return (
+        ballCollisionBox.position.z + BALL_RADIUS >= paddleBottom &&
+        ballCollisionBox.position.z - BALL_RADIUS <= paddleTop &&
+        ballCollisionBox.position.x + BALL_RADIUS >= paddleLeft &&
+        ballCollisionBox.position.x - BALL_RADIUS <= paddleRight &&
+        ballCollisionBox.position.y + BALL_RADIUS >= paddleBottomHeight &&
+        ballCollisionBox.position.y - BALL_RADIUS <= paddleHeight
+    );
+}
+// Fonction de mise à jour des paddles
 function updatePaddles() {
     if (keys["w"] && paddle_left.position.x > minX) {
         paddle_left.position.x -= paddleSpeed;
@@ -368,20 +419,146 @@ function updatePaddles() {
     if (keys["s"] && paddle_left.position.x < maxX) {
         paddle_left.position.x += paddleSpeed;
     }
-    if (keys["ArrowUp"] && paddle_right.position.x > minX) {
+    if (keys["i"] && paddle_right.position.x > minX) {
         paddle_right.position.x -= paddleSpeed;
     }
-    if (keys["ArrowDown"] && paddle_right.position.x < maxX) {
+    if (keys["k"] && paddle_right.position.x < maxX) {
         paddle_right.position.x += paddleSpeed;
     }
-
-    requestAnimationFrame(updatePaddles); // Rafraîchit en continu
 }
 
-// Démarre la boucle d'animation
-updatePaddles();
+// Fonction de mise à jour de la balle
+function updateBall() {
+    ball.position.x += ballSpeedX;
+    ball.position.z += ballSpeedY;
+
+    // Mise à jour de la position de la boîte de collision
+    ballCollisionBox.position = ball.position;
+
+    if (ball.position.z >= FIELD_TOP || ball.position.z <= FIELD_BOTTOM) {
+        ballSpeedY *= -1;
+    }
+
+    if (ball.position.x <= FIELD_LEFT || ball.position.x >= FIELD_RIGHT) {
+        ballSpeedX *= -1;
+    }
+
+    if (checkPaddleCollision(paddle_left) || checkPaddleCollision(paddle_right)) {
+        // Inverse la direction sans modifier la vitesse
+        ballSpeedX *= -1;
+        
+        const paddle = checkPaddleCollision(paddle_left) ? paddle_left : paddle_right;
+        const relativeIntersectY = (paddle.position.x - ball.position.x) / (paddle.scaling.x / 2);
+        
+        // Calcul de la nouvelle vitesse Y avec limitation
+        let newSpeedY = -baseSpeed * relativeIntersectY;
+        
+        // Limitation de la vitesse maximale
+        ballSpeedY = Math.max(Math.min(newSpeedY, MAX_BALL_SPEED), -MAX_BALL_SPEED);
+        ballSpeedX = Math.max(Math.min(ballSpeedX, MAX_BALL_SPEED), -MAX_BALL_SPEED);
+    }
+}
 
 
+function createDebugLines(scene) {
+    const lines = [];
+    const debugMaterial = new BABYLON.StandardMaterial("debugMaterial", scene);
+    debugMaterial.emissiveColor = new BABYLON.Color3(1, 0, 0); // Rouge
+    debugMaterial.wireframe = true;
+
+    // Fonction pour créer une boîte de debug
+    function createDebugBox(paddle, scene) {
+        const box = BABYLON.MeshBuilder.CreateBox("debugBox", {
+            width: paddle.scaling.x + 12,  // Largeur ajustée
+            height: 1.5,                   // Hauteur ajustée
+            depth: paddle.scaling.z + 4,   // Profondeur ajustée
+        }, scene);
+    
+        box.material = debugMaterial;
+        box.isPickable = false;
+        box.visibility = 0.5; // Plus visible
+    
+        // Mise à jour de la position de la box debug
+        scene.registerBeforeRender(() => {
+            box.position.x = paddle.position.x;
+            box.position.y = paddle.position.y;
+            box.position.z = paddle.position.z;
+        });
+    
+        return box;
+    }
+    
+    // Création des box de debug pour chaque paddle
+    const leftPaddleDebug = createDebugBox(paddle_left, scene);
+    const rightPaddleDebug = createDebugBox(paddle_right, scene);
+
+    // Mettre à jour la position des boîtes de debug
+    scene.registerBeforeRender(() => {
+        // Mise à jour de la boîte de debug du paddle gauche
+        leftPaddleDebug.position = new BABYLON.Vector3(
+            paddle_left.position.x,
+            paddle_left.position.y,
+            paddle_left.position.z
+        );
+
+        // Mise à jour de la boîte de debug du paddle droit
+        rightPaddleDebug.position = new BABYLON.Vector3(
+            paddle_right.position.x,
+            paddle_right.position.y,
+            paddle_right.position.z
+        );
+    });
+
+    return [leftPaddleDebug, rightPaddleDebug];
+}
+
+// Créer les lignes de debug
+const debugBoxes = createDebugLines(scene);
+
+function createBallDebugBox(scene) {
+    const ballDebugMaterial = new BABYLON.StandardMaterial("ballDebugMaterial", scene);
+    ballDebugMaterial.emissiveColor = new BABYLON.Color3(0, 1, 0); // Vert, pour que ça se distingue
+
+    // Créer une sphère avec le diamètre correspondant à la balle
+    const ballDebugBox = BABYLON.MeshBuilder.CreateSphere("ballDebugBox", {
+        diameter: BALL_RADIUS * 2  // Diamètre de la sphère basé sur le rayon de la balle
+    }, scene);
+
+    ballDebugBox.material = ballDebugMaterial;
+    ballDebugBox.isPickable = false;
+    ballDebugBox.visibility = 5;  // Semi-transparente pour mieux voir l'environnement
+
+    return ballDebugBox;
+}
+
+// Crée une instance de la boîte de débogage pour la balle
+const ballDebugBox = createBallDebugBox(scene);
+
+// Met à jour la position de la boîte de débogage à chaque frame
+scene.registerBeforeRender(() => {
+    ballDebugBox.position = new BABYLON.Vector3(ball.position.x, ball.position.y, ball.position.z);
+});
+
+// Créer les lignes de débogage pour les paddles
+const debugBoxess = createDebugLines(scene);
+
+// Ajouter une touche pour activer/désactiver la visualisation des collisions
+let debugVisible = true;
+window.addEventListener('keydown', (event) => {
+    if (event.key === 'h') { // Appuyer sur 'h' pour afficher/cacher
+        debugVisible = !debugVisible;
+        debugBoxess.forEach(box => {
+            box.visibility = debugVisible ? 0.3 : 0;
+        });
+
+        // Afficher/masquer la sphère de débogage de la balle
+        ballDebugBox.visibility = debugVisible ? 0.5 : 0;
+    }
+});
+
+
+
+// Boucle de rendu principale
 engine.runRenderLoop(() => {
     const scale = window.devicePixelRatio;
     if (canvas.width !== canvas.clientWidth * scale || canvas.height !== canvas.clientHeight * scale) {
@@ -389,15 +566,20 @@ engine.runRenderLoop(() => {
         canvas.width = canvas.clientWidth * scale;
         canvas.height = canvas.clientHeight * scale;
     }
-    // console.log(camera.position); 
+    
+    updatePaddles();
+    updateBall();
+    // console.log(ball.position);
+    
     scene.render();
 });
 
-window.addEventListener('resize', () =>
-{
+// Gestion du redimensionnement
+window.addEventListener('resize', () => {
     engine.resize(true);
 });
 
+// Qualité des textures
 scene.onBeforeRenderObservable.add(() => {
     scene.meshes.forEach(mesh => {
         if (mesh.material && mesh.material.diffuseTexture) {
