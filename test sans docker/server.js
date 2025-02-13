@@ -44,7 +44,7 @@ export default async function insertUser (request, reply) {
 		const stmt = db.prepare(INSERT_USER);
 		const info = stmt.run(name, email);
 		reply.code(201);
-		return { id: info.lastInsertRowid, name, email };
+		return reply.send({ success: true, id: info.lastInsertRowid, name, email });
 	} catch (err) {
 		fastify.log.error(err);
 		reply.code(500);
@@ -63,17 +63,28 @@ export async function selectUsers (request, reply) {
 	}
 }
 
-fastify.post('/add-user', async (request, reply) => {
-    const { name, email } = request.body;
-    try {
-        const stmt = db.prepare('INSERT INTO users (name, email) VALUES (?, ?)');
-        const info = stmt.run(name, email);
-        return reply.send({ success: true, id: info.lastInsertRowid, name, email });
-    } catch (error) {
-        return reply.code(500).send({ success: false, message: 'Erreur lors de l\'ajout de l\'utilisateur', error });
-    }
-});
+export async function deleteUsers(request, reply) {
+	const { id } = request.params; // mode destructuration
+	// const id = request.params.id;
 
+	if (!id) {
+		return reply.code(400).send({ error: "L'identifiant de l'utilisateur est requis." });
+	}
+
+	try {
+		const stmt = db.prepare(DELETE_USER);
+		const info = stmt.run(id);
+
+		if (info.changes === 0) {
+			return reply.code(404).send({ error: "Utilisateur introuvable." });
+		}
+
+		return reply.send({ success: true, message: "Utilisateur supprime avec succes. "});
+	} catch (err) {
+		fastify.log.error(err)
+		return reply.code(500).send({ error: err.message })
+	}
+}
 
 /**
  * Main function for run the server

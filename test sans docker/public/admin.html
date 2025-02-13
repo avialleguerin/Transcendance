@@ -1,6 +1,7 @@
 <!-- public/admin.html -->
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,6 +9,7 @@
 	<!-- Chargement de Tailwind CSS via le CDN remote -->
 	<script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body class="bg-gray-100 text-gray-800">
 	<script src="http://localhost:35729/livereload.js"></script>
 	<header class="bg-blue-600 text-white p-4">
@@ -32,53 +34,6 @@
 			</tbody>
 		</table>
 	</main>
-
-	<script>
-		async function fetchUsers() {
-			try {
-				const response = await fetch('/users');
-				const users = await response.json();
-				const tbody = document.getElementById('users-table');
-				tbody.innerHTML = '';
-				users.forEach(user => {
-					const tr = document.createElement('tr');
-					tr.innerHTML = `
-						<td class="border px-4 py-2">${user.id}</td>
-						<td class="border px-4 py-2">${user.name}</td>
-						<td class="border px-4 py-2">${user.email}</td>
-						<td class="border px-4 py-2">
-							<button class="bg-red-500 text-white px-2 py-1 rounded" onclick="deleteUser(${user.id})">Supprimer</button>
-						</td>
-					`;
-					tbody.appendChild(tr);
-				});
-			} catch (err) {
-				console.error('Erreur lors de la récupération des utilisateurs :', err);
-			}
-		}
-
-		async function deleteUser(id) {
-			if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
-				try {
-					const response = await fetch(`/users/${id}`, { method: 'DELETE' });
-					if (response.ok) {
-						alert('Utilisateur supprimé avec succès.');
-						fetchUsers();
-					} else {
-						const error = await response.json();
-						alert('Erreur : ' + error.error);
-					}
-				} catch (err) {
-					console.error('Erreur lors de la suppression :', err);
-				}
-			}
-		}
-
-		// Charger la liste des utilisateurs lors du chargement de la page
-		window.addEventListener('DOMContentLoaded', fetchUsers);
-	</script>
-
-
 
 	<form id="userForm" class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg">
 		<h2 class="text-2xl font-semibold text-center mb-4">Ajouter un utilisateur</h2>
@@ -106,39 +61,7 @@
 	</form>
 
 
-	<script>
-			document.getElementById("userForm").addEventListener("submit", async function (event) {
-					event.preventDefault(); // Empêche le rechargement de la page
-
-					const name = document.getElementById("name").value;
-					const email = document.getElementById("email").value;
-
-					const response = await fetch("/add-user", {
-							method: "POST",
-							headers: { "Content-Type": "application/json" },
-							body: JSON.stringify({ name, email })
-					});
-
-					const result = await response.json();
-					const resultMessage = document.getElementById("resultMessage");
-
-					if (result.success) {
-							resultMessage.textContent = `Utilisateur ajouté : ${result.name} (${result.email})`;
-							resultMessage.classList.add("text-green-500");
-
-							setTimeout(() => {
-									location.reload(); // Rafraîchit la page après 1 seconde
-							}, 300);
-					} else {
-							resultMessage.textContent = "Erreur : " + result.message;
-							resultMessage.classList.add("text-red-500");
-					}
-			});
-
-
-	</script>
-
-	 <!-- Inclusion du script externe -->
-	<!-- <script src="/utils/admin.js"></script> -->
+	 <!-- Inclusion des scripts externe -->
+	<script src="../utils/script.js"></script>
 </body>
 </html>
