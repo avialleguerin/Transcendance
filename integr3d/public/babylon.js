@@ -395,8 +395,8 @@ ballCollisionBox.position = ball.position;  // On synchronise la position de la 
 
 // Fonction pour vérifier les collisions avec les paddles
 function checkPaddleCollision(paddle) {
-    const paddleTop = paddle.position.z + (paddle.scaling.z + 4) / 2;  // Profondeur ajustée
-    const paddleBottom = paddle.position.z - (paddle.scaling.z + 4) / 2;  
+    const paddleTop = paddle.position.z + (paddle.scaling.z + 8) / 2;  // Profondeur ajustée
+    const paddleBottom = paddle.position.z - (paddle.scaling.z + 8) / 2;  
     const paddleLeft = paddle.position.x - (paddle.scaling.x + 12) / 2; // Largeur ajustée
     const paddleRight = paddle.position.x + (paddle.scaling.x + 12) / 2; 
     const paddleHeight = paddle.position.y + (paddle.scaling.y + 10) / 2; // Augmenter la hauteur ici
@@ -471,7 +471,7 @@ function createDebugLines(scene) {
         const box = BABYLON.MeshBuilder.CreateBox("debugBox", {
             width: paddle.scaling.x + 12,  // Largeur ajustée
             height: 1.5,                   // Hauteur ajustée
-            depth: paddle.scaling.z + 4,   // Profondeur ajustée
+            depth: paddle.scaling.z + 8,   // Profondeur ajustée
         }, scene);
     
         box.material = debugMaterial;
