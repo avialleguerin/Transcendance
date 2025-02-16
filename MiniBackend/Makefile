@@ -15,7 +15,8 @@ MAGENTA		:=	\e[35m
 CYAN		:=	\e[36m
 
 # Variables
-DOCKER_COMPOSE = docker-compose -f docker-compose.yml
+DOCKER_COMPOSE	= docker-compose -f docker-compose.yml
+PRE				= docker run --rm -v ~/Github/Transcendance/MiniBackend:/MiniBackend -w /MiniBackend docker/compose:latest up
 
 DATA_DIRS	=	data \
 				data/nginx \
@@ -29,8 +30,12 @@ RM			:=	rm -rf
 ## RULES --
 
 # Docker
-build:
-	docker build -t fastify-server .
+
+prepare:
+	$(PRE)
+
+build: prepare
+	$(DOCKER_COMPOSE)
 
 up:		build
 	docker run -p 3000:3000 fastify-server

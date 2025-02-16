@@ -1,4 +1,4 @@
-
+version: "3.8"
 
 services:
   fastify:
@@ -8,10 +8,15 @@ services:
     networks:
       - transcendence-network
 
-  nginx:
-    ports:
-      - "80:80"
-    depends_on:
-      - fastify
-    networks:
-      - transcendence-network
+  # nginx:
+  #   ports:
+  #     - "80:80"
+  #   depends_on:
+  #     - fastify
+  #   networks:
+  #     - transcendence-network
+
+
+networks:
+  transcendence-network:
+     driver: bridge

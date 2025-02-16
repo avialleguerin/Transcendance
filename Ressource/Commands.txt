@@ -35,4 +35,9 @@ PostgreSQL:
 install psycopg2
 
 
+pour lancer docker-compose sans quil soit installer:
+docker run --rm -v $PWD:/app -w /app docker/compose:latest up
+
+
+
 
