@@ -395,21 +395,38 @@ ballCollisionBox.position = ball.position;  // On synchronise la position de la 
 
 // Fonction pour vérifier les collisions avec les paddles
 function checkPaddleCollision(paddle) {
-    const paddleTop = paddle.position.z + (paddle.scaling.z + 8) / 2;  // Profondeur ajustée
-    const paddleBottom = paddle.position.z - (paddle.scaling.z + 8) / 2;  
-    const paddleLeft = paddle.position.x - (paddle.scaling.x + 12) / 2; // Largeur ajustée
-    const paddleRight = paddle.position.x + (paddle.scaling.x + 12) / 2; 
-    const paddleHeight = paddle.position.y + (paddle.scaling.y + 10) / 2; // Augmenter la hauteur ici
+    // Création d'une marge de sécurité pour la détection
+    const COLLISION_MARGIN = 0.5;
+    
+    // Utilisation de la position de la balle directement au lieu de la ballCollisionBox
+    const paddleTop = paddle.position.z + (paddle.scaling.z + 2) / 2;
+    const paddleBottom = paddle.position.z - (paddle.scaling.z + 2) / 2;
+    const paddleLeft = paddle.position.x - (paddle.scaling.x + 12) / 2;
+    const paddleRight = paddle.position.x + (paddle.scaling.x + 12) / 2;
+    const paddleHeight = paddle.position.y + (paddle.scaling.y + 10) / 2;
     const paddleBottomHeight = paddle.position.y - (paddle.scaling.y + 10) / 2;
 
-    return (
-        ballCollisionBox.position.z + BALL_RADIUS >= paddleBottom &&
-        ballCollisionBox.position.z - BALL_RADIUS <= paddleTop &&
-        ballCollisionBox.position.x + BALL_RADIUS >= paddleLeft &&
-        ballCollisionBox.position.x - BALL_RADIUS <= paddleRight &&
-        ballCollisionBox.position.y + BALL_RADIUS >= paddleBottomHeight &&
-        ballCollisionBox.position.y - BALL_RADIUS <= paddleHeight
+    // Prédiction de la prochaine position de la balle
+    const nextBallX = ball.position.x + ballSpeedX;
+    const nextBallZ = ball.position.z + ballSpeedY;
+
+    // Vérification de collision avec prédiction de mouvement
+    const willCollideX = (
+        nextBallX + BALL_RADIUS + COLLISION_MARGIN >= paddleLeft &&
+        nextBallX - BALL_RADIUS - COLLISION_MARGIN <= paddleRight
     );
+
+    const willCollideZ = (
+        nextBallZ + BALL_RADIUS + COLLISION_MARGIN >= paddleBottom &&
+        nextBallZ - BALL_RADIUS - COLLISION_MARGIN <= paddleTop
+    );
+
+    const willCollideY = (
+        ball.position.y + BALL_RADIUS >= paddleBottomHeight &&
+        ball.position.y - BALL_RADIUS <= paddleHeight
+    );
+
+    return willCollideX && willCollideZ && willCollideY;
 }
 // Fonction de mise à jour des paddles
 function updatePaddles() {
@@ -427,35 +444,57 @@ function updatePaddles() {
     }
 }
 
-// Fonction de mise à jour de la balle
 function updateBall() {
+    // Sauvegarde de la position précédente
+    const previousPosition = {
+        x: ball.position.x,
+        z: ball.position.z
+    };
+
+    // Vérification des collisions avant de déplacer la balle
+    if (checkPaddleCollision(paddle_left) || checkPaddleCollision(paddle_right)) {
+        const paddle = checkPaddleCollision(paddle_left) ? paddle_left : paddle_right;
+        
+        // Calcul plus précis de l'angle de rebond
+        const hitPoint = (paddle.position.x - ball.position.x) / (paddle.scaling.x / 2);
+        const bounceAngle = hitPoint * Math.PI / 4; // 45 degrés max
+        
+        // Ajustement des vitesses avec un angle de rebond
+        const speed = Math.sqrt(ballSpeedX * ballSpeedX + ballSpeedY * ballSpeedY);
+        ballSpeedX = -Math.sign(ballSpeedX) * speed * Math.cos(bounceAngle);
+        ballSpeedY = speed * Math.sin(bounceAngle);
+        
+        // Empêcher la balle de rester "collée" au paddle
+        ball.position.x = previousPosition.x;
+        ball.position.z = previousPosition.z;
+    }
+
+    // Mise à jour de la position de la balle
     ball.position.x += ballSpeedX;
     ball.position.z += ballSpeedY;
 
-    // Mise à jour de la position de la boîte de collision
+    // Mise à jour de la boîte de collision
     ballCollisionBox.position = ball.position;
 
+    // Collisions avec les bords
     if (ball.position.z >= FIELD_TOP || ball.position.z <= FIELD_BOTTOM) {
         ballSpeedY *= -1;
+        // Petit ajustement pour éviter que la balle ne reste coincée
+        ball.position.z = ball.position.z >= FIELD_TOP ? FIELD_TOP - 0.1 : FIELD_BOTTOM + 0.1;
     }
 
     if (ball.position.x <= FIELD_LEFT || ball.position.x >= FIELD_RIGHT) {
         ballSpeedX *= -1;
+        // Petit ajustement pour éviter que la balle ne reste coincée
+        ball.position.x = ball.position.x <= FIELD_LEFT ? FIELD_LEFT + 0.1 : FIELD_RIGHT - 0.1;
     }
 
-    if (checkPaddleCollision(paddle_left) || checkPaddleCollision(paddle_right)) {
-        // Inverse la direction sans modifier la vitesse
-        ballSpeedX *= -1;
-        
-        const paddle = checkPaddleCollision(paddle_left) ? paddle_left : paddle_right;
-        const relativeIntersectY = (paddle.position.x - ball.position.x) / (paddle.scaling.x / 2);
-        
-        // Calcul de la nouvelle vitesse Y avec limitation
-        let newSpeedY = -baseSpeed * relativeIntersectY;
-        
-        // Limitation de la vitesse maximale
-        ballSpeedY = Math.max(Math.min(newSpeedY, MAX_BALL_SPEED), -MAX_BALL_SPEED);
-        ballSpeedX = Math.max(Math.min(ballSpeedX, MAX_BALL_SPEED), -MAX_BALL_SPEED);
+    // Limitation de la vitesse
+    const currentSpeed = Math.sqrt(ballSpeedX * ballSpeedX + ballSpeedY * ballSpeedY);
+    if (currentSpeed > MAX_BALL_SPEED) {
+        const factor = MAX_BALL_SPEED / currentSpeed;
+        ballSpeedX *= factor;
+        ballSpeedY *= factor;
     }
 }
 
@@ -471,7 +510,7 @@ function createDebugLines(scene) {
         const box = BABYLON.MeshBuilder.CreateBox("debugBox", {
             width: paddle.scaling.x + 12,  // Largeur ajustée
             height: 1.5,                   // Hauteur ajustée
-            depth: paddle.scaling.z + 8,   // Profondeur ajustée
+            depth: paddle.scaling.z + 2,   // Profondeur ajustée
         }, scene);
     
         box.material = debugMaterial;
