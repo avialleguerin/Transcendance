@@ -1,34 +1,3 @@
-<!-- <!DOCTYPE html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>test</title>
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="./static/js/css/index.css"> -->
-        <!-- <style>
-            * {
-                outline: 1px solid red;
-            }
-        </style> -->
-<!-- </head>
-<body>
-    <button data-view="vue1">Vue 1</button>
-    <button data-view="vue2">Vue 2</button>
-    <button data-view="vue3">Vue 3</button>
-    <button data-view="vue4">Vue 4</button>
-    <button data-view="vue5">Vue 5</button>
-
-    <script type="module" src="/static/js/index.js"></script>
-    <div id="app"></div>
-    
-    <div id="threejs-container" style="height: 100vh;"></div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-    <script type="module" src="test.js"></script>
-    <script type="module" src="../app.js"></script>
-</body>
-</html> -->
-
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -55,7 +24,7 @@
             padding: 10px 0;
             display: flex;
             justify-content: center; /* Centrer les boutons */
-            z-index: 1000;
+            z-index: 3;
         }
 
         .navbar button {
@@ -84,7 +53,6 @@
 
 <body>
 
-    <!-- Barre de navigation fixe en haut -->
     <div class="navbar">
         <button data-view="vue1">Vue 1</button>
         <button data-view="vue2">Vue 2</button>
@@ -95,22 +63,16 @@
 		<button data-view="vue5">Vue 5</button>
     </div>
 
-    <!-- <button><a href="/jouer" class="nav-link" data-link>Jouer</a></button> -->
-
-    <!-- Conteneur Three.js -->
     <div id="threejs-container"></div>
 	<canvas id="renderCanvas" style="width: 100%; height: 100vh;"></canvas>
 
-    <!-- Le reste des scripts nécessaires -->
     <script type="module" src="/static/js/index.js"></script>
     <!-- <div id="app"></div> -->
 
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script> -->
-    <!-- <script type="module" src="../app.js"></script> -->
 	<script src="https://cdn.babylonjs.com/babylon.js"></script>
-	<script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script> <!-- Ajoute ceci -->
-	<script type="module" src="../babylon.js"></script>
+	<script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+    <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
+	<script type="module" src="srcs/game/gameplay/babylon.js"></script>
     <script type="module" src="test.js"></script>
 
 </body>
