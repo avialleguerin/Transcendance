@@ -88,8 +88,3 @@ export function resetScore() {
     loadScoreModel(0, 'left', true);
     loadScoreModel(0, 'right', false);
 }
-
-// scene.executeWhenReady(() => {
-//     loadScoreModel(0, 'left', true);
-//     loadScoreModel(0, 'right', false);
-// });

@@ -6,4 +6,3 @@ document.querySelectorAll("button[data-view]").forEach(button => {
 		handleViewTransitions(viewName, window.currentView);
 	});
 });
-

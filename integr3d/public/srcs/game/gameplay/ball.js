@@ -1,15 +1,12 @@
 import { updateScore } from "./score.js";
-import { getPlayerRef } from "./player.js";
 
-let ball = null;
-let ballCollisionBox = null;
 const FIELD_LEFT = -40;
 const FIELD_RIGHT = 25;
 const FIELD_TOP = -14;
 const FIELD_BOTTOM = -130;
 const BALL_RADIUS = 1;
-const PADDLE_WIDTH = 10;    // Largeur du paddle
-const PADDLE_HEIGHT = 1.5;  // Hauteur du paddle
+const PADDLE_WIDTH = 10;
+const PADDLE_HEIGHT = 1.5;
 
 export function createBall(scene) {
 	if (!scene) {
@@ -17,43 +14,42 @@ export function createBall(scene) {
 		return;
 	}
 
-	BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/3d_object/", "soccer_ball__football (3).glb", scene, function (newMeshes, particleSystems, skeletons, animationGroups) {
-		console.log("Modèle chargé avec succès !");
+	return new Promise((resolve, reject) => {
+		BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/3d_object/", "soccer_ball__football (3).glb", scene, function (newMeshes, particleSystems, skeletons, animationGroups) {
+			console.log("Modèle chargé avec succès !");
 
-		if (ballCollisionBox) {
-			ballCollisionBox.dispose();
-		}
+			let rootMesh = null;
+			newMeshes.forEach(mesh => {
+				if (!mesh.parent) {
+					rootMesh = mesh;
+				}
+			});
 
-		let rootMesh = null;
-		newMeshes.forEach(mesh =>
-		{
-			if (!mesh.parent)
-			{
-				rootMesh = mesh;
+			if (rootMesh) {
+				let ball = rootMesh;
+				ball.position = new BABYLON.Vector3(-7, 300.8, -72.5);
+				ball.scaling = new BABYLON.Vector3(10, 10, 10);
+				
+				let ballCollisionBox = BABYLON.MeshBuilder.CreateBox("ballCollisionBox", {
+					width: BALL_RADIUS * 2,
+					height: BALL_RADIUS * 2,
+					depth: BALL_RADIUS * 2
+				}, scene);
+				ballCollisionBox.isPickable = false;
+				ballCollisionBox.visibility = 0;
+				ballCollisionBox.parent = ball;
+
+				resolve(ball);
+			} else {
+				reject("Impossible de trouver le root mesh de la balle.");
 			}
+		}, null, function (scene, message) {
+			reject(`Erreur lors du chargement du modèle: ${message}`);
 		});
-
-		if (rootMesh)
-		{
-			ball = rootMesh;
-			ball.position = new BABYLON.Vector3(-7, 300.8, -72.5);
-			ball.scaling = new BABYLON.Vector3(10, 10, 10);
-			ballCollisionBox = BABYLON.MeshBuilder.CreateBox("ballCollisionBox", {
-				width: BALL_RADIUS * 2,
-				height: BALL_RADIUS * 2,
-				depth: BALL_RADIUS * 2
-			}, scene);
-			ballCollisionBox.isPickable = false;
-			ballCollisionBox.visibility = 0;
-			ballCollisionBox.parent = ball;
-		}
-		console.log(ball);
 	});
-	return ball;
 }
 
-
-function resetBall() { 
+function resetBall(ball) { 
 	ball.position = new BABYLON.Vector3(-7, 300.8, -72.5);
 	ballSpeed = 0.35;
 	ballDirection = {
@@ -70,67 +66,56 @@ let ballDirection =
 	z: 1
 };
 
-let iscreateBall = false;
 
-// let { player_1, player_2 } = getPlayerRef();
-
-
-export function MoveBall(scene, player_1, player_2) {
-	if (!iscreateBall) {
-		createBall(scene);
-		iscreateBall = true;
-		console.log("Ball created");
-		return;
-	}
+export function MoveBall(player_1, player_2, ball) {
 
 	if (!ball)
 	{
+		console.error('Ball is not created yet');
 		return;
 	}
 
 	if (!player_1 || !player_2) {
-		// Players are not created yet, so we return early
 		console.error('Players are not created yet');
 		return;
 	}
 
+	console.log("Ball moving");
+	console.log(ball.position);
+	if (ball)
+	{
+		console.log("Ball existe");
+	}
 	const BALL_RADIUS = 1.5;
 
-	// Déplacer la balle
 	ball.position.x += ballDirection.x * ballSpeed;
 	ball.position.z += ballDirection.z * ballSpeed;
 
-	// Rotation de la balle
 	ball.rotate(BABYLON.Axis.X, 0.1 * ballSpeed);
 	ball.rotate(BABYLON.Axis.Z, 0.1 * ballDirection.x * ballSpeed);
 
-	// Collision avec le bord inférieur
 	if (ball.position.z <= FIELD_BOTTOM + BALL_RADIUS) {
 		ball.position.z = FIELD_BOTTOM + BALL_RADIUS;
-		resetBall();
+		resetBall(ball);
 		updateScore('right');
 	}
 
-	// Collision avec le bord supérieur
 	if (ball.position.z >= FIELD_TOP - BALL_RADIUS) {
 		ball.position.z = FIELD_TOP - BALL_RADIUS;
-		resetBall();
+		resetBall(ball);
 		updateScore('left');
 	}
 
-	// Collision avec le bord gauche
 	if (ball.position.x <= FIELD_LEFT + BALL_RADIUS) {
 		ball.position.x = FIELD_LEFT + BALL_RADIUS;
 		ballDirection.x *= -1;
 	}
 
-	// Collision avec le bord droit
 	if (ball.position.x >= FIELD_RIGHT - BALL_RADIUS) {
 		ball.position.x = FIELD_RIGHT - BALL_RADIUS;
 		ballDirection.x *= -1;
 	}
 
-	// Collision avec le joueur 1
 	if (ball.position.x + BALL_RADIUS >= player_1.position.x - PADDLE_WIDTH / 2 &&
 		ball.position.x - BALL_RADIUS <= player_1.position.x + PADDLE_WIDTH / 2 &&
 		ball.position.z + BALL_RADIUS >= player_1.position.z - PADDLE_HEIGHT / 2 &&
@@ -140,7 +125,6 @@ export function MoveBall(scene, player_1, player_2) {
 		ballSpeed += 0.05;
 	}
 
-	// Collision avec le joueur 2
 	if (ball.position.x + BALL_RADIUS >= player_2.position.x - PADDLE_WIDTH / 2 &&
 		ball.position.x - BALL_RADIUS <= player_2.position.x + PADDLE_WIDTH / 2 &&
 		ball.position.z + BALL_RADIUS >= player_2.position.z - PADDLE_HEIGHT / 2 &&
@@ -151,3 +135,82 @@ export function MoveBall(scene, player_1, player_2) {
 	}
 }
 
+export function MoveBall2v2(player_1, player_2, player_3, player_4, ball) {
+	
+	if (!ball)
+	{
+		console.error('Ball is not created yet');
+		return;
+	}
+
+	if (!player_1 || !player_2 || !player_3 || !player_4) {
+		console.error('Players are not created yet');
+		return;
+	}
+
+	const BALL_RADIUS = 1.5;
+
+	ball.position.x += ballDirection.x * ballSpeed;
+	ball.position.z += ballDirection.z * ballSpeed;
+
+	ball.rotate(BABYLON.Axis.X, 0.1 * ballSpeed);
+	ball.rotate(BABYLON.Axis.Z, 0.1 * ballDirection.x * ballSpeed);
+
+	if (ball.position.z <= FIELD_BOTTOM + BALL_RADIUS) {
+		ball.position.z = FIELD_BOTTOM + BALL_RADIUS;
+		resetBall(ball);
+		updateScore('right');
+	}
+
+	if (ball.position.z >= FIELD_TOP - BALL_RADIUS) {
+		ball.position.z = FIELD_TOP - BALL_RADIUS;
+		resetBall(ball);
+		updateScore('left');
+	}
+
+	if (ball.position.x <= FIELD_LEFT + BALL_RADIUS) {
+		ball.position.x = FIELD_LEFT + BALL_RADIUS;
+		ballDirection.x *= -1;
+	}
+
+	if (ball.position.x >= FIELD_RIGHT - BALL_RADIUS) {
+		ball.position.x = FIELD_RIGHT - BALL_RADIUS;
+		ballDirection.x *= -1;
+	}
+
+	if (ball.position.x + BALL_RADIUS >= player_1.position.x - PADDLE_WIDTH / 2 &&
+		ball.position.x - BALL_RADIUS <= player_1.position.x + PADDLE_WIDTH / 2 &&
+		ball.position.z + BALL_RADIUS >= player_1.position.z - PADDLE_HEIGHT / 2 &&
+		ball.position.z - BALL_RADIUS <= player_1.position.z + PADDLE_HEIGHT / 2) {
+		const relativeImpact = (ball.position.z - player_1.position.z) / (PADDLE_HEIGHT / 2);
+		ballDirection.z = relativeImpact * 1;
+		ballSpeed += 0.05;
+	}
+
+	if (ball.position.x + BALL_RADIUS >= player_2.position.x - PADDLE_WIDTH / 2 &&
+		ball.position.x - BALL_RADIUS <= player_2.position.x + PADDLE_WIDTH / 2 &&
+		ball.position.z + BALL_RADIUS >= player_2.position.z - PADDLE_HEIGHT / 2 &&
+		ball.position.z - BALL_RADIUS <= player_2.position.z + PADDLE_HEIGHT / 2) {
+		const relativeImpact = (ball.position.z - player_2.position.z) / (PADDLE_HEIGHT / 2);
+		ballDirection.z = relativeImpact * 1;
+		ballSpeed += 0.05;
+	}
+
+	if (ball.position.x + BALL_RADIUS >= player_3.position.x - PADDLE_WIDTH / 2 &&
+		ball.position.x - BALL_RADIUS <= player_3.position.x + PADDLE_WIDTH / 2 &&
+		ball.position.z + BALL_RADIUS >= player_3.position.z - PADDLE_HEIGHT / 2 &&
+		ball.position.z - BALL_RADIUS <= player_3.position.z + PADDLE_HEIGHT / 2) {
+		const relativeImpact = (ball.position.z - player_3.position.z) / (PADDLE_HEIGHT / 2);
+		ballDirection.z = relativeImpact * 1;
+		ballSpeed += 0.05;
+	}
+
+	if (ball.position.x + BALL_RADIUS >= player_4.position.x - PADDLE_WIDTH / 2 &&
+		ball.position.x - BALL_RADIUS <= player_4.position.x + PADDLE_WIDTH / 2 &&
+		ball.position.z + BALL_RADIUS >= player_4.position.z - PADDLE_HEIGHT / 2 &&
+		ball.position.z - BALL_RADIUS <= player_4.position.z + PADDLE_HEIGHT / 2) {
+		const relativeImpact = (ball.position.z - player_4.position.z) / (PADDLE_HEIGHT / 2);
+		ballDirection.z = relativeImpact * 1;
+		ballSpeed += 0.05;
+	}
+}

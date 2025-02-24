@@ -18,8 +18,8 @@ const views = {
         rotation: new BABYLON.Vector3(0.04110218558828448, -1.5940112517089828, 0)
     },
 	vue4: {
-		position: new BABYLON.Vector3(107.45137114956808, 350.16014619598326, -71.0351214961887),
-		rotation: new BABYLON.Vector3(0.3689776126123451, -1.5805112517089825, 0)
+		position: new BABYLON.Vector3(86.16210646582958, 341.93369480348, -72.48687267164757),
+		rotation: new BABYLON.Vector3(0.27001610997509906, -1.572511251708983, 0)
 	},
     aerienne: {
         position: new BABYLON.Vector3(0, 100, 0),
