@@ -1,4 +1,6 @@
 import { createLoadingOverlay, removeLoadingOverlay } from './loading_screen.js';
+import { destroy_environement_view1, destroy_environement_view2, create_environment_view1, create_environment_view2 } from '../init_game.js';
+
 
 const views = {
     default: {
@@ -92,6 +94,8 @@ export function changeView(viewName, force = false) {
 
 export function handleViewTransitions(viewName, previousView)
 {
+    console.log("je rentre dans handleViewTransitions");
+    console.log(viewName, previousView);
 	if (isLoading)
 		return;
     if (!previousView)
@@ -104,26 +108,30 @@ export function handleViewTransitions(viewName, previousView)
 		{
 			window.currentView = 'vue1';
 			createLoadingOverlay();
+            destroy_environement_view1(scene);
 		}, 1500);
 		setTimeout(() =>
 		{
+            create_environment_view2(scene);
 			changeView('vue2', true);
 		}, 3500);
 		setTimeout(() => removeLoadingOverlay(), 5000);
+        
 	}
 	if (viewName === 'vue3' && previousView === 'vue2')
 	{
 		createLoadingOverlay();
+        destroy_environement_view2(scene);
 		setTimeout(() =>
 		{
 			changeView('vue3', true);
 			window.currentView = 'vue3';
-		}, 1500);
+		}, 3500);
 		setTimeout(() => 
 		{
 			removeLoadingOverlay();
 			changeView('vue4', true);
-		}, 3500);
+		}, 5500);
 	}
     if (viewName === 'vue2' && previousView === 'vue4') {
         isLoading = true;
@@ -132,6 +140,7 @@ export function handleViewTransitions(viewName, previousView)
             createLoadingOverlay();
         }, 1500);
         setTimeout(() => {
+            create_environment_view2(scene);
             changeView('vue2', true);
             window.currentView = 'vue2'; 
         }, 3500);

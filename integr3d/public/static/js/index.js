@@ -2,6 +2,7 @@ import Home from "./views/Home.js";
 import jouer from "./views/jouer.js";
 import settings from "./views/settings.js";
 import Game_menu from "./views/Game_menu.js";
+import solo_game_1v1 from "./views/solo_game_1v1.js";
 
 
 const navigateTo = (url) => {
@@ -15,9 +16,7 @@ const router = async () => {
 		{ path: "/jouer", view: jouer },
 		{ path: "/settings", view: settings },
 		{ path: "/Game_menu", view: Game_menu },
-		// { path: "/solo_game_1v1", view: SoloGame1v1 },  // Ajoutez cette route
-		// { path: "/solo_game_ai", view: SoloGameAI },    // Ajoutez cette route
-		// { path: "/multiplayer_2v2", view: Multiplayer2v2 }  // Ajoutez cette route
+		{ path: "/solo_game_1v1", view: solo_game_1v1 },
 	];
 
 	const potentialMatches = routes.map((route) => {
@@ -44,6 +43,14 @@ const router = async () => {
         view.initEvents();
     }
 
+	if (typeof view.init_solo_game === 'function') {
+		view.init_solo_game();
+	}
+
+	if (typeof view.Back_to_Menu === 'function') {
+		view.Back_to_Menu();
+	}
+
 };
 
 window.addEventListener("popstate", router);
@@ -58,16 +65,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
     router();
 });
-
-// document.addEventListener("DOMContentLoaded", () => {
-//     document.body.addEventListener("click", (e) => {
-//         if (e.target.matches("[data-link]")) {
-//             e.preventDefault();
-//             navigateTo(e.target.getAttribute("data-link"));  // Utilisez getAttribute au lieu de href
-//         }
-//     });
-
-//     router();
-// });
-
 

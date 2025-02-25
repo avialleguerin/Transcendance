@@ -1,6 +1,7 @@
 import AbstractView from "./AbstractView.js";
 import { startGame } from "../../../srcs/game/gameplay/babylon.js";
 import { startMultiGame } from "../../../srcs/game/gameplay/babylon.js";
+import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.js";
 
 export default class extends AbstractView {
 	constructor() {
@@ -15,7 +16,9 @@ export default class extends AbstractView {
 			<div class="container">
 				<h1>Game Menu</h1>
 				<div class="button-container">
-					<button id="solo_1v1_btn" class="btn" data-link="/solo_game_1v1">1v1</button>
+					<button id="solo_1v1_btn" class="btn" data-link="/solo_game_1v1">
+						<a href="/solo_game_1v1" class="nav-link" data-link>1v1</a>
+					</button>
 					<button class="btn" data-link="/solo_game_ai">mav vs qi</button>
 					<button id="multiplayer_btn" class="btn" data-link="/multiplayer_2v2">2v2</button>
 				</div>
@@ -23,14 +26,18 @@ export default class extends AbstractView {
 		`;
 	}
 
-	initEvents() {
+	init_solo_game() {
 		document.getElementById("solo_1v1_btn").addEventListener("click", () => {
+			console.log("Solo 1v1 game started");
+			handleViewTransitions("vue3", "vue2");
 			startGame();
 		});
 	}
 
 	initEvents() {
 		document.getElementById("multiplayer_btn").addEventListener("click", () => {
+			console.log("Multiplayer 2v2 game started");
+			handleViewTransitions("vue3", "vue2");
 			startMultiGame();
 		});
 	}

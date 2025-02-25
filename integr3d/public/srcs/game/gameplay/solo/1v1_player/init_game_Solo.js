@@ -1,16 +1,19 @@
-import { create_environment_view3, create_game } from "../../init_game.js";
-import { init_players } from "../../player.js";
-import { loadScoreModel } from "../../score.js";
-import { createBall } from "../../ball.js";
+import { create_environment_view3, create_game , destroy_environement_view3, destroy_game} from "../../init_game.js";
+import { init_players, destroy_players } from "../../player.js";
+import { loadScoreModel, destroy_score } from "../../score.js";
+import { createBall, destroy_ball } from "../../ball.js";
 
 let gameStart = false;
+let ball = null;
+let player_1, player_2;
 
 export async function init_game_solo(scene) {
     create_environment_view3(scene);
     create_game(scene);
-    let { player_1, player_2 } = init_players(scene);
     
-    let ball = await createBall(scene).catch(error => {
+    ({ player_1, player_2 } = init_players(scene));
+
+    ball = await createBall(scene).catch(error => {
         console.error(error);
         return null;
     });
@@ -28,4 +31,13 @@ export async function init_game_solo(scene) {
 export function start_game_solo(scene)
 {
 	gameStart = true;
+}
+
+export async function destroy_game_solo(scene)
+{
+    destroy_players(scene, player_1, player_2);
+    destroy_environement_view3(scene);
+    destroy_game(scene);
+    destroy_ball(ball);
+    destroy_score();
 }

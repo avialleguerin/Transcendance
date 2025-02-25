@@ -1,7 +1,7 @@
-import { create_environment_view1, create_environment_view2 } from "./init_game.js";
+import { create_environment_view1, create_environment_view2, destroy_environement_view3} from "./init_game.js";
 import { UpdatePlayerPose} from "./player.js";
 import { MoveBall, MoveBall2v2 } from "./ball.js";
-import { init_game_solo , start_game_solo } from "./solo/1v1_player/init_game_Solo.js";
+import { init_game_solo , start_game_solo , destroy_game_solo} from "./solo/1v1_player/init_game_Solo.js";
 import { init_game_multiplayer } from "./multiplayer/init_game_2v2.js";
 import { UpdatePLayerPoseMulti } from "./multiplayer/2v2_game/init_players2v2.js";
 
@@ -28,8 +28,8 @@ scene.performancePriority = BABYLON.Scene.PRIORITY_ANTIALIAS;
 
 window.camera = new BABYLON.FreeCamera("camera", new BABYLON.Vector3(7.860370854357264, 4, -55.57231601704761), scene);
 camera.attachControl(canvas, true);
-camera.position = new BABYLON.Vector3(86.16210646582958, 341.93369480348, -72.48687267164757),
-camera.rotation = new BABYLON.Vector3(0.27001610997509906, -1.572511251708983, 0)
+camera.position = new BABYLON.Vector3(-45.79301951065982, 5.879735371044789, -31.342210947081313),
+camera.rotation = new BABYLON.Vector3(-0.029665280069011667, -2.566387085794712, 0)
 camera.minZ = 0.1;
 camera.maxZ = 1000;
 
@@ -57,7 +57,7 @@ ambientLight.intensity = 0.8;
 
 
 create_environment_view1(scene);
-create_environment_view2(scene);
+// create_environment_view2(scene);
 // create_environment_view3(scene);
 
 
@@ -102,6 +102,7 @@ let ball;
 
 export function startGame()
 {
+    console.log("Game started");
     Solo_gameStart = true;
     Multi_gameStart = false;
 }
@@ -127,18 +128,14 @@ window.addEventListener("keyup", (event) => {
     }
 });
 
-let play = false; // Déclarez cette variable en dehors de la boucle
+let play = false;
 
-async function initializeGame_solo_game() {
-    let players = await init_game_solo(scene); // ✅ Attendre l'initialisation du jeu
+async function initializeGame_solo_game() 
+{
+    let players = await init_game_solo(scene);
     player_1 = players.player_1;
     player_2 = players.player_2;
     ball = players.ball;
-    
-    console.log(ball.position);
-    console.log(player_1.position);
-    console.log(player_2.position);
-    console.log("Game initialized");
 }
 
 async function initialize_Multiplayer_game()
@@ -149,36 +146,47 @@ async function initialize_Multiplayer_game()
     player_3 = players.player_3;
     player_4 = players.player_4;
     ball = players.ball;
-    console.log("ball = ", ball.position);
-    console.log("player_1 = ", player_1.position);
-    console.log("player_2 = ", player_2.position);
-    console.log("player_3 = ", player_3.position);
-    console.log("player_4 = ", player_4.position);
+}
+
+export function leave_Game()
+{
+    destroy_game_solo(scene);
+    Solo_gameStart = false;
+    initialized = false;
+    play = false;
+}
+
+async function leave_Multiplayer_Game()
+{
+    destroy_environement_view3(scene);
 }
 
 
-engine.runRenderLoop(() => {
+engine.runRenderLoop(() =>
+{
     const scale = window.devicePixelRatio;
-    if (canvas.width !== canvas.clientWidth * scale || canvas.height !== canvas.clientHeight * scale) {
+    if (canvas.width !== canvas.clientWidth * scale || canvas.height !== canvas.clientHeight * scale)
+    {
         engine.resize(true);
         canvas.width = canvas.clientWidth * scale;
         canvas.height = canvas.clientHeight * scale;
     }
 
-    if (Solo_gameStart) {
-        if (!initialized) {
+    if (Solo_gameStart)
+    {
+        if (!initialized)
+        {
             initializeGame_solo_game();
             initialized = true;
         }
         
-        if (initialized) {
-            // Démarrer le jeu quand l'espace est pressé
-            if (scene.inputStates.space && !play) {
+        if (initialized)
+        {
+            if (scene.inputStates.space && !play)
                 play = true;
-            }
-            
-            // Une fois que play est true, continuer le jeu
-            if (play) {
+
+            if (play)
+            {
                 UpdatePlayerPose(player_1, player_2);
                 MoveBall(player_1, player_2, ball);
             }
@@ -187,16 +195,15 @@ engine.runRenderLoop(() => {
 
     if (Multi_gameStart)
     {
-        if (!initialized) {
+        if (!initialized)
+        {
             initialize_Multiplayer_game();
             initialized = true;
         }
         if (initialized)
         {
-            if (scene.inputStates.space && !play) {
-                console.log("space pressed");
+            if (scene.inputStates.space && !play)
                 play = true;
-            }
             if (play)
             {
                 UpdatePLayerPoseMulti(player_1, player_2, player_3, player_4);
@@ -205,7 +212,6 @@ engine.runRenderLoop(() => {
         }
     }
     scene.render();
-    // console.log(camera.position);
 });
 
 

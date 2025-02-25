@@ -43,215 +43,244 @@ function init_border()
 	maxX_player_4 = borderTop.position.x - (borderTop.scaling.x / 2) - 13;
 }
 
-export function init_2v2_Players()
-{
+export function init_2v2_Players() {
 	init_border();
-	const parent_player_1 = new BABYLON.TransformNode("parent", scene);
-
-	const paddle_left_player_1 = new BABYLON.MeshBuilder.CreateBox("paddle_left", {
-		width: 10,
-		height: 1.5,
-		depth: 1.5
-	}, scene);
-
-	paddle_left_player_1.position = new BABYLON.Vector3(-18, 301, -120);
-	paddle_left_player_1.checkPaddleCollision = true;
-	// paddle_left.visibility = 0;
-
-	const paddle_right_player_1 = new BABYLON.MeshBuilder.CreateBox("paddle_right", {
-		width: 10,
-		height: 1.5,
-		depth: 1.5
-	}, scene);
-
-	paddle_right_player_1.position = new BABYLON.Vector3(7, 301, -120);
-	paddle_right_player_1.checkPaddleCollision = true;
-	// paddle_right.visibility = 0;
-
-	paddle_left_player_1.setParent(parent_player_1);
-	paddle_right_player_1.setParent(parent_player_1);
-
-
-	const parent_player_2 = new BABYLON.TransformNode("parent", scene);
-
-	const paddle_left_player_2 = new BABYLON.MeshBuilder.CreateBox("paddle_left", {
-		width: 10,
-		height: 1.5,
-		depth: 1.5
-	}, scene);
-
-	paddle_left_player_2.position = new BABYLON.Vector3(-30, 301, -108);
-	paddle_left_player_2.checkPaddleCollision = true;
-	// paddle_left.visibility = 0;
-
-	const paddle_right_player_2 = new BABYLON.MeshBuilder.CreateBox("paddle_right", {
-		width: 10,
-		height: 1.5,
-		depth: 1.5
-	}, scene);
-
-	paddle_right_player_2.position = new BABYLON.Vector3(-5, 301, -108);
-	paddle_right_player_2.checkPaddleCollision = true;
-
-	paddle_left_player_2.setParent(parent_player_2);
-	paddle_right_player_2.setParent(parent_player_2);
-
-	const parent_player_3 = new BABYLON.TransformNode("parent", scene);
-
-	const paddle_left_player_3 = new BABYLON.MeshBuilder.CreateBox("paddle_left", {
-		width: 10,
-		height: 1.5,
-		depth: 1.5
-	}, scene);
-
-	paddle_left_player_3.position = new BABYLON.Vector3(-30, 301, -36);
-	paddle_left_player_3.checkPaddleCollision = true;
-
-	const paddle_right_player_3 = new BABYLON.MeshBuilder.CreateBox("paddle_right", {
-		width: 10,
-		height: 1.5,
-		depth: 1.5
-	}, scene);
-
-	paddle_right_player_3.position = new BABYLON.Vector3(-5, 301, -36);
-	paddle_right_player_3.checkPaddleCollision = true;
-
-	paddle_left_player_3.setParent(parent_player_3);
-	paddle_right_player_3.setParent(parent_player_3);
-
-	const parent_player_4 = new BABYLON.TransformNode("parent", scene);
 	
+	// Créer les TransformNodes parents
+	const parent_player_1 = new BABYLON.TransformNode("parent_player_1", scene);
+	const parent_player_2 = new BABYLON.TransformNode("parent_player_2", scene);
+	const parent_player_3 = new BABYLON.TransformNode("parent_player_3", scene);
+	const parent_player_4 = new BABYLON.TransformNode("parent_player_4", scene);
 
-	const paddle_left_player_4 = new BABYLON.MeshBuilder.CreateBox("paddle_left", {
-		width: 10,
-		height: 1.5,
-		depth: 1.5
-	}, scene);
+	// Joueur 1
+	const paddle_left_player_1 = createPaddle("paddle_left_player_1", new BABYLON.Vector3(-18, 301, -120), parent_player_1);
+	const paddle_right_player_1 = createPaddle("paddle_right_player_1", new BABYLON.Vector3(7, 301, -120), parent_player_1);
 
-	paddle_left_player_4.position = new BABYLON.Vector3(-18, 301, -24);
-	paddle_left_player_4.checkPaddleCollision = true;
+	// Joueur 2
+	const paddle_left_player_2 = createPaddle("paddle_left_player_2", new BABYLON.Vector3(-30, 301, -108), parent_player_2);
+	const paddle_right_player_2 = createPaddle("paddle_right_player_2", new BABYLON.Vector3(-5, 301, -108), parent_player_2);
 
-	const paddle_right_player_4 = new BABYLON.MeshBuilder.CreateBox("paddle_right", {
-		width: 10,
-		height: 1.5,
-		depth: 1.5
-	}, scene);
+	// Joueur 3
+	const paddle_left_player_3 = createPaddle("paddle_left_player_3", new BABYLON.Vector3(-30, 301, -36), parent_player_3);
+	const paddle_right_player_3 = createPaddle("paddle_right_player_3", new BABYLON.Vector3(-5, 301, -36), parent_player_3);
 
-	paddle_right_player_4.position = new BABYLON.Vector3(7, 301, -24);
-	paddle_right_player_4.checkPaddleCollision = true;
+	// Joueur 4
+	const paddle_left_player_4 = createPaddle("paddle_left_player_4", new BABYLON.Vector3(-18, 301, -24), parent_player_4);
+	const paddle_right_player_4 = createPaddle("paddle_right_player_4", new BABYLON.Vector3(7, 301, -24), parent_player_4);
 
-	paddle_left_player_4.setParent(parent_player_4);
-	paddle_right_player_4.setParent(parent_player_4);
-
+	// Stocker les paddles directement dans les objets parents pour un accès facile
+	parent_player_1.leftPaddle = paddle_left_player_1;
+	parent_player_1.rightPaddle = paddle_right_player_1;
+	
+	parent_player_2.leftPaddle = paddle_left_player_2;
+	parent_player_2.rightPaddle = paddle_right_player_2;
+	
+	parent_player_3.leftPaddle = paddle_left_player_3;
+	parent_player_3.rightPaddle = paddle_right_player_3;
+	
+	parent_player_4.leftPaddle = paddle_left_player_4;
+	parent_player_4.rightPaddle = paddle_right_player_4;
 
 	return [parent_player_1, parent_player_2, parent_player_3, parent_player_4];
 }
 
-// export function init_2v2_Players() {
-//     init_border();
+// Fonction utilitaire pour créer un paddle
+function createPaddle(name, position, parent) {
+	const paddle = new BABYLON.MeshBuilder.CreateBox(name, {
+		width: 10,
+		height: 1.5,
+		depth: 1.5
+	}, scene);
+	
+	paddle.position = position;
+	paddle.checkPaddleCollision = true;
+	paddle.visibility = 0;
+	paddle.setParent(parent);
+	console.log("parent === ", parent.name);
 
-//     // Player 1
-//     const parent_player_1 = new BABYLON.TransformNode("parent", scene);
-//     parent_player_1.position = new BABYLON.Vector3(-5.5, 301, -120);
+	if (parent.name === "parent_player_1")
+	{
+		console.log("JE SUIS LA ");
+		BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/player/", "PlayerIdleAnnimation.glb", scene, function (newMeshes) {
+			const rootMesh = newMeshes.find(mesh => mesh.name === "__root__"); 
+			if (rootMesh) {
+				// Positionner initialement le modèle
+				rootMesh.position = paddle.getAbsolutePosition().clone();
+				rootMesh.scaling = new BABYLON.Vector3(6, 6, 6);
+				rootMesh.rotationQuaternion = BABYLON.Quaternion.FromEulerAngles(0, Math.PI, 0);
+			}
 
-//     const paddle_left_player_1 = new BABYLON.MeshBuilder.CreateBox("paddle_left", {
-//         width: 10,
-//         height: 1.5,
-//         depth: 1.5
-//     }, scene);
-//     paddle_left_player_1.position = new BABYLON.Vector3(-12.5, 0, 0); // Position relative
-//     paddle_left_player_1.checkPaddleCollision = true;
+			newMeshes.forEach(mesh => {
+				if (mesh instanceof BABYLON.Mesh) {
+					mesh.rotationQuaternion = null;
+					mesh.rotation = new BABYLON.Vector3(Math.PI, 0, 0);
+				}
+			});
 
-//     const paddle_right_player_1 = new BABYLON.MeshBuilder.CreateBox("paddle_right", {
-//         width: 10,
-//         height: 1.5,
-//         depth: 1.5
-//     }, scene);
-//     paddle_right_player_1.position = new BABYLON.Vector3(12.5, 0, 0); // Position relative
-//     paddle_right_player_1.checkPaddleCollision = true;
+			const playerRepere = new BABYLON.MeshBuilder.CreateBox("playerRepere", {
+				width: 10,
+				height: 0.1,
+				depth: 1
+			}, scene);
 
-//     // Le parent se trouve à une position fixe, mais les paddles sont relatifs
-//     paddle_left_player_1.setParent(parent_player_1);
-//     paddle_right_player_1.setParent(parent_player_1);
+			const paddleAbsolutePosition = paddle.getAbsolutePosition();
+			playerRepere.position = new BABYLON.Vector3(
+				paddleAbsolutePosition.x, 
+				paddleAbsolutePosition.y, 
+				paddleAbsolutePosition.z
+			);
+			playerRepere.material = new BABYLON.StandardMaterial("playerRepereMat", scene);
+			playerRepere.material.emissiveColor = new BABYLON.Color3.Red();
 
-//     // Player 2
-//     const parent_player_2 = new BABYLON.TransformNode("parent", scene);
-//     parent_player_2.position = new BABYLON.Vector3(-17.5, 301, -108);
+			// Synchroniser avec la position ABSOLUE du paddle
+			scene.registerBeforeRender(() => {
+				const paddleAbsPos = paddle.getAbsolutePosition();
+				
+				rootMesh.position.x = paddleAbsPos.x;
+				rootMesh.position.y = paddleAbsPos.y;
+				rootMesh.position.z = paddleAbsPos.z;
+				
+				playerRepere.position.x = paddleAbsPos.x;
+				playerRepere.position.y = paddleAbsPos.y;
+				playerRepere.position.z = paddleAbsPos.z;
+			});
+		});
+	}
 
-//     const paddle_left_player_2 = new BABYLON.MeshBuilder.CreateBox("paddle_left", {
-//         width: 10,
-//         height: 1.5,
-//         depth: 1.5
-//     }, scene);
-//     paddle_left_player_2.position = new BABYLON.Vector3(-12.5, 0, 0); // Position relative
-//     paddle_left_player_2.checkPaddleCollision = true;
+	if (parent.name === "parent_player_2")
+	{
+		console.log("JE SUIS LA ");
+		BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/player/", "PlayerIdleAnnimation.glb", scene, function (newMeshes) {
+			const rootMesh = newMeshes.find(mesh => mesh.name === "__root__"); 
+			if (rootMesh) {
+				// Positionner initialement le modèle
+				rootMesh.position = paddle.getAbsolutePosition().clone();
+				rootMesh.scaling = new BABYLON.Vector3(6, 6, 6);
+				rootMesh.rotationQuaternion = BABYLON.Quaternion.FromEulerAngles(0, Math.PI, 0);
+			}
 
-//     const paddle_right_player_2 = new BABYLON.MeshBuilder.CreateBox("paddle_right", {
-//         width: 10,
-//         height: 1.5,
-//         depth: 1.5
-//     }, scene);
-//     paddle_right_player_2.position = new BABYLON.Vector3(12.5, 0, 0); // Position relative
-//     paddle_right_player_2.checkPaddleCollision = true;
+			newMeshes.forEach(mesh => {
+				if (mesh instanceof BABYLON.Mesh) {
+					mesh.rotationQuaternion = null;
+					mesh.rotation = new BABYLON.Vector3(Math.PI, 0, 0);
+				}
+			});
 
-//     paddle_left_player_2.setParent(parent_player_2);
-//     paddle_right_player_2.setParent(parent_player_2);
+			const playerRepere = new BABYLON.MeshBuilder.CreateBox("playerRepere", {
+				width: 10,
+				height: 0.1,
+				depth: 1
+			}, scene);
 
-//     // Player 3
-//     const parent_player_3 = new BABYLON.TransformNode("parent", scene);
-//     parent_player_3.position = new BABYLON.Vector3(-17.5, 301, -36);
+			const paddleAbsolutePosition = paddle.getAbsolutePosition();
+			playerRepere.position = new BABYLON.Vector3(
+				paddleAbsolutePosition.x, 
+				paddleAbsolutePosition.y, 
+				paddleAbsolutePosition.z
+			);
+			playerRepere.material = new BABYLON.StandardMaterial("playerRepereMat", scene);
+			playerRepere.material.emissiveColor = new BABYLON.Color3.Red();
 
-//     const paddle_left_player_3 = new BABYLON.MeshBuilder.CreateBox("paddle_left", {
-//         width: 10,
-//         height: 1.5,
-//         depth: 1.5
-//     }, scene);
-//     paddle_left_player_3.position = new BABYLON.Vector3(-12.5, 0, 0); // Position relative
-//     paddle_left_player_3.checkPaddleCollision = true;
+			// Synchroniser avec la position ABSOLUE du paddle
+			scene.registerBeforeRender(() => {
+				const paddleAbsPos = paddle.getAbsolutePosition();
+				
+				rootMesh.position.x = paddleAbsPos.x;
+				rootMesh.position.y = paddleAbsPos.y;
+				rootMesh.position.z = paddleAbsPos.z;
+				
+				playerRepere.position.x = paddleAbsPos.x;
+				playerRepere.position.y = paddleAbsPos.y;
+				playerRepere.position.z = paddleAbsPos.z;
+			});
+		});
+	}
 
-//     const paddle_right_player_3 = new BABYLON.MeshBuilder.CreateBox("paddle_right", {
-//         width: 10,
-//         height: 1.5,
-//         depth: 1.5
-//     }, scene);
-//     paddle_right_player_3.position = new BABYLON.Vector3(12.5, 0, 0); // Position relative
-//     paddle_right_player_3.checkPaddleCollision = true;
+	if (parent.name === "parent_player_3")
+	{
+		console.log("JE SUIS LA ");
+		BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/player/", "PlayerIdleAnnimation.glb", scene, function (newMeshes) {
+			const rootMesh = newMeshes.find(mesh => mesh.name === "__root__"); 
+			if (rootMesh) {
+				// Positionner initialement le modèle
+				rootMesh.position = paddle.getAbsolutePosition().clone();
+				rootMesh.scaling = new BABYLON.Vector3(6, 6, 6);
+				rootMesh.rotationQuaternion = BABYLON.Quaternion.FromEulerAngles(0, Math.PI, 0);
+			}
 
-//     paddle_left_player_3.setParent(parent_player_3);
-//     paddle_right_player_3.setParent(parent_player_3);
+			const playerRepere = new BABYLON.MeshBuilder.CreateBox("playerRepere", {
+				width: 10,
+				height: 0.1,
+				depth: 1
+			}, scene);
 
-//     // Player 4
-//     const parent_player_4 = new BABYLON.TransformNode("parent", scene);
-//     parent_player_4.position = new BABYLON.Vector3(-5.5, 301, -24);
+			const paddleAbsolutePosition = paddle.getAbsolutePosition();
+			playerRepere.position = new BABYLON.Vector3(
+				paddleAbsolutePosition.x, 
+				paddleAbsolutePosition.y, 
+				paddleAbsolutePosition.z
+			);
+			playerRepere.material = new BABYLON.StandardMaterial("playerRepereMat", scene);
+			playerRepere.material.emissiveColor = new BABYLON.Color3.Red();
 
-//     const paddle_left_player_4 = new BABYLON.MeshBuilder.CreateBox("paddle_left", {
-//         width: 10,
-//         height: 1.5,
-//         depth: 1.5
-//     }, scene);
-//     paddle_left_player_4.position = new BABYLON.Vector3(-12.5, 0, 0); // Position relative
-//     paddle_left_player_4.checkPaddleCollision = true;
+			// Synchroniser avec la position ABSOLUE du paddle
+			scene.registerBeforeRender(() => {
+				const paddleAbsPos = paddle.getAbsolutePosition();
+				
+				rootMesh.position.x = paddleAbsPos.x;
+				rootMesh.position.y = paddleAbsPos.y;
+				rootMesh.position.z = paddleAbsPos.z;
+				
+				playerRepere.position.x = paddleAbsPos.x;
+				playerRepere.position.y = paddleAbsPos.y;
+				playerRepere.position.z = paddleAbsPos.z;
+			});
+		});
+	}
 
-//     const paddle_right_player_4 = new BABYLON.MeshBuilder.CreateBox("paddle_right", {
-//         width: 10,
-//         height: 1.5,
-//         depth: 1.5
-//     }, scene);
-//     paddle_right_player_4.position = new BABYLON.Vector3(12.5, 0, 0); // Position relative
-//     paddle_right_player_4.checkPaddleCollision = true;
+	if (parent.name === "parent_player_4")
+	{
+		console.log("JE SUIS LA ");
+		BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/player/", "PlayerIdleAnnimation.glb", scene, function (newMeshes) {
+			const rootMesh = newMeshes.find(mesh => mesh.name === "__root__"); 
+			if (rootMesh) {
+				// Positionner initialement le modèle
+				rootMesh.position = paddle.getAbsolutePosition().clone();
+				rootMesh.scaling = new BABYLON.Vector3(6, 6, 6);
+				rootMesh.rotationQuaternion = BABYLON.Quaternion.FromEulerAngles(0, Math.PI, 0);
+			}
 
-//     paddle_left_player_4.setParent(parent_player_4);
-//     paddle_right_player_4.setParent(parent_player_4);
+			const playerRepere = new BABYLON.MeshBuilder.CreateBox("playerRepere", {
+				width: 10,
+				height: 0.1,
+				depth: 1
+			}, scene);
 
-//     // Debugging: console log to check positions
-//     console.log("Player 1 position:", parent_player_1.position);
-//     console.log("Player 2 position:", parent_player_2.position);
-//     console.log("Player 3 position:", parent_player_3.position);
-//     console.log("Player 4 position:", parent_player_4.position);
+			const paddleAbsolutePosition = paddle.getAbsolutePosition();
+			playerRepere.position = new BABYLON.Vector3(
+				paddleAbsolutePosition.x, 
+				paddleAbsolutePosition.y, 
+				paddleAbsolutePosition.z
+			);
+			playerRepere.material = new BABYLON.StandardMaterial("playerRepereMat", scene);
+			playerRepere.material.emissiveColor = new BABYLON.Color3.Red();
 
-//     return [parent_player_1, parent_player_2, parent_player_3, parent_player_4];
-// }
-
+			// Synchroniser avec la position ABSOLUE du paddle
+			scene.registerBeforeRender(() => {
+				const paddleAbsPos = paddle.getAbsolutePosition();
+				
+				rootMesh.position.x = paddleAbsPos.x;
+				rootMesh.position.y = paddleAbsPos.y;
+				rootMesh.position.z = paddleAbsPos.z;
+				
+				playerRepere.position.x = paddleAbsPos.x;
+				playerRepere.position.y = paddleAbsPos.y;
+				playerRepere.position.z = paddleAbsPos.z;
+			});
+		});
+	}
+	return paddle;
+}
 
 const paddleSpeed = 1.1;
 const keys = {};
@@ -259,8 +288,7 @@ const keys = {};
 addEventListener("keydown", (event) => keys[event.key] = true);
 addEventListener("keyup", (event) => keys[event.key] = false);
 
-export function UpdatePLayerPoseMulti(player_1, player_2, player_3, player_4)
-{
+export function UpdatePLayerPoseMulti(player_1, player_2, player_3, player_4) {
 	if (keys["w"] && player_1.position.x > minX_player_1) {
 		player_1.position.x -= paddleSpeed;
 	}
