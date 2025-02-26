@@ -59,11 +59,11 @@ async function deleteUser(id) {
 window.addEventListener('DOMContentLoaded', fetchUsers);
 
 
-document.getElementById("userForm").addEventListener("submit", async function (event) {
+document.getElementById("addForm").addEventListener("submit", async function (event) {
 	event.preventDefault(); // Empêche le rechargement de la page
 
-	const name = document.getElementById("name").value;
-	const email = document.getElementById("email").value;
+	const name = document.getElementById("add-name").value;
+	const email = document.getElementById("add-email").value;
 	console.log("Name: ", name)
 	console.log("Email: ", email)
 	const response = await fetch("/users/add", {
@@ -73,15 +73,15 @@ document.getElementById("userForm").addEventListener("submit", async function (e
 	});
 
 	const result = await response.json();
-	const resultMessage = document.getElementById("resultMessage");
+	const resultMessage = document.getElementById("add-resultMessage");
 	
 	if (result.success) {
 		resultMessage.textContent = `User added : ${result.name} (${result.email})`;
 		resultMessage.classList.add("text-green-500");
 		
-		// setTimeout(() => {
-		// 	location.reload(); // Rafraîchit la page après 1 seconde
-		// }, 300);
+		setTimeout(() => {
+			location.reload(); // Rafraîchit la page après 1 seconde
+		}, 300);
 	} else {
 		resultMessage.textContent = "Error : " + result.message;
 		resultMessage.classList.add("text-red-500");
@@ -91,26 +91,26 @@ document.getElementById("userForm").addEventListener("submit", async function (e
 document.getElementById("loginForm").addEventListener("submit", async function (event) {
 	event.preventDefault();
 	console.log("Form submitted")
-	const name = document.getElementById("name").value;
-	const email = document.getElementById("email").value;
+	const name = document.getElementById("login-name").value;
+	const email = document.getElementById("login-email").value;
 
 	console.log("Name: ", name)
 	console.log("Email: ", email)
 	const response = await fetch("/users/login", {
-		method: "POST",
+		method: "PUT",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify({ name, email })
 	});
 
 	const result = await response.json();
-	const resultMessage = document.getElementById("resultMessageLogin");
+	const resultMessage = document.getElementById("login-resultMessage");
 	if (result.success) {
 		resultMessage.textContent = `User Connected : ${result.name} (${result.email})`;
 		resultMessage.classList.add("text-green-500");
 		
-		// setTimeout(() => {
-		// 	location.reload();
-		// }, 300);
+		setTimeout(() => {
+			location.reload();
+		}, 300);
 	} else {
 		resultMessage.textContent = "Error : " + result.message;
 		resultMessage.classList.add("text-red-500");

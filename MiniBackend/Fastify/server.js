@@ -59,16 +59,23 @@ export async function loginUser (request, reply) {
 		const stmt = db.prepare(GET_USER_BY_NAME);
 		const user = stmt.get(name, email);
 		if (user){
-			user.connected = true
+			console.log("user updating")
+
+
+
 			const updateStmt = db.prepare(UPDATE_CONNECTION);
-			updateStmt.run(true, user.id);
-			const user = stmt.run(name, email);
+			updateStmt.run(1, user.id);
+
+			const updateUser = stmt.get(name, email);
+			console.log(updateUser.id);
+
 			reply.code(200);
+
 			return reply.send({
-				id: user.id,
-				connected: true,
-				name: user.name,
-				email: user.email,
+				id: updateUser.id,
+				connected: updateUser.connected,
+				name: updateUser.name,
+				email: updateUser.email,
 				success: true
 			})
 		}

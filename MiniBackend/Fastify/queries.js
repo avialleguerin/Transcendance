@@ -21,7 +21,7 @@ export const GET_USER_BY_ID = `
 `;
 
 export const GET_USER_BY_NAME = `
-  SELECT * FROM users WHERE name = ? and email = ?;
+  SELECT * FROM users WHERE name = ? AND email = ?;
 `;
 
 export const UPDATE_CONNECTION = `

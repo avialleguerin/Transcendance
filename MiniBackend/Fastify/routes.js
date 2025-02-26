@@ -34,7 +34,7 @@ export default async function routes (fastify, options) {
 	//   });
 
 	fastify.post('/users/add', insertUser);
-	fastify.post('/users/login', loginUser);
+	fastify.put('/users/login', loginUser);
 	fastify.delete('/users/:id', deleteUsers);
 	fastify.get('/users', selectUsers);
 
