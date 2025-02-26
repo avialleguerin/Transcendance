@@ -1,5 +1,5 @@
 import { join } from 'path';
-import insertUser, {selectUsers, deleteUsers, loginUser} from './server.js';
+import insertUser, {selectUsers, deleteUsers, loginUser, logoutUser, adminUser} from './server.js';
 
 /**
  * Encapsulates the routes
@@ -35,7 +35,9 @@ export default async function routes (fastify, options) {
 
 	fastify.post('/users/add', insertUser);
 	fastify.put('/users/login', loginUser);
-	fastify.delete('/users/:id', deleteUsers);
+	fastify.put('/users/logout/:id', logoutUser);
+	fastify.put('/users/admin/:id', adminUser);
+	fastify.delete('/users/delete/:id', deleteUsers);
 	fastify.get('/users', selectUsers);
 
 	// Route GET pour servir le script admin.js situé dans le dossier "utils"

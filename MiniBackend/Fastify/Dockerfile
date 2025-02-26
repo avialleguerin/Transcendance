@@ -5,6 +5,8 @@ WORKDIR /app
 
 RUN npm i fastify &&\
 	npm i @fastify/static &&\
+	npm i fastify-jwt &&\
+	npm i fastify-cookie &&\
 	npm i better-sqlite3 &&\
 	npm i livereload connect-livereload
 

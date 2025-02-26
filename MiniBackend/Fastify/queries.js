@@ -4,6 +4,7 @@ export const CREATE_USERS_TABLE = `
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
+    admin BOOLEAN DEFAULT FALSE,
     connected BOOLEAN DEFAULT FALSE
   );
 `;
@@ -26,6 +27,10 @@ export const GET_USER_BY_NAME = `
 
 export const UPDATE_CONNECTION = `
   UPDATE users SET connected = ? WHERE id = ?;
+`;
+
+export const UPDATE_ADMIN = `
+  UPDATE users SET admin = ? WHERE id = ?;
 `;
 
 export const DELETE_USER = `
