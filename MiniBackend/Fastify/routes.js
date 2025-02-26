@@ -1,5 +1,5 @@
 import { join } from 'path';
-import insertUser, {selectUsers, deleteUsers} from './server.js';
+import insertUser, {selectUsers, deleteUsers, loginUser} from './server.js';
 
 /**
  * Encapsulates the routes
@@ -34,6 +34,7 @@ export default async function routes (fastify, options) {
 	//   });
 
 	fastify.post('/users/add', insertUser);
+	fastify.post('/users/login', loginUser);
 	fastify.delete('/users/:id', deleteUsers);
 	fastify.get('/users', selectUsers);
 

@@ -17,10 +17,6 @@
 # version: '3.8'    #Depuis Docker Compose v2, l'attribut version n'est plus nécessaire.
 
 services:
-
-
-
-
   # Backend (Fastify + PostgreSQL + Nginx)
   fastify:
     extends:

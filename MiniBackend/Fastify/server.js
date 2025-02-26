@@ -9,11 +9,11 @@ import livereload from "livereload";
 import connectLivereload from "connect-livereload";
 // les autres pages js
 import Routes from "./routes.js"
-import { CREATE_USERS_TABLE, INSERT_USER, GET_ALL_USERS, GET_USER_BY_ID, DELETE_USER } from './queries.js';
+import { CREATE_USERS_TABLE, INSERT_USER, GET_ALL_USERS, GET_USER_BY_ID, GET_USER_BY_NAME, UPDATE_CONNECTION, DELETE_USER } from './queries.js';
 import registerPlugins from './register.js';
 
 const fastify = Fastify({ logger: true })
-const db = new Database('database.sqlite', { verbose: console.log });
+export const db = new Database('database.sqlite', { verbose: console.log });
 const liveReloadServer = livereload.createServer();
 
 // fastify.register(Routes)
@@ -45,6 +45,38 @@ export default async function insertUser (request, reply) {
 		const info = stmt.run(name, email);
 		reply.code(201);
 		return reply.send({ success: true, id: info.lastInsertRowid, name, email });
+	} catch (err) {
+		fastify.log.error(err);
+		reply.code(500);
+		return { error: err.message };
+	}
+}
+
+export async function loginUser (request, reply) {
+	const { name, email } = request.body;
+	try {
+		console.log("login in process")
+		const stmt = db.prepare(GET_USER_BY_NAME);
+		const user = stmt.get(name, email);
+		if (user){
+			user.connected = true
+			const updateStmt = db.prepare(UPDATE_CONNECTION);
+			updateStmt.run(true, user.id);
+			const user = stmt.run(name, email);
+			reply.code(200);
+			return reply.send({
+				id: user.id,
+				connected: true,
+				name: user.name,
+				email: user.email,
+				success: true
+			})
+		}
+		else {
+			// Si l'utilisateur n'existe pas, renvoyer une erreur
+			reply.code(404);
+			return reply.send({ success: false, error: 'User not found' });
+		}
 	} catch (err) {
 		fastify.log.error(err);
 		reply.code(500);
