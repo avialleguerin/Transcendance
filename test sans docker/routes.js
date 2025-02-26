@@ -1,6 +1,6 @@
 import { join } from 'path';
 //commands
-import insertUser, {selectUsers, deleteUsers} from './controllers/userController.js';
+import insertUser, {selectUsers, deleteUsers, loginUser} from './controllers/userController.js';
 
 
 /**
@@ -36,6 +36,7 @@ export default async function routes (fastify, options) {
 	//   });
 
 	fastify.post('/users/add', insertUser);
+	fastify.put('/users/login', loginUser);
 	fastify.delete('/users/:id', deleteUsers);
 	fastify.get('/users', selectUsers);
 

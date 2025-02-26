@@ -2,21 +2,29 @@ version: "3.8"
 
 services:
   fastify:
-    build: .
+    build:
+      context: .
+      dockerfile: Fastify/Dockerfile
     ports:
       - "3000:3000"
-    networks:
-      - transcendence-network
+    restart: always
+    volumes:
+      - ./Fastify:/Fastify
+    # networks:
+    #   - transcendence-network
 
-  # nginx:
-  #   ports:
-  #     - "80:80"
-  #   depends_on:
-  #     - fastify
-  #   networks:
-  #     - transcendence-network
+  nginx:
+    image: nginx:latest # pour ne pas a avoir besoin de Dockerfile
+    ports:
+      - "8080:80" #80:80 necessite des privilege
+    volumes:
+      - ./Nginx/default.conf:/etc/nginx/default.conf:ro # ro mean read-only
+    depends_on:
+      - fastify
+    # networks:
+    #   - transcendence-network
 
 
-networks:
-  transcendence-network:
-     driver: bridge
+# networks:
+#   transcendence-network:
+#      driver: bridge

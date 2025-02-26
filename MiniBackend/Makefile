@@ -41,6 +41,8 @@ up:		build
 	docker run -p 3000:3000 fastify-server
 
 
+
+
 # Venv
 venv:
 	$(RM) .env .envPy

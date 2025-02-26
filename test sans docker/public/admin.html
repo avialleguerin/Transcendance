@@ -19,13 +19,14 @@
 	</header>
 
 	<main class="container mx-auto p-4">
-		<h2 class="text-xl font-semibold mb-4">Liste des Utilisateurs</h2>
+		<h2 class="text-xl font-semibold mb-4">List of Users</h2>
 		<table class="min-w-full bg-white shadow-md rounded">
 			<thead>
 				<tr>
 					<th class="px-4 py-2 border">ID</th>
-					<th class="px-4 py-2 border">Nom</th>
+					<th class="px-4 py-2 border">Name</th>
 					<th class="px-4 py-2 border">Email</th>
+					<th class="px-4 py-2 border">Connected</th>
 					<th class="px-4 py-2 border">Actions</th>
 				</tr>
 			</thead>
@@ -34,56 +35,58 @@
 			</tbody>
 		</table>
 	</main>
+	<div class="flex mx-auto container">
+		
+		<form id="addForm" class="flex-1 max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg">
+			<h2 class="text-2xl font-semibold text-center mb-4">Add User</h2>
+	
+			<div class="mb-4">
+					<label for="name" class="block text-gray-700 font-medium">Name :</label>
+					<input type="text" id="add-name" name="name" placeholder="Name"
+							class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+							required>
+			</div>
+	
+			<div class="mb-4">
+					<label for="email" class="block text-gray-700 font-medium">Email :</label>
+					<input type="email" id="add-email" name="email" placeholder="Email"
+							class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+							required>
+			</div>
+	
+			<button type="submit"
+					class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition">
+					Add
+			</button>
+	
+			<p id="add-resultMessage" class="mt-4 text-center text-sm font-semibold text-gray-700"></p>
+		</form>
 
-	<form id="userForm" class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg">
-		<h2 class="text-2xl font-semibold text-center mb-4">Add User</h2>
+		<form id="loginForm" class="flex-1 max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg">
+			<h2 class="text-2xl font-semibold text-center mb-4">Log In</h2>
+	
+			<div class="mb-4">
+					<label for="name" class="block text-gray-700 font-medium">Name :</label>
+					<input type="text" id="login-name" name="name" placeholder="Name" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+			</div>
+	
+			<div class="mb-4">
+					<label for="email" class="block text-gray-700 font-medium">Email :</label>
+					<input type="email" id="login-email" name="email" placeholder="Email" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+			</div>
+	
+			<button type="submit"
+					class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition">
+					Log In
+			</button>
+	
+			<p id="login-resultMessage" class="mt-4 text-center text-sm font-semibold text-gray-700"></p>
+		</form>
+		
+		
+	</div>
 
-		<div class="mb-4">
-				<label for="name" class="block text-gray-700 font-medium">Name :</label>
-				<input type="text" id="name" name="name" placeholder="Name"
-						class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-						required>
-		</div>
 
-		<div class="mb-4">
-				<label for="email" class="block text-gray-700 font-medium">Email :</label>
-				<input type="email" id="email" name="email" placeholder="Email"
-						class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-						required>
-		</div>
-
-		<button type="submit"
-				class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition">
-				Add
-		</button>
-
-		<p id="resultMessage" class="mt-4 text-center text-sm font-semibold text-gray-700"></p>
-	</form>
-
-	<form id="userForm" class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg">
-		<h2 class="text-2xl font-semibold text-center mb-4">Sign In</h2>
-
-		<div class="mb-4">
-				<label for="name" class="block text-gray-700 font-medium">Name :</label>
-				<input type="text" id="name" name="name" placeholder="Name"
-						class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-						required>
-		</div>
-
-		<div class="mb-4">
-				<label for="email" class="block text-gray-700 font-medium">Email :</label>
-				<input type="email" id="email" name="email" placeholder="Email"
-						class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-						required>
-		</div>
-
-		<button type="submit"
-				class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition">
-				Sign In
-		</button>
-
-		<p id="resultMessage" class="mt-4 text-center text-sm font-semibold text-gray-700"></p>
-	</form>
 
 	 <!-- Inclusion des scripts externe -->
 	<script src="../utils/script.js"></script>
