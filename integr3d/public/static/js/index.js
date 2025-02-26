@@ -1,8 +1,9 @@
-import Home from "./views/Home.js";
+// import Home from "./views/Home.js";
 import jouer from "./views/jouer.js";
 import settings from "./views/settings.js";
 import Game_menu from "./views/Game_menu.js";
 import solo_game_1v1 from "./views/solo_game_1v1.js";
+import duo_game from "./views/duo_game.js";
 
 
 const navigateTo = (url) => {
@@ -12,11 +13,12 @@ const navigateTo = (url) => {
 
 const router = async () => {
 	const routes = [
-		{ path: "/", view: Home },
+		{ path: "/", view: Game_menu },
 		{ path: "/jouer", view: jouer },
 		{ path: "/settings", view: settings },
 		{ path: "/Game_menu", view: Game_menu },
 		{ path: "/solo_game_1v1", view: solo_game_1v1 },
+		{ path: "/duo_game", view: duo_game },
 	];
 
 	const potentialMatches = routes.map((route) => {
@@ -49,6 +51,10 @@ const router = async () => {
 
 	if (typeof view.Back_to_Menu === 'function') {
 		view.Back_to_Menu();
+	}
+
+	if (typeof view.Back_to_Menu_duo === 'function') {
+		view.Back_to_Menu_duo();
 	}
 
 };

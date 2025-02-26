@@ -1,6 +1,6 @@
 import AbstractView from "./AbstractView.js";
 import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.js";
-import { leave_Game } from "../../../srcs/game/gameplay/babylon.js";
+import { leave_Multiplayer_Game } from "../../../srcs/game/gameplay/babylon.js";
 
 export default class extends AbstractView {
 	constructor() {
@@ -23,12 +23,12 @@ export default class extends AbstractView {
 		`;
 	}
 
-	Back_to_Menu() {
+	Back_to_Menu_duo() {
 		document.getElementById("back_button").addEventListener("click", () => {
 			console.log("Back to menu");
 			handleViewTransitions("vue2", "vue4");
 			setTimeout(() => {
-				leave_Game();
+				leave_Multiplayer_Game();
 			} , 1500);
 		});
 	}

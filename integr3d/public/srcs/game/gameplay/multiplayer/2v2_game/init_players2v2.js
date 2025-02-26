@@ -49,8 +49,13 @@ export function init_2v2_Players() {
 	// Créer les TransformNodes parents
 	const parent_player_1 = new BABYLON.TransformNode("parent_player_1", scene);
 	const parent_player_2 = new BABYLON.TransformNode("parent_player_2", scene);
+	
 	const parent_player_3 = new BABYLON.TransformNode("parent_player_3", scene);
 	const parent_player_4 = new BABYLON.TransformNode("parent_player_4", scene);
+	parent_player_1.metadata = { isPlayer_parent: true };
+	parent_player_2.metadata = { isPlayer_parent: true };
+	parent_player_3.metadata = { isPlayer_parent: true };
+	parent_player_4.metadata = { isPlayer_parent: true };
 
 	// Joueur 1
 	const paddle_left_player_1 = createPaddle("paddle_left_player_1", new BABYLON.Vector3(-18, 301, -120), parent_player_1);
@@ -81,6 +86,15 @@ export function init_2v2_Players() {
 	parent_player_4.leftPaddle = paddle_left_player_4;
 	parent_player_4.rightPaddle = paddle_right_player_4;
 
+	paddle_left_player_1.metadata = { isPlayer_paddle: true };
+	paddle_right_player_1.metadata = { isPlayer_paddle: true };
+	paddle_left_player_2.metadata = { isPlayer_paddle: true };
+	paddle_right_player_2.metadata = { isPlayer_paddle: true };
+	paddle_left_player_3.metadata = { isPlayer_paddle: true };
+	paddle_right_player_3.metadata = { isPlayer_paddle: true };
+	paddle_left_player_4.metadata = { isPlayer_paddle: true };
+	paddle_right_player_4.metadata = { isPlayer_paddle: true };
+
 	return [parent_player_1, parent_player_2, parent_player_3, parent_player_4];
 }
 
@@ -94,7 +108,7 @@ function createPaddle(name, position, parent) {
 	
 	paddle.position = position;
 	paddle.checkPaddleCollision = true;
-	paddle.visibility = 0;
+	// paddle.visibility = 0;
 	paddle.setParent(parent);
 	console.log("parent === ", parent.name);
 
@@ -108,12 +122,14 @@ function createPaddle(name, position, parent) {
 				rootMesh.position = paddle.getAbsolutePosition().clone();
 				rootMesh.scaling = new BABYLON.Vector3(6, 6, 6);
 				rootMesh.rotationQuaternion = BABYLON.Quaternion.FromEulerAngles(0, Math.PI, 0);
+				rootMesh.metadata = { isPlayer: true };
 			}
 
 			newMeshes.forEach(mesh => {
 				if (mesh instanceof BABYLON.Mesh) {
 					mesh.rotationQuaternion = null;
 					mesh.rotation = new BABYLON.Vector3(Math.PI, 0, 0);
+					mesh.metadata = { isPlayer: true };
 				}
 			});
 
@@ -131,6 +147,7 @@ function createPaddle(name, position, parent) {
 			);
 			playerRepere.material = new BABYLON.StandardMaterial("playerRepereMat", scene);
 			playerRepere.material.emissiveColor = new BABYLON.Color3.Red();
+			playerRepere.metadata = { isPlayerRepere: true };
 
 			// Synchroniser avec la position ABSOLUE du paddle
 			scene.registerBeforeRender(() => {
@@ -157,12 +174,14 @@ function createPaddle(name, position, parent) {
 				rootMesh.position = paddle.getAbsolutePosition().clone();
 				rootMesh.scaling = new BABYLON.Vector3(6, 6, 6);
 				rootMesh.rotationQuaternion = BABYLON.Quaternion.FromEulerAngles(0, Math.PI, 0);
+				rootMesh.metadata = { isPlayer: true };
 			}
 
 			newMeshes.forEach(mesh => {
 				if (mesh instanceof BABYLON.Mesh) {
 					mesh.rotationQuaternion = null;
 					mesh.rotation = new BABYLON.Vector3(Math.PI, 0, 0);
+					mesh.metadata = { isPlayer: true };
 				}
 			});
 
@@ -180,6 +199,7 @@ function createPaddle(name, position, parent) {
 			);
 			playerRepere.material = new BABYLON.StandardMaterial("playerRepereMat", scene);
 			playerRepere.material.emissiveColor = new BABYLON.Color3.Red();
+			playerRepere.metadata = { isPlayerRepere: true };
 
 			// Synchroniser avec la position ABSOLUE du paddle
 			scene.registerBeforeRender(() => {
@@ -206,6 +226,7 @@ function createPaddle(name, position, parent) {
 				rootMesh.position = paddle.getAbsolutePosition().clone();
 				rootMesh.scaling = new BABYLON.Vector3(6, 6, 6);
 				rootMesh.rotationQuaternion = BABYLON.Quaternion.FromEulerAngles(0, Math.PI, 0);
+				rootMesh.metadata = { isPlayer: true };
 			}
 
 			const playerRepere = new BABYLON.MeshBuilder.CreateBox("playerRepere", {
@@ -222,6 +243,7 @@ function createPaddle(name, position, parent) {
 			);
 			playerRepere.material = new BABYLON.StandardMaterial("playerRepereMat", scene);
 			playerRepere.material.emissiveColor = new BABYLON.Color3.Red();
+			playerRepere.metadata = { isPlayerRepere: true };
 
 			// Synchroniser avec la position ABSOLUE du paddle
 			scene.registerBeforeRender(() => {
@@ -248,6 +270,7 @@ function createPaddle(name, position, parent) {
 				rootMesh.position = paddle.getAbsolutePosition().clone();
 				rootMesh.scaling = new BABYLON.Vector3(6, 6, 6);
 				rootMesh.rotationQuaternion = BABYLON.Quaternion.FromEulerAngles(0, Math.PI, 0);
+				rootMesh.metadata = { isPlayer: true };
 			}
 
 			const playerRepere = new BABYLON.MeshBuilder.CreateBox("playerRepere", {
@@ -264,6 +287,7 @@ function createPaddle(name, position, parent) {
 			);
 			playerRepere.material = new BABYLON.StandardMaterial("playerRepereMat", scene);
 			playerRepere.material.emissiveColor = new BABYLON.Color3.Red();
+			playerRepere.metadata = { isPlayerRepere: true };
 
 			// Synchroniser avec la position ABSOLUE du paddle
 			scene.registerBeforeRender(() => {

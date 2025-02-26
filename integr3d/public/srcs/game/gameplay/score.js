@@ -85,17 +85,27 @@ export function updateScore(side) {
 export function resetScore() {
     scoreLeft = 0;
     scoreRight = 0;
-    loadScoreModel(0, 'left', true);
-    loadScoreModel(0, 'right', false);
 }
 
-
 export function destroy_score() {
+    // D'abord détruire les modèles existants
     if (scoreLeftMesh) {
         scoreLeftMesh.dispose();
     }
-
     if (scoreRightMesh) {
         scoreRightMesh.dispose();
     }
+    
+    // Réinitialiser les scores sans charger de nouveaux modèles
+    resetScore();
+    
+    // Effacer les références
+    scoreLeftMesh = null;
+    scoreRightMesh = null;
+}
+
+// Fonction séparée pour charger les modèles de score
+export function initScoreDisplay() {
+    loadScoreModel(scoreLeft, 'left', true);
+    loadScoreModel(scoreRight, 'right', false);
 }

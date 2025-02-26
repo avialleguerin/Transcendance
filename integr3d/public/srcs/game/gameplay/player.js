@@ -39,6 +39,7 @@ export function init_players(scene, player_1, player_2) {
 	}, scene);
 	player_1.position = new BABYLON.Vector3(-7, 301, -120);
 	player_1.checkPaddleCollision = true;
+	player_1.metadata = { isPlayer_paddle: true };  // Tag ajouté pour identifier ce mesh comme joueur
 	// player_1.visibility = 0;
 	
 	player_2 = new BABYLON.MeshBuilder.CreateBox("player_2", {
@@ -48,6 +49,7 @@ export function init_players(scene, player_1, player_2) {
 	}, scene);
 	player_2.position = new BABYLON.Vector3(-7, 301, -24);
 	player_2.checkPaddleCollision = true;
+	player_2.metadata = { isPlayer_paddle: true };  // Tag ajouté pour identifier ce mesh comme joueur
 	// player_2.visibility = 0;
 
 
@@ -156,13 +158,30 @@ export function UpdatePlayerPose(player_1, player_2) {
 }
 
 
-export function destroy_players(scene, player_1, player_2) {
-    // Supprimer uniquement les joueurs et leurs repères
-    scene.meshes.forEach(mesh => {
-        if (mesh.metadata && (mesh.metadata.isPlayer || mesh.metadata.isPlayerRepere)) {
-            mesh.dispose();  // Supprime les meshes qui sont des joueurs ou des repères
-        }
-    });
+export function destroy_players(scene) {
+	// Supprimer uniquement les joueurs et leurs repères
+	scene.meshes.forEach(mesh => {
+		if (mesh.metadata && (mesh.metadata.isPlayer)) {
+			mesh.dispose();  // Supprime les meshes qui sont des joueurs ou des repères
+		}
+	});
 
-    console.log("Les joueurs et leurs repères ont été supprimés");
+	console.log("Les joueurs et leurs repères ont été supprimés");
+}
+
+export function destroy_players_repere(scene) {
+	
+	scene.meshes.forEach(mesh => {
+		if (mesh.metadata && mesh.metadata.isPlayerRepere) {
+			mesh.dispose();
+		}
+	});
+}
+
+export function destroy_player_paddle(scene) {
+	scene.meshes.forEach(mesh => {
+		if (mesh.metadata && mesh.metadata.isPlayer_paddle) {
+			mesh.dispose();
+		}
+	});
 }

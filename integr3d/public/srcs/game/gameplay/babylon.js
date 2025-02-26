@@ -2,7 +2,7 @@ import { create_environment_view1, create_environment_view2, destroy_environemen
 import { UpdatePlayerPose} from "./player.js";
 import { MoveBall, MoveBall2v2 } from "./ball.js";
 import { init_game_solo , start_game_solo , destroy_game_solo} from "./solo/1v1_player/init_game_Solo.js";
-import { init_game_multiplayer } from "./multiplayer/init_game_2v2.js";
+import { init_game_multiplayer, destroy_game_multiplayer } from "./multiplayer/init_game_2v2.js";
 import { UpdatePLayerPoseMulti } from "./multiplayer/2v2_game/init_players2v2.js";
 
 
@@ -156,9 +156,12 @@ export function leave_Game()
     play = false;
 }
 
-async function leave_Multiplayer_Game()
+export function leave_Multiplayer_Game()
 {
-    destroy_environement_view3(scene);
+    destroy_game_multiplayer(scene);
+    Multi_gameStart = false;
+    initialized = false;
+    play = false;
 }
 
 

@@ -11,18 +11,43 @@ export default class extends AbstractView {
 
 	async getHtml() {
 		return `
-			<link rel="stylesheet" href="./static/js/css/game_menu.css">
-			<script type="module" src="./static/js/script/game_menu.js"></script>
-			<div class="container">
-				<h1>Game Menu</h1>
-				<div class="button-container">
-					<button id="solo_1v1_btn" class="btn" data-link="/solo_game_1v1">
-						<a href="/solo_game_1v1" class="nav-link" data-link>1v1</a>
-					</button>
-					<button class="btn" data-link="/solo_game_ai">mav vs qi</button>
-					<button id="multiplayer_btn" class="btn" data-link="/multiplayer_2v2">2v2</button>
-				</div>
+		<link rel="stylesheet" href="./static/js/css/game_menu.css">
+		<div id="container" class="container_game_mode">
+			<button type="submit" id="btn_jouer">JOUER</button>
+			<div class="button-container" style="display: none;">
+				<h1>CHOISIE TON MODE DE JEUX</h1>
+				<button id="solo_1v1_btn" class="btn" data-link="/solo_game_1v1">
+					<a href="/solo_game_1v1" class="nav-link" data-link>1v1</a>
+				</button>
+				<button class="btn" data-link="/solo_game_ai">mav vs qi</button>
+				<button id="multiplayer_btn" class="btn" data-link="/multiplayer_2v2">
+					<a href="/duo_game" class="nav-link" data-link>2v2</a>
+				</button>
 			</div>
+		</div>
+
+		// <script>
+		// 	console.log('Game Menu Script Loading');
+		// </script>
+		
+		// <script>
+		// 	// Utilise 'DOMContentLoaded' pour attendre que tout le DOM soit chargé
+		// 	document.addEventListener('DOMContentLoaded', function () {
+		// 		const btn_jouer = document.getElementById('btn_jouer');
+		// 		const btn_container = document.querySelector('.button-container');
+			
+		// 		if (!btn_jouer) {
+		// 			console.error("ERREUR: #btn_jouer introuvable !");
+		// 			return;
+		// 		}
+			
+		// 		btn_jouer.addEventListener('click', () => {
+		// 			console.log('JOUER button clicked');
+		// 			btn_container.style.display = 'block';
+		// 			btn_jouer.style.display = 'none';
+		// 		});
+		// 	});
+		// </script>
 		`;
 	}
 

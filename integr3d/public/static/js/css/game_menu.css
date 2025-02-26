@@ -1,20 +1,53 @@
-.container {
-	position: absolute;
-    top: 20%;
-    left: 10%;
-    width: 30%;
-    height: 35vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-    z-index: 1;
-    pointer-events: auto;
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
 }
 
-#h1 {
-	text-align: center;
-	color: white;
-	font-size: 1vw;
-	margin-bottom: 1.5rem;
+.container_game_mode {
+    position: absolute;
+    top: 36.5%;
+    left: 39.8%;
+    /* transform: translateX(-50%); */
+    height: 24.8%;
+    width: 20%;
+    background: rgba(0, 0, 0, 0.045);
+    padding: 2rem;
+    /* border-radius: 12px; */
+    text-align: center;
+    z-index: 1000; /* Très élevé pour être au-dessus du canvas */
+
+    clip-path: polygon(-5% 0%, 100% 0%, 97% 100%, 2% 100%);
+}
+
+.button-container {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+h1 {
+    color: white;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.btn {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    margin: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 12px;
+    width: 80%;
+    transition: 0.3s;
+    /* display: none; */
+    /* opacity: 0; */
+}
+
+.btn:hover {
+    background-color: #45a049;
 }
