@@ -9,24 +9,16 @@ import livereload from "livereload";
 import connectLivereload from "connect-livereload";
 // les autres pages js
 import Routes from "./routes.js"
-import { CREATE_USERS_TABLE, INSERT_USER, GET_ALL_USERS, GET_USER_BY_ID, DELETE_USER } from './queries.js';
 import registerPlugins from './register.js';
+import { CREATE_USERS_TABLE } from './models/userModel.js';
 
-const fastify = Fastify({ logger: true })
-const db = new Database('database.sqlite', { verbose: console.log });
+export const fastify = Fastify({ logger: true })
+export const db = new Database('database.sqlite', { verbose: console.log });
 const liveReloadServer = livereload.createServer();
 
 // fastify.register(Routes)
 fastify.register(Routes, {db})
 await registerPlugins(fastify);
-
-// db.prepare(`
-//   CREATE TABLE IF NOT EXISTS users (
-//     id INTEGER PRIMARY KEY AUTOINCREMENT,
-//     name TEXT NOT NULL,
-//     email TEXT UNIQUE NOT NULL
-//   )
-// `).run();
 
 db.prepare(CREATE_USERS_TABLE).run();
 
@@ -36,60 +28,9 @@ fastify.addHook("onRequest", async (request, reply) => {
 	connectLivereload()(request.raw, reply.raw, () => {});
 });
 
-
-export default async function insertUser (request, reply) {
-	const { name, email } = request.body;
-	try {
-		// const stmt = options.db.prepare('INSERT INTO users (name, email) VALUES (?, ?)');
-		const stmt = db.prepare(INSERT_USER);
-		const info = stmt.run(name, email);
-		reply.code(201);
-		return reply.send({ success: true, id: info.lastInsertRowid, name, email });
-	} catch (err) {
-		fastify.log.error(err);
-		reply.code(500);
-		return { error: err.message };
-	}
-}
-
-export async function selectUsers (request, reply) {
-	try {
-		const users = db.prepare(GET_ALL_USERS).all();
-		return users;
-	} catch (err) {
-		fastify.log.error(err);
-		reply.code(500);
-		return { error: err.message };
-	}
-}
-
-export async function deleteUsers(request, reply) {
-	const { id } = request.params; // mode destructuration
-	// const id = request.params.id;
-
-	if (!id) {
-		return reply.code(400).send({ error: "L'identifiant de l'utilisateur est requis." });
-	}
-
-	try {
-		const stmt = db.prepare(DELETE_USER);
-		const info = stmt.run(id);
-
-		if (info.changes === 0) {
-			return reply.code(404).send({ error: "Utilisateur introuvable." });
-		}
-
-		return reply.send({ success: true, message: "Utilisateur supprime avec succes. "});
-	} catch (err) {
-		fastify.log.error(err)
-		return reply.code(500).send({ error: err.message })
-	}
-}
-
 /**
  * Main function for run the server
  * @explication Pour Fastify dans docker, il faut ecouter sur toutes les IP, donc: 0.0.0.0
- * @type test
  */
 const start = async () => {
 	try {

@@ -1,6 +1,6 @@
 import { join } from 'path';
 //commands
-import insertUser, {selectUsers, deleteUsers} from './server.js';
+import insertUser, {selectUsers, deleteUsers} from './controllers/userController.js';
 
 
 /**
