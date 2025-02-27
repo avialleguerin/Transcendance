@@ -48,8 +48,14 @@ npm install --save-dev nodemon
 puis le config dnas pans package.json
 
 
-
-
+=== Afficher / ne pas afficher les logs ===
+# Nginx
+MiniBackend/Nginx/default.conf => ajouter la ligne : `access_log /dev/null;`
+# Fastify
+Mettre False ou True : `export const fastify = Fastify({ logger: false })` 
+# SQLite
+utiliser : `export const db = new Database('database.sqlite', { verbose: console.log });`
+l'option verbose permet de rediriger dans la console les logs.
 
 
 
