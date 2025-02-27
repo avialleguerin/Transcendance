@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:18-bullseye
 
 WORKDIR /app
 
@@ -9,7 +9,7 @@ WORKDIR /app
 # 	npm install --save-dev nodemon
 
 COPY Fastify/package*.json ./
-RUN npm install && ls -la node_modules
+RUN npm install
 
 COPY Fastify .
 

@@ -14,53 +14,14 @@ YELLOW		:=	\e[33m
 MAGENTA		:=	\e[35m
 CYAN		:=	\e[36m
 
-# Variables
-DOCKER_COMPOSE = docker-compose -f docker-compose.yml
+all:
+	@make -j4 up
 
-DATA_DIRS	=	Data \
-				Data/nginx_data \
-				Data/django_data \
-				Data/postgresql_data \
-				Data/hashicorp_vault_data
+up:
+	@docker compose up --build
+	@rm -rf ./MiniBackend/Fastify/node_modules
 
-# Commands
-RM			:=	rm -rf
+down:
+	@docker compose down
 
-## RULES --
-
-
-# Docker
-exp:
-	export PATH="".docker/cli-plugins:PATH"
-
-build:
-	$(DOCKER_COMPOSE) build
-
-up:		build
-	@mkdir -p $(DATA_DIRS)
-	@$(DOCKER_COMPOSE) up
-
-
-# Venv
-venv:
-	$(RM) .env .envPy
-	python3 -m venv .env
-	@echo "Use this command : $(GREEN)[source .env/bin/activate]$(RESET)"
-
-freeze: venv
-	pip install -r requirements.txt
-	pip freeze > Ressource/requirements.txt
-
-# Global
-all:	build up
-
-clean: 
-	@$(RM) $(DATA_DIRS) || true
-# @docker stop $$(docker ps -qa) || true
-# @docker rm $$(docker ps -qa) || true
-# @docker rmi -f $$(docker images -qa) || true
-
-fclean: clean
-	$(RM) .env .envPy
-
-.PHONY: export
+.PHONY: up all down
