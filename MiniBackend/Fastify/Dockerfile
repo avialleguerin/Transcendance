@@ -9,11 +9,11 @@ WORKDIR /app
 # 	npm install --save-dev nodemon
 
 COPY Fastify/package*.json ./
-RUN npm install && ls -la node_modules
+RUN npm install
 
-COPY Fastify .
+# COPY Fastify .
 
-COPY MiniFrontEnd .
+# COPY MiniFrontEnd .
 
 EXPOSE 3000
 

@@ -95,7 +95,7 @@ Transcendance/
  ├── node_modules/			// dépendances installées
  └── ...					// autres fichiers source et dossiers (controllers, routes, etc.)
 
-- Mginx Container :
+- Nginx Container :
 
 /
 ├── etc
