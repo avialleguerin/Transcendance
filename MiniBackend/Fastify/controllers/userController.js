@@ -1,15 +1,25 @@
 import { fastify, db } from '../server.js'
 import { INSERT_USER, GET_ALL_USERS, GET_USER_BY_ID, DELETE_USER, GET_USER_BY_EMAIL, UPDATE_CONNECTION, UPDATE_ADMIN } from '../models/userModel.js';
+import jwt from '@fastify/jwt';
+import bcrypt from 'bcrypt';
+
+// Configuration du plugin JWT
+
 
 export default async function insertUser (request, reply) {
 	const { name, email, password } = request.body;
+
+	if (!username || !password) {
+		return reply.code(400).send({ error: 'Name, Email and Password are required' });
+	}
+	const hashedPassword = await bcrypt.hash(password, 10);
 	try {
 		// const stmt = options.db.prepare('INSERT INTO users (name, email, password) VALUES (?, ?, ?)');
-		console.log("laaaaaa")
-		const stmt = db.prepare("\n  INSERT INTO users (name, email, password) VALUES (?, ?, ?);\n");
-		const info = stmt.run(name, email, password);
+		const stmt = db.prepare(INSERT_USER);
+		const info = stmt.run(name, email, hashedPassword);
+
 		reply.code(201);
-		return reply.send({ success: true, id: info.lastInsertRowid, name, email ,password});
+		return reply.send({ success: true, id: info.lastInsertRowid, name, email});
 	} catch (err) {
 		fastify.log.error("err");
 		reply.code(500);
