@@ -1,5 +1,5 @@
 import { join } from 'path';
-import insertUser, {selectUsers, deleteUsers, loginUser, logoutUser, adminUser} from './server.js';
+import insertUser, {selectUsers, deleteUsers, loginUser, logoutUser, adminUser} from './controllers/userController.js';
 
 /**
  * Encapsulates the routes
@@ -11,45 +11,36 @@ export default async function routes (fastify, options) {
 	// Par exemple : options = { db: votreInstanceDeDatabase }
 
 	// --- Optionnel : Route GET pour servir la page d'administration ---
-	fastify.get('/admin', async (request, reply) => {
-		// Cette route renvoie le fichier admin.html (placé dans votre dossier static, ex: public)
-		return reply.sendFile('admin.html');
-	});
+	// fastify.get('/admin', async (request, reply) => {
+	// 	// Cette route renvoie le fichier admin.html (placé dans votre dossier static, ex: public)
+	// 	return reply.sendFile('admin.html');
+	// });
 
 	/* --- USERSSS --- */
+	// fastify.post('/users/add', insertUser);
+	// fastify.put('/users/login', loginUser);
+	// fastify.put('/users/logout/:id', logoutUser);
+	// fastify.put('/users/admin/:id', adminUser);
+	// fastify.delete('/users/delete/:id', deleteUsers);
+	// fastify.get('/users', selectUsers);
 
-	// Route POST pour ajouter un utilisateur
-	//   fastify.post('/users', async (request, reply) => {
-	// 	const { name, email } = request.body;
-	// 	try {
-	// 	  const stmt = options.db.prepare('INSERT INTO users (name, email) VALUES (?, ?)');
-	// 	  const info = stmt.run(name, email);
-	// 	  reply.code(201);
-	// 	  return { id: info.lastInsertRowid, name, email };
-	// 	} catch (err) {
-	// 	  fastify.log.error(err);
-	// 	  reply.code(500);
-	// 	  return { error: err.message };
-	// 	}
-	//   });
-
-	fastify.post('/users/add', insertUser);
-	fastify.put('/users/login', loginUser);
-	fastify.put('/users/logout/:id', logoutUser);
-	fastify.put('/users/admin/:id', adminUser);
-	fastify.delete('/users/delete/:id', deleteUsers);
-	fastify.get('/users', selectUsers);
+	fastify.post('/api/users/add', insertUser);
+	fastify.put('/api/users/login', loginUser);
+	fastify.put('/api/users/logout/:id', logoutUser);
+	fastify.put('/api/users/admin/:id', adminUser);
+	fastify.delete('/api/users/delete/:id', deleteUsers);
+	fastify.get('/api/users', selectUsers);
 
 	// Route GET pour servir le script admin.js situé dans le dossier "utils"
-	fastify.get("/utils/admin.js", async (request, reply) => {
-		// Le deuxième argument de sendFile permet d'indiquer un répertoire personnalisé
-		return reply.sendFile("admin.js", join(process.cwd(), "utils"));
-	});
+	// fastify.get("/utils/admin.js", async (request, reply) => {
+	// 	// Le deuxième argument de sendFile permet d'indiquer un répertoire personnalisé
+	// 	return reply.sendFile("admin.js", join(process.cwd(), "utils"));
+	// });
 
 	// Route GET pour servir la page index.html
-	fastify.get('/', (request, reply) => {
-	return reply.sendFile('index.html');
-	});
+	// fastify.get('/', (request, reply) => {
+	// 	return reply.sendFile('index.html');
+	// });
 
 	/*fastify.get('/', async (request, reply) => {
 	return { hello: 'world' };

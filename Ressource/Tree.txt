@@ -4,7 +4,7 @@ Transcendance/
 |
 |── README.md
 |
-|── frontend/
+|── Frontend/
 |	├── public/
 |	│	├── index.html
 |	│	└── assets/
@@ -20,7 +20,7 @@ Transcendance/
 |	├── tailwind.config.js				# Configuration de Tailwind
 |	└── postcss.config.js				 # Configuration de PostCSS (si nécessaire)
 |
-|── backend/
+|── Backend/
 |	├── fastify/							 # Nouvelle application Fastify
 |	│	├── Dockerfile
 |	│	├── package.json				# Dépendances Node.js (Fastify, plugins, etc.)
@@ -45,7 +45,7 @@ Transcendance/
 |	│	└── default.conf				  # Configuration de Nginx (à adapter pour pointer sur Fastify)
 |	└── docker-compose.yml				# Pour orchestrer l’application Fastify et Nginx
 |
-|── devops/
+|── Devops/
 |	├── grafana/
 |	│	├── dashboards/
 |	│	└── provisioning/
@@ -57,7 +57,7 @@ Transcendance/
 |	│	└── kibana/
 |	└── docker-compose.yml
 |
-|── securite/
+|── Security/
 |	├── modsecurity/
 |	│	└── modsecurity.conf
 |	├── vault/
@@ -69,20 +69,44 @@ Transcendance/
 |	│	└── dependency-check-config.yml
 |	└── docker-compose.yml
 |
-|── data/
-|	├── sqlite_data/					 # Répertoire pour stocker la base SQLite (remplace postgres_data)
+|── Data/								# Pas sur de l'utilite
+|	├── sqlite_data/					# Répertoire pour stocker la base SQLite (remplace postgres_data)
 |	├── vault_data/
 |	├── elasticsearch_data/
 |	└── prometheus_data/
 |
-|── scripts/
+|── Scripts/
 |	├── backup.sh
 |	├── deploy.sh
 |	└── monitor.sh
 |
 |── .env
 |── .gitignore
-|── docker-compose.yml				  # Docker Compose global (si nécessaire pour orchestrer l’ensemble)
-
+|── docker-compose.yml					# Docker Compose global (si nécessaire pour orchestrer l’ensemble)
 
 ============ IN DOCKERS ============
+
+- Fastify Container:
+
+/app						//app est une convention rependue, et une bonne pratique.
+ ├── package.json
+ ├── package-lock.json (si présent)
+ ├── server.js				// ou le point d'entrée de ton application
+ ├── node_modules/			// dépendances installées
+ └── ...					// autres fichiers source et dossiers (controllers, routes, etc.)
+
+- Mginx Container :
+
+/
+├── etc
+│	└── nginx
+│		 ├── nginx.conf		// Notre configuration (si monté en volume)
+│		 ├── conf.d			// Fichiers de configuration additionnels
+│		 └── ...			// Autres fichiers de configuration
+├── usr
+│	└── share
+│		 └── nginx
+│			  └── html		// Contenu statique par défaut (souvent remplacé par des volumes)
+└── var
+	 └── log
+		  └── nginx			// Logs d'accès et d'erreur

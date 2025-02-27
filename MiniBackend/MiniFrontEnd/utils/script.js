@@ -2,7 +2,7 @@ console.log("Le script admin.js est bien chargé !");
 
 async function fetchUsers() {
 	try {
-		const response = await fetch('/users');
+		const response = await fetch('/api/users');
 		const users = await response.json();
 
 		// const tbody = document.getElementById('users-table');
@@ -41,7 +41,7 @@ async function fetchUsers() {
 
 async function logoutUser(id) {
 	try {
-		const response = await fetch(`/users/logout/${id}`, {
+		const response = await fetch(`/api/users/logout/${id}`, {
 			method: "PUT",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ id })
@@ -59,7 +59,7 @@ async function logoutUser(id) {
 
 async function adminUser(id) {
 	try {
-		const response = await fetch(`/users/admin/${id}`, {
+		const response = await fetch(`/api/users/admin/${id}`, {
 			method: "PUT",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ id })
@@ -78,7 +78,7 @@ async function adminUser(id) {
 async function deleteUser(id) {
 	if (confirm('Do you really want to delete this user ?')) {
 		try {
-			const response = await fetch(`/users/delete/${id}`, { method: 'DELETE' });
+			const response = await fetch(`/api/users/delete/${id}`, { method: 'DELETE' });
 			if (response.ok)
 				fetchUsers();
 			else {
@@ -100,9 +100,9 @@ document.getElementById("addForm").addEventListener("submit", async function (ev
 
 	const name = document.getElementById("add-name").value;
 	const email = document.getElementById("add-email").value;
-	console.log("Name: ", name)
-	console.log("Email: ", email)
-	const response = await fetch("/users/add", {
+	// console.log("Name: ", name)
+	// console.log("Email: ", email)
+	const response = await fetch("/api/users/add", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ name, email })
@@ -132,7 +132,7 @@ document.getElementById("loginForm").addEventListener("submit", async function (
 
 	console.log("Name: ", name)
 	console.log("Email: ", email)
-	const response = await fetch("/users/login", {
+	const response = await fetch("/api/users/login", {
 		method: "PUT",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify({ name, email })

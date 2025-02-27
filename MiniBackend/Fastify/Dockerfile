@@ -2,20 +2,20 @@ FROM node:18-alpine
 
 WORKDIR /app
 
+# RUN npm i fastify &&\
+# 	npm i @fastify/static &&\
+# 	npm i @fastify/jwt &&\
+# 	npm i better-sqlite3 &&\
+# 	npm install --save-dev nodemon
 
-RUN npm i fastify &&\
-	npm i @fastify/static &&\
-	npm i fastify-jwt &&\
-	npm i fastify-cookie &&\
-	npm i better-sqlite3 &&\
-	npm i livereload connect-livereload\
-	npm install --save-dev nodemon
+COPY Fastify/package*.json ./
+RUN npm install && ls -la node_modules
 
+COPY Fastify .
 
-COPY Fastify ./Fastify
-
-COPY MiniFrontEnd ./MiniFrontEnd
+COPY MiniFrontEnd .
 
 EXPOSE 3000
 
 CMD ["npm", "run", "start:dev"]
+# CMD ["npm", "start"]
