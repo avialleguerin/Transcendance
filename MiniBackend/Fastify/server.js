@@ -3,7 +3,7 @@ import Database from "better-sqlite3";
 import fastifyJWT from '@fastify/jwt';
 // les autres pages js
 import Routes from "./routes.js"
-import registerPlugins from './register.js';
+// import registerPlugins from './register.js';
 import { CREATE_USERS_TABLE } from './models/userModel.js';
 
 export const fastify = Fastify({ logger: false }) //change ici laffichage des logs
@@ -11,7 +11,7 @@ export const db = new Database('database.sqlite', { verbose: console.log });
 
 // fastify.register(Routes)
 fastify.register(Routes, {db})
-await registerPlugins(fastify);
+// await registerPlugins(fastify);
 
 db.prepare(CREATE_USERS_TABLE).run();
 const fas = fastifyJWT
