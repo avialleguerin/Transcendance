@@ -41,6 +41,13 @@ const router = async () => {
 
 	document.querySelector("#app").innerHTML = await view.getHtml();
 
+	const myScript = document.querySelector("#menu_btn");
+
+	console.log(myScript);
+
+
+
+
 	if (typeof view.initEvents === 'function') {
         view.initEvents();
     }
@@ -56,6 +63,14 @@ const router = async () => {
 	if (typeof view.Back_to_Menu_duo === 'function') {
 		view.Back_to_Menu_duo();
 	}
+
+	if (typeof view.game_menu === 'function') {
+		view.game_menu();
+	}
+
+	// if (typeof view.inializeView === 'function') {
+	// 	view.inializeView('game-menu');
+	// }
 
 };
 

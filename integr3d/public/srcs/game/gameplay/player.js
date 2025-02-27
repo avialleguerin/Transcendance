@@ -40,7 +40,7 @@ export function init_players(scene, player_1, player_2) {
 	player_1.position = new BABYLON.Vector3(-7, 301, -120);
 	player_1.checkPaddleCollision = true;
 	player_1.metadata = { isPlayer_paddle: true };  // Tag ajouté pour identifier ce mesh comme joueur
-	// player_1.visibility = 0;
+	player_1.visibility = 0;
 	
 	player_2 = new BABYLON.MeshBuilder.CreateBox("player_2", {
 		width: 10,
@@ -50,7 +50,7 @@ export function init_players(scene, player_1, player_2) {
 	player_2.position = new BABYLON.Vector3(-7, 301, -24);
 	player_2.checkPaddleCollision = true;
 	player_2.metadata = { isPlayer_paddle: true };  // Tag ajouté pour identifier ce mesh comme joueur
-	// player_2.visibility = 0;
+	player_2.visibility = 0;
 
 
 	BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/player/", "PlayerIdleAnnimation.glb", scene, function (newMeshes) {

@@ -108,7 +108,7 @@ function createPaddle(name, position, parent) {
 	
 	paddle.position = position;
 	paddle.checkPaddleCollision = true;
-	// paddle.visibility = 0;
+	paddle.visibility = 0;
 	paddle.setParent(parent);
 	console.log("parent === ", parent.name);
 
