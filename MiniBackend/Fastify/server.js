@@ -7,8 +7,9 @@ import routes from "./routes.js"
 // import registerPlugins from './register.js';
 import { CREATE_USERS_TABLE } from './models/userModel.js';
 
-export const fastify = Fastify({ logger: true }) //change ici laffichage des logs
-export const db = new Database('database.sqlite', { verbose: console.log });
+export const fastify = Fastify({ logger: false }) //change ici laffichage des logs
+// export const db = new Database('database.sqlite', { verbose: console.log });
+export const db = new Database('database.sqlite');
 
 await fastify.register(jwt, {
 	secret: 'supersecretkey', // a changer
