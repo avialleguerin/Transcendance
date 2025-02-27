@@ -1,6 +1,6 @@
 import Fastify from "fastify";
 import Database from "better-sqlite3";
-import fastifyJWT from 'fastify-jwt';
+import fastifyJWT from '@fastify/jwt';
 // les autres pages js
 import Routes from "./routes.js"
 import registerPlugins from './register.js';
