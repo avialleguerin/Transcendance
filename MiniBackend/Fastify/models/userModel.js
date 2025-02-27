@@ -5,13 +5,14 @@ export const CREATE_USERS_TABLE = `
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
     admin BOOLEAN DEFAULT FALSE,
     connected BOOLEAN DEFAULT FALSE
   );
 `;
 
 export const INSERT_USER = `
-  INSERT INTO users (name, email) VALUES (?, ?);
+  INSERT INTO users (name, email, password) VALUES (?, ?, ?);
 `;
 
 export const GET_ALL_USERS = `
@@ -24,6 +25,9 @@ export const GET_USER_BY_ID = `
 
 export const GET_USER_BY_NAME = `
   SELECT * FROM users WHERE name = ? AND email = ?;
+`;
+export const GET_USER_BY_EMAIL = `
+  SELECT * FROM users WHERE email = ? AND password = ?;
 `;
 
 export const UPDATE_CONNECTION = `
