@@ -29,24 +29,45 @@ export default async function insertUser (request, reply) {
 
 export async function loginUser (request, reply) {
 	const { email, password } = request.body;
+
 	try {
 		const stmt = db.prepare(GET_USER_BY_EMAIL);
 		const user = stmt.get(email, password);
+
 		if (user){
 			const updateStmt = db.prepare(UPDATE_CONNECTION);
 			updateStmt.run(1, user.id);
 
 			const updateUser = stmt.get(email, password);
+			const accessToken = fastify.jwt.sign({ userId: user.id }, {expiresIn: '15m' });
+			const refreshToken = fastify.jwt.sign({ userId: user.id }, {expiresIn: '7d' });
+
+			reply.setCookie('refreshToken', refreshToken, {
+				httpOnly: true, // Ne peut pas être lu par JS
+				secure: process.env.NODE_ENV === 'production', //faire des recherches
+				sameSite: 'Strict',
+				path: '/' //disponible partout 
+			});
 
 			reply.code(200);
+
+			// return reply.send({
+			// 	id: updateUser.id,
+			// 	connected: updateUser.connected,
+			// 	name: updateUser.name,
+			// 	email: updateUser.email,
+			// 	success: true
+			// }, { accessToken })
 
 			return reply.send({
 				id: updateUser.id,
 				connected: updateUser.connected,
 				name: updateUser.name,
 				email: updateUser.email,
-				success: true
+				success: true,
+				refreshToken
 			})
+
 		}
 		else {
 			// Si l'utilisateur n'existe pas, renvoyer une erreur
@@ -59,6 +80,25 @@ export async function loginUser (request, reply) {
 		return { error: err.message };
 	}
 }
+
+export async function refreshToken(request, reply) {
+	try {
+		const { refreshToken } = request.cookies;
+
+		if (!refreshToken) {
+			return reply.code(401).send({ error: 'No refresh token'});
+		}
+
+		const decoded = fastify.jwt.verify(refreshToken);
+		const newAccessToken = fastify.jwt.sign({ userId: decoded.userId}, {expiresIn: '15m'});
+
+		return reply.send({ accessToken: newAccessToken });
+	} catch (err) {
+		return reply.code(401).send({ error: 'Invalid refresh token' });
+	}
+}
+
+
 
 export async function selectUsers (request, reply) {
 	try {
@@ -83,6 +123,9 @@ export async function logoutUser(request, reply) {
 			updateStmt.run(0, user.id);
 
 			const updateUser = stmt.get(id);
+
+			reply.clearCookie('refreshToken');
+
 			reply.code(200);
 
 			return reply.send({
@@ -91,7 +134,7 @@ export async function logoutUser(request, reply) {
 				name: updateUser.name,
 				email: updateUser.email,
 				success: true
-			})
+			}, { message: 'Logged out successfully' })
 		}
 		else {
 			reply.code(404);

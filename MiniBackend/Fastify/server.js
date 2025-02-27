@@ -1,8 +1,9 @@
 import Fastify from "fastify";
 import Database from "better-sqlite3";
 import jwt from "@fastify/jwt";
+import cookie from "@fastify/cookie";
 // les autres pages js
-import Routes from "./routes.js"
+import routes from "./routes.js"
 // import registerPlugins from './register.js';
 import { CREATE_USERS_TABLE } from './models/userModel.js';
 
@@ -16,11 +17,23 @@ await fastify.register(jwt, {
 		signed: false
 	}
 });
-// fastify.register(Routes)
-fastify.register(Routes, {db})
+
+await fastify.register(cookie);
+// fastify.register(routes)
+// fastify.register(routes, {db})
+fastify.register(routes, { prefix: '/api' })
 // await registerPlugins(fastify);
 
 db.prepare(CREATE_USERS_TABLE).run();
+
+
+fastify.decorate('authenticate', async function (request, reply) { 
+	try {
+		await request.jwtVerify();
+	} catch (err) {
+		reply.code(401).send({error: 'Unauthorized'});
+	}
+});
 
 /**
  * Main function for run the server

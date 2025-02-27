@@ -2,6 +2,7 @@
 
 all:
 	@make -j4 up
+	@rm -rf Fastify/node_modules
 
 up:
 	@docker compose up --build

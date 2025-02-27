@@ -11,9 +11,9 @@ WORKDIR /app
 COPY Fastify/package*.json ./
 RUN npm install
 
-COPY Fastify .
+# COPY Fastify .
 
-COPY MiniFrontEnd .
+# COPY MiniFrontEnd .
 
 EXPOSE 3000
 
