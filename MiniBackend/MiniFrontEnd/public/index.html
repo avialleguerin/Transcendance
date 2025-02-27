@@ -26,6 +26,7 @@
 					<th class="px-4 py-2 border">ID</th>
 					<th class="px-4 py-2 border">Name</th>
 					<th class="px-4 py-2 border">Email</th>
+					<th class="px-4 py-2 border">Password</th>
 					<th class="px-4 py-2 border">Connected</th>
 					<th class="px-4 py-2 border">Admin</th>
 					<th class="px-4 py-2 border">Actions</th>
@@ -49,6 +50,10 @@
 				<label for="email" class="block text-gray-700 font-medium">Email :</label>
 				<input type="email" id="add-email" name="email" placeholder="Email" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
 			</div>
+			<div class="mb-4">
+				<label for="password" class="block text-gray-700 font-medium">Password :</label>
+				<input type="password" id="add-password" name="password" placeholder="Password" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+			</div>
 			<button type="submit" class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition">
 					Add
 			</button>
@@ -58,12 +63,12 @@
 		<form id="loginForm" class="flex-1 max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg">
 			<h2 class="text-2xl font-semibold text-center mb-4">Log In</h2>
 			<div class="mb-4">
-				<label for="name" class="block text-gray-700 font-medium">Name :</label>
-				<input type="text" id="login-name" name="name" placeholder="Name" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+				<label for="email" class="block text-gray-700 font-medium">Email :</label>
+				<input type="email" id="login-email" name="email" placeholder="Email" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
 			</div>
 			<div class="mb-4">
-				<label for="email" class="block text-gray-700 font-medium">Email :</label>
-				<input type="email" id="login-email" name="email" placeholder="Email" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+				<label for="password" class="block text-gray-700 font-medium">Password :</label>
+				<input type="password" id="login-password" name="password" placeholder="Password" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
 			</div>
 			<button type="submit" class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition">
 					Log In

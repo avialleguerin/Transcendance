@@ -1,31 +1,32 @@
 import { fastify, db } from '../server.js'
-import { INSERT_USER, GET_ALL_USERS, GET_USER_BY_ID, DELETE_USER, GET_USER_BY_NAME, UPDATE_CONNECTION, UPDATE_ADMIN } from '../models/userModel.js';
+import { INSERT_USER, GET_ALL_USERS, GET_USER_BY_ID, DELETE_USER, GET_USER_BY_EMAIL, UPDATE_CONNECTION, UPDATE_ADMIN } from '../models/userModel.js';
 
 export default async function insertUser (request, reply) {
-	const { name, email } = request.body;
+	const { name, email, password } = request.body;
 	try {
-		// const stmt = options.db.prepare('INSERT INTO users (name, email) VALUES (?, ?)');
-		const stmt = db.prepare(INSERT_USER);
-		const info = stmt.run(name, email);
+		// const stmt = options.db.prepare('INSERT INTO users (name, email, password) VALUES (?, ?, ?)');
+		console.log("laaaaaa")
+		const stmt = db.prepare("\n  INSERT INTO users (name, email, password) VALUES (?, ?, ?);\n");
+		const info = stmt.run(name, email, password);
 		reply.code(201);
-		return reply.send({ success: true, id: info.lastInsertRowid, name, email });
+		return reply.send({ success: true, id: info.lastInsertRowid, name, email ,password});
 	} catch (err) {
 		fastify.log.error("err");
 		reply.code(500);
-		return { error: "err.message" };
+		return { error: err.message };
 	}
 }
 
 export async function loginUser (request, reply) {
-	const { name, email } = request.body;
+	const { email, password } = request.body;
 	try {
-		const stmt = db.prepare(GET_USER_BY_NAME);
-		const user = stmt.get(name, email);
+		const stmt = db.prepare(GET_USER_BY_EMAIL);
+		const user = stmt.get(email, password);
 		if (user){
 			const updateStmt = db.prepare(UPDATE_CONNECTION);
 			updateStmt.run(1, user.id);
 
-			const updateUser = stmt.get(name, email);
+			const updateUser = stmt.get(email, password);
 
 			reply.code(200);
 

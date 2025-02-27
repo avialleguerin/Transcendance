@@ -25,6 +25,7 @@ async function fetchUsers() {
 				<td class="border px-4 py-2">${user.id}</td>
 				<td class="border px-4 py-2">${user.name}</td>
 				<td class="border px-4 py-2">${user.email}</td>
+				<td class="border px-4 py-2">${user.password}</td>
 				<td class="border px-4 py-2">${user.connected === 1 ? "Yes" : "No"}</td>
 				<td class="border px-4 py-2">${user.admin === 1 ? "Yes" : "No"}</td>
 				<td class="border px-4 py-2">
@@ -100,12 +101,14 @@ document.getElementById("addForm").addEventListener("submit", async function (ev
 
 	const name = document.getElementById("add-name").value;
 	const email = document.getElementById("add-email").value;
-	// console.log("Name: ", name)
-	// console.log("Email: ", email)
+	const password = document.getElementById("add-password").value;
+	console.log("Name: ", name)
+	console.log("Email: ", email)
+	console.log("Password: ", password)
 	const response = await fetch("/api/users/add", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ name, email })
+			body: JSON.stringify({ name, email, password })
 	});
 
 	const result = await response.json();
@@ -127,15 +130,15 @@ document.getElementById("addForm").addEventListener("submit", async function (ev
 document.getElementById("loginForm").addEventListener("submit", async function (event) {
 	event.preventDefault();
 	console.log("Form submitted")
-	const name = document.getElementById("login-name").value;
 	const email = document.getElementById("login-email").value;
+	const password = document.getElementById("login-password").value;
 
-	console.log("Name: ", name)
 	console.log("Email: ", email)
+	console.log("Password: ", password)
 	const response = await fetch("/api/users/login", {
 		method: "PUT",
 		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify({ name, email })
+		body: JSON.stringify({ email, password })
 	});
 
 	const result = await response.json();
