@@ -44,6 +44,7 @@ services:
       - ./Backend/Nginx/default.conf:/etc/nginx/conf.d/default.conf:ro # ro mean read-only
       - ./Frontend/public:/usr/share/nginx/html:ro
       - ./Frontend/utils:/usr/share/nginx/utils:ro
+      - ./Frontend3d/public:/usr/share/nginx/3d:ro
     # networks:
     #   - transcendence-network
 
