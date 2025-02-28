@@ -16,9 +16,15 @@
 
 services:
   fastify:
-    extends:
-      file: MiniBackend/docker-compose.yml
-      service: fastify
+    build:
+      context: ./MiniBackend
+      dockerfile: Fastify/Dockerfile
+    # extends:
+    #   file: MiniBackend/docker-compose.yml
+    #   service: fastify
+    ports:
+      - "3000:3000"
+    restart: always
     volumes:
       - ./MiniBackend/Fastify:/app
       - /app/node_modules   # Préserve les modules installés dans le container
@@ -26,13 +32,18 @@ services:
     #   - transcendence-network
 
   nginx:
-    extends:
-      file: MiniBackend/docker-compose.yml
-      service: nginx
+    # extends:
+    #   file: MiniBackend/docker-compose.yml
+    #   service: nginx
+    image: nginx:latest     # pour ne pas a avoir besoin de Dockerfile
+    ports:
+      - "8080:80"           #80:80 necessite des privilege
+    depends_on:
+      - fastify
     volumes:
       - ./MiniBackend/Nginx/default.conf:/etc/nginx/conf.d/default.conf:ro # ro mean read-only
-      - ./MiniBackend/MiniFrontEnd/public:/usr/share/nginx/html:ro
-      - ./MiniBackend/MiniFrontEnd/utils:/usr/share/nginx/utils:ro
+      - ./Frontend/public:/usr/share/nginx/html:ro
+      - ./Frontend/utils:/usr/share/nginx/utils:ro
     # networks:
     #   - transcendence-network
 

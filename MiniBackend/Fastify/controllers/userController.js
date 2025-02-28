@@ -9,14 +9,15 @@ import bcrypt from 'bcrypt';
 export default async function insertUser (request, reply) {
 	const { name, email, password } = request.body;
 
-	if (!username || !password) {
+	if (!name || !password) {
 		return reply.code(400).send({ error: 'Name, Email and Password are required' });
 	}
-	const hashedPassword = await bcrypt.hash(password, 10);
+	// const hashedPassword = await bcrypt.hash(password, 10);
 	try {
 		// const stmt = options.db.prepare('INSERT INTO users (name, email, password) VALUES (?, ?, ?)');
 		const stmt = db.prepare(INSERT_USER);
-		const info = stmt.run(name, email, hashedPassword);
+		// const info = stmt.run(name, email, hashedPassword);
+		const info = stmt.run(name, email, password);
 
 		reply.code(201);
 		return reply.send({ success: true, id: info.lastInsertRowid, name, email});
