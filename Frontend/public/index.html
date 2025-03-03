@@ -24,7 +24,7 @@
 			<thead>
 				<tr>
 					<th class="px-4 py-2 border">ID</th>
-					<th class="px-4 py-2 border">Name</th>
+					<th class="px-4 py-2 border">Username</th>
 					<th class="px-4 py-2 border">Email</th>
 					<th class="px-4 py-2 border">Password</th>
 					<th class="px-4 py-2 border">Connected</th>
@@ -43,8 +43,8 @@
 		<form id="addForm" class="flex-1 max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg">
 			<h2 class="text-2xl font-semibold text-center mb-4">Add User</h2>
 			<div class="mb-4">
-				<label for="name" class="block text-gray-700 font-medium">Name :</label>
-				<input type="text" id="add-name" name="name" placeholder="Name" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+				<label for="username" class="block text-gray-700 font-medium">Username :</label>
+				<input type="text" id="add-username" name="username" placeholder="Username" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
 			</div>
 			<div class="mb-4">
 				<label for="email" class="block text-gray-700 font-medium">Email :</label>
@@ -76,6 +76,22 @@
 			<p id="login-resultMessage" class="mt-4 text-center text-sm font-semibold text-gray-700"></p>
 		</form>
 
+	</div>
+	<div class="mt-6 mx-auto max-w-md bg-white">
+		<table class="min-w-full bg-white shadow-md rounded">
+			<thead>
+				<tr>
+					<th class="px-4 py-2 border">ID</th>
+					<th class="px-4 py-2 border">Username</th>
+					<th class="px-4 py-2 border">Email</th>
+					<th class="px-4 py-2 border">Password</th>
+					<th class="px-4 py-2 border">Admin</th>
+				</tr>
+			</thead>
+			<tbody id="user-table">
+				<!-- Les utilisateurs seront insérés ici dynamiquement -->
+			</tbody>
+		</table>
 	</div>
 
 	 <!-- Inclusion des scripts externe -->

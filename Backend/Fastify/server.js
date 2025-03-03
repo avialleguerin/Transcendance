@@ -7,9 +7,9 @@ import routes from "./routes.js"
 // import registerPlugins from './register.js';
 import { CREATE_USERS_TABLE } from './models/userModel.js';
 
-export const fastify = Fastify({ logger: false }) //change ici laffichage des logs
-// export const db = new Database('database.sqlite', { verbose: console.log });
-export const db = new Database('database.sqlite');
+export const fastify = Fastify({ logger: true }) //change ici laffichage des logs
+export const db = new Database('database.sqlite', { verbose: console.log });
+// export const db = new Database('database.sqlite');
 
 await fastify.register(jwt, {
 	secret: 'supersecretkey', // a changer
@@ -31,6 +31,7 @@ db.prepare(CREATE_USERS_TABLE).run();
 fastify.decorate('authenticate', async function (request, reply) { 
 	try {
 		await request.jwtVerify();
+		// request.user = request.user;
 	} catch (err) {
 		reply.code(401).send({error: 'Unauthorized'});
 	}

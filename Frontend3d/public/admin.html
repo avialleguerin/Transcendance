@@ -44,7 +44,7 @@
 					const tr = document.createElement('tr');
 					tr.innerHTML = `
 						<td class="border px-4 py-2">${user.id}</td>
-						<td class="border px-4 py-2">${user.name}</td>
+						<td class="border px-4 py-2">${user.username}</td>
 						<td class="border px-4 py-2">${user.email}</td>
 						<td class="border px-4 py-2">
 							<button class="bg-red-500 text-white px-2 py-1 rounded" onclick="deleteUser(${user.id})">Supprimer</button>
@@ -84,8 +84,8 @@
 		<h2 class="text-2xl font-semibold text-center mb-4">Ajouter un utilisateur</h2>
 
 		<div class="mb-4">
-				<label for="name" class="block text-gray-700 font-medium">Nom :</label>
-				<input type="text" id="name" name="name" placeholder="Nom"
+				<label for="username" class="block text-gray-700 font-medium">Nom :</label>
+				<input type="text" id="username" name="username" placeholder="Nom"
 						class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
 						required>
 		</div>
@@ -110,20 +110,20 @@
 			document.getElementById("userForm").addEventListener("submit", async function (event) {
 					event.preventDefault(); // Empêche le rechargement de la page
 
-					const name = document.getElementById("name").value;
+					const username = document.getElementById("username").value;
 					const email = document.getElementById("email").value;
 
 					const response = await fetch("/add-user", {
 							method: "POST",
 							headers: { "Content-Type": "application/json" },
-							body: JSON.stringify({ name, email })
+							body: JSON.stringify({ username, email })
 					});
 
 					const result = await response.json();
 					const resultMessage = document.getElementById("resultMessage");
 
 					if (result.success) {
-							resultMessage.textContent = `Utilisateur ajouté : ${result.name} (${result.email})`;
+							resultMessage.textContent = `Utilisateur ajouté : ${result.username} (${result.email})`;
 							resultMessage.classList.add("text-green-500");
 
 							setTimeout(() => {

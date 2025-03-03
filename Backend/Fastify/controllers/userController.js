@@ -7,20 +7,20 @@ import bcrypt from 'bcrypt';
 
 
 export default async function insertUser (request, reply) {
-	const { name, email, password } = request.body;
+	const { username, email, password } = request.body;
 
-	if (!name || !password) {
-		return reply.code(400).send({ error: 'Name, Email and Password are required' });
+	if (!username || !password) {
+		return reply.code(400).send({ error: 'Username, Email and Password are required' });
 	}
 	// const hashedPassword = await bcrypt.hash(password, 10);
 	try {
-		// const stmt = options.db.prepare('INSERT INTO users (name, email, password) VALUES (?, ?, ?)');
+		// const stmt = options.db.prepare('INSERT INTO users (username, email, password) VALUES (?, ?, ?)');
 		const stmt = db.prepare(INSERT_USER);
-		// const info = stmt.run(name, email, hashedPassword);
-		const info = stmt.run(name, email, password);
+		// const info = stmt.run(username, email, hashedPassword);
+		const info = stmt.run(username, email, password);
 
 		reply.code(201);
-		return reply.send({ success: true, id: info.lastInsertRowid, name, email});
+		return reply.send({ success: true, id: info.lastInsertRowid, username, email});
 	} catch (err) {
 		fastify.log.error("err");
 		reply.code(500);
@@ -33,48 +33,42 @@ export async function loginUser (request, reply) {
 
 	try {
 		const stmt = db.prepare(GET_USER_BY_EMAIL);
-		const user = stmt.get(email, password);
-
-		if (user){
-			const updateStmt = db.prepare(UPDATE_CONNECTION);
-			updateStmt.run(1, user.id);
-
-			const updateUser = stmt.get(email, password);
-			const accessToken = fastify.jwt.sign({ userId: user.id }, {expiresIn: '15m' });
-			const refreshToken = fastify.jwt.sign({ userId: user.id }, {expiresIn: '7d' });
-
-			reply.setCookie('refreshToken', refreshToken, {
-				httpOnly: true, // Ne peut pas être lu par JS
-				secure: process.env.NODE_ENV === 'production', //faire des recherches
-				sameSite: 'Strict',
-				path: '/' //disponible partout 
-			});
-
-			reply.code(200);
-
-			// return reply.send({
-			// 	id: updateUser.id,
-			// 	connected: updateUser.connected,
-			// 	name: updateUser.name,
-			// 	email: updateUser.email,
-			// 	success: true
-			// }, { accessToken })
-
-			return reply.send({
-				id: updateUser.id,
-				connected: updateUser.connected,
-				name: updateUser.name,
-				email: updateUser.email,
-				success: true,
-				refreshToken
-			})
-
+		const user = stmt.get(email);
+		if (!user || user.password != password) {
+			return reply.code(401).send({error: 'Invalid credentials'})
 		}
-		else {
-			// Si l'utilisateur n'existe pas, renvoyer une erreur
-			reply.code(404);
-			return reply.send({ success: false, error: 'User not found' });
-		}
+		const updateStmt = db.prepare(UPDATE_CONNECTION);
+		updateStmt.run(1, user.id);
+
+		const updateUser = stmt.get(email);
+		const accessToken = fastify.jwt.sign({ userId: user.id, username:user.username }, {expiresIn: '15m' });
+		const refreshToken = fastify.jwt.sign({ userId: user.id }, {expiresIn: '7d' });
+
+		reply.setCookie('refreshToken', refreshToken, {
+			httpOnly: true, // Ne peut pas être lu par JS
+			secure: process.env.NODE_ENV === 'production', //faire des recherches
+			sameSite: 'Strict',
+			path: '/' //disponible partout 
+		});
+
+		reply.code(200);
+
+		// return reply.send({
+		// 	id: updateUser.id,
+		// 	connected: updateUser.connected,
+		// 	username: updateUser.username,
+		// 	email: updateUser.email,
+		// 	success: true
+		// }, { accessToken })
+		console.log(accessToken);
+		return reply.send({
+			id: updateUser.id,
+			connected: updateUser.connected,
+			username: updateUser.username,
+			email: updateUser.email,
+			success: true,
+			accessToken
+		});
 	} catch (err) {
 		fastify.log.error(err);
 		reply.code(500);
@@ -100,7 +94,6 @@ export async function refreshToken(request, reply) {
 }
 
 
-
 export async function selectUsers (request, reply) {
 	try {
 		const users = db.prepare(GET_ALL_USERS).all();
@@ -109,6 +102,36 @@ export async function selectUsers (request, reply) {
 		fastify.log.error(err);
 		reply.code(500);
 		return { error: err.message };
+	}
+}
+
+export async function getUserProfile(request, reply) {
+	const { id } = request.body;
+	try {
+		console.log("🔹 Requête reçue sur /api/profile");
+
+		const userId = request.user.userId;
+		if (!userId)
+		{
+			console.error("❌ Aucun userId trouvé dans le token JWT !");
+			return reply.code(400).send({ error: 'Invalid token' });
+		}
+		console.log(`✅ userId extrait du JWT : ${userId}`);
+
+		const stmt = db.prepare("SELECT id, username, email, admin FROM users WHERE id = ?");
+		const user = stmt.get(userId);
+
+		if (!user)
+		{
+			console.error("❌ Aucun utilisateur trouvé dans la base pour cet ID !");
+			return reply.code(404).send({ error: "User not found" });
+		}
+
+		console.log("✅ Utilisateur récupéré :", user);
+		return { user };
+	} catch (error) {
+		console.error("Erreur dans getUserProfile:", error);
+		reply.code(500).send({ error: 'Internal Server Error' });
 	}
 }
 
@@ -132,7 +155,7 @@ export async function logoutUser(request, reply) {
 			return reply.send({
 				id: updateUser.id,
 				connected: updateUser.connected,
-				name: updateUser.name,
+				username: updateUser.username,
 				email: updateUser.email,
 				success: true
 			}, { message: 'Logged out successfully' })
@@ -164,7 +187,7 @@ export async function adminUser(request, reply) {
 
 			return reply.send({
 				id: updateUser.id,
-				name: updateUser.name,
+				username: updateUser.username,
 				email: updateUser.email,
 				connected: updateUser.connected,
 				admin: updateUser.admin,
@@ -194,6 +217,7 @@ export async function deleteUsers(request, reply) {
 
 		if (info.changes === 0)
 			return reply.code(404).send({ error: "User not found" });
+
 		return reply.send({ success: true, message: "User deleted successfully"});
 	} catch (err) {
 		fastify.log.error(err)

@@ -1,4 +1,4 @@
-console.log("Le script admin.js est bien chargé !");
+// console.log("Le script admin.js est bien chargé !");
 
 async function fetchUsers() {
 	try {
@@ -11,7 +11,7 @@ async function fetchUsers() {
 		// 	const tr = document.createElement('tr');
 		// 	tr.innerHTML = `
 		// 		<td class="border px-4 py-2">${user.id}</td>
-		// 		<td class="border px-4 py-2">${user.name}</td>
+		// 		<td class="border px-4 py-2">${user.username}</td>
 		// 		<td class="border px-4 py-2">${user.email}</td>
 		// 		<td class="border px-4 py-2">
 		// 			<button class="bg-red-500 text-white px-2 py-1 rounded" onclick="deleteUser(${user.id})">Supprimer</button>
@@ -23,7 +23,7 @@ async function fetchUsers() {
 		document.getElementById('users-table').innerHTML = users.map(user => `
 			<tr>
 				<td class="border px-4 py-2">${user.id}</td>
-				<td class="border px-4 py-2">${user.name}</td>
+				<td class="border px-4 py-2">${user.username}</td>
 				<td class="border px-4 py-2">${user.email}</td>
 				<td class="border px-4 py-2">${user.password}</td>
 				<td class="border px-4 py-2">${user.connected === 1 ? "Yes" : "No"}</td>
@@ -37,6 +37,50 @@ async function fetchUsers() {
 		`).join('');
 	} catch (err) {
 		console.error('Erreur lors de la récupération des utilisateurs :', err);
+	}
+}
+
+async function fetchUserProfile() {
+	const accessToken = sessionStorage.getItem("accessToken")
+	if (!accessToken) {
+		console.error("❌ Aucun accessToken disponible !");
+		return;
+	}
+	try {
+		console.log("🔹 Envoi de la requête à /api/profile...");
+		console.log("🔹 Token actuel :", accessToken);
+		const response = await fetch('/api/profile', {
+			headers: { Authorization: `Bearer ${accessToken}` }
+		});
+
+		if (!response.ok) {
+			throw new Error(`❌ Erreur HTTP ${response.status}`);
+		}
+
+		const data = await response.json();
+		console.log("✅ Réponse reçue :", data);
+
+		if (!data.user) {
+			console.error("❌ Aucun utilisateur dans la réponse !");
+			return;
+		}
+
+		const user = data.user;
+		console.log("✅ Utilisateur récupéré :", user);
+
+		// Insérer les données dans le tableau HTML
+		document.getElementById('user-table').innerHTML = `
+			<tr>
+				<td class="border px-4 py-2">${user.id}</td>
+				<td class="border px-4 py-2">${user.username}</td>
+				<td class="border px-4 py-2">${user.email}</td>
+				<td class="border px-4 py-2">********</td> <!-- Masquer le mot de passe -->
+				<td class="border px-4 py-2">${user.admin === 1 ? "Yes" : "No"}</td>
+			</tr>
+		`;
+		console.log("✅ Profil affiché dans le DOM !");
+	} catch (err) {
+		console.error('❌ Erreur lors de la récupération du profil :', err);
 	}
 }
 
@@ -93,29 +137,41 @@ async function deleteUser(id) {
 }
 
 // Charger la liste des utilisateurs lors du chargement de la page
-window.addEventListener('DOMContentLoaded', fetchUsers);
+// window.addEventListener('DOMContentLoaded', fetchUsers);
+// window.addEventListener('DOMContentLoaded', fetchUserProfile);
+window.addEventListener('DOMContentLoaded', () => {
+	const accessToken = sessionStorage.getItem("accessToken");
+	if (accessToken) {
+		console.log("✅ Access Token récupéré depuis sessionStorage :", accessToken);
+		fetchUserProfile(accessToken);
+	} else {
+		console.warn("⚠️ Aucun accessToken trouvé, l'utilisateur doit se reconnecter.");
+	}
+	fetchUsers();
+});
+
 
 
 document.getElementById("addForm").addEventListener("submit", async function (event) {
 	event.preventDefault(); // Empêche le rechargement de la page
 
-	const name = document.getElementById("add-name").value;
+	const username = document.getElementById("add-username").value;
 	const email = document.getElementById("add-email").value;
 	const password = document.getElementById("add-password").value;
-	console.log("Name: ", name)
+	console.log("Username: ", username)
 	console.log("Email: ", email)
 	console.log("Password: ", password)
 	const response = await fetch("/api/users/add", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ name, email, password })
+			body: JSON.stringify({ username, email, password })
 	});
 
 	const result = await response.json();
 	const resultMessage = document.getElementById("add-resultMessage");
 	
 	if (result.success) {
-		resultMessage.textContent = `User added : ${result.name} (${result.email})`;
+		resultMessage.textContent = `User added : ${result.username} (${result.email})`;
 		resultMessage.classList.add("text-green-500");
 		
 		setTimeout(() => {
@@ -143,8 +199,9 @@ document.getElementById("loginForm").addEventListener("submit", async function (
 
 	const result = await response.json();
 	const resultMessage = document.getElementById("login-resultMessage");
-	if (result.success) {
-		resultMessage.textContent = `User Connected : ${result.name} (${result.email})`;
+	if (result.success && result.accessToken) {
+		sessionStorage.setItem("accessToken", result.accessToken);
+		resultMessage.textContent = `User Connected : ${result.username} (${result.email})`;
 		resultMessage.classList.add("text-green-500");
 		
 		setTimeout(() => {

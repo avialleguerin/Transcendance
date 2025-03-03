@@ -3,7 +3,7 @@
 export const CREATE_USERS_TABLE = `
   CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
+    username TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
     admin BOOLEAN DEFAULT FALSE,
@@ -12,7 +12,7 @@ export const CREATE_USERS_TABLE = `
 `;
 
 export const INSERT_USER = `
-  INSERT INTO users (name, email, password) VALUES (?, ?, ?);
+  INSERT INTO users (username, email, password) VALUES (?, ?, ?);
 `;
 
 export const GET_ALL_USERS = `
@@ -23,11 +23,11 @@ export const GET_USER_BY_ID = `
   SELECT * FROM users WHERE id = ?;
 `;
 
-export const GET_USER_BY_NAME = `
-  SELECT * FROM users WHERE name = ? AND email = ?;
+export const GET_USER_BY_USERNAME = `
+  SELECT * FROM users WHERE username = ? AND email = ?;
 `;
 export const GET_USER_BY_EMAIL = `
-  SELECT * FROM users WHERE email = ? AND password = ?;
+  SELECT * FROM users WHERE email = ?;
 `;
 
 export const UPDATE_CONNECTION = `
