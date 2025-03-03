@@ -5,6 +5,24 @@ let view3Meshes = [];
 export function create_environment_view1(scene) {
 	view1Meshes = []; // Réinitialise la liste pour éviter les doublons
 
+    const grassTexture = new BABYLON.Texture("/srcs/game/assets/image/perfect-green-grass.jpg", scene);
+    grassTexture.anisotropicFilteringLevel = 8;
+    grassTexture.uScale = 5;
+    grassTexture.vScale = 5;
+    grassTexture.hasAlpha = false;
+    grassTexture.wrapU = BABYLON.Texture.WRAP_ADDRESSMODE;
+    grassTexture.wrapV = BABYLON.Texture.WRAP_ADDRESSMODE;
+
+    // Matériau unique pour l'herbe
+    const grassMaterial = new BABYLON.StandardMaterial("grassMaterial", scene);
+    grassMaterial.diffuseTexture = grassTexture;
+    grassMaterial.backFaceCulling = false;
+    grassMaterial.specularColor = new BABYLON.Color3(0.1, 0.1, 0.1);
+
+    // Attente du chargement de la texture
+    grassTexture.onLoadObservable.add(() => {
+        console.log("Texture d'herbe chargée");
+    });
 	BABYLON.SceneLoader.Append("/srcs/game/assets/3d_object/", "ImageToStl.com_football_stadiumv2.glb", scene, function () {
 		console.log("Stade chargé avec succès !");
 	
@@ -42,24 +60,24 @@ export function create_environment_view1(scene) {
 	});
 
 	function createGrassPlane(name, position) {
-		const grassPlane = BABYLON.MeshBuilder.CreateGround(name, {width: 45, height: 50}, scene);
-		const grassMaterial = new BABYLON.StandardMaterial(name + "Material", scene);
-		grassMaterial.diffuseTexture = new BABYLON.Texture("/srcs/game/assets/image/perfect-green-grass.jpg", scene);
-		grassMaterial.backFaceCulling = false;
-		grassMaterial.diffuseTexture.anisotropicFilteringLevel = 16;
-		grassMaterial.diffuseTexture.uScale = 5;
-		grassMaterial.diffuseTexture.vScale = 5;
-		grassPlane.material = grassMaterial;
-		grassPlane.position = position;
-		view1Meshes.push(grassPlane);
-	}
+        const grassPlane = BABYLON.MeshBuilder.CreateGround(name, { width: 45, height: 50 }, scene);
+        grassPlane.material = grassMaterial;
+        grassPlane.position = position;
+        grassPlane.freezeWorldMatrix(); // Optimisation : le sol ne bouge pas
+        view1Meshes.push(grassPlane);
+    }
 
-	createGrassPlane("grassPlane1", new BABYLON.Vector3(-61.5, 1.3, -152));
-	createGrassPlane("grassPlane2", new BABYLON.Vector3(-61.5, 1.3, -102));
-	createGrassPlane("grassPlane3", new BABYLON.Vector3(-61.5, 1.3, -52));
-	createGrassPlane("grassPlane4", new BABYLON.Vector3(-106.5, 1.3, -152));
-	createGrassPlane("grassPlane5", new BABYLON.Vector3(-106.5, 1.3, -102));
-	createGrassPlane("grassPlane6", new BABYLON.Vector3(-106.5, 1.3, -52));
+    // Création des sols en herbe
+    const grassPositions = [
+        new BABYLON.Vector3(-61.5, 1.3, -152),
+        new BABYLON.Vector3(-61.5, 1.3, -102),
+        new BABYLON.Vector3(-61.5, 1.3, -52),
+        new BABYLON.Vector3(-106.5, 1.3, -152),
+        new BABYLON.Vector3(-106.5, 1.3, -102),
+        new BABYLON.Vector3(-106.5, 1.3, -52),
+    ];
+
+    grassPositions.forEach((pos, index) => createGrassPlane(`grassPlane${index + 1}`, pos));
 }
 
 export function destroy_environement_view1() {
@@ -83,6 +101,28 @@ export function create_environment_view2(scene) {
 		container.position = new BABYLON.Vector3(0, 100, 0);
 		view2Meshes.push(container);
 	});
+
+	const directionalLight = new BABYLON.DirectionalLight("directionalLight", new BABYLON.Vector3(0, -1, 0), scene);
+	directionalLight.intensity = 10;
+	directionalLight.position = new BABYLON.Vector3(-20, 109, -5);
+	directionalLight.diffuse = new BABYLON.Color3(1, 1, 1);
+	directionalLight.specular = new BABYLON.Color3(1, 1, 1);
+	directionalLight.shadowEnabled = true;
+
+	// const pointLight = new BABYLON.PointLight("pointlight", new BABYLON.Vector3(-20, 109, -5), scene);
+	// pointLight.intensity = 100;
+	// pointLight.diffuse = new BABYLON.Color3(1, 1, 1);
+	// pointLight.specular = new BABYLON.Color3(1, 1, 1);
+	// pointLight.range = 3;
+	// // Rayon de la portée de la lumière
+	// const lightRadius = pointLight.range || 30; // 30 est une valeur par défaut si tu n'as pas défini de portée spécifique
+	
+	// // Créer une sphère pour montrer la portée de la lumière
+	// const lightRangeSphere = BABYLON.MeshBuilder.CreateSphere("lightRange", {
+	// 	diameter: lightRadius * 2, // Le diamètre de la sphère correspond à la portée de la lumière
+	// 	segments: 16
+	// }, scene);
+
 }
 
 export function destroy_environement_view2() {
@@ -94,6 +134,25 @@ export function destroy_environement_view2() {
 
 export function create_environment_view3(scene) {
 	view3Meshes = []; // Réinitialise la liste
+
+	const grassTexture = new BABYLON.Texture("/srcs/game/assets/image/perfect-green-grass.jpg", scene);
+    grassTexture.anisotropicFilteringLevel = 8; // Réduit de 16 à 8 pour de meilleures performances
+    grassTexture.uScale = 5;
+    grassTexture.vScale = 5;
+    grassTexture.hasAlpha = false; // Indiquer explicitement qu'il n'y a pas de canal alpha
+    grassTexture.wrapU = BABYLON.Texture.WRAP_ADDRESSMODE;
+    grassTexture.wrapV = BABYLON.Texture.WRAP_ADDRESSMODE;
+    
+    // Création d'un matériau réutilisable pour toutes les instances de terrain
+    const grassMaterial = new BABYLON.StandardMaterial("grassMaterial", scene);
+    grassMaterial.diffuseTexture = grassTexture;
+    grassMaterial.backFaceCulling = false;
+    grassMaterial.specularColor = new BABYLON.Color3(0.1, 0.1, 0.1); // Réduit les reflets
+    
+    // Attendre que la texture soit complètement chargée avant de l'utiliser
+    grassTexture.onLoadObservable.add(() => {
+        console.log("Texture d'herbe chargée");
+    });
 
 	BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/3d_object/", "ImageToStl.com_footballterraindejeuxv2.glb", scene, function (newMeshes) {
 		console.log("Modèle chargé avec succès !");

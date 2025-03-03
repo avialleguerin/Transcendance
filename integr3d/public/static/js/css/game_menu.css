@@ -15,18 +15,22 @@
     clip-path: polygon(-5% 0%, 100% 0%, 97% 100%, 2% 100%);
 }
 
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0.3; }
+    100% { opacity: 1; }
+}
 
 #btn_jouer {
     position: absolute;
-    font-family: 'Black Ops One', sans-serif;
+    
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    padding: 20px 60px;
-    font-size: 24px;
+    /* padding: 20px 30px; */
     font-weight: bold;
     background-color: transparent;
-    color: white;
+    color: rgb(255, 255, 255);
     border: none;
     border-radius: 10px;
     cursor: pointer;
@@ -38,16 +42,24 @@
     background-repeat: no-repeat;
     /* line-height: 3vh; */
 
-    width: 200px;  /* Largeur fixe */
-    height: 120px;  /* Hauteur fixe */
+    width: 170px;  /* Largeur fixe */
+    height: 112px;  /* Hauteur fixe */
     display: flex; /* Pour aider au centrage du texte */
     justify-content: center; /* Centre horizontalement */
     align-items: center; /* Centre verticalement */
 }
 
-#btn_jouer:hover {
-    color: gray;
+#btn_jouer h1 {
+    font-family: 'Black Ops One', sans-serif;
+    animation: blink 1.5s infinite;
+    font-size: 2vw;
+    text-align: center;
 }
+
+/* #btn_jouer:hover {
+    color: gray;
+} */
+
 
 .view1 {
     position: absolute;
@@ -170,7 +182,7 @@
     color: #ffffff;
     text-shadow: 2px 2px 4px rgb(0, 0, 0);
     text-align: center;
-    font-size: 1.5vw;
+    font-size: 1.2vw;
     position: relative;
     top: -15%; /* Assurez-vous qu'il soit en haut */
     font-family: 'Black Ops One', sans-serif;
@@ -180,7 +192,7 @@
     color: #ffffff;
     text-shadow: 2px 2px 4px rgb(0, 0, 0);
     text-align: center;
-    font-size: 1.5vw;
+    font-size: 1.2vw;
     position: relative;
     top: -15%; /* Assurez-vous qu'il soit en haut */
     font-family: 'Black Ops One', sans-serif;
@@ -195,17 +207,15 @@
     align-items: center;
     gap: 20px; /* Espace entre les boutons */
     margin-top: 30px; /* Espace supplémentaire après le titre */
-    width: auto; /* Permet aux boutons de s'aligner correctement */
-    height: auto; /* Permet aux boutons de s'aligner correctement */
     background-image: none; /* Retirez l'image de fond qui était appliquée au conteneur */
     padding: 0; /* Retirez le padding qui était pour un bouton */
 }
 
 .game_mode_btn .btn {
-    padding: 15px 40px;
-    font-size: 0.8vw;
+    padding: 20px 40px;
+    font-size: 0.9vw;
     font-weight: bold;
-    transform: translateY(-100%);
+    transform: translateY(-50%);
     background-color: transparent;
     color: white;
     border: 2px solid #44444400;
@@ -219,16 +229,16 @@
     background-repeat: no-repeat;
     line-height: 3vh;
     
-    width: 100px;  /* Largeur fixe */
-    height: 70px;  /* Hauteur fixe */
+    width: 130px;  /* Largeur fixe */
+    height: 100px;  /* Hauteur fixe */
     display: flex; /* Pour aider au centrage du texte */
     justify-content: center; /* Centre horizontalement */
     align-items: center; /* Centre verticalement */
 }
 
 .view1-content .btn {
-    padding: 15px 40px;
-    font-size: 0.8vw;
+    padding: 15px 0px;
+    font-size: 0.7vw;
     font-weight: bold;
     color: rgb(255, 255, 255);
     border: 2px solid #44444400;
@@ -255,8 +265,8 @@
     position: absolute;
     bottom : 5%;
     right: 5%;
-    padding: 10px 20px;
-    font-size: 0.5vw;
+    padding: 10px 0px;
+    font-size: 0.6vw;
     font-weight: bold;
     background-color: transparent;
     color: white;
@@ -271,8 +281,8 @@
     background-repeat: no-repeat;
     line-height: 3vh;
 
-    width: 150px;  /* Largeur fixe */
-    height: 100px;  /* Hauteur fixe */
+    width: 105px;  /* Largeur fixe */
+    height: 70px;  /* Hauteur fixe */
     display: flex; /* Pour aider au centrage du texte */
     justify-content: center; /* Centre horizontalement */
     align-items: center; /* Centre verticalement */
@@ -286,8 +296,8 @@
     position: absolute;
     bottom : 5%;
     right: 5%;
-    padding: 10px 20px;
-    font-size: 0.5vw;
+    padding: 10px 0px;
+    font-size: 0.6vw;
     font-weight: bold;
     background-color: transparent;
     color: white;
@@ -302,8 +312,8 @@
     background-repeat: no-repeat;
     line-height: 3vh;
 
-    width: 150px;  /* Largeur fixe */
-    height: 100px;  /* Hauteur fixe */
+    width: 92px;  /* Largeur fixe */
+    height: 70px;  /* Hauteur fixe */
     display: flex; /* Pour aider au centrage du texte */
     justify-content: center; /* Centre horizontalement */
     align-items: center; /* Centre verticalement */
@@ -313,6 +323,80 @@
     color: gray;
 }
 
+.view5 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.view5-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    justify-content: flex-start; /* Changé de center à flex-start pour commencer depuis le haut */
+    padding-top: 100px; /* Ajouter un padding en haut pour décaler le contenu */
+}
+
+.view5-content h1 {
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgb(0, 0, 0);
+    text-align: center;
+    font-size: 1.2vw;
+    position: relative;
+    top: -15%; /* Assurez-vous qu'il soit en haut */
+    font-family: 'Black Ops One', sans-serif;
+}
+
+.back-home {
+    position: absolute;
+    top: 40.5%;
+    right: 26.5%;
+    background: rgba(0, 0, 0, 0);
+    padding: 2rem;
+    text-align: center;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* backdrop-filter: blur(5px); */
+    transition: opacity 0.5s ease;
+}
+
+.back-home .btn {
+    padding: 15px 0px;
+    font-size: 0.7vw;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+    border: 2px solid #44444400;
+    background-color: transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    background-image: url("../../../srcs/game/assets/image/boutton.svg");
+    background-size: 100% auto;
+    background-position: center;
+    background-repeat: no-repeat;
+    line-height: 4vh;
+    
+    /* Ajout de dimensions fixes */
+    width: 120px;  /* Largeur fixe */
+    height: 70px;  /* Hauteur fixe */
+    display: flex; /* Pour aider au centrage du texte */
+    justify-content: center; /* Centre horizontalement */
+    align-items: center; /* Centre verticalement */
+}
 
 
 .btn:hover {
@@ -328,13 +412,13 @@
 }
 
 /* Initialement cacher les vues */
-.view1, .view2 , .view3, .view4 {
+.view1, .view2 , .view3, .view4, .view5 , .back-home {
     opacity: 0;
     pointer-events: none;
 }
 
 /* Pour afficher une vue quand nécessaire, ajouter la classe .active */
-.view1.active, .view2.active , .view3.active, .view4.active {
+.view1.active, .view2.active , .view3.active, .view4.active, .view5.active , .back-home.active {
     opacity: 1;
     pointer-events: auto;
 }

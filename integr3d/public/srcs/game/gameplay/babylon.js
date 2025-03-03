@@ -11,15 +11,31 @@ const engine = new BABYLON.Engine(canvas, true, {
 	preserveDrawingBuffer: true,
 	stencil: true,
 	antialias: true,
-	adapToDeviceRatio: true
+	adapToDeviceRatio: true,
+    disableWebGLWarnings: true
 });
+
+
+// Désactiver les logs WebGL de Babylon.js
+engine.getRenderingCanvas().addEventListener("webglcontextlost", (e) => {
+    console.log("WebGL context lost!");
+    e.preventDefault();
+});
+
+// Surveiller l'objet `console.warn` pour filtrer les warnings spécifiques
+const originalConsoleWarn = console.warn;
+console.warn = function(message) {
+    if (message.includes("generateMipmap") || message.includes("WEBGL_debug_renderer_info")) {
+        return; // Ignore ces messages
+    }
+    originalConsoleWarn.apply(console, arguments); // Applique les autres messages
+};
 
 window.scene = new BABYLON.Scene(engine);
 scene.clearColor = new BABYLON.Color4(0, 0, 0, 1);
 scene.imageProcessingConfiguration.contrast = 1.2;
 scene.imageProcessingConfiguration.exposure = 1.0;
 scene.imageProcessingConfiguration.toneMappingEnabled = true;
-
 
 
 
@@ -53,7 +69,7 @@ const ambientLight = new BABYLON.HemisphericLight(
 	new BABYLON.Vector3(0, 1, 0),
 	scene
 );
-ambientLight.intensity = 0.8;
+ambientLight.intensity = 3;
 
 
 create_environment_view1(scene);
@@ -61,32 +77,63 @@ create_environment_view1(scene);
 // create_environment_view3(scene);
 
 
-const environment = scene.createDefaultEnvironment({
-	createSkybox: false,
-	CreateGround: true,
-	enableGroundShadow: true,
-	groundYBias: 1
-});
-
-const skysphere = BABYLON.MeshBuilder.CreateSphere("skysphere", {
-	diameter: 1000,
-	segments: 32
-}, scene);
-
-const skyMaterial = new BABYLON.StandardMaterial("skyMaterial", scene);
-skyMaterial.backFaceCulling = false;
-skyMaterial.diffuseTexture = new BABYLON.Texture("/srcs/game/assets/skybox/skybox.jpg", scene);
-skyMaterial.diffuseTexture.coordinatesMode = BABYLON.Texture.SPHERICAL_MODE;
-skyMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-skyMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
+// const environment = scene.createDefaultEnvironment( {
+//     createSkybox: false,
+// 	// CreateGround: true,
+// 	// enableGroundShadow: true,
+// 	groundYBias: 1
+// });
 
 
-skysphere.material = skyMaterial;
-skysphere.isPickable = false;
-skysphere.infiniteDistance = true;
+// const skysphere = BABYLON.MeshBuilder.CreateSphere("skysphere", {
+// 	diameter: 1000,
+// 	segments: 32
+// }, scene);
+
+function createOptimizedSkybox(scene) {
+    // Créer un matériau optimisé pour la skybox
+    const skyMaterial = new BABYLON.StandardMaterial("skyMaterial", scene);
+    skyMaterial.backFaceCulling = false;
+    skyMaterial.specularColor = new BABYLON.Color3(0, 0, 0); // Pas de reflets
+    skyMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1); // Émission complète
+
+    // Charger la texture avec des paramètres optimaux  
+    const skyTexture = new BABYLON.Texture("/srcs/game/assets/skybox/skybox.jpg", scene);
+    skyTexture.coordinatesMode = BABYLON.Texture.SPHERICAL_MODE;
+    skyTexture.hasAlpha = false; // Pas de canal alpha dans une skybox
+    skyTexture.generateMipMaps = false; // Désactive la génération des mipmaps pour éviter le warning
+    skyTexture.updateSamplingMode(BABYLON.Texture.NEAREST_NEAREST); // Utilisation du filtrage le plus simple
+
+    // Appliquer la texture au matériau
+    skyMaterial.diffuseTexture = skyTexture;
+
+    // Attendre que la texture soit complètement chargée
+    skyTexture.onLoadObservable.add(() => {
+        console.log("Texture de skybox chargée");
+    });
+
+    // Créer une sphère inversée pour la skybox
+    const skySphere = BABYLON.MeshBuilder.CreateSphere("skySphere", {diameter: 1000, sideOrientation: BABYLON.Mesh.BACKSIDE}, scene);
+    skySphere.material = skyMaterial;
+    skySphere.isPickable = false;
+    skySphere.infiniteDistance = true;
+    skySphere.scaling.y = -1; // Corrige l'orientation de la texture si besoin
+
+    // Optimiser la skybox (elle ne bouge pas)
+    skySphere.freezeWorldMatrix();
+    skyMaterial.freeze();
+
+    return skySphere;
+}
+
+// Utilisation
+const skybox = createOptimizedSkybox(scene);
 
 
-skysphere.scaling.y = -1;
+
+
+
+
 
 
 // const gameInstance = create_game(scene);
@@ -214,6 +261,7 @@ engine.runRenderLoop(() =>
             }
         }
     }
+    // console.log(camera.position);
     scene.render();
 });
 
@@ -222,10 +270,10 @@ window.addEventListener('resize', () => {
 	engine.resize(true);
 });
 
-scene.onBeforeRenderObservable.add(() => {
-	scene.meshes.forEach(mesh => {
-		if (mesh.material && mesh.material.diffuseTexture) {
-			mesh.material.diffuseTexture.anisotropicFilteringLevel = 16;
-		}
-	});
-});
+// scene.onBeforeRenderObservable.add(() => {
+// 	scene.meshes.forEach(mesh => {
+// 		if (mesh.material && mesh.material.diffuseTexture) {
+// 			mesh.material.diffuseTexture.anisotropicFilteringLevel = 16;
+// 		}
+// 	});
+// });

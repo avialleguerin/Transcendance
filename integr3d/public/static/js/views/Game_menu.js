@@ -15,12 +15,17 @@ export default class extends AbstractView {
 		<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 		<div class="view1" id="view1">
 			<div class="view1-content">
-				<button id="home_btn" class="btn">HOME</button>
-				<button id="settings_btn" class="btn">SETTINGS</button>
+				<button id="view1_btn" class="btn">MODE DE JEUX</button>
+				<button id="settings_btn" class="btn">PARAMETRES</button>
 			</div>
 		</div>
+		<div class="back-home" id="back-home">
+			<button id="btn_back_home" class="btn">ACCUEIL</button>
+		</div>
 		<div id="container" class="container_menu">
-			<button id="btn_jouer">JOUER</button>
+			<button id="btn_jouer">
+				<h1>JOUER</h1>
+			</button>
 			<div class="view2" id="view2">
 				<div class="view2-content">
 					<h1>CHOISIE TON MODE DE JEUX</h1>
@@ -53,7 +58,12 @@ export default class extends AbstractView {
 					<button id="back_to_menu_view4" class="btn">BACK TO MENU</button>
 				</div>
 			</div>
+			<div class="view5" id="view5">
+				<div class="view5-content">
+					<h1>PARAMETRES</h1>
+				</div>
 		</div>
+
 
 		`;
 	}
@@ -81,32 +91,46 @@ export default class extends AbstractView {
 		const view2 = document.getElementById('view2');
 		const view3 = document.getElementById('view3');
 		const view4 = document.getElementById('view4');
-		const home_btn = document.getElementById('home_btn');
+		const view1_btn = document.getElementById('view1_btn');
 		const settings_btn = document.getElementById('settings_btn');
 		const solo = document.getElementById('solo');
 		const multiplayer = document.getElementById('multiplayer');
 		const back_to_menu_view3 = document.getElementById('back_to_menu_view3');
 		const back_to_menu_view4 = document.getElementById('back_to_menu_view4');
+		const btn_back_home = document.getElementById('back-home');
+		const view5 = document.getElementById('view5');
 
 		// Afficher view1 quand on clique sur JOUER
 		btn_jouer.addEventListener('click', () => {
 			console.log('JOUER button clicked');
 			view1.classList.add('active');
+			view2.classList.add('active');
+			btn_back_home.classList.add('active');
 			btn_jouer.style.display = 'none';
 		});
 
-		if (!view2.classList.contains('active')) {
-			home_btn.addEventListener('click', () => {
-				// view1.classList.remove('active');
+		view1_btn.addEventListener('click', () => {
+			console.log('Mode de jeux button clicked');
+			
+			// Vérifier si on est sur la vue5
+			if (view5.classList.contains('active')) {
+				// Si on est sur vue5, on la désactive et active vue2
+				view5.classList.remove('active');
 				view2.classList.add('active');
-			});
-		}
+			} 
+			// Si on n'est pas sur la vue2 (et pas sur la vue5 non plus)
+			else if (!view2.classList.contains('active')) {
+				// Activer la vue2
+				view2.classList.add('active');
+			}
+		});
+
+
 
 		// Retourner à l'écran principal quand on clique sur SETTINGS
 		settings_btn.addEventListener('click', () => {
-			view1.classList.remove('active');
 			view2.classList.remove('active');
-			btn_jouer.style.display = 'block';
+			view5.classList.add('active');
 		});
 
 		// Afficher view3 quand on clique sur SOLO
@@ -114,6 +138,7 @@ export default class extends AbstractView {
 			view2.classList.remove('active');
 			view3.classList.add('active');
 			view1.classList.remove('active');
+			btn_back_home.classList.remove('active');
 		});
 
 		// Afficher view4 quand on clique sur MULTIPLAYER
@@ -121,6 +146,7 @@ export default class extends AbstractView {
 			view2.classList.remove('active');
 			view4.classList.add('active');
 			view1.classList.remove('active');
+			btn_back_home.classList.remove('active');
 		});
 
 		// Retourner à l'écran principal quand on clique sur BACK TO MENU
@@ -130,6 +156,7 @@ export default class extends AbstractView {
 				view3.classList.remove('active');
 				view2.classList.add('active');
 				view1.classList.add('active');
+				btn_back_home.classList.add('active');
 			});
 		}
 
@@ -140,16 +167,16 @@ export default class extends AbstractView {
 				view4.classList.remove('active');
 				view2.classList.add('active');
 				view1.classList.add('active');
+				btn_back_home.classList.add('active');
 			});
 		}
+
+		// Retourner à l'écran principal quand on clique sur ACCUEIL
+		btn_back_home.addEventListener('click', () => {
+			view1.classList.remove('active');
+			view2.classList.remove('active');
+			btn_back_home.classList.remove('active');
+			btn_jouer.style.display = 'block';
+		});
 	}
 }
-
-
-					// <button id="solo_1v1_btn" class="btn" data-link="/solo_game_1v1">
-					// 	<a href="/solo_game_1v1" class="nav-link" data-link>1v1</a>
-					// </button>
-					// <button class="btn" data-link="/solo_game_ai">ai</button>
-					// <button id="multiplayer_btn" class="btn" data-link="/multiplayer_2v2">
-					// 	<a href="/duo_game" class="nav-link" data-link>2v2</a>
-					// </button>

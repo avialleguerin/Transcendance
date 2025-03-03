@@ -32,7 +32,7 @@ export default class extends AbstractView {
 						<button type="submit">Login</button>
 					</div>
 				</form>
-				<button><a href="/jouer" class="nav-link" data-link>Jouer</a></button>
+				<button><a href="/Game_menu" class="nav-link" data-link>Jouer</a></button>
 			</div>
 		`;
 	}
