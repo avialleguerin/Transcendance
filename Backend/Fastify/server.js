@@ -2,6 +2,7 @@ import Fastify from "fastify";
 import Database from "better-sqlite3";
 import jwt from "@fastify/jwt";
 import cookie from "@fastify/cookie";
+import Vault from 'node-vault';
 // les autres pages js
 import routes from "./routes.js"
 // import registerPlugins from './register.js';
@@ -10,6 +11,11 @@ import { CREATE_USERS_TABLE } from './models/userModel.js';
 export const fastify = Fastify({ logger: false }) //change ici laffichage des logs
 // export const db = new Database('database.sqlite', { verbose: console.log });
 export const db = new Database('database.sqlite');
+// Charger les variables d'environnement de Docker
+// const VAULT_ADDR = process.env.VAULT_ADDR;
+// const VAULT_TOKEN = process.env.VAULT_TOKEN;
+const vault = Vault({ endopint: VAULT_ADDR });
+vault.token = VAULT_TOKEN;
 
 await fastify.register(jwt, {
 	secret: 'supersecretkey', // a changer
@@ -35,6 +41,26 @@ fastify.decorate('authenticate', async function (request, reply) {
 		reply.code(401).send({error: 'Unauthorized'});
 	}
 });
+
+async function getSecret() {
+	try {
+		const secret = await vault.read("secret/db");
+		return secret.data.password;
+	} catch (err) {
+		console.error("Erreur de recuperation du secret:", err);
+		return null;
+	}
+}
+
+// export async function (request, reply) {
+// 	const password = await getSecret();
+// 	reply.send({ password });
+// }
+fastify.get("/api/get-secret", async (request, reply) => {
+    const password = await getSecret();
+    reply.send({ password });
+});
+
 
 /**
  * Main function for run the server

@@ -1,4 +1,4 @@
-import insertUser, {selectUsers, deleteUsers, loginUser, logoutUser, adminUser, refreshToken} from './controllers/userController.js';
+import insertUser, {selectUsers, deleteUsers, loginUser, logoutUser, adminUser, refreshToken, getPassword} from './controllers/userController.js';
 
 /**
  * Encapsulates the routes
@@ -13,6 +13,8 @@ export default async function routes (fastify) {
 	fastify.put('/users/logout/:id', logoutUser);
 	fastify.put('/users/admin/:id', adminUser);
 	fastify.delete('/users/delete/:id', deleteUsers);
-	// Tokens
+	// Tokens, Vault ...
 	fastify.post('/refresh', refreshToken);
+	fastify.get('/get-secret', getPassword);
+
 }

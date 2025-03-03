@@ -16,6 +16,7 @@
 
 services:
   fastify:
+    container_name: fastify
     build:
       context: ./Backend
       dockerfile: Fastify/Dockerfile
@@ -32,6 +33,7 @@ services:
     #   - transcendence-network
 
   nginx:
+    container_name: nginx
     # extends:
     #   file: Backend/docker-compose.yml
     #   service: nginx
@@ -57,12 +59,19 @@ services:
   #     - transcendence-network
 
   # Sécurité (Vault + SonarQube) - À activer plus tard
-  # vault:
-  #   extends:
-  #     file: Security/docker-compose.yml
-  #     service: vault
-  #   networks:
-  #     - transcendence-network
+  vault:
+    container_name: vault
+    image: vault:latest
+    restart: always
+    ports:
+      - "8200:8200"
+    # environment:
+
+    # cap_add:
+    #   - IPC_LOCK
+    # command: server -dev
+    # networks:
+    #   - transcendence-network
 
 # networks:
 #   transcendence-network:
