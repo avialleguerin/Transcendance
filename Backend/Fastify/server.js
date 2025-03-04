@@ -1,15 +1,16 @@
+// Moduls
 import Fastify from "fastify";
 import Database from "better-sqlite3";
 import jwt from "@fastify/jwt";
 import cookie from "@fastify/cookie";
-// les autres pages js
-import routes from "./routes.js"
+// Pages
+import routes from "./routes/routes.js"
 // import registerPlugins from './register.js';
 import { CREATE_USERS_TABLE } from './models/userModel.js';
 
-export const fastify = Fastify({ logger: true }) //change ici laffichage des logs
-export const db = new Database('database.sqlite', { verbose: console.log });
-// export const db = new Database('database.sqlite');
+export const fastify = Fastify({ logger: false }) //change ici laffichage des logs
+// export const db = new Database('database.sqlite', { verbose: console.log });
+export const db = new Database('database.sqlite');
 
 await fastify.register(jwt, {
 	secret: 'supersecretkey', // a changer
@@ -30,10 +31,21 @@ db.prepare(CREATE_USERS_TABLE).run();
 
 fastify.decorate('authenticate', async function (request, reply) { 
 	try {
+		console.log("🔹 Vérification du token JWT...");
+
 		await request.jwtVerify();
+
+		console.log("✅ Token valide, contenu extrait :", request.user);
+
 		// request.user = request.user;
+		if (!request.user || !request.user.userId) {
+			console.error("❌ Token valide mais `userId` manquant !");
+			return reply.code(401).send({ error: "Unauthorized: invalid payload" });
+		}
+
 	} catch (err) {
-		reply.code(401).send({error: 'Unauthorized'});
+		console.error("❌ Token invalide ou expiré :", err);
+		reply.code(401).send({ error: 'Unauthorized' });
 	}
 });
 

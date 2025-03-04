@@ -1,4 +1,4 @@
-import insertUser, {selectUsers, deleteUsers, loginUser, logoutUser, adminUser, refreshToken, getUserProfile} from './controllers/userController.js';
+import { register, selectUsers, deleteUsers, login, logoutUser, adminUser, refreshToken, getUserProfile} from '../controllers/authController.js';
 
 /**
  * Encapsulates the routes
@@ -12,11 +12,11 @@ export default async function routes (fastify) {
 	// 	return {user: request.user};
 	// });
 
-	fastify.get('/profile', { prehandler: fastify.authenticate}, getUserProfile);
+	fastify.get('/profile', { preHandler: fastify.authenticate}, getUserProfile);
 
 
-	fastify.post('/users/add', insertUser);
-	fastify.put('/users/login', loginUser);
+	fastify.post('/users/add', register);
+	fastify.put('/users/login', login);
 	fastify.put('/users/logout/:id', logoutUser);
 	fastify.put('/users/admin/:id', adminUser);
 	fastify.delete('/users/delete/:id', deleteUsers);

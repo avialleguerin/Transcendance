@@ -1,46 +1,48 @@
-import { fastify, db } from '../server.js'
+import { fastify, db, } from '../server.js'
 import { INSERT_USER, GET_ALL_USERS, GET_USER_BY_ID, DELETE_USER, GET_USER_BY_EMAIL, UPDATE_CONNECTION, UPDATE_ADMIN } from '../models/userModel.js';
-import jwt from '@fastify/jwt';
-import bcrypt from 'bcrypt';
+import { hashPassword, verifyPassword } from '../utils/hashUtils.js';
 
 // Configuration du plugin JWT
 
-
-export default async function insertUser (request, reply) {
+export async function register (request, reply) {
 	const { username, email, password } = request.body;
 
 	if (!username || !password) {
 		return reply.code(400).send({ error: 'Username, Email and Password are required' });
 	}
-	// const hashedPassword = await bcrypt.hash(password, 10);
-	try {
-		// const stmt = options.db.prepare('INSERT INTO users (username, email, password) VALUES (?, ?, ?)');
-		const stmt = db.prepare(INSERT_USER);
-		// const info = stmt.run(username, email, hashedPassword);
-		const info = stmt.run(username, email, password);
 
-		reply.code(201);
-		return reply.send({ success: true, id: info.lastInsertRowid, username, email});
+	try {
+		const hashedPassword = await hashPassword(password)
+
+		const stmt = db.prepare(INSERT_USER);
+		const info = stmt.run(username, email, hashedPassword);
+
+		return reply.code(201).send({ success: true, id: info.lastInsertRowid, username, email});
 	} catch (err) {
-		fastify.log.error("err");
-		reply.code(500);
-		return { error: err.message };
+		return reply.code(500).send({ error: err.message });
 	}
 }
 
-export async function loginUser (request, reply) {
+export async function login (request, reply) {
 	const { email, password } = request.body;
 
 	try {
 		const stmt = db.prepare(GET_USER_BY_EMAIL);
 		const user = stmt.get(email);
-		if (!user || user.password != password) {
+
+		if (!user || !password)
 			return reply.code(401).send({error: 'Invalid credentials'})
-		}
-		const updateStmt = db.prepare(UPDATE_CONNECTION);
+
+		const isvalid = await verifyPassword(user.password, password);
+
+		if (!isvalid)
+			return reply.status(401).send({ error: "Invalid password" })
+
+		const updateStmt = db.prepare(UPDATE_CONNECTION); // temporaire
 		updateStmt.run(1, user.id);
 
 		const updateUser = stmt.get(email);
+		// const accessToken = fastify.jwt.sign({ userId: user.id, username:user.username, role: user.admin === 1 ? "admin" : "user" }, {expiresIn: '15m' });
 		const accessToken = fastify.jwt.sign({ userId: user.id, username:user.username }, {expiresIn: '15m' });
 		const refreshToken = fastify.jwt.sign({ userId: user.id }, {expiresIn: '7d' });
 
@@ -51,28 +53,16 @@ export async function loginUser (request, reply) {
 			path: '/' //disponible partout 
 		});
 
-		reply.code(200);
-
-		// return reply.send({
-		// 	id: updateUser.id,
-		// 	connected: updateUser.connected,
-		// 	username: updateUser.username,
-		// 	email: updateUser.email,
-		// 	success: true
-		// }, { accessToken })
-		console.log(accessToken);
-		return reply.send({
+		return reply.code(200).send({
 			id: updateUser.id,
 			connected: updateUser.connected,
 			username: updateUser.username,
 			email: updateUser.email,
 			success: true,
 			accessToken
-		});
+		}, { message: "Connexion established"});
 	} catch (err) {
-		fastify.log.error(err);
-		reply.code(500);
-		return { error: err.message };
+		return reply.code(500).send({ error: err.message });
 	}
 }
 
@@ -106,18 +96,17 @@ export async function selectUsers (request, reply) {
 }
 
 export async function getUserProfile(request, reply) {
-	const { id } = request.body;
+	console.log("🔹 Requête reçue sur /api/profile");
+	const userId = request.user?.userId;
+
+	if (!userId)
+	{
+		console.error("❌ Aucun userId trouvé dans le token JWT !");
+		return reply.code(400).send({ error: 'Invalid token' });
+	}
+	console.log(`✅ userId extrait du JWT : ${userId}`);
+
 	try {
-		console.log("🔹 Requête reçue sur /api/profile");
-
-		const userId = request.user.userId;
-		if (!userId)
-		{
-			console.error("❌ Aucun userId trouvé dans le token JWT !");
-			return reply.code(400).send({ error: 'Invalid token' });
-		}
-		console.log(`✅ userId extrait du JWT : ${userId}`);
-
 		const stmt = db.prepare("SELECT id, username, email, admin FROM users WHERE id = ?");
 		const user = stmt.get(userId);
 
@@ -128,9 +117,9 @@ export async function getUserProfile(request, reply) {
 		}
 
 		console.log("✅ Utilisateur récupéré :", user);
-		return { user };
+		return reply.send({ user });
 	} catch (error) {
-		console.error("Erreur dans getUserProfile:", error);
+		console.error('\x1b[31m%s\x1b[0m', "Erreur dans getUserProfile:", error);
 		reply.code(500).send({ error: 'Internal Server Error' });
 	}
 }

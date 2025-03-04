@@ -5,21 +5,6 @@ async function fetchUsers() {
 		const response = await fetch('/api/users');
 		const users = await response.json();
 
-		// const tbody = document.getElementById('users-table');
-		// tbody.innerHTML = '';
-		// users.forEach(user => {
-		// 	const tr = document.createElement('tr');
-		// 	tr.innerHTML = `
-		// 		<td class="border px-4 py-2">${user.id}</td>
-		// 		<td class="border px-4 py-2">${user.username}</td>
-		// 		<td class="border px-4 py-2">${user.email}</td>
-		// 		<td class="border px-4 py-2">
-		// 			<button class="bg-red-500 text-white px-2 py-1 rounded" onclick="deleteUser(${user.id})">Supprimer</button>
-		// 		</td>
-		// 	`;
-		// 	tbody.appendChild(tr);
-		// });
-
 		document.getElementById('users-table').innerHTML = users.map(user => `
 			<tr>
 				<td class="border px-4 py-2">${user.id}</td>
@@ -54,21 +39,20 @@ async function fetchUserProfile() {
 		});
 
 		if (!response.ok) {
-			throw new Error(`❌ Erreur HTTP ${response.status}`);
+			throw new Error(`Erreur HTTP ${response.status}`);
 		}
 
 		const data = await response.json();
-		console.log("✅ Réponse reçue :", data);
+		// console.log("✅ Réponse reçue :", data);
 
 		if (!data.user) {
-			console.error("❌ Aucun utilisateur dans la réponse !");
+			console.error("Aucun utilisateur dans la réponse !");
 			return;
 		}
 
 		const user = data.user;
-		console.log("✅ Utilisateur récupéré :", user);
+		// console.log("✅ Utilisateur récupéré :", user);
 
-		// Insérer les données dans le tableau HTML
 		document.getElementById('user-table').innerHTML = `
 			<tr>
 				<td class="border px-4 py-2">${user.id}</td>
@@ -78,9 +62,9 @@ async function fetchUserProfile() {
 				<td class="border px-4 py-2">${user.admin === 1 ? "Yes" : "No"}</td>
 			</tr>
 		`;
-		console.log("✅ Profil affiché dans le DOM !");
+		// console.log("✅ Profil affiché dans le DOM !");
 	} catch (err) {
-		console.error('❌ Erreur lors de la récupération du profil :', err);
+		console.error('\x1b[31m%s\x1b[0m', 'Erreur lors de la récupération du profil :', err);
 	}
 }
 
