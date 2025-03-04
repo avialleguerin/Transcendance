@@ -38,6 +38,7 @@ services:
     #   file: Backend/docker-compose.yml
     #   service: nginx
     image: nginx:latest     # pour ne pas a avoir besoin de Dockerfile
+    # pull_policy: never
     ports:
       - "8080:80"           #80:80 necessite des privilege
     depends_on:
@@ -58,13 +59,15 @@ services:
   #   networks:
   #     - transcendence-network
 
-  # Sécurité (Vault + SonarQube) - À activer plus tard
-  vault:
-    container_name: vault
-    image: vault:latest
-    restart: always
-    ports:
-      - "8200:8200"
+  # # Sécurité (Vault + SonarQube) - À activer plus tard
+  # vault:
+  #   container_name: vault
+  #   build:
+  #     context: ./Security
+  #     dockerfile: Vault/Dockerfile
+  #   restart: always
+  #   ports:
+      # - "8200:8200"
     # environment:
 
     # cap_add:

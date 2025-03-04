@@ -21,7 +21,7 @@ Transcendance/
 |	└── postcss.config.js				 # Configuration de PostCSS (si nécessaire)
 |
 |── Backend/
-|	├── fastify/							 # Nouvelle application Fastify
+|	├── Fastify/							 # Nouvelle application Fastify
 |	│	├── Dockerfile
 |	│	├── package.json				# Dépendances Node.js (Fastify, plugins, etc.)
 |	│	├── server.js					  # Point d’entrée du serveur Fastify
@@ -58,16 +58,16 @@ Transcendance/
 |	└── docker-compose.yml
 |
 |── Security/
-|	├── modsecurity/
+|	├── Modsecurity/
 |	│	└── modsecurity.conf
-|	├── vault/
+|	├── Vault/
 |	│	├── vault-config.hcl
 |	│	└── policies/
-|	├── sonarqube/
+|	├── Sonarqube/
 |	│	└── sonar-project.properties
-|	├── dependency-check/
+|	├── Dependency-check/
 |	│	└── dependency-check-config.yml
-|	└── docker-compose.yml
+|	└── Docker-compose.yml
 |
 |── Data/								# Pas sur de l'utilite
 |	├── sqlite_data/					# Répertoire pour stocker la base SQLite (remplace postgres_data)
