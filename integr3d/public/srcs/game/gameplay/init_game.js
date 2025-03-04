@@ -102,27 +102,19 @@ export function create_environment_view2(scene) {
 		view2Meshes.push(container);
 	});
 
-	const directionalLight = new BABYLON.DirectionalLight("directionalLight", new BABYLON.Vector3(0, -1, 0), scene);
-	directionalLight.intensity = 10;
-	directionalLight.position = new BABYLON.Vector3(-20, 109, -5);
-	directionalLight.diffuse = new BABYLON.Color3(1, 1, 1);
-	directionalLight.specular = new BABYLON.Color3(1, 1, 1);
-	directionalLight.shadowEnabled = true;
+	const spotLight = new BABYLON.SpotLight("spotLight", new BABYLON.Vector3(-6, 101, -14), new BABYLON.Vector3(2.5, 4, -2), Math.PI / 1, 4, scene);
+	spotLight.intensity = 5000;
+	spotLight.diffuse = new BABYLON.Color3(1, 1, 1);
+	spotLight.specular = new BABYLON.Color3(1, 1, 1);
+	spotLight.range = 30;
+	view2Meshes.push(spotLight);
 
-	// const pointLight = new BABYLON.PointLight("pointlight", new BABYLON.Vector3(-20, 109, -5), scene);
-	// pointLight.intensity = 100;
-	// pointLight.diffuse = new BABYLON.Color3(1, 1, 1);
-	// pointLight.specular = new BABYLON.Color3(1, 1, 1);
-	// pointLight.range = 3;
-	// // Rayon de la portée de la lumière
-	// const lightRadius = pointLight.range || 30; // 30 est une valeur par défaut si tu n'as pas défini de portée spécifique
-	
-	// // Créer une sphère pour montrer la portée de la lumière
-	// const lightRangeSphere = BABYLON.MeshBuilder.CreateSphere("lightRange", {
-	// 	diameter: lightRadius * 2, // Le diamètre de la sphère correspond à la portée de la lumière
-	// 	segments: 16
-	// }, scene);
-
+	const spotLight2 = new BABYLON.SpotLight("spotLight2", new BABYLON.Vector3(-7.69, 101, -27), new BABYLON.Vector3(-7, 4, -2), Math.PI / 1, 4, scene);
+	spotLight2.intensity = 5000;
+	spotLight2.diffuse = new BABYLON.Color3(1, 1, 1);
+	spotLight2.specular = new BABYLON.Color3(1, 1, 1);
+	spotLight2.range = 30;
+	view2Meshes.push(spotLight2);
 }
 
 export function destroy_environement_view2() {

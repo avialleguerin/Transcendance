@@ -4,6 +4,8 @@ import { MoveBall, MoveBall2v2 } from "./ball.js";
 import { init_game_solo , start_game_solo , destroy_game_solo} from "./solo/1v1_player/init_game_Solo.js";
 import { init_game_multiplayer, destroy_game_multiplayer } from "./multiplayer/init_game_2v2.js";
 import { UpdatePLayerPoseMulti } from "./multiplayer/2v2_game/init_players2v2.js";
+import { init_game_ai } from "./solo/1v1_ai/init_game_ai.js";
+import { UpdatePlayerAndAI_Pose } from "./solo/1v1_ai/init_player_and_ai.js";
 
 
 const canvas = document.getElementById('renderCanvas');
@@ -47,7 +49,7 @@ camera.attachControl(canvas, true);
 camera.position = new BABYLON.Vector3(-45.79301951065982, 5.879735371044789, -31.342210947081313),
 camera.rotation = new BABYLON.Vector3(-0.029665280069011667, -2.566387085794712, 0)
 camera.minZ = 0.1;
-camera.maxZ = 1000;
+camera.maxZ = 5000;
 
 const pipeline = new BABYLON.DefaultRenderingPipeline(
 	"defaultPipeline", 
@@ -113,7 +115,7 @@ function createOptimizedSkybox(scene) {
     });
 
     // Créer une sphère inversée pour la skybox
-    const skySphere = BABYLON.MeshBuilder.CreateSphere("skySphere", {diameter: 1000, sideOrientation: BABYLON.Mesh.BACKSIDE}, scene);
+    const skySphere = BABYLON.MeshBuilder.CreateSphere("skySphere", {diameter: 5000, sideOrientation: BABYLON.Mesh.BACKSIDE}, scene);
     skySphere.material = skyMaterial;
     skySphere.isPickable = false;
     skySphere.infiniteDistance = true;
@@ -143,8 +145,10 @@ let player_1;
 let player_2;
 let player_3;
 let player_4;
+let AI_player;
 let Solo_gameStart = false;
 let Multi_gameStart = false;
+let AI_gameStart = false;
 let ball;
 
 export function startGame()
@@ -152,12 +156,21 @@ export function startGame()
     console.log("Game started");
     Solo_gameStart = true;
     Multi_gameStart = false;
+    AI_gameStart = false;
 }
 
 export function startMultiGame()
 {
     Multi_gameStart = true;
     Solo_gameStart = false;
+    AI_gameStart = false;
+}
+
+export function startAI_Game()
+{
+    AI_gameStart = true;
+    Solo_gameStart = false;
+    Multi_gameStart = false;
 }
 
 scene.inputStates = { space: false };
@@ -195,6 +208,14 @@ async function initialize_Multiplayer_game()
     ball = players.ball;
 }
 
+async function initialize_AI_game()
+{
+    let players = await init_game_ai(scene);
+    player_1 = players.player_1;
+    AI_player = players.ai_player;
+    ball = players.ball;
+}
+
 export function leave_Game()
 {
     destroy_game_solo(scene);
@@ -207,6 +228,13 @@ export function leave_Multiplayer_Game()
 {
     destroy_game_multiplayer(scene);
     Multi_gameStart = false;
+    initialized = false;
+    play = false;
+}
+
+export function leave_AI_Game()
+{
+    AI_gameStart = false;
     initialized = false;
     play = false;
 }
@@ -261,7 +289,29 @@ engine.runRenderLoop(() =>
             }
         }
     }
+
+    if (AI_gameStart)
+    {
+        if (!initialized)
+        {
+            initialize_AI_game();
+            initialized = true;
+        }
+        if (initialized)
+        {
+            if (scene.inputStates.space && !play)
+                play = true;
+            if (play)
+            {
+                UpdatePlayerAndAI_Pose(player_1, AI_player, ball);
+                MoveBall(player_1, AI_player, ball);
+            }
+        }
+    }
+
+
     // console.log(camera.position);
+    // console.log(camera.rotation);
     scene.render();
 });
 

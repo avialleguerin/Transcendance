@@ -1,9 +1,8 @@
+import { simple_ai_move } from "./ai_move.js";
+
+
 let minX = 0;
 let maxX = 0;
-
-let idleModel = null;
-let runModel = null;
-let currentModel = null;
 
 function init_border() {
 	const borderTop = new BABYLON.MeshBuilder.CreateBox("border", {
@@ -28,7 +27,7 @@ function init_border() {
 	maxX = borderTop.position.x - (borderTop.scaling.x / 2) - 4.5;
 }
 
-export function init_players(scene, player_1, player_2) {
+export function init_players_and_ai(scene, player_1, ai_player) {
 
 	init_border();
 
@@ -42,15 +41,15 @@ export function init_players(scene, player_1, player_2) {
 	player_1.metadata = { isPlayer_paddle: true };  // Tag ajouté pour identifier ce mesh comme joueur
 	player_1.visibility = 0;
 	
-	player_2 = new BABYLON.MeshBuilder.CreateBox("player_2", {
+	ai_player = new BABYLON.MeshBuilder.CreateBox("ai_player", {
 		width: 10,
 		height: 1.5,
 		depth: 1.5
 	}, scene);
-	player_2.position = new BABYLON.Vector3(-7, 301, -24);
-	player_2.checkPaddleCollision = true;
-	player_2.metadata = { isPlayer_paddle: true };  // Tag ajouté pour identifier ce mesh comme joueur
-	player_2.visibility = 0;
+	ai_player.position = new BABYLON.Vector3(-7, 301, -24);
+	ai_player.checkPaddleCollision = true;
+	ai_player.metadata = { isPlayer_paddle: true };  // Tag ajouté pour identifier ce mesh comme joueur
+	ai_player.visibility = 0;
 
 
 	BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/player/", "PlayerIdleAnnimation.glb", scene, function (newMeshes) {
@@ -91,7 +90,7 @@ export function init_players(scene, player_1, player_2) {
 	
 	BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/player/", "PlayerIdleAnnimation.glb", scene, function (newMeshes) {
 		const playerModel = newMeshes[0];
-		playerModel.position = player_2.position.clone();
+		playerModel.position = ai_player.position.clone();
 		playerModel.scaling = new BABYLON.Vector3(6, 6, 6);
 		playerModel.rotation = new BABYLON.Vector3(0, Math.PI, 0);
 		playerModel.metadata = { isPlayer: true };  // Tag ajouté pour le joueur 2
@@ -108,11 +107,11 @@ export function init_players(scene, player_1, player_2) {
 	
 		// Synchronisation continue de la position
 		scene.registerBeforeRender(() => {
-			playerModel.position.x = player_2.position.x;
-			playerModel.position.y = player_2.position.y;
-			playerModel.position.z = player_2.position.z;
-			playerRepere.position.x = player_2.position.x;
-			playerRepere.position.y = player_2.position.y;
+			playerModel.position.x = ai_player.position.x;
+			playerModel.position.y = ai_player.position.y;
+			playerModel.position.z = ai_player.position.z;
+			playerRepere.position.x = ai_player.position.x;
+			playerRepere.position.y = ai_player.position.y;
 		});
 	});
 	
@@ -120,16 +119,16 @@ export function init_players(scene, player_1, player_2) {
 
 	
 	console.log("player 1 " + player_1.position);
-	console.log("player 2 " + player_2.position);
+	console.log("player 2 " + ai_player.position);
 
-	return { player_1, player_2 };
+	return { player_1, ai_player };
 }
 
 // Fonction pour récupérer les références des joueurs
 export function getPlayerRef() {
 	console.log("player 1 bis " + player_1.position);
-	console.log("player 2 bis " + player_2.position);
-	return { player_1, player_2 };
+	console.log("player 2 bis " + ai_player.position);
+	return { player_1, ai_player };
 }
 
 
@@ -142,17 +141,18 @@ addEventListener("keydown", (event) => keys[event.key] = true);
 addEventListener("keyup", (event) => keys[event.key] = false);
 
 
-export function UpdatePlayerPose(player_1, player_2) {
+export function UpdatePlayerAndAI_Pose(player_1, ai_player, ball) {
 	if (keys["w"] && player_1.position.x > minX) {
 		player_1.position.x -= paddleSpeed;
 	}
 	if (keys["s"] && player_1.position.x < maxX) {
 		player_1.position.x += paddleSpeed;
 	}
-	if (keys["i"] && player_2.position.x > minX) {
-		player_2.position.x -= paddleSpeed;
-	}
-	if (keys["k"] && player_2.position.x < maxX) {
-		player_2.position.x += paddleSpeed;
-	}
+	// if (keys["i"] && ai_player.position.x > minX) {
+	// 	ai_player.position.x -= paddleSpeed;
+	// }
+	// if (keys["k"] && ai_player.position.x < maxX) {
+	// 	ai_player.position.x += paddleSpeed;
+	// }
+	simple_ai_move(ai_player, ball, minX, maxX);
 }

@@ -1,5 +1,5 @@
 import AbstractView from "./AbstractView.js";
-import { startGame } from "../../../srcs/game/gameplay/babylon.js";
+import { startGame, startAI_Game } from "../../../srcs/game/gameplay/babylon.js";
 import { startMultiGame } from "../../../srcs/game/gameplay/babylon.js";
 import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.js";
 
@@ -42,7 +42,9 @@ export default class extends AbstractView {
 						<button id="solo_1v1_btn" class="btn">
 							<a href="/solo_game_1v1" class="nav-link" data-link>1v1</a>
 						</button>
-						<button id="solo_ai_btn" class="btn">AI</button>
+						<button id="solo_ai_btn" class="btn">
+							<a href="/solo_game_ai" class="nav-link" data-link>AI</a>
+						</button>
 					</div>
 					<button id="back_to_menu_view3" class="btn">BACK TO MENU</button>
 				</div>
@@ -81,6 +83,14 @@ export default class extends AbstractView {
 			console.log("Multiplayer 2v2 game started");
 			handleViewTransitions("vue3", "vue2");
 			startMultiGame();
+		});
+	}
+
+	init_solo_game_ai() {
+		document.getElementById("solo_ai_btn").addEventListener("click", () => {
+			console.log("Solo AI game started");
+			handleViewTransitions("vue3", "vue2");
+			startAI_Game();
 		});
 	}
 
@@ -173,10 +183,22 @@ export default class extends AbstractView {
 
 		// Retourner à l'écran principal quand on clique sur ACCUEIL
 		btn_back_home.addEventListener('click', () => {
-			view1.classList.remove('active');
-			view2.classList.remove('active');
-			btn_back_home.classList.remove('active');
-			btn_jouer.style.display = 'block';
+			if (view2.classList.contains('active')) {
+				view2.classList.remove('active');
+				view1.classList.remove('active');
+				btn_back_home.classList.remove('active');
+				btn_jouer.style.display = 'block';
+			}
+			if (view5.classList.contains('active')) {
+				view5.classList.remove('active');
+				view1.classList.remove('active');
+				btn_back_home.classList.remove('active');
+				btn_jouer.style.display = 'block';
+			}
+			// view1.classList.remove('active');
+			// view2.classList.remove('active');
+			// btn_back_home.classList.remove('active');
+			// btn_jouer.style.display = 'block';
 		});
 	}
 }

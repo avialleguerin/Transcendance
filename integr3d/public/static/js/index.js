@@ -68,6 +68,10 @@ const router = async () => {
 		view.game_menu();
 	}
 
+	if (typeof view.init_solo_game_ai === 'function') {
+		view.init_solo_game_ai();
+	}
+
 	// if (typeof view.inializeView === 'function') {
 	// 	view.inializeView('game-menu');
 	// }

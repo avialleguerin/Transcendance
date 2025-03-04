@@ -81,12 +81,6 @@ export function MoveBall(player_1, player_2, ball) {
 		return;
 	}
 
-	console.log("Ball moving");
-	console.log(ball.position);
-	if (ball)
-	{
-		console.log("Ball existe");
-	}
 	const BALL_RADIUS = 1.5;
 
 	ball.position.x += ballDirection.x * ballSpeed;
