@@ -47,7 +47,7 @@
 						<td class="border px-4 py-2">${user.username}</td>
 						<td class="border px-4 py-2">${user.email}</td>
 						<td class="border px-4 py-2">
-							<button class="bg-red-500 text-white px-2 py-1 rounded" onclick="deleteUser(${user.id})">Supprimer</button>
+							<button class="bg-red-500 text-white px-2 py-1 rounded" onclick="unregister(${user.id})">Supprimer</button>
 						</td>
 					`;
 					tbody.appendChild(tr);
@@ -57,7 +57,7 @@
 			}
 		}
 
-		async function deleteUser(id) {
+		async function unregister(id) {
 			if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
 				try {
 					const response = await fetch(`/users/${id}`, { method: 'DELETE' });

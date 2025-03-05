@@ -1,10 +1,13 @@
-import { fastify, db, } from '../server.js'
+// import { fastify, db, } from '../server.js'
+import { fastify } from '../server.js'
+import db from '../utils/db.js';
 import { INSERT_USER, GET_ALL_USERS, GET_USER_BY_ID, DELETE_USER, GET_USER_BY_EMAIL, UPDATE_CONNECTION, UPDATE_ADMIN } from '../models/userModel.js';
+import userModel from '../models/userModel.js';
 import { hashPassword, verifyPassword } from '../utils/hashUtils.js';
 
 // Configuration du plugin JWT
 
-export async function register (request, reply) {
+export async function register(request, reply) {
 	const { username, email, password } = request.body;
 
 	if (!username || !password) {
@@ -14,8 +17,7 @@ export async function register (request, reply) {
 	try {
 		const hashedPassword = await hashPassword(password)
 
-		const stmt = db.prepare(INSERT_USER);
-		const info = stmt.run(username, email, hashedPassword);
+		const info = userModel.createUser(username, email, hashedPassword)
 
 		return reply.code(201).send({ success: true, id: info.lastInsertRowid, username, email});
 	} catch (err) {
@@ -23,7 +25,7 @@ export async function register (request, reply) {
 	}
 }
 
-export async function login (request, reply) {
+export async function login(request, reply) {
 	const { email, password } = request.body;
 
 	try {
@@ -43,7 +45,7 @@ export async function login (request, reply) {
 
 		const updateUser = stmt.get(email);
 		// const accessToken = fastify.jwt.sign({ userId: user.id, username:user.username, role: user.admin === 1 ? "admin" : "user" }, {expiresIn: '15m' });
-		const accessToken = fastify.jwt.sign({ userId: user.id, username:user.username }, {expiresIn: '15m' });
+		const accessToken = fastify.jwt.sign({ userId: user.id, username:user.username }, {expiresIn: '1m' });
 		const refreshToken = fastify.jwt.sign({ userId: user.id }, {expiresIn: '7d' });
 
 		reply.setCookie('refreshToken', refreshToken, {
@@ -71,20 +73,20 @@ export async function refreshToken(request, reply) {
 		const { refreshToken } = request.cookies;
 
 		if (!refreshToken) {
-			return reply.code(401).send({ error: 'No refresh token'});
+			return reply.code(401).send({ error: 'Refresh token is missing'});
 		}
 
 		const decoded = fastify.jwt.verify(refreshToken);
-		const newAccessToken = fastify.jwt.sign({ userId: decoded.userId}, {expiresIn: '15m'});
+		const newAccessToken = fastify.jwt.sign({ userId: decoded.userId}, {expiresIn: '1m'});
 
 		return reply.send({ accessToken: newAccessToken });
 	} catch (err) {
-		return reply.code(401).send({ error: 'Invalid refresh token' });
+		return reply.code(401).send({ error: 'Invalid or expired refresh token' });
 	}
 }
 
 
-export async function selectUsers (request, reply) {
+export async function selectUsers(request, reply) {
 	try {
 		const users = db.prepare(GET_ALL_USERS).all();
 		return users;
@@ -124,7 +126,7 @@ export async function getUserProfile(request, reply) {
 	}
 }
 
-export async function logoutUser(request, reply) {
+export async function logout(request, reply) {
 	const { id } = request.body;
 	try {
 		const stmt = db.prepare(GET_USER_BY_ID);
@@ -139,9 +141,7 @@ export async function logoutUser(request, reply) {
 
 			reply.clearCookie('refreshToken');
 
-			reply.code(200);
-
-			return reply.send({
+			return reply.clearCookie('refreshToken').code(200).send({
 				id: updateUser.id,
 				connected: updateUser.connected,
 				username: updateUser.username,
@@ -149,14 +149,10 @@ export async function logoutUser(request, reply) {
 				success: true
 			}, { message: 'Logged out successfully' })
 		}
-		else {
-			reply.code(404);
-			return reply.send({ success: false, error: 'User not found' });
-		}
+		else
+			return reply.code(404).send({ success: false, error: 'User not found' });
 	} catch (err) {
-		fastify.log.error(err);
-		reply.code(500);
-		return { error: err.message };
+		return reply.code(500).send({ error: err.message });
 	}
 }
 
@@ -194,7 +190,7 @@ export async function adminUser(request, reply) {
 	}
 }
 
-export async function deleteUsers(request, reply) {
+export async function unregister(request, reply) {
 	const { id } = request.params; // mode destructuration
 	// const id = request.params.id;
 	if (!id)

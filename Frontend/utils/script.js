@@ -14,9 +14,9 @@ async function fetchUsers() {
 				<td class="border px-4 py-2">${user.connected === 1 ? "Yes" : "No"}</td>
 				<td class="border px-4 py-2">${user.admin === 1 ? "Yes" : "No"}</td>
 				<td class="border px-4 py-2">
-					<button class="bg-blue-500 text-white px-2 py-1 rounded" onclick="logoutUser(${user.id})">Logout</button>
+					<button class="bg-blue-500 text-white px-2 py-1 rounded" onclick="logout(${user.id})">Logout</button>
 					<button class="bg-orange-500 text-white px-2 py-1 rounded" onclick="adminUser(${user.id})">Admin</button>
-					<button class="bg-red-500 text-white px-2 py-1 rounded" onclick="deleteUser(${user.id})">Supprimer</button>
+					<button class="bg-red-500 text-white px-2 py-1 rounded" onclick="unregister(${user.id})">Supprimer</button>
 				</td>
 			</tr>
 		`).join('');
@@ -68,7 +68,7 @@ async function fetchUserProfile() {
 	}
 }
 
-async function logoutUser(id) {
+async function logout(id) {
 	try {
 		const response = await fetch(`/api/users/logout/${id}`, {
 			method: "PUT",
@@ -104,7 +104,7 @@ async function adminUser(id) {
 	}
 }
 
-async function deleteUser(id) {
+async function unregister(id) {
 	if (confirm('Do you really want to delete this user ?')) {
 		try {
 			const response = await fetch(`/api/users/delete/${id}`, { method: 'DELETE' });
