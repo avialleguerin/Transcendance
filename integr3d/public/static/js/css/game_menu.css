@@ -78,7 +78,7 @@
     transition: opacity 0.5s ease;
 }
 
-.view2 {
+.view2 , .view3 , .view4 , .view5 , .view6, .view7 , .view8 {
     position: absolute;
     top: 0;
     left: 0;
@@ -93,35 +93,6 @@
     transition: opacity 0.3s ease;
 }
 
-.view3 {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-}
-
-.view4 {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-}
 
 .view1-content {
     display: flex;
@@ -136,27 +107,7 @@
     font-family: 'Black Ops One', sans-serif;
 }
 
-.view2-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    justify-content: flex-start; /* Changé de center à flex-start pour commencer depuis le haut */
-    padding-top: 100px; /* Ajouter un padding en haut pour décaler le contenu */
-}
-
-.view3-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    justify-content: flex-start; /* Changé de center à flex-start pour commencer depuis le haut */
-    padding-top: 100px; /* Ajouter un padding en haut pour décaler le contenu */
-}
-
-.view4-content {
+.view2-content , .view3-content , .view4-content , .view5-content , .view6-content , .view7-content , .view8-content {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -167,28 +118,7 @@
 }
 
 
-
-.view2-content h1 {
-    color: #ffffff;
-    text-shadow: 2px 2px 4px rgb(0, 0, 0);
-    text-align: center;
-    font-size: 1.5vw;
-    position: relative;
-    top: -15%; /* Assurez-vous qu'il soit en haut */
-    font-family: 'Black Ops One', sans-serif;
-}
-
-.view3-content h1 {
-    color: #ffffff;
-    text-shadow: 2px 2px 4px rgb(0, 0, 0);
-    text-align: center;
-    font-size: 1.2vw;
-    position: relative;
-    top: -15%; /* Assurez-vous qu'il soit en haut */
-    font-family: 'Black Ops One', sans-serif;
-}
-
-.view4-content h1 {
+.view2-content h1 , .view3-content h1 , .view4-content h1 , .view5-content h1 , .view6-content h1 , .view7-content h1 , .view8-content h1 {
     color: #ffffff;
     text-shadow: 2px 2px 4px rgb(0, 0, 0);
     text-align: center;
@@ -261,38 +191,8 @@
     align-items: center; /* Centre verticalement */
 }
 
-.view4-content #back_to_menu_view4 {
-    position: absolute;
-    bottom : 5%;
-    right: 5%;
-    padding: 10px 0px;
-    font-size: 0.6vw;
-    font-weight: bold;
-    background-color: transparent;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
-    background-image: url("../../../srcs/game/assets/image/boutton.svg");
-    background-size: 100% auto;
-    background-position: center;
-    background-repeat: no-repeat;
-    line-height: 3vh;
 
-    width: 105px;  /* Largeur fixe */
-    height: 70px;  /* Hauteur fixe */
-    display: flex; /* Pour aider au centrage du texte */
-    justify-content: center; /* Centre horizontalement */
-    align-items: center; /* Centre verticalement */
-}
-
-.view4-content #back_to_menu_view4:hover {
-    color: gray;
-}
-
-.view3-content #back_to_menu_view3 {
+.view3-content #back_to_menu_view3, .view4-content #back_to_menu_view4 {
     position: absolute;
     bottom : 5%;
     right: 5%;
@@ -323,40 +223,6 @@
     color: gray;
 }
 
-.view5 {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-}
-
-.view5-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    justify-content: flex-start; /* Changé de center à flex-start pour commencer depuis le haut */
-    padding-top: 100px; /* Ajouter un padding en haut pour décaler le contenu */
-}
-
-.view5-content h1 {
-    color: #ffffff;
-    text-shadow: 2px 2px 4px rgb(0, 0, 0);
-    text-align: center;
-    font-size: 1.2vw;
-    position: relative;
-    top: -15%; /* Assurez-vous qu'il soit en haut */
-    font-family: 'Black Ops One', sans-serif;
-}
 
 .back-home {
     position: absolute;
@@ -398,6 +264,33 @@
     align-items: center; /* Centre verticalement */
 }
 
+.view6-content .btn , .view7-content .btn , .view8-content .btn {
+    padding: 15px 0px;
+    font-size: 0.7vw;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+    border: 2px solid #44444400;
+    background-color: transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    background-image: url("../../../srcs/game/assets/image/boutton.svg");
+    background-size: 100% auto;
+    background-position: center;
+    background-repeat: no-repeat;
+    line-height: 4vh;
+    
+    /* Ajout de dimensions fixes */
+    width: 120px;  /* Largeur fixe */
+    height: 70px;  /* Hauteur fixe */
+    display: flex; /* Pour aider au centrage du texte */
+    justify-content: center; /* Centre horizontalement */
+    align-items: center; /* Centre verticalement */
+
+    transform: translateY(-80%);
+}
+
 
 .btn:hover {
     color : gray;
@@ -410,15 +303,141 @@
     width: 100%;
     height: 100%;
 }
+.powerUP {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    transform: translateY(-63%);
+}
+
+.powerUP p:first-child {
+    color: white;
+    font-family: 'Black Ops One', sans-serif;
+    font-size: 0.8vw;
+    margin-right: 10px;
+}
+
+.power_selector {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Espace entre les groupes chiffre + case */
+}
+
+.powerUP_number {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+
+.powerUP_number p {
+    color: white;
+    font-family: 'Black Ops One', sans-serif;
+    margin: 0;
+    margin-right: 10px;
+}
+
+.number_powerUP {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #333;
+    background-color: rgb(0, 0, 0);
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+}
+
+.number_powerUP.checked::after,
+.active_powerUP.checked::after,
+.skin_perso.checked::after {
+    content: '✓';
+    color: rgb(255, 255, 255);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: bold;
+}
+
+.active_powerUP, .skin_perso {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #333;
+    background-color: rgb(0, 0, 0);
+    cursor: pointer;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 10px;
+    position: relative;
+}
+
+.skin {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+}
+
+.skin p {
+    color: white;
+    font-family: 'Black Ops One', sans-serif;
+    font-size: 0.8vw;
+    transform: translate(-36%, -145%);
+}
+
+.back {
+    position: absolute;
+    top: 40.5%;
+    right: 26.5%;
+    background: rgba(0, 0, 0, 0);
+    padding: 2rem;
+    text-align: center;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* backdrop-filter: blur(5px); */
+    transition: opacity 0.5s ease;
+}
+
+.btn_back {
+    padding: 15px 0px;
+    font-size: 0.7vw;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+    border: 2px solid #44444400;
+    background-color: transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    background-image: url("../../../srcs/game/assets/image/boutton.svg");
+    background-size: 100% auto;
+    background-position: center;
+    background-repeat: no-repeat;
+    line-height: 4vh;
+    
+    /* Ajout de dimensions fixes */
+    width: 120px;  /* Largeur fixe */
+    height: 70px;  /* Hauteur fixe */
+    display: flex; /* Pour aider au centrage du texte */
+    justify-content: center; /* Centre horizontalement */
+    align-items: center; /* Centre verticalement */
+}
+
+
+
 
 /* Initialement cacher les vues */
-.view1, .view2 , .view3, .view4, .view5 , .back-home {
+.view1, .view2 , .view3, .view4, .view5 , .back-home, .view6, .view7, .view8, .power_selector, .back{
     opacity: 0;
     pointer-events: none;
 }
 
 /* Pour afficher une vue quand nécessaire, ajouter la classe .active */
-.view1.active, .view2.active , .view3.active, .view4.active, .view5.active , .back-home.active {
+.view1.active, .view2.active , .view3.active, .view4.active, .view5.active , .back-home.active, .view6.active, .view7.active, .view8.active, .power_selector.active, .back.active {
     opacity: 1;
     pointer-events: auto;
 }

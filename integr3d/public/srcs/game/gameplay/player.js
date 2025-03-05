@@ -1,3 +1,5 @@
+import { grenade_flash } from "./solo/1v1_player/init_powerUP_soloGame.js";
+
 let minX = 0;
 let maxX = 0;
 
@@ -154,5 +156,9 @@ export function UpdatePlayerPose(player_1, player_2) {
 	}
 	if (keys["k"] && player_2.position.x < maxX) {
 		player_2.position.x += paddleSpeed;
+	}
+	if (keys["1"])
+	{
+		grenade_flash(scene);
 	}
 }

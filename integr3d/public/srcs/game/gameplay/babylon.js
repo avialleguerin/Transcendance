@@ -1,4 +1,4 @@
-import { create_environment_view1, create_environment_view2, destroy_environement_view3} from "./init_game.js";
+import { create_environment_view1} from "./init_game.js";
 import { UpdatePlayerPose} from "./player.js";
 import { MoveBall, MoveBall2v2 } from "./ball.js";
 import { init_game_solo , start_game_solo , destroy_game_solo} from "./solo/1v1_player/init_game_Solo.js";
@@ -133,13 +133,6 @@ const skybox = createOptimizedSkybox(scene);
 
 
 
-
-
-
-
-
-// const gameInstance = create_game(scene);
-
 let initialized = false;
 let player_1;
 let player_2;
@@ -239,7 +232,6 @@ export function leave_AI_Game()
     play = false;
 }
 
-
 engine.runRenderLoop(() =>
 {
     const scale = window.devicePixelRatio;
@@ -308,22 +300,9 @@ engine.runRenderLoop(() =>
             }
         }
     }
-
-
-    // console.log(camera.position);
-    // console.log(camera.rotation);
     scene.render();
 });
-
 
 window.addEventListener('resize', () => {
 	engine.resize(true);
 });
-
-// scene.onBeforeRenderObservable.add(() => {
-// 	scene.meshes.forEach(mesh => {
-// 		if (mesh.material && mesh.material.diffuseTexture) {
-// 			mesh.material.diffuseTexture.anisotropicFilteringLevel = 16;
-// 		}
-// 	});
-// });

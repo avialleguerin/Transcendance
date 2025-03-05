@@ -2,6 +2,7 @@ import AbstractView from "./AbstractView.js";
 import { startGame, startAI_Game } from "../../../srcs/game/gameplay/babylon.js";
 import { startMultiGame } from "../../../srcs/game/gameplay/babylon.js";
 import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.js";
+import { init_nb_powerUP } from "../../../srcs/game/gameplay/solo/1v1_player/init_powerUP_soloGame.js";
 
 export default class extends AbstractView {
 	constructor() {
@@ -28,7 +29,7 @@ export default class extends AbstractView {
 			</button>
 			<div class="view2" id="view2">
 				<div class="view2-content">
-					<h1>CHOISIE TON MODE DE JEUX</h1>
+					<h1>CHOISIS TON MODE DE JEUX</h1>
 					<div id="game_mode_btn" class="game_mode_btn">
 						<button id="solo" class="btn">SOLO</button>
 						<button id="multiplayer" class="btn">MULTIPLAYER</button>
@@ -39,12 +40,8 @@ export default class extends AbstractView {
 				<div class="view3-content">
 					<h1>MODE DE JEUX EN SOLO</h1>
 					<div id="game_mode_btn" class="game_mode_btn">
-						<button id="solo_1v1_btn" class="btn">
-							<a href="/solo_game_1v1" class="nav-link" data-link>1v1</a>
-						</button>
-						<button id="solo_ai_btn" class="btn">
-							<a href="/solo_game_ai" class="nav-link" data-link>AI</a>
-						</button>
+						<button id="prepar_game_1v1" class="btn">1v1</button>
+						<button id="prepar_gane_ai" class="btn">ai</button>
 					</div>
 					<button id="back_to_menu_view3" class="btn">BACK TO MENU</button>
 				</div>
@@ -53,9 +50,7 @@ export default class extends AbstractView {
 				<div class="view4-content">
 					<h1>MODE DE JEUX MULTIPLAYER</h1>
 					<div id="game_mode_btn" class="game_mode_btn">
-						<button id="multiplayer_btn" class="btn">
-							<a href="/duo_game" class="nav-link" data-link>2v2</a>
-						</button>
+						<button id="prepar_game_multi" class="btn">2v2</button>
 					</div>
 					<button id="back_to_menu_view4" class="btn">BACK TO MENU</button>
 				</div>
@@ -64,6 +59,101 @@ export default class extends AbstractView {
 				<div class="view5-content">
 					<h1>PARAMETRES</h1>
 				</div>
+			</div>
+			<div class="view6" id="view6">
+				<div class="view6-content">
+					<h1>CUSTOMISE TA GAME</h1>
+					<div class="powerUP">
+						<p>PowerUP :<span id="powerUP" class="active_powerUP"></span></p>
+						<div id="power_selector" class="power_selector">
+							<div class="powerUP_number">
+								<p>1</p>
+								<span id="number_powerUP_1" class="number_powerUP"></span>
+							</div>
+							<div class="powerUP_number">
+								<p>3</p>
+								<span id="number_powerUP_3" class="number_powerUP"></span>
+							</div>
+							<div class="powerUP_number">
+								<p>5</p>
+								<span id="number_powerUP_5" class="number_powerUP"></span>
+							</div>
+						</div>
+					</div>
+					<div class="skin">
+						<p>Skin Personnalise :<span id="skin_perso" class="skin_perso"</span></p>
+					</div>
+					<button id="solo_1v1_btn" class="btn">
+						<a href="/solo_game_1v1" class="nav-link" data-link>Lancer la partie</a>
+					</button>
+				</div>
+			</div>
+			<div class="view7" id="view7">
+				<div class="view7-content">
+					<h1>CUSTOMISE TA GAME CONTRE L'IA</h1>
+					<div class="powerUP">
+						<p>PowerUP :<span id="powerUP" class="active_powerUP"></span></p>
+						<div id="power_selector" class="power_selector">
+							<div class="powerUP_number">
+								<p>1</p>
+								<span id="number_powerUP_1" class="number_powerUP"></span>
+							</div>
+							<div class="powerUP_number">
+								<p>3</p>
+								<span id="number_powerUP_3" class="number_powerUP"></span>
+							</div>
+							<div class="powerUP_number">
+								<p>5</p>
+								<span id="number_powerUP_5" class="number_powerUP"></span>
+							</div>
+						</div>
+					</div>
+					<div class="skin">
+						<p>Skin Personnalise :<span id="skin_perso" class="skin_perso"</span></p>
+					</div>
+					<button id="solo_ai_btn" class="btn">
+						<a href="/solo_game_ai" class="nav-link" data-link>Lancer la partie</a>
+					</button>
+				</div>
+			</div>
+			<div class="view8" id="view8">
+				<div class="view8-content">
+					<h1>CUSTOMISE TA GAME EN MULTI</h1>
+					<div class="powerUP">
+						<p>PowerUP :<span id="powerUP" class="active_powerUP"></span></p>
+						<div id="power_selector" class="power_selector">
+							<div class="powerUP_number">
+								<p>1</p>
+								<span id="number_powerUP_1" class="number_powerUP"></span>
+							</div>
+							<div class="powerUP_number">
+								<p>3</p>
+								<span id="number_powerUP_3" class="number_powerUP"></span>
+							</div>
+							<div class="powerUP_number">
+								<p>5</p>
+								<span id="number_powerUP_5" class="number_powerUP"></span>
+							</div>
+						</div>
+					</div>
+					<div class="skin">
+						<p>Skin Personnalise :<span id="skin_perso" class="skin_perso"</span></p>
+					</div>
+					<button id="multiplayer_btn" class="btn">
+						<a href="/duo_game" class="nav-link" data-link>Lancer la partie</a>
+					</button>
+				</div>
+			</div>
+		</div>
+		<div class="back" id="back_to_select_mode_view6">
+			<button id="back_to_menu_view6" class="btn_back">BACK</button>
+		</div>
+		<div class="back" id="back_to_select_mode_view7">
+			<button id="back_to_menu_view7" class="btn_back">BACK</button>
+		</div>
+		<div class="back" id="back_to_select_mode_view8">
+			<button id="back_to_menu_view8" class="btn_back">BACK</button>
+		</div>
 		</div>
 
 
@@ -109,6 +199,24 @@ export default class extends AbstractView {
 		const back_to_menu_view4 = document.getElementById('back_to_menu_view4');
 		const btn_back_home = document.getElementById('back-home');
 		const view5 = document.getElementById('view5');
+		const view6 = document.getElementById('view6');
+		const view7 = document.getElementById('view7');
+		const view8 = document.getElementById('view8');
+		const prepar_game_1v1 = document.getElementById('prepar_game_1v1');
+		const prepar_gane_ai = document.getElementById('prepar_gane_ai');
+		const prepar_game_multi = document.getElementById('prepar_game_multi');
+		const back_to_menu_view6 = document.getElementById('back_to_menu_view6');
+		const back_to_menu_view7 = document.getElementById('back_to_menu_view7');
+		const back_to_menu_view8 = document.getElementById('back_to_menu_view8');
+		const powerUP = document.getElementById('powerUP');
+		const number_powerUP_1 = document.getElementById('number_powerUP_1');
+		const number_powerUP_3 = document.getElementById('number_powerUP_3');
+		const number_powerUP_5 = document.getElementById('number_powerUP_5');
+		const power_selector = document.getElementById('power_selector');
+		const skin_perso = document.getElementById('skin_perso');
+		const back_to_select_mode_view6 = document.getElementById('back_to_select_mode_view6');
+		const back_to_select_mode_view7 = document.getElementById('back_to_select_mode_view7');
+		const back_to_select_mode_view8 = document.getElementById('back_to_select_mode_view8');
 
 		// Afficher view1 quand on clique sur JOUER
 		btn_jouer.addEventListener('click', () => {
@@ -195,10 +303,94 @@ export default class extends AbstractView {
 				btn_back_home.classList.remove('active');
 				btn_jouer.style.display = 'block';
 			}
-			// view1.classList.remove('active');
-			// view2.classList.remove('active');
-			// btn_back_home.classList.remove('active');
-			// btn_jouer.style.display = 'block';
 		});
+
+		// Afficher view6 quand on clique
+		prepar_game_1v1.addEventListener('click', () => {
+			view3.classList.remove('active');
+			view6.classList.add('active');
+			back_to_select_mode_view6.classList.add('active');
+		});
+
+		// Afficher view7 quand on clique
+
+		prepar_gane_ai.addEventListener('click', () => {
+			view3.classList.remove('active');
+			view7.classList.add('active');
+			back_to_select_mode_view7.classList.add('active');
+		});
+
+		// Afficher view8 quand on clique
+		prepar_game_multi.addEventListener('click', () => {
+			view4.classList.remove('active');
+			view8.classList.add('active');
+			back_to_select_mode_view8.classList.add('active');
+		});
+
+		back_to_menu_view6.addEventListener('click', () => {
+			view6.classList.remove('active');
+			view3.classList.add('active');
+			back_to_select_mode_view6.classList.remove('active');
+		});
+
+		back_to_menu_view7.addEventListener('click', () => {
+			console.log('Back to menu view7 clicked');
+			view3.classList.add('active');
+			view7.classList.remove('active');
+			back_to_select_mode_view7.classList.remove('active');
+		});
+
+		back_to_menu_view8.addEventListener('click', () => {
+			view8.classList.remove('active');
+			view4.classList.add('active');
+			back_to_select_mode_view8.classList.remove('active');
+		});
+
+		// Activer/désactiver le powerUP
+		powerUP.addEventListener('click', () => {
+			powerUP.classList.toggle('checked');
+
+			if (powerUP.classList.contains('checked')) {
+				console.log('PowerUP is active');
+				power_selector.classList.add('active');
+			}
+			else {
+				console.log('PowerUP is inactive');
+				power_selector.classList.remove('active');
+			}
+		});
+
+		// Sélectionner le nombre de powerUP
+
+		number_powerUP_1.addEventListener('click', () => {
+			number_powerUP_1.classList.toggle('checked')
+			number_powerUP_3.classList.remove('checked');
+			number_powerUP_5.classList.remove('checked');
+			console.log('1 powerUP selected and 3 and 5 unselected');
+			init_nb_powerUP(1);
+		});
+
+		number_powerUP_3.addEventListener('click', () => {
+			number_powerUP_3.classList.toggle('checked')
+			number_powerUP_1.classList.remove('checked');
+			number_powerUP_5.classList.remove('checked');
+			console.log('3 powerUP selected and 1 and 5 unselected');
+			init_nb_powerUP(3);
+		});
+
+		number_powerUP_5.addEventListener('click', () => {
+			number_powerUP_5.classList.toggle('checked')
+			number_powerUP_1.classList.remove('checked');
+			number_powerUP_3.classList.remove('checked');
+			console.log('5 powerUP selected and 1 and 3 unselected');
+			init_nb_powerUP(5);
+		});
+
+		skin_perso.addEventListener('click', () => {
+			skin_perso.classList.toggle('checked');
+			console.log('Skin perso selected');
+		});
+
+
 	}
 }
