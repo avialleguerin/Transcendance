@@ -7,7 +7,7 @@ export const CREATE_USERS_TABLE = `
     username TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
-    admin BOOLEAN DEFAULT FALSE,
+    role TEXT CHECK(role IN ('user', 'admin')) DEFAULT 'user',
     connected BOOLEAN DEFAULT FALSE
   );
 `;
@@ -18,28 +18,21 @@ export const INSERT_USER = `
 
 const userModel = {
   createUser: (username, email, password) => {
-    const stmt = db.prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?);");
-    stmt.run(username, email, password);
+    db.prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?);").run(username, email, password);
     return { username, email };
   },
 
   getAllUsers: () => db.prepare("SELECT * FROM users").all(),
 
-  getUserById: (id) => db.prepare("SELECT * FROM users WHERE id = ?").get(id),
+  getUserById: (id) => { return db.prepare("SELECT * FROM users WHERE id = ?").get(id) },
 
   getUserByEmail: (email) => { return db.prepare("SELECT * FROM users WHERE email = ?").get(email) },
 
-  updateUserConnectionStatus: (id, connected) => {
-      db.prepare("UPDATE users SET connected = ? WHERE id = ?").run(connected, id);
-  },
+  updateUserConnectionStatus: (id, connected) => { return db.prepare("UPDATE users SET connected = ? WHERE id = ?").run(connected, id) },
 
-  updateAdminStatus: (id, isAdmin) => {
-      db.prepare("UPDATE users SET admin = ? WHERE id = ?").run(isAdmin ? 1 : 0, id);
-  },
+  updateRole: (id, role) => { return db.prepare("UPDATE users SET role = ? WHERE id = ?").run(role === 'user' ? 'admin' : 'user', id) },
 
-  unregister: (id) => {
-      db.prepare("DELETE FROM users WHERE id = ?").run(id);
-  }
+  unregister: (id) => { return db.prepare("DELETE FROM users WHERE id = ?").run(id) }
 }
 
 export const GET_ALL_USERS = `
@@ -61,8 +54,8 @@ export const UPDATE_CONNECTION = `
   UPDATE users SET connected = ? WHERE id = ?;
 `;
 
-export const UPDATE_ADMIN = `
-UPDATE users SET admin = ? WHERE id = ?;
+export const UPDATE_ROLE = `
+UPDATE users SET role = ? WHERE id = ?;
 `;
 
 export const DELETE_USER = `

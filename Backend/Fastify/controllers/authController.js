@@ -1,7 +1,7 @@
 // import { fastify, db, } from '../server.js'
 import { fastify } from '../server.js'
 import db from '../utils/db.js';
-import { INSERT_USER, GET_ALL_USERS, GET_USER_BY_ID, DELETE_USER, GET_USER_BY_EMAIL, UPDATE_CONNECTION, UPDATE_ADMIN } from '../models/userModel.js';
+import { INSERT_USER, GET_ALL_USERS, GET_USER_BY_ID, DELETE_USER, GET_USER_BY_EMAIL, UPDATE_CONNECTION, UPDATE_ROLE } from '../models/userModel.js';
 import userModel from '../models/userModel.js';
 import { hashPassword, verifyPassword } from '../utils/hashUtils.js';
 
@@ -13,7 +13,10 @@ export async function register(request, reply) {
 	if (!username || !password) {
 		return reply.code(400).send({ error: 'Username, Email and Password are required' });
 	}
-
+	const user = userModel.getUserByEmail(email)
+	console.log(typeof user)
+	if(user)
+		return reply.code(500).send({ error: "This email is already used" });
 	try {
 		const hashedPassword = await hashPassword(password)
 
@@ -47,23 +50,21 @@ export async function login(request, reply) {
 		const updateStmt = db.prepare(UPDATE_CONNECTION); // temporaire
 		updateStmt.run(1, user.id);
 
-		const updateUser = userModel.getUserByEmail(email);
-		// const accessToken = fastify.jwt.sign({ userId: user.id, username:user.username, role: user.admin === 1 ? "admin" : "user" }, {expiresIn: '15m' });
 		const accessToken = fastify.jwt.sign({ userId: user.id, username:user.username }, {expiresIn: '1m' });
 		const refreshToken = fastify.jwt.sign({ userId: user.id }, {expiresIn: '7d' });
 
 		reply.setCookie('refreshToken', refreshToken, {
 			httpOnly: true, // Ne peut pas être lu par JS
-			secure: process.env.NODE_ENV === 'production', //faire des recherches
+			secure: true, //faire des recherches
 			sameSite: 'Strict',
 			path: '/' //disponible partout 
 		});
 
 		return reply.code(200).send({
-			id: updateUser.id,
-			connected: updateUser.connected,
-			username: updateUser.username,
-			email: updateUser.email,
+			id: user.id,
+			connected: 1,
+			username: user.username,
+			email: user.email,
 			success: true,
 			accessToken
 		}, { message: "Connexion established"});
@@ -113,7 +114,7 @@ export async function getUserProfile(request, reply) {
 	console.log(`✅ userId extrait du JWT : ${userId}`);
 
 	try {
-		const stmt = db.prepare("SELECT id, username, email, admin FROM users WHERE id = ?");
+		const stmt = db.prepare("SELECT id, username, email, role FROM users WHERE id = ?");
 		const user = stmt.get(userId);
 
 		if (!user)
@@ -160,18 +161,17 @@ export async function logout(request, reply) {
 	}
 }
 
-export async function adminUser(request, reply) {
+export async function changeRole(request, reply) {
 	const { id } = request.body;
 	try {
-		const stmt = db.prepare(GET_USER_BY_ID);
-		const user = stmt.get(id)
+		const user = userModel.getUserById(id);
 		// if (user.connected === 0)
 		// 	return reply.send({ success: false, error: 'User already disconnected' });
 		if (user){
-			const updateStmt = db.prepare(UPDATE_ADMIN);
-			updateStmt.run(user.admin === 1 ? 0 : 1, user.id);
-
-			const updateUser = stmt.get(id);
+			// const updateStmt = db.prepare(UPDATE_ROLE);
+			// updateStmt.run(user.role === 1 ? 0 : 1, user.id);
+			userModel.updateRole(id, user.role)
+			const updateUser = userModel.getUserById(id);
 			reply.code(200);
 
 			return reply.send({
@@ -179,7 +179,7 @@ export async function adminUser(request, reply) {
 				username: updateUser.username,
 				email: updateUser.email,
 				connected: updateUser.connected,
-				admin: updateUser.admin,
+				role: updateUser.role,
 				success: true
 			})
 		}

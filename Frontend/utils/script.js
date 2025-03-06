@@ -12,11 +12,11 @@ async function fetchUsers() {
 				<td class="border px-4 py-2">${user.email}</td>
 				<td class="border px-4 py-2">${user.password}</td>
 				<td class="border px-4 py-2">${user.connected === 1 ? "Yes" : "No"}</td>
-				<td class="border px-4 py-2">${user.admin === 1 ? "Yes" : "No"}</td>
+				<td class="border px-4 py-2">${user.role}</td>
 				<td class="border px-4 py-2">
 					<button class="bg-blue-500 text-white px-2 py-1 rounded" onclick="logout(${user.id})">Logout</button>
-					<button class="bg-orange-500 text-white px-2 py-1 rounded" onclick="adminUser(${user.id})">Admin</button>
-					<button class="bg-red-500 text-white px-2 py-1 rounded" onclick="unregister(${user.id})">Supprimer</button>
+					<button class="bg-orange-500 text-white px-2 py-1 rounded" onclick="changeRole(${user.id})">Change Role</button>
+					<button class="bg-red-500 text-white px-2 py-1 rounded" onclick="unregister(${user.id})">Delete</button>
 				</td>
 			</tr>
 		`).join('');
@@ -58,8 +58,8 @@ async function fetchUserProfile() {
 				<td class="border px-4 py-2">${user.id}</td>
 				<td class="border px-4 py-2">${user.username}</td>
 				<td class="border px-4 py-2">${user.email}</td>
-				<td class="border px-4 py-2">********</td> <!-- Masquer le mot de passe -->
-				<td class="border px-4 py-2">${user.admin === 1 ? "Yes" : "No"}</td>
+				<td class="border px-4 py-2">********</td>
+				<td class="border px-4 py-2">${user.role}</td>
 			</tr>
 		`;
 		// console.log("✅ Profil affiché dans le DOM !");
@@ -86,9 +86,9 @@ async function logout(id) {
 	}
 }
 
-async function adminUser(id) {
+async function changeRole(id) {
 	try {
-		const response = await fetch(`/api/users/admin/${id}`, {
+		const response = await fetch(`/api/users/role/${id}`, {
 			method: "PUT",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ id })
@@ -142,9 +142,18 @@ document.getElementById("addForm").addEventListener("submit", async function (ev
 	const username = document.getElementById("add-username").value;
 	const email = document.getElementById("add-email").value;
 	const password = document.getElementById("add-password").value;
+	const confirmPassword = document.getElementById("add-confirm-password").value;
+	const resultMessage = document.getElementById("add-resultMessage");
 	console.log("Username: ", username)
 	console.log("Email: ", email)
 	console.log("Password: ", password)
+	if (password !== confirmPassword)
+	{
+		resultMessage.textContent = "Error : Fields Password and confirm Password are different";
+		resultMessage.classList.add("text-red-500");
+		return ;
+	}
+
 	const response = await fetch("/api/users/add", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
@@ -152,7 +161,6 @@ document.getElementById("addForm").addEventListener("submit", async function (ev
 	});
 
 	const result = await response.json();
-	const resultMessage = document.getElementById("add-resultMessage");
 	
 	if (result.success) {
 		resultMessage.textContent = `User added : ${result.username} (${result.email})`;
@@ -162,7 +170,7 @@ document.getElementById("addForm").addEventListener("submit", async function (ev
 			location.reload(); // Rafraîchit la page après 1 seconde
 		}, 300);
 	} else {
-		resultMessage.textContent = "Error : " + result.message;
+		resultMessage.textContent = "Error : " + result.error;
 		resultMessage.classList.add("text-red-500");
 	}
 });
