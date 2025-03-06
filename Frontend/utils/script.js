@@ -169,12 +169,12 @@ document.getElementById("addForm").addEventListener("submit", async function (ev
 
 document.getElementById("loginForm").addEventListener("submit", async function (event) {
 	event.preventDefault();
-	console.log("Form submitted")
+	// console.log("Form submitted")
 	const email = document.getElementById("login-email").value;
 	const password = document.getElementById("login-password").value;
 
-	console.log("Email: ", email)
-	console.log("Password: ", password)
+	// console.log("Email: ", email)
+	// console.log("Password: ", password)
 	const response = await fetch("/api/users/login", {
 		method: "PUT",
 		headers: { "Content-Type": "application/json" },
@@ -183,6 +183,7 @@ document.getElementById("loginForm").addEventListener("submit", async function (
 
 	const result = await response.json();
 	const resultMessage = document.getElementById("login-resultMessage");
+	console.log(resultMessage)
 	if (result.success && result.accessToken) {
 		sessionStorage.setItem("accessToken", result.accessToken);
 		resultMessage.textContent = `User Connected : ${result.username} (${result.email})`;
@@ -192,7 +193,7 @@ document.getElementById("loginForm").addEventListener("submit", async function (
 			location.reload();
 		}, 300);
 	} else {
-		resultMessage.textContent = "Error : " + result.message;
+		resultMessage.textContent = "Error : " + result.error;
 		resultMessage.classList.add("text-red-500");
 	}
 });

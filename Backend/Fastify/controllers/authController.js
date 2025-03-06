@@ -38,7 +38,7 @@ export async function login(request, reply) {
 		const isvalid = await verifyPassword(user.password, password);
 
 		if (!isvalid)
-			return reply.status(401).send({ error: "Invalid password" })
+			return reply.code(401).send({ error: "Invalid password" })
 
 		const updateStmt = db.prepare(UPDATE_CONNECTION); // temporaire
 		updateStmt.run(1, user.id);
