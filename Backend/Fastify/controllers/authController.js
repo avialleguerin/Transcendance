@@ -29,12 +29,16 @@ export async function login(request, reply) {
 	const { email, password } = request.body;
 
 	try {
-		const stmt = db.prepare(GET_USER_BY_EMAIL);
-		const user = stmt.get(email);
+		// const stmt = db.prepare(GET_USER_BY_EMAIL);
+		// const user = stmt.get(email);
+		const user = userModel.getUserByEmail(email);
 
 		if (!user || !password)
 			return reply.code(401).send({error: 'Invalid credentials'})
 
+		console.log(typeof user);
+		console.log(Object.keys(user))
+		console.log("user.password:", user.password,"; password:", password)
 		const isvalid = await verifyPassword(user.password, password);
 
 		if (!isvalid)
@@ -43,7 +47,7 @@ export async function login(request, reply) {
 		const updateStmt = db.prepare(UPDATE_CONNECTION); // temporaire
 		updateStmt.run(1, user.id);
 
-		const updateUser = stmt.get(email);
+		const updateUser = userModel.getUserByEmail(email);
 		// const accessToken = fastify.jwt.sign({ userId: user.id, username:user.username, role: user.admin === 1 ? "admin" : "user" }, {expiresIn: '15m' });
 		const accessToken = fastify.jwt.sign({ userId: user.id, username:user.username }, {expiresIn: '1m' });
 		const refreshToken = fastify.jwt.sign({ userId: user.id }, {expiresIn: '7d' });

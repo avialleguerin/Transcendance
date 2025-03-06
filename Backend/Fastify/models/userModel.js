@@ -18,7 +18,7 @@ export const INSERT_USER = `
 
 const userModel = {
   createUser: (username, email, password) => {
-    const stmt = db.prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
+    const stmt = db.prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?);");
     stmt.run(username, email, password);
     return { username, email };
   },
@@ -27,7 +27,7 @@ const userModel = {
 
   getUserById: (id) => db.prepare("SELECT * FROM users WHERE id = ?").get(id),
 
-  getUserByEmail: (email) => db.prepare("SELECT * FROM users WHERE email = ?").get(email),
+  getUserByEmail: (email) => { return db.prepare("SELECT * FROM users WHERE email = ?").get(email) },
 
   updateUserConnectionStatus: (id, connected) => {
       db.prepare("UPDATE users SET connected = ? WHERE id = ?").run(connected, id);

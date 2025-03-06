@@ -14,7 +14,6 @@ export default async function routes (fastify) {
 
 	fastify.get('/profile', { preHandler: fastify.authenticate}, getUserProfile);
 
-
 	fastify.post('/users/add', register);
 	fastify.put('/users/login', login);
 	fastify.put('/users/logout/:id', logout);
