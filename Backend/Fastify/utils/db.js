@@ -10,7 +10,7 @@ export function initDb() {
 	db.prepare(CREATE_BLACKLIST_ACCESS_TOKENS_TABLE).run();
 	db.prepare(CREATE_BLACKLIST_REFRESH_TOKENS_TABLE).run();
 
-	console.log("✅ Base de données initialisée !");
+	console.log("\n\n\n\n\n\n\n\n\n\n\n\n\n\n✅ Base de données initialisée !");
 }
 
 

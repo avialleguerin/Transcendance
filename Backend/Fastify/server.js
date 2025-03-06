@@ -21,11 +21,11 @@ fastify.register(routes, { prefix: '/api' })
 
 fastify.decorate('authenticate', async function (request, reply) { 
 	try {
-		console.log("🔹 Vérification du token JWT...");
+		// console.log("🔹 Vérification du token JWT...");
 
 		await request.jwtVerify();
 
-		console.log("✅ Token valide, contenu extrait :", request.user);
+		console.log("\n✅ Token valide, contenu extrait :", request.user);
 
 		if (!request.user || !request.user.userId) {
 			console.error("❌ Token valide mais `userId` manquant !");
@@ -33,8 +33,9 @@ fastify.decorate('authenticate', async function (request, reply) {
 		}
 
 	} catch (err) {
-		console.error("❌ Token invalide ou expiré :", err);
-		reply.code(401).send({ error: 'Unauthorized' });
+		// console.error("❌ Token invalide ou expiré :", err);
+		console.error("❌ Token invalide ou expiré !");
+		reply.code(401).send({ error: 'You are not authorized' });
 	}
 });
 

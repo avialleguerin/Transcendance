@@ -1,8 +1,7 @@
 import { fastify } from '../server.js'
 import userModel from '../models/userModel.js';
+import tokenModel from '../models/tokenModel.js';
 import { hashPassword, verifyPassword } from '../utils/hashUtils.js';
-
-// Plugin JWT
 
 export async function register(request, reply) {
 	const { username, email, password } = request.body;
@@ -60,6 +59,7 @@ export async function login(request, reply) {
 			success: true,
 			accessToken
 		}, { message: "Connexion established"});
+
 	} catch (err) {
 		return reply.code(500).send({ error: err.message });
 	}
@@ -122,6 +122,13 @@ export async function getUserProfile(request, reply) {
 
 export async function logout(request, reply) {
 	const { id } = request.body;
+	console.log("headers of request :", request.headers)
+	console.log("headers of body :", request.body)
+
+	const accessToken = request.headers.authorization?.split(" ")[1];
+	const refreshToken = request.cookies.refreshToken;
+	console.log("Access token when logout :", accessToken)
+	console.log("Refresh token when logout :", refreshToken)
 	try {
 		const user = userModel.getUserById(id)
 
@@ -171,6 +178,31 @@ export async function changeRole(request, reply) {
 			return reply.code(404).send({ success: false, error: 'User not found' });
 	} catch (err) {
 		return reply.code(500).send({ error: err.message });
+	}
+}
+
+export async function refreshAccessToken(request, reply) {
+	const { refreshToken } = request.cookies;
+
+	console.log("je passe laaaoaoa")
+
+	if (!refreshToken) {
+		return reply.code(401).send({ error: 'Refresh token is missing'});
+	}
+
+	try {
+		const payload = fastify.jwt.verify(refreshToken);
+		console.log("payload :", payload)
+		
+		
+		const newAccessToken = fastify.jwt.sign(
+			{ userId: payload.userId },
+			{ expiresIn: '1m'}
+		);
+		
+		return reply.send({ accessToken: newAccessToken });
+	} catch (err) {
+		return reply.code(403).send({ error: 'Invalid or expired refresh token' });
 	}
 }
 

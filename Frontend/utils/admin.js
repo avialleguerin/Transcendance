@@ -1,7 +1,38 @@
+async function apiRequest(endpoint, method = "GET", body = null) {
+	const headers = { "Content-Type": "application/json" };
+	const accessToken = sessionStorage.getItem("accessToken");
+
+	if (accessToken) {
+		headers["Authorization"] = `Bearer ${accessToken}`;
+	}
+
+	const response = await fetch(`/api/${endpoint}`, {
+		method,
+		headers,
+		credentials: "include",
+		body: body ? JSON.stringify(body) : null
+	});
+
+	if (response.status === 401) {
+		console.warn("Token expiré, tentative de rafraîchissement...");
+		await refreshToken(); // Appel à la fonction de refresh
+		return apiRequest(endpoint, method, body); // Refaire la requête avec le nouveau token
+	} else if (response.status === 403) {
+		console.error("Acces interdit !");
+		return null;
+	} else if (response.status === 500) {
+		console.error("Acces interdit !");
+		return null;
+	}
+
+	return response.json();
+}
+
 async function fetchUsers() {
 	try {
-		const response = await fetch('/api/users');
-		const users = await response.json();
+		// const response = await fetch('/api/users');
+		// const users = await response.json();
+		const users = await apiRequest("users", "GET");
 
 		document.getElementById('users-table').innerHTML = users.map(user => `
 			<tr>
@@ -23,16 +54,64 @@ async function fetchUsers() {
 	}
 }
 
+
+// async function fetchUserProfile() {
+// 	const accessToken = sessionStorage.getItem("accessToken")
+
+// 	if (!accessToken) {
+// 		console.error("❌ Aucun accessToken disponible !");
+// 		return;
+// 	}
+// 	try {
+// 		// console.log("🔹 Envoi de la requête à /api/profile...");
+// 		// console.log("🔹 Token actuel :", accessToken);
+// 		const response = await fetch('/api/profile', {
+// 			headers: { Authorization: `Bearer ${accessToken}` }
+// 		});
+
+// 		if (!response.ok) {
+// 			throw new Error(`Erreur HTTP ${response.status}`);
+// 		}
+
+// 		const data = await response.json();
+// 		// console.log("✅ Réponse reçue :", data);
+
+// 		if (!data.user) {
+// 			console.error("Aucun utilisateur dans la réponse !");
+// 			return;
+// 		}
+
+// 		const user = data.user;
+// 		// console.log("✅ Utilisateur récupéré :", user);
+
+// 		document.getElementById('user-table').innerHTML = `
+// 			<tr>
+// 				<td class="border px-4 py-2">${user.id}</td>
+// 				<td class="border px-4 py-2">${user.username}</td>
+// 				<td class="border px-4 py-2">${user.email}</td>
+// 				<td class="border px-4 py-2">********</td> <!-- Masquer le mot de passe -->
+// 				<td class="border px-4 py-2">${user.admin === 1 ? "Yes" : "No"}</td>
+// 			</tr>
+// 		`;
+// 		// console.log("✅ Profil affiché dans le DOM !");
+// 	} catch (err) {
+// 		console.error('\x1b[31m%s\x1b[0m', 'Erreur lors de la récupération du profil :', err);
+// 	}
+// }
+
 async function fetchUserProfile() {
-	const accessToken = sessionStorage.getItem("accessToken")
+	const accessToken = sessionStorage.getItem("accessToken");
+
 	if (!accessToken) {
 		console.error("❌ Aucun accessToken disponible !");
 		return;
 	}
+
 	try {
-		console.log("🔹 Envoi de la requête à /api/profile...");
-		console.log("🔹 Token actuel :", accessToken);
-		const response = await fetch('/api/profile', {
+		console.log("🔹 Récupération des utilisateurs connectés...");
+
+		// 🔥 Requête pour obtenir les utilisateurs connectés
+		const response = await fetch('/api/users/connected', {
 			headers: { Authorization: `Bearer ${accessToken}` }
 		});
 
@@ -41,39 +120,47 @@ async function fetchUserProfile() {
 		}
 
 		const data = await response.json();
-		// console.log("✅ Réponse reçue :", data);
 
-		if (!data.user) {
-			console.error("Aucun utilisateur dans la réponse !");
+		if (!data.users || data.users.length === 0) {
+			console.warn("⚠️ Aucun utilisateur connecté !");
 			return;
 		}
 
-		const user = data.user;
-
-		document.getElementById('user-table').innerHTML = `
+		// 🔥 Générer les lignes du tableau avec les 10 premiers caractères du token
+		const userTable = document.getElementById('user-table');
+		userTable.innerHTML = data.users.map(user => `
 			<tr>
 				<td class="border px-4 py-2">${user.id}</td>
 				<td class="border px-4 py-2">${user.username}</td>
 				<td class="border px-4 py-2">${user.email}</td>
-				<td class="border px-4 py-2">********</td>
-				<td class="border px-4 py-2">${user.role}</td>
+				<td class="border px-4 py-2">${accessToken.substring(0, 10)}...</td> <!-- 🔥 Affiche les 10 premiers caractères -->
+				<td class="border px-4 py-2">${user.admin === 1 ? "Yes" : "No"}</td>
 			</tr>
-		`;
+		`).join("");
+
+		console.log("✅ Utilisateurs connectés affichés !");
 	} catch (err) {
-		console.error('\x1b[31m%s\x1b[0m', 'Erreur lors de la récupération du profil :', err);
+		console.error('\x1b[31m%s\x1b[0m', '❌ Erreur lors de la récupération des utilisateurs connectés :', err);
 	}
 }
 
 async function changeRole(id) {
 	try {
-		const response = await fetch(`/api/users/role/${id}`, {
+		const accessToken = sessionStorage.getItem("accessToken");
+		console.log("🔑 Access Token envoyé :", accessToken);
+
+		const response = await fetch(`/api/users/logout/${id}`, {
 			method: "PUT",
-			headers: { "Content-Type": "application/json" },
+			headers: {
+				"Content-Type": "application/json",
+				"Authorization": `Bearer ${accessToken}`
+			},
 			body: JSON.stringify({ id })
 		});
-		if (response.ok)
+		if (response.ok) {
+			sessionStorage.removeItem("accessToken");
 			fetchUsers();
-		else {
+		} else {
 			const error = await response.json();
 			alert('Error : ' + error.error);
 		}
@@ -103,11 +190,29 @@ window.addEventListener('DOMContentLoaded', () => {
 	if (accessToken) {
 		console.log("✅ Access Token récupéré depuis sessionStorage :", accessToken);
 		fetchUserProfile(accessToken);
+
 	} else {
 		console.warn("⚠️ Aucun accessToken trouvé, l'utilisateur doit se reconnecter.");
 	}
 	fetchUsers();
 });
+
+async function refreshToken() {
+	console.log("je passe pour refresh le token access")
+	const response = await fetch("/api/refresh-token", {
+		method: "POST",
+		credentials: "include" // Envoie le cookie du Refresh Token
+	});
+
+	if (!response.ok) {
+		console.error("Échec du rafraîchissement du token");
+		return;
+	}
+
+	const data = await response.json();
+	sessionStorage.setItem("accessToken", data.accessToken);
+	console.log("🔄 Token rafraîchi :", window.accessToken);
+}
 
 document.getElementById("addForm").addEventListener("submit", async function (event) {
 	event.preventDefault(); // Empêche le rechargement de la page
@@ -142,6 +247,43 @@ document.getElementById("addForm").addEventListener("submit", async function (ev
 		setTimeout(() => {
 			location.reload(); // Rafraîchit la page après 1 seconde
 		}, 300);
+	} else {
+		resultMessage.textContent = "Error : " + result.message;
+		resultMessage.classList.add("text-red-500");
+	}
+});
+
+document.getElementById("loginForm").addEventListener("submit", async function (event) {
+	event.preventDefault();
+
+
+	const email = document.getElementById("login-email").value;
+	const password = document.getElementById("login-password").value;
+
+
+	const response = await fetch("/api/users/login", {
+		method: "PUT",
+		headers: { "Content-Type": "application/json" },
+		credentials: "include",
+		body: JSON.stringify({ email, password })
+	});
+
+	const result = await response.json();
+	const resultMessage = document.getElementById("login-resultMessage");
+
+	// console.log(resultMessage)
+	
+	if (result.success && result.accessToken) {
+		sessionStorage.setItem("accessToken", result.accessToken);
+
+		resultMessage.textContent = `User Connected : ${result.username} (${result.email})`;
+		resultMessage.classList.add("text-green-500");
+
+		console.log("Utilisateur connecté, Access Token :", result.accessToken);
+		
+		// setTimeout(() => {
+		// 	location.reload();
+		// }, 300);
 	} else {
 		resultMessage.textContent = "Error : " + result.error;
 		resultMessage.classList.add("text-red-500");
