@@ -10,7 +10,7 @@ async function fetchUsers() {
 				<td class="border px-4 py-2">${user.id}</td>
 				<td class="border px-4 py-2">${user.username}</td>
 				<td class="border px-4 py-2">${user.email}</td>
-				<td class="border px-4 py-2">${user.password}</td>
+				<td class="border px-4 py-2">********</td>
 				<td class="border px-4 py-2">${user.connected === 1 ? "Yes" : "No"}</td>
 				<td class="border px-4 py-2">${user.role}</td>
 				<td class="border px-4 py-2">
