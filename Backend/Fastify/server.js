@@ -1,17 +1,12 @@
 // Moduls
 import Fastify from "fastify";
-// import Database from "better-sqlite3";
 import { initDb } from "./utils/db.js";
 import jwt from "@fastify/jwt";
 import cookie from "@fastify/cookie";
 // Pages
 import routes from "./routes/routes.js"
-// import registerPlugins from './register.js';
-// import { CREATE_USERS_TABLE } from './models/userModel.js';
 
-export const fastify = Fastify({ logger: false }) //change ici laffichage des logs
-// export const db = new Database('database.sqlite', { verbose: console.log });
-// export const db = new Database('database.sqlite');
+export const fastify = Fastify({ logger: false })
 initDb();
 
 await fastify.register(jwt, {
@@ -21,16 +16,8 @@ await fastify.register(jwt, {
 		signed: false
 	}
 });
-
 await fastify.register(cookie);
-// fastify.register(routes)
-// fastify.register(routes, {db})
 fastify.register(routes, { prefix: '/api' })
-
-
-// db.prepare(CREATE_USERS_TABLE).run();
-// db.prepare(CREATE_BLACKLISTED_TOKENS_TABLES).run();
-
 
 fastify.decorate('authenticate', async function (request, reply) { 
 	try {
@@ -40,7 +27,6 @@ fastify.decorate('authenticate', async function (request, reply) {
 
 		console.log("✅ Token valide, contenu extrait :", request.user);
 
-		// request.user = request.user;
 		if (!request.user || !request.user.userId) {
 			console.error("❌ Token valide mais `userId` manquant !");
 			return reply.code(401).send({ error: "Unauthorized: invalid payload" });

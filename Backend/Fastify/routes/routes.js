@@ -7,10 +7,6 @@ import { register, selectUsers, unregister, login, logout, changeRole, refreshTo
 export default async function routes (fastify) {
 	//userController
 	fastify.get('/users', selectUsers);
-	// fastify.get('/profile', fetchUserProfile);
-	// fastify.get('/me', { prehandler: fastify.authenticate}, async (request, reply) => {
-	// 	return {user: request.user};
-	// });
 
 	fastify.get('/profile', { preHandler: fastify.authenticate}, getUserProfile);
 

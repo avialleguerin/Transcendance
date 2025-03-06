@@ -1,11 +1,8 @@
-// import { fastify, db, } from '../server.js'
 import { fastify } from '../server.js'
-import db from '../utils/db.js';
-import { INSERT_USER, GET_ALL_USERS, GET_USER_BY_ID, DELETE_USER, GET_USER_BY_EMAIL, UPDATE_CONNECTION, UPDATE_ROLE } from '../models/userModel.js';
 import userModel from '../models/userModel.js';
 import { hashPassword, verifyPassword } from '../utils/hashUtils.js';
 
-// Configuration du plugin JWT
+// Plugin JWT
 
 export async function register(request, reply) {
 	const { username, email, password } = request.body;
@@ -13,10 +10,12 @@ export async function register(request, reply) {
 	if (!username || !password) {
 		return reply.code(400).send({ error: 'Username, Email and Password are required' });
 	}
+
 	const user = userModel.getUserByEmail(email)
-	console.log(typeof user)
+
 	if(user)
 		return reply.code(500).send({ error: "This email is already used" });
+
 	try {
 		const hashedPassword = await hashPassword(password)
 
@@ -32,32 +31,25 @@ export async function login(request, reply) {
 	const { email, password } = request.body;
 
 	try {
-		// const stmt = db.prepare(GET_USER_BY_EMAIL);
-		// const user = stmt.get(email);
 		const user = userModel.getUserByEmail(email);
 
 		if (!user || !password)
 			return reply.code(401).send({error: 'Invalid credentials'})
 
-		console.log(typeof user);
-		console.log(Object.keys(user))
-		console.log("user.password:", user.password,"; password:", password)
 		const isvalid = await verifyPassword(user.password, password);
 
 		if (!isvalid)
 			return reply.code(401).send({ error: "Invalid password" })
 
-		const updateStmt = db.prepare(UPDATE_CONNECTION); // temporaire
-		updateStmt.run(1, user.id);
-
+		userModel.updateConnected(user.id, 1)
 		const accessToken = fastify.jwt.sign({ userId: user.id, username:user.username }, {expiresIn: '1m' });
 		const refreshToken = fastify.jwt.sign({ userId: user.id }, {expiresIn: '7d' });
 
 		reply.setCookie('refreshToken', refreshToken, {
-			httpOnly: true, // Ne peut pas être lu par JS
-			secure: true, //faire des recherches
+			httpOnly: true,
+			secure: true,
 			sameSite: 'Strict',
-			path: '/' //disponible partout 
+			path: '/'
 		});
 
 		return reply.code(200).send({
@@ -93,12 +85,10 @@ export async function refreshToken(request, reply) {
 
 export async function selectUsers(request, reply) {
 	try {
-		const users = db.prepare(GET_ALL_USERS).all();
+		const users = userModel.getAllUsers()
 		return users;
 	} catch (err) {
-		fastify.log.error(err);
-		reply.code(500);
-		return { error: err.message };
+		return reply.code(500).send({ error: err.message });
 	}
 }
 
@@ -114,8 +104,7 @@ export async function getUserProfile(request, reply) {
 	console.log(`✅ userId extrait du JWT : ${userId}`);
 
 	try {
-		const stmt = db.prepare("SELECT id, username, email, role FROM users WHERE id = ?");
-		const user = stmt.get(userId);
+		const user = userModel.getUserById(userId);
 
 		if (!user)
 		{
@@ -134,15 +123,14 @@ export async function getUserProfile(request, reply) {
 export async function logout(request, reply) {
 	const { id } = request.body;
 	try {
-		const stmt = db.prepare(GET_USER_BY_ID);
-		const user = stmt.get(id)
-		// if (user.connected === 0)
-		// 	return reply.send({ success: false, error: 'User already disconnected' });
-		if (user){
-			const updateStmt = db.prepare(UPDATE_CONNECTION);
-			updateStmt.run(0, user.id);
+		const user = userModel.getUserById(id)
 
-			const updateUser = stmt.get(id);
+		if (user.connected === 0)
+			return reply.send({ success: false, error: 'User already disconnected' });
+		if (user){
+
+			userModel.updateConnected(id, 0)
+			const updateUser = userModel.getUserById(id)
 
 			reply.clearCookie('refreshToken');
 
@@ -157,7 +145,7 @@ export async function logout(request, reply) {
 		else
 			return reply.code(404).send({ success: false, error: 'User not found' });
 	} catch (err) {
-		return reply.code(500).send({ error: err.message });
+		return reply.code(500).send({ error: 'Logout failed' });
 	}
 }
 
@@ -165,11 +153,7 @@ export async function changeRole(request, reply) {
 	const { id } = request.body;
 	try {
 		const user = userModel.getUserById(id);
-		// if (user.connected === 0)
-		// 	return reply.send({ success: false, error: 'User already disconnected' });
 		if (user){
-			// const updateStmt = db.prepare(UPDATE_ROLE);
-			// updateStmt.run(user.role === 1 ? 0 : 1, user.id);
 			userModel.updateRole(id, user.role)
 			const updateUser = userModel.getUserById(id);
 			reply.code(200);
@@ -183,26 +167,21 @@ export async function changeRole(request, reply) {
 				success: true
 			})
 		}
-		else {
-			reply.code(404);
-			return reply.send({ success: false, error: 'User not found' });
-		}
+		else
+			return reply.code(404).send({ success: false, error: 'User not found' });
 	} catch (err) {
-		fastify.log.error(err);
-		reply.code(500);
-		return { error: err.message };
+		return reply.code(500).send({ error: err.message });
 	}
 }
 
 export async function unregister(request, reply) {
-	const { id } = request.params; // mode destructuration
-	// const id = request.params.id;
+	const { id } = request.params;
 	if (!id)
 		return reply.code(400).send({ error: "User id is required" });
 
 	try {
-		const stmt = db.prepare(DELETE_USER);
-		const info = stmt.run(id);
+
+		const info = userModel.unregister(id)
 
 		if (info.changes === 0)
 			return reply.code(404).send({ error: "User not found" });

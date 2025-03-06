@@ -1,0 +1,84 @@
+async function logout(id) {
+	try {
+		const response = await fetch(`/api/users/logout/${id}`, {
+			method: "PUT",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ id })
+		});
+		if (response.ok)
+			fetchUsers();
+		else {
+			const error = await response.json();
+			alert('Erreur : ' + error.error);
+		}
+	} catch (err) {
+		console.error('Error :', err);
+	}
+}
+
+document.getElementById("addForm").addEventListener("submit", async function (event) {
+	event.preventDefault(); // Empêche le rechargement de la page
+
+	const username = document.getElementById("add-username").value;
+	const email = document.getElementById("add-email").value;
+	const password = document.getElementById("add-password").value;
+	const confirmPassword = document.getElementById("add-confirm-password").value;
+	const resultMessage = document.getElementById("add-resultMessage");
+	console.log("Username: ", username)
+	console.log("Email: ", email)
+	console.log("Password: ", password)
+	if (password !== confirmPassword)
+	{
+		resultMessage.textContent = "Error : Fields Password and confirm Password are different";
+		resultMessage.classList.add("text-red-500");
+		return ;
+	}
+
+	const response = await fetch("/api/users/add", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ username, email, password })
+	});
+
+	const result = await response.json();
+	
+	if (result.success) {
+		resultMessage.textContent = `User added : ${result.username} (${result.email})`;
+		resultMessage.classList.add("text-green-500");
+		
+		setTimeout(() => {
+			location.reload(); // Rafraîchit la page après 1 seconde
+		}, 300);
+	} else {
+		resultMessage.textContent = "Error : " + result.error;
+		resultMessage.classList.add("text-red-500");
+	}
+});
+
+document.getElementById("loginForm").addEventListener("submit", async function (event) {
+	event.preventDefault();
+	const email = document.getElementById("login-email").value;
+	const password = document.getElementById("login-password").value;
+
+	const response = await fetch("/api/users/login", {
+		method: "PUT",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify({ email, password })
+	});
+
+	const result = await response.json();
+	const resultMessage = document.getElementById("login-resultMessage");
+	console.log(resultMessage)
+	if (result.success && result.accessToken) {
+		sessionStorage.setItem("accessToken", result.accessToken);
+		resultMessage.textContent = `User Connected : ${result.username} (${result.email})`;
+		resultMessage.classList.add("text-green-500");
+		
+		setTimeout(() => {
+			location.reload();
+		}, 300);
+	} else {
+		resultMessage.textContent = "Error : " + result.error;
+		resultMessage.classList.add("text-red-500");
+	}
+});

@@ -12,13 +12,9 @@ export const CREATE_USERS_TABLE = `
   );
 `;
 
-export const INSERT_USER = `
-  INSERT INTO users (username, email, password) VALUES (?, ?, ?);
-`;
-
 const userModel = {
   createUser: (username, email, password) => {
-    db.prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?);").run(username, email, password);
+    db.prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)").run(username, email, password);
     return { username, email };
   },
 
@@ -28,38 +24,11 @@ const userModel = {
 
   getUserByEmail: (email) => { return db.prepare("SELECT * FROM users WHERE email = ?").get(email) },
 
-  updateUserConnectionStatus: (id, connected) => { return db.prepare("UPDATE users SET connected = ? WHERE id = ?").run(connected, id) },
+  updateConnected: (id, connected) => { return db.prepare("UPDATE users SET connected = ? WHERE id = ?").run(connected, id) },
 
   updateRole: (id, role) => { return db.prepare("UPDATE users SET role = ? WHERE id = ?").run(role === 'user' ? 'admin' : 'user', id) },
 
   unregister: (id) => { return db.prepare("DELETE FROM users WHERE id = ?").run(id) }
 }
-
-export const GET_ALL_USERS = `
-  SELECT * FROM users;
-`;
-
-export const GET_USER_BY_ID = `
-SELECT * FROM users WHERE id = ?;
-`;
-
-export const GET_USER_BY_USERNAME = `
-SELECT * FROM users WHERE username = ? AND email = ?;
-`;
-export const GET_USER_BY_EMAIL = `
-SELECT * FROM users WHERE email = ?;
-`;
-
-export const UPDATE_CONNECTION = `
-  UPDATE users SET connected = ? WHERE id = ?;
-`;
-
-export const UPDATE_ROLE = `
-UPDATE users SET role = ? WHERE id = ?;
-`;
-
-export const DELETE_USER = `
-  DELETE FROM users WHERE id = ?;
-`;
 
 export default userModel;
