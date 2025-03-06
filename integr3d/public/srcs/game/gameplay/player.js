@@ -1,11 +1,9 @@
-import { grenade_flash } from "./solo/1v1_player/init_powerUP_soloGame.js";
+import { grenade_flash_player1, grenade_flash_player2 } from "./solo/1v1_player/init_powerUP_GrenadeFlash.js";
+import { init_Teammate_player_1 } from "./solo/1v1_player/init_powerUP_teammate.js";
+import { init_Teammate_player_2 } from "./solo/1v1_player/init_powerUP_teammate.js";
 
 let minX = 0;
 let maxX = 0;
-
-let idleModel = null;
-let runModel = null;
-let currentModel = null;
 
 function init_border() {
 	const borderTop = new BABYLON.MeshBuilder.CreateBox("border", {
@@ -143,6 +141,10 @@ const keys = {};
 addEventListener("keydown", (event) => keys[event.key] = true);
 addEventListener("keyup", (event) => keys[event.key] = false);
 
+let player_1_bonus = null;
+let player_2_bonus = null;
+
+
 
 export function UpdatePlayerPose(player_1, player_2) {
 	if (keys["w"] && player_1.position.x > minX) {
@@ -159,6 +161,67 @@ export function UpdatePlayerPose(player_1, player_2) {
 	}
 	if (keys["1"])
 	{
-		grenade_flash(scene);
+		grenade_flash_player1(scene);
 	}
+	if (keys["4"])
+	{
+		grenade_flash_player2(scene);
+	}
+	if (keys["2"])
+	{
+		if (!player_1_bonus)
+		{
+			player_1_bonus = init_Teammate_player_1(scene);
+			if (player_1_bonus)
+			{
+				console.log("player_1_bonus");
+				console.log(player_1_bonus.position);
+				setTimeout(() => {
+					player_1_bonus = null;
+				}, 15000);
+			}
+		}
+	}
+	if (keys["5"])
+	{
+		if (!player_2_bonus)
+		{
+			player_2_bonus = init_Teammate_player_2(scene);
+			if (player_2_bonus)
+			{
+				console.log("player_2_bonus");
+				console.log(player_2_bonus.position);
+				setTimeout(() => {
+					player_2_bonus = null;
+				}, 15000);
+			}
+		}
+	}
+
+	if (keys["e"] && player_1_bonus && player_1_bonus.position.x > minX)
+	{ 
+		player_1_bonus.position.x -= paddleSpeed;
+	}
+
+	if (keys["d"] && player_1_bonus && player_1_bonus.position.x < maxX)
+	{
+		player_1_bonus.position.x += paddleSpeed;
+	}
+
+	if (keys["o"] && player_2_bonus && player_2_bonus.position.x > minX)
+	{
+		player_2_bonus.position.x -= paddleSpeed;
+	}
+
+	if (keys["l"] && player_2_bonus && player_2_bonus.position.x < maxX)
+	{
+		player_2_bonus.position.x += paddleSpeed;
+	}
+
+
+    return {
+        player_1_bonus: player_1_bonus,
+        player_2_bonus: player_2_bonus
+    };
+
 }

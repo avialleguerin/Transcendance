@@ -2,7 +2,8 @@ import AbstractView from "./AbstractView.js";
 import { startGame, startAI_Game } from "../../../srcs/game/gameplay/babylon.js";
 import { startMultiGame } from "../../../srcs/game/gameplay/babylon.js";
 import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.js";
-import { init_nb_powerUP } from "../../../srcs/game/gameplay/solo/1v1_player/init_powerUP_soloGame.js";
+import { init_nb_powerUP_grenadeFlash, reset_powerUP_grenade } from "../../../srcs/game/gameplay/solo/1v1_player/init_powerUP_GrenadeFlash.js";
+import { init_nb_powerUP_teammate, reset_powerUP_teammate } from "../../../srcs/game/gameplay/solo/1v1_player/init_powerUP_teammate.js";
 
 export default class extends AbstractView {
 	constructor() {
@@ -218,7 +219,6 @@ export default class extends AbstractView {
 		const back_to_select_mode_view7 = document.getElementById('back_to_select_mode_view7');
 		const back_to_select_mode_view8 = document.getElementById('back_to_select_mode_view8');
 
-		// Afficher view1 quand on clique sur JOUER
 		btn_jouer.addEventListener('click', () => {
 			console.log('JOUER button clicked');
 			view1.classList.add('active');
@@ -230,28 +230,22 @@ export default class extends AbstractView {
 		view1_btn.addEventListener('click', () => {
 			console.log('Mode de jeux button clicked');
 			
-			// Vérifier si on est sur la vue5
 			if (view5.classList.contains('active')) {
-				// Si on est sur vue5, on la désactive et active vue2
 				view5.classList.remove('active');
 				view2.classList.add('active');
 			} 
-			// Si on n'est pas sur la vue2 (et pas sur la vue5 non plus)
 			else if (!view2.classList.contains('active')) {
-				// Activer la vue2
 				view2.classList.add('active');
 			}
 		});
 
 
 
-		// Retourner à l'écran principal quand on clique sur SETTINGS
 		settings_btn.addEventListener('click', () => {
 			view2.classList.remove('active');
 			view5.classList.add('active');
 		});
 
-		// Afficher view3 quand on clique sur SOLO
 		solo.addEventListener('click', () => {
 			view2.classList.remove('active');
 			view3.classList.add('active');
@@ -259,7 +253,6 @@ export default class extends AbstractView {
 			btn_back_home.classList.remove('active');
 		});
 
-		// Afficher view4 quand on clique sur MULTIPLAYER
 		multiplayer.addEventListener('click', () => {
 			view2.classList.remove('active');
 			view4.classList.add('active');
@@ -267,7 +260,6 @@ export default class extends AbstractView {
 			btn_back_home.classList.remove('active');
 		});
 
-		// Retourner à l'écran principal quand on clique sur BACK TO MENU
 		if (!view3.classList.contains('active')) {
 			console.log('view3 is active');
 			back_to_menu_view3.addEventListener('click', () => {
@@ -278,7 +270,6 @@ export default class extends AbstractView {
 			});
 		}
 
-		// Retourner à l'écran principal quand on clique sur BACK TO MENU
 		if (!view4.classList.contains('active')) {
 			console.log('view4 is active');
 			back_to_menu_view4.addEventListener('click', () => {
@@ -289,7 +280,6 @@ export default class extends AbstractView {
 			});
 		}
 
-		// Retourner à l'écran principal quand on clique sur ACCUEIL
 		btn_back_home.addEventListener('click', () => {
 			if (view2.classList.contains('active')) {
 				view2.classList.remove('active');
@@ -305,14 +295,12 @@ export default class extends AbstractView {
 			}
 		});
 
-		// Afficher view6 quand on clique
 		prepar_game_1v1.addEventListener('click', () => {
 			view3.classList.remove('active');
 			view6.classList.add('active');
 			back_to_select_mode_view6.classList.add('active');
 		});
 
-		// Afficher view7 quand on clique
 
 		prepar_gane_ai.addEventListener('click', () => {
 			view3.classList.remove('active');
@@ -320,7 +308,6 @@ export default class extends AbstractView {
 			back_to_select_mode_view7.classList.add('active');
 		});
 
-		// Afficher view8 quand on clique
 		prepar_game_multi.addEventListener('click', () => {
 			view4.classList.remove('active');
 			view8.classList.add('active');
@@ -346,7 +333,6 @@ export default class extends AbstractView {
 			back_to_select_mode_view8.classList.remove('active');
 		});
 
-		// Activer/désactiver le powerUP
 		powerUP.addEventListener('click', () => {
 			powerUP.classList.toggle('checked');
 
@@ -357,17 +343,20 @@ export default class extends AbstractView {
 			else {
 				console.log('PowerUP is inactive');
 				power_selector.classList.remove('active');
+				reset_powerUP_grenade();
+				reset_powerUP_teammate();
 			}
 		});
 
-		// Sélectionner le nombre de powerUP
 
 		number_powerUP_1.addEventListener('click', () => {
 			number_powerUP_1.classList.toggle('checked')
 			number_powerUP_3.classList.remove('checked');
 			number_powerUP_5.classList.remove('checked');
 			console.log('1 powerUP selected and 3 and 5 unselected');
-			init_nb_powerUP(1);
+			init_nb_powerUP_grenadeFlash(1);
+			init_nb_powerUP_teammate(1);
+
 		});
 
 		number_powerUP_3.addEventListener('click', () => {
@@ -375,7 +364,8 @@ export default class extends AbstractView {
 			number_powerUP_1.classList.remove('checked');
 			number_powerUP_5.classList.remove('checked');
 			console.log('3 powerUP selected and 1 and 5 unselected');
-			init_nb_powerUP(3);
+			init_nb_powerUP_grenadeFlash(3);
+			init_nb_powerUP_teammate(3);
 		});
 
 		number_powerUP_5.addEventListener('click', () => {
@@ -383,7 +373,8 @@ export default class extends AbstractView {
 			number_powerUP_1.classList.remove('checked');
 			number_powerUP_3.classList.remove('checked');
 			console.log('5 powerUP selected and 1 and 3 unselected');
-			init_nb_powerUP(5);
+			init_nb_powerUP_grenadeFlash(5);
+			init_nb_powerUP_teammate(5);
 		});
 
 		skin_perso.addEventListener('click', () => {

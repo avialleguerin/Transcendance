@@ -1,4 +1,6 @@
 import { updateScore } from "./score.js";
+import { init_Teammate_player_1 } from "./solo/1v1_player/init_powerUP_teammate.js";
+import { init_Teammate_player_2 } from "./solo/1v1_player/init_powerUP_teammate.js";
 
 const FIELD_LEFT = -40;
 const FIELD_RIGHT = 25;
@@ -68,7 +70,9 @@ let ballDirection =
 };
 
 
-export function MoveBall(player_1, player_2, ball) {
+
+
+export function MoveBall(player_1, player_2, ball, player_1_bonus, player_2_bonus) {
 
 	if (!ball)
 	{
@@ -127,6 +131,30 @@ export function MoveBall(player_1, player_2, ball) {
 		const relativeImpact = (ball.position.z - player_2.position.z) / (PADDLE_HEIGHT / 2);
 		ballDirection.z = relativeImpact * 1;
 		ballSpeed += 0.05;
+	}
+
+	if (player_1_bonus)
+	{
+		if (ball.position.x + BALL_RADIUS >= player_1_bonus.position.x - PADDLE_WIDTH / 2 &&
+			ball.position.x - BALL_RADIUS <= player_1_bonus.position.x + PADDLE_WIDTH / 2 &&
+			ball.position.z + BALL_RADIUS >= player_1_bonus.position.z - PADDLE_HEIGHT / 2 &&
+			ball.position.z - BALL_RADIUS <= player_1_bonus.position.z + PADDLE_HEIGHT / 2) {
+			const relativeImpact = (ball.position.z - player_1_bonus.position.z) / (PADDLE_HEIGHT / 2);
+			ballDirection.z = relativeImpact * 1;
+			ballSpeed += 0.05;
+		}
+	}
+
+	if (player_2_bonus)
+	{
+		if (ball.position.x + BALL_RADIUS >= player_2_bonus.position.x - PADDLE_WIDTH / 2 &&
+			ball.position.x - BALL_RADIUS <= player_2_bonus.position.x + PADDLE_WIDTH / 2 &&
+			ball.position.z + BALL_RADIUS >= player_2_bonus.position.z - PADDLE_HEIGHT / 2 &&
+			ball.position.z - BALL_RADIUS <= player_2_bonus.position.z + PADDLE_HEIGHT / 2) {
+			const relativeImpact = (ball.position.z - player_2_bonus.position.z) / (PADDLE_HEIGHT / 2);
+			ballDirection.z = relativeImpact * 1;
+			ballSpeed += 0.05;
+		}
 	}
 }
 

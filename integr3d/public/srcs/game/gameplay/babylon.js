@@ -232,6 +232,7 @@ export function leave_AI_Game()
     play = false;
 }
 
+
 engine.runRenderLoop(() =>
 {
     const scale = window.devicePixelRatio;
@@ -257,8 +258,8 @@ engine.runRenderLoop(() =>
 
             if (play)
             {
-                UpdatePlayerPose(player_1, player_2);
-                MoveBall(player_1, player_2, ball);
+                const bonusPlayer = UpdatePlayerPose(player_1, player_2);
+                MoveBall(player_1, player_2, ball, bonusPlayer.player_1_bonus, bonusPlayer.player_2_bonus);
             }
         }
     }

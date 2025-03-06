@@ -1,20 +1,86 @@
-.container {
-	position: absolute;
-    top: 20%;
-    left: 10%;
-    width: 30%;
-    height: 35vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-    z-index: 1;
-    pointer-events: auto;
+.container-Player1 {
+    position: absolute;
+    left : 5%;
+    bottom: 0%;
+    width: 15%;
+    height: 10%;
+    background: transparent;
 }
 
-#h1 {
-	text-align: center;
-	color: white;
-	font-size: 1vw;
-	margin-bottom: 1.5rem;
+.container-Player2 {
+    position: absolute;
+    right : 5%;
+    bottom: 0%;
+    width: 15%;
+    height: 10%;
+    background: transparent;
+}
+
+
+
+.container-Player1 h1 {
+    position: absolute;
+    color: rgb(0, 0, 0);
+    font-size: 1vw;
+    left: 50%;
+    top: 5%;
+    transform: translate(-50%, -50%);
+    font-family: 'Black Ops One', sans-serif;
+    text-shadow: 2px 2px 2px #ffffff;
+}
+
+.container-Player2 h1 {
+    position: absolute;
+    color: rgb(0, 0, 0);
+    font-size: 1vw;
+    left: 50%;
+    top: 5%;
+    transform: translate(-50%, -50%);
+    font-family: 'Black Ops One', sans-serif;
+    text-shadow: 2px 2px 2px #ffffff;
+}
+
+.container-item_player1, .container-item_player2 {
+    position: absolute;
+    display: flex;
+    gap: 20px;
+    left: 50%;
+    top: 60%;
+    transform: translate(-50%, -50%);
+    flex-direction: row;
+    background-color: gray;
+    border-radius: 10px;
+    border: 2px solid black;
+    padding: 0px 15px;
+    align-items: center;
+}
+
+.container-item_player1 > div,
+.container-item_player2 > div {
+    margin-left: -10px;  /* Plus petit espace à gauche */
+    margin-right: 10px; /* 20px d'espace à droite */
+}
+
+.item-circle {
+    width: 30px; /* Taille du cercle */
+    height: 30px; /* Taille du cercle */
+    border-radius: 50%; /* Rend l'élément circulaire */
+    background-color: #f0f0f0; /* Couleur de fond du cercle */
+    border: 2px solid #333; /* Bordure du cercle */
+    overflow: hidden; /* Garantit que l'image reste dans le cercle */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+  
+  .item-circle img {
+    width: 100%; /* L'image remplit tout le cercle */
+    height: 100%;
+    object-fit: cover; /* L'image est redimensionnée pour couvrir tout le cercle */
+  }
+
+p {
+    font-family: 'Black Ops One', sans-serif;
+    font-size: 0.8vw;
+    color: black;
 }
