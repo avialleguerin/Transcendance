@@ -18,7 +18,6 @@ export function loadScoreModel(score, position, isLeft) {
         `3d_number_-_${score}_${getNumberWord(score)}.glb`,
         scene,
         function (newMeshes, particleSystems, skeletons, animationGroups) {
-            console.log(`Chiffre ${score} chargé avec succès !`);
 
             // Trouver le mesh racine
             let rootMesh = null;

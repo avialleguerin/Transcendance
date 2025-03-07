@@ -301,6 +301,7 @@ engine.runRenderLoop(() =>
             }
         }
     }
+    // console.log(camera.rotation);
     scene.render();
 });
 

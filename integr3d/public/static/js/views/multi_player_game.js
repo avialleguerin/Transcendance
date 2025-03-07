@@ -1,10 +1,10 @@
 import AbstractView from "./AbstractView.js";
-import { getPowerUP_value } from "./Game_menu.js";
+import { getPowerUP_value_multi } from "./Game_menu.js";
 
 export default class extends AbstractView {
 	constructor() {
 		super();
-		this.setTitle("solo_game");
+		this.setTitle("multi_player_game");
 
 		this.cooldowns = {};
 
@@ -26,7 +26,7 @@ export default class extends AbstractView {
 			<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 			<div class="container">
 				<div class="container-Player1">
-					<h1>Player 1</h1>
+					<h1>Player 1 - Player 2</h1>
 					<div class="container-item_player1">
 						<p id="nb-item-grenade-1"></p>
 						<div class="item-circle" id="item-circle-grenade1">
@@ -49,7 +49,7 @@ export default class extends AbstractView {
 					</div>
 				</div>
 				<div class="container-Player2">
-					<h1>Player 2</h1>
+					<h1>Player 3 - Player 4</h1>
 					<div class="container-item_player2">
 						<p id="nb-item-grenade-2"></p>
 						<div class="item-circle" id="item-circle-grenade2">
@@ -75,14 +75,14 @@ export default class extends AbstractView {
 		`;
 	}
 
-	init_powerUP_player() {
-		console.log("powerUP value == ", getPowerUP_value());
-		document.getElementById("nb-item-grenade-1").innerHTML = getPowerUP_value();
-		document.getElementById("nb-item-teammate-1").innerHTML = getPowerUP_value();
-		document.getElementById("nb-item-autre-1").innerHTML = getPowerUP_value();
-		document.getElementById("nb-item-grenade-2").innerHTML = getPowerUP_value();
-		document.getElementById("nb-item-teammate-2").innerHTML = getPowerUP_value();
-		document.getElementById("nb-item-autre-2").innerHTML = getPowerUP_value();
+	init_powerUP_player_multi() {
+		// console.log("powerUP value == ", getPowerUP_value());
+		document.getElementById("nb-item-grenade-1").innerHTML = getPowerUP_value_multi();
+		document.getElementById("nb-item-teammate-1").innerHTML = getPowerUP_value_multi();
+		document.getElementById("nb-item-autre-1").innerHTML = getPowerUP_value_multi();
+		document.getElementById("nb-item-grenade-2").innerHTML = getPowerUP_value_multi();
+		document.getElementById("nb-item-teammate-2").innerHTML = getPowerUP_value_multi();
+		document.getElementById("nb-item-autre-2").innerHTML = getPowerUP_value_multi();
 	}
 
 	updateOverlays() {
@@ -103,14 +103,7 @@ export default class extends AbstractView {
 
 	handleKeyPress(event) {
 		const key = event.key;
-		let nb_powerUP_inverse_player1 = document.getElementById("nb-item-autre-1").innerHTML;
-		let nb_powerUP_inverse_player2 = document.getElementById("nb-item-autre-2").innerHTML;
-		let nb_powerUP_grenade_player1 = document.getElementById("nb-item-grenade-1").innerHTML;
-		let nb_powerUP_grenade_player2 = document.getElementById("nb-item-grenade-2").innerHTML;
-		let nb_powerUP_teammate_player1 = document.getElementById("nb-item-teammate-1").innerHTML;
-		let nb_powerUP_teammate_player2 = document.getElementById("nb-item-teammate-2").innerHTML;
 		
-		// Vérifier si la touche a un cooldown défini
 		if (!(key in this.cooldownTimes)) return;
 	
 		// Vérifier si la touche est en cooldown
@@ -125,13 +118,13 @@ export default class extends AbstractView {
 			case "x":
 				elem = document.getElementById("nb-item-teammate-1");
 				break;
-				case "c":
-					elem = document.getElementById("nb-item-autre-1");
-					break;
-					case "1":
-						elem = document.getElementById("nb-item-grenade-2");
-						break;
-						case "2":
+			case "c":
+				elem = document.getElementById("nb-item-autre-1");
+				break;
+			case "1":
+				elem = document.getElementById("nb-item-grenade-2");
+				break;
+			case "2":
 				elem = document.getElementById("nb-item-teammate-2");
 				break;
 			case "3":
@@ -221,67 +214,5 @@ export default class extends AbstractView {
 				}, this.cooldownTimes[key]);
 			}
 		}
-
-	
-		// const overlay_grenade_1 = document.getElementById("overlay-grenade-1");
-		// const overlay_grenade_2 = document.getElementById("overlay-grenade-2");
-		// const overlay_teammate_1 = document.getElementById("overlay-teammate-1");
-		// const overlay_teammate_2 = document.getElementById("overlay-teammate-2");
-		// const overlay_inverse_1 = document.getElementById("overlay-inverse-1");
-		// const overlay_inverse_2 = document.getElementById("overlay-inverse-2");
-	
-		// if (nb_powerUP_grenade_player1 == 0) {
-		// 	overlay_grenade_1.classList.add("active");
-		// 	// itemCircle_grenade1.classList.add("active");
-		// } else {
-		// 	overlay_grenade_1.classList.remove("active");
-		// 	// itemCircle_grenade1.classList.remove("active");
-		// }
-		// if (nb_powerUP_grenade_player2 == 0)
-		// {
-		// 	// itemCircle_grenade2.classList.add("active");
-		// 	overlay_grenade_2.classList.add("active");
-		// }
-		// else{
-		// 	overlay_grenade_2.classList.remove("active");
-		// 	// itemCircle_grenade2.classList.remove("active");
-		// }
-	
-		// if (nb_powerUP_teammate_player1 == 0){
-		// 	overlay_teammate_1.classList.add("active");
-		// 	// itemCircle_teammate1.classList.add("active");
-		// }
-		// else {
-		// 	overlay_teammate_1.classList.remove("active");
-		// 	// itemCircle_teammate1.classList.remove("active");
-		// }
-	
-		// if (nb_powerUP_teammate_player2 == 0){
-		// 	overlay_teammate_2.classList.add("active");
-		// 	// itemCircle_teammate2.classList.add("active");
-		// }
-		// else{
-		// 	overlay_teammate_2.classList.remove("active");
-		// 	// itemCircle_teammate2.classList.remove("active");
-		// }
-	
-		// if (nb_powerUP_inverse_player1 == 0){
-		// 	overlay_inverse_1.classList.add("active");
-		// 	// itemCircle_inverse1.classList.add("active");
-		// }
-		// else
-		// {
-		// 	overlay_inverse_1.classList.remove("active");
-		// 	// itemCircle_inverse1.classList.remove("active");
-		// }
-	
-		// if (nb_powerUP_inverse_player2 == 0){
-		// 	overlay_inverse_2.classList.add("active");
-		// 	// itemCircle_inverse2.classList.add("active");
-		// }
-		// else {
-		// 	overlay_inverse_2.classList.remove("active");
-		// 	// itemCircle_inverse2.classList.remove("active");
-		// }
 	}
 }

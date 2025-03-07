@@ -1,6 +1,7 @@
 import { grenade_flash_player1, grenade_flash_player2 } from "./solo/1v1_player/init_powerUP_GrenadeFlash.js";
 import { init_Teammate_player_1 } from "./solo/1v1_player/init_powerUP_teammate.js";
 import { init_Teammate_player_2 } from "./solo/1v1_player/init_powerUP_teammate.js";
+import { inverse_player1, inverse_player2 } from "./solo/1v1_player/init_powerUP_inverse.js";
 
 let minX = 0;
 let maxX = 0;
@@ -143,31 +144,85 @@ addEventListener("keyup", (event) => keys[event.key] = false);
 
 let player_1_bonus = null;
 let player_2_bonus = null;
+let inverse_player1_var = false;
+let inverse_player2_var = false;
+
 
 
 
 export function UpdatePlayerPose(player_1, player_2) {
-	if (keys["w"] && player_1.position.x > minX) {
-		player_1.position.x -= paddleSpeed;
+
+	if (inverse_player1_var == false)
+	{
+		if (keys["w"] && player_1.position.x > minX) {
+			player_1.position.x -= paddleSpeed;
+		}
+		if (keys["s"] && player_1.position.x < maxX) {
+			player_1.position.x += paddleSpeed;
+		}
 	}
-	if (keys["s"] && player_1.position.x < maxX) {
-		player_1.position.x += paddleSpeed;
+
+	if (inverse_player1_var == true)
+	{
+		if (keys["w"] && player_1.position.x < maxX) {
+			player_1.position.x += paddleSpeed;
+		}
+		if (keys["s"] && player_1.position.x > minX) {
+			player_1.position.x -= paddleSpeed;
+		}
 	}
-	if (keys["i"] && player_2.position.x > minX) {
-		player_2.position.x -= paddleSpeed;
+
+	if (inverse_player2_var == false)
+	{
+		if (keys["i"] && player_2.position.x > minX) {
+			player_2.position.x -= paddleSpeed;
+		}
+		if (keys["k"] && player_2.position.x < maxX) {
+			player_2.position.x += paddleSpeed;
+		}
 	}
-	if (keys["k"] && player_2.position.x < maxX) {
-		player_2.position.x += paddleSpeed;
+
+	if (inverse_player2_var == true)
+	{
+		if (keys["i"] && player_2.position.x < maxX) {
+			player_2.position.x += paddleSpeed;
+		}
+		if (keys["k"] && player_2.position.x > minX) {
+			player_2.position.x -= paddleSpeed;
+		}
 	}
-	if (keys["1"])
+
+	if (keys["c"])
+	{
+		inverse_player2()
+		inverse_player2_var = true;
+		setTimeout(() => {
+			inverse_player2_var = false;
+			console.log("inverse_player2 fini");
+		}, 5000);
+	}
+
+
+	if (keys["3"])
+	{
+		inverse_player1()
+		inverse_player1_var = true;
+		setTimeout(() => {
+			inverse_player1_var = false;
+			console.log("inverse_player1 fini");
+		}, 5000);
+	}
+
+
+	if (keys["z"])
 	{
 		grenade_flash_player1(scene);
 	}
-	if (keys["4"])
+	if (keys["1"])
 	{
 		grenade_flash_player2(scene);
 	}
-	if (keys["2"])
+	if (keys["x"])
 	{
 		if (!player_1_bonus)
 		{
@@ -178,11 +233,11 @@ export function UpdatePlayerPose(player_1, player_2) {
 				console.log(player_1_bonus.position);
 				setTimeout(() => {
 					player_1_bonus = null;
-				}, 15000);
+				}, 10000);
 			}
 		}
 	}
-	if (keys["5"])
+	if (keys["2"])
 	{
 		if (!player_2_bonus)
 		{
@@ -193,7 +248,7 @@ export function UpdatePlayerPose(player_1, player_2) {
 				console.log(player_2_bonus.position);
 				setTimeout(() => {
 					player_2_bonus = null;
-				}, 15000);
+				}, 10000);
 			}
 		}
 	}

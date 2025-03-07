@@ -4,6 +4,7 @@ import settings from "./views/settings.js";
 import Game_menu from "./views/Game_menu.js";
 import solo_game_1v1 from "./views/solo_game_1v1.js";
 import duo_game from "./views/duo_game.js";
+import multi_player_game from "./views/multi_player_game.js";
 
 
 const navigateTo = (url) => {
@@ -13,13 +14,14 @@ const navigateTo = (url) => {
 
 const router = async () => {
 	const routes = [
-		// { path: "/", view: Home },
-		{ path: "/", view: solo_game_1v1 },
+		{ path: "/", view: Home },
+		// { path: "/", view: solo_game_1v1 },
 		{ path: "/jouer", view: jouer },
 		{ path: "/settings", view: settings },
 		{ path: "/Game_menu", view: Game_menu },
 		{ path: "/solo_game_1v1", view: solo_game_1v1 },
 		{ path: "/duo_game", view: duo_game },
+		{ path: "/multi_player_game", view: multi_player_game },
 	];
 
 	const potentialMatches = routes.map((route) => {
@@ -71,6 +73,18 @@ const router = async () => {
 
 	if (typeof view.init_solo_game_ai === 'function') {
 		view.init_solo_game_ai();
+	}
+
+	if (typeof view.init_powerUP_player === 'function') {
+		view.init_powerUP_player();
+	}
+
+	if (typeof view.update_power_up_players === 'function') {
+		view.update_power_up_players();
+	}
+
+	if (typeof view.init_powerUP_player_multi === 'function') {
+		view.init_powerUP_player_multi();
 	}
 
 	// if (typeof view.inializeView === 'function') {

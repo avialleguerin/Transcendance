@@ -4,6 +4,13 @@ import { startMultiGame } from "../../../srcs/game/gameplay/babylon.js";
 import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.js";
 import { init_nb_powerUP_grenadeFlash, reset_powerUP_grenade } from "../../../srcs/game/gameplay/solo/1v1_player/init_powerUP_GrenadeFlash.js";
 import { init_nb_powerUP_teammate, reset_powerUP_teammate } from "../../../srcs/game/gameplay/solo/1v1_player/init_powerUP_teammate.js";
+import { init_powerUP_inverse_player } from "../../../srcs/game/gameplay/solo/1v1_player/init_powerUP_inverse.js";
+import { init_nb_powerUP_grenadeFlash_team_player } from "../../../srcs/game/gameplay/multiplayer/2v2_game/init_powerUP_GernadeFlash_multi.js";
+import { init_powerUP_inverse_Team_player } from "../../../srcs/game/gameplay/multiplayer/2v2_game/init_powerUP_inverse_multi.js";
+
+let powerUP_nb = 0;
+let powerUP_nb_multi = 0;
+
 
 export default class extends AbstractView {
 	constructor() {
@@ -121,27 +128,27 @@ export default class extends AbstractView {
 				<div class="view8-content">
 					<h1>CUSTOMISE TA GAME EN MULTI</h1>
 					<div class="powerUP">
-						<p>PowerUP :<span id="powerUP" class="active_powerUP"></span></p>
-						<div id="power_selector" class="power_selector">
+						<p>PowerUP :<span id="powerUP_multi" class="active_powerUP"></span></p>
+						<div id="power_selector_game_multi" class="power_selector">
 							<div class="powerUP_number">
 								<p>1</p>
-								<span id="number_powerUP_1" class="number_powerUP"></span>
+								<span id="number_powerUP_1_game_multi" class="number_powerUP"></span>
 							</div>
 							<div class="powerUP_number">
 								<p>3</p>
-								<span id="number_powerUP_3" class="number_powerUP"></span>
+								<span id="number_powerUP_3_game_multi" class="number_powerUP"></span>
 							</div>
 							<div class="powerUP_number">
 								<p>5</p>
-								<span id="number_powerUP_5" class="number_powerUP"></span>
+								<span id="number_powerUP_5_game_multi" class="number_powerUP"></span>
 							</div>
 						</div>
 					</div>
 					<div class="skin">
-						<p>Skin Personnalise :<span id="skin_perso" class="skin_perso"</span></p>
+						<p>Skin Personnalise :<span id="skin_perso_game_multi" class="skin_perso"</span></p>
 					</div>
 					<button id="multiplayer_btn" class="btn">
-						<a href="/duo_game" class="nav-link" data-link>Lancer la partie</a>
+						<a href="/multi_player_game" class="nav-link" data-link>Lancer la partie</a>
 					</button>
 				</div>
 			</div>
@@ -356,6 +363,8 @@ export default class extends AbstractView {
 			console.log('1 powerUP selected and 3 and 5 unselected');
 			init_nb_powerUP_grenadeFlash(1);
 			init_nb_powerUP_teammate(1);
+			init_powerUP_inverse_player(1);
+			powerUP_nb = 1;
 
 		});
 
@@ -366,6 +375,8 @@ export default class extends AbstractView {
 			console.log('3 powerUP selected and 1 and 5 unselected');
 			init_nb_powerUP_grenadeFlash(3);
 			init_nb_powerUP_teammate(3);
+			init_powerUP_inverse_player(3);
+			powerUP_nb = 3;
 		});
 
 		number_powerUP_5.addEventListener('click', () => {
@@ -375,6 +386,8 @@ export default class extends AbstractView {
 			console.log('5 powerUP selected and 1 and 3 unselected');
 			init_nb_powerUP_grenadeFlash(5);
 			init_nb_powerUP_teammate(5);
+			init_powerUP_inverse_player(5);
+			powerUP_nb = 5;
 		});
 
 		skin_perso.addEventListener('click', () => {
@@ -382,6 +395,65 @@ export default class extends AbstractView {
 			console.log('Skin perso selected');
 		});
 
+		const powerUP_multi = document.getElementById('powerUP_multi');
+		const number_powerUP_1_game_multi = document.getElementById('number_powerUP_1_game_multi');
+		const number_powerUP_3_game_multi = document.getElementById('number_powerUP_3_game_multi');
+		const number_powerUP_5_game_multi = document.getElementById('number_powerUP_5_game_multi');
+		const power_selector_game_multi = document.getElementById('power_selector_game_multi');
 
+		powerUP_multi.addEventListener('click', () => {
+			powerUP_multi.classList.toggle('checked');
+
+			if (powerUP_multi.classList.contains('checked')) {
+				console.log('PowerUP is active');
+				power_selector_game_multi.classList.add('active');
+			}
+			else {
+				console.log('PowerUP is inactive');
+				power_selector_game_multi.classList.remove('active');
+				reset_powerUP_grenade();
+				reset_powerUP_teammate();
+			}
+		});
+
+
+		number_powerUP_1_game_multi.addEventListener('click', () => {
+			number_powerUP_1_game_multi.classList.toggle('checked')
+			number_powerUP_3_game_multi.classList.remove('checked');
+			number_powerUP_5_game_multi.classList.remove('checked');
+			console.log('1 powerUP selected and 3 and 5 unselected');
+			init_nb_powerUP_grenadeFlash_team_player(1);
+			init_powerUP_inverse_Team_player(1);
+			powerUP_nb_multi = 1;
+		});
+
+		number_powerUP_3_game_multi.addEventListener('click', () => {
+			number_powerUP_3_game_multi.classList.toggle('checked')
+			number_powerUP_1_game_multi.classList.remove('checked');
+			number_powerUP_5_game_multi.classList.remove('checked');
+			console.log('3 powerUP selected and 1 and 5 unselected');
+			init_nb_powerUP_grenadeFlash_team_player(3);
+			init_powerUP_inverse_Team_player(3);
+			powerUP_nb_multi = 3;
+		});
+
+		number_powerUP_5_game_multi.addEventListener('click', () => {
+			number_powerUP_5_game_multi.classList.toggle('checked')
+			number_powerUP_1_game_multi.classList.remove('checked');
+			number_powerUP_3_game_multi.classList.remove('checked');
+			console.log('5 powerUP selected and 1 and 3 unselected');
+			init_nb_powerUP_grenadeFlash_team_player(5);
+			init_powerUP_inverse_Team_player(5);
+			powerUP_nb_multi = 5;
+		});
 	}
+}
+
+
+export function getPowerUP_value() {
+	return powerUP_nb;
+}
+
+export function getPowerUP_value_multi() {
+	return powerUP_nb_multi;
 }

@@ -70,13 +70,13 @@ export function init_Teammate_player_1(scene)
 			});
 			setTimeout(() => {
 				destroy_metadata_player1_bonus(scene);
-			}, 15000);
+			}, 10000);
 		});
 		
 		setTimeout(() => {
 			canUsePowerUP_player1 = true;
 			console.log("PowerUP player 1 rechargé !");
-		}, 25000);
+		}, 20000);
 		
 		return player_bonus1;
 	}
