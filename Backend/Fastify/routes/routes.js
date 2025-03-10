@@ -13,7 +13,6 @@ export default async function routes (fastify) {
 
 
 	fastify.post('/users/add', register);
-	fastify.delete('/users/delete/:id', unregister);
 	fastify.put('/users/login', login);
 	fastify.put('/users/logout/:id', logout);
 	fastify.put('/users/role/:id', changeRole);
