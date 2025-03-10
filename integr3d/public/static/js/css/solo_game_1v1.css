@@ -5,6 +5,7 @@
     width: 15%;
     height: 10%;
     background: transparent;
+    visibility: hidden;
 }
 
 .container-Player2 {
@@ -14,6 +15,15 @@
     width: 15%;
     height: 10%;
     background: transparent;
+    visibility: hidden;
+}
+
+.container-Player1.active {
+    visibility: visible;
+}
+
+.container-Player2.active {
+    visibility: visible;
 }
 
 
@@ -147,6 +157,37 @@
     border: 2px solid #000000;
   }
 
+.container-leave {
+    position: absolute;
+    right: 0%;
+    top: 20%;
+    width: 100%;
+    height: 5%;
+    background: rgb(56, 56, 56);
+}
+
+.option {
+    right: 2%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    cursor: pointer;
+    background-color: #a5a5a5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-color: #a5a5a5;
+    visibility:  visible;
+
+}
+
+.option img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
 
 
 p {
@@ -154,4 +195,91 @@ p {
     font-size: 0.8vw;
     color: rgb(255, 255, 255);
     text-shadow: 2px 2px 2px #000000;
+}
+
+@keyframes panel_spawn {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(0%);
+    }
+}
+
+@keyframes panel_despawn {
+  from {
+      opacity: 1;
+      transform: translateX(0);
+  }
+  to {
+      opacity: 0;
+      transform: translateX(100%);
+  }
+}
+
+
+.panel {
+    position: absolute;
+    top : 0%;
+    right : 0%;
+    width: 20%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 100;
+    visibility: hidden;
+    background: #c1c1c1bf;
+}
+
+.option-in-panel {
+    right: 10%;
+    top: 2.5%;
+    transform: translate(-50%, -50%);
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    cursor: pointer;
+    background-color: #a5a5a5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-color: #a5a5a5;
+}
+
+.option-in-panel img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.leave_game {
+    position: absolute;
+    bottom: 5%;
+    left : 5%;
+
+    width: 40%;
+    height: 5%;
+    background: #000000;
+    border: 2px solid #e00000;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+}
+
+.panel.active {
+    visibility: visible;
+    animation: panel_spawn 1s forwards;
+}
+
+.panel.remove {
+    animation: panel_despawn 1s forwards;
+}
+
+.option.active {
+    visibility: hidden;
 }

@@ -6,6 +6,7 @@ import solo_game_1v1 from "./views/solo_game_1v1.js";
 import duo_game from "./views/duo_game.js";
 import multi_player_game from "./views/multi_player_game.js";
 
+let leave_game_var = false;
 
 const navigateTo = (url) => {
 	history.pushState(null, null, url);
@@ -87,9 +88,21 @@ const router = async () => {
 		view.init_powerUP_player_multi();
 	}
 
-	// if (typeof view.inializeView === 'function') {
-	// 	view.inializeView('game-menu');
-	// }
+	if (typeof view.event_solo_game === 'function') {
+		view.event_solo_game();
+	}
+
+	if (typeof view.leave_game === 'function') {
+		view.leave_game();
+	}
+
+	if (typeof view.leave_game_multi === 'function') {
+		view.leave_game_multi();
+	}
+
+	if (typeof view.event_multiPlayer_game === 'function') {
+		view.event_multiPlayer_game();
+	}
 
 };
 
@@ -106,3 +119,11 @@ document.addEventListener("DOMContentLoaded", () => {
     router();
 });
 
+
+export function getValue_leave_game() {
+	return leave_game_var;
+}
+
+export function setLeaveGameVar(value) {
+    leave_game_var = value;
+}

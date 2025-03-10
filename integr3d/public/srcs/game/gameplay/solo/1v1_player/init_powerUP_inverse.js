@@ -6,6 +6,11 @@ export function init_powerUP_inverse_player(number) {
 	nb_powerUP_inverse_player2 = number;
 }
 
+export function reset_powerUP_inverse_player() {
+	nb_powerUP_inverse_player1 = 0;
+	nb_powerUP_inverse_player2 = 0;
+}
+
 let canUsePowerUP_inverse_player1 = true;
 let canUsePowerUP_inverse_player2 = true;
 let is_Inverse_team1 = false;

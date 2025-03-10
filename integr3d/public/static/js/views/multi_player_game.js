@@ -1,5 +1,7 @@
 import AbstractView from "./AbstractView.js";
 import { getPowerUP_value_multi } from "./Game_menu.js";
+import { leave_Multiplayer_Game } from "../../../srcs/game/gameplay/babylon.js";
+import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.js";
 
 export default class extends AbstractView {
 	constructor() {
@@ -23,6 +25,19 @@ export default class extends AbstractView {
 			<link rel="stylesheet" href="./static/js/css/multi_player_game.css">
 			<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 			<div class="container">
+				<div class="container-leave">
+					<button class="option" id="option_btn">
+						<img src="../../../srcs/game/assets/image/menu.svg" alt="leave">
+					</button>
+				</div>
+				<div class="panel" id="panel_id">
+					<button class="option-in-panel" id="option_btn-remove">
+						<img src="../../../srcs/game/assets/image/menu.svg" alt="leave">
+					</button>
+					<button class="leave_game" id="leave_game_id">
+						<a href="/Game_menu" class="nav-link" data-link>Leave Game</a>
+					</button>
+				</div>
 				<div class="container-Player1">
 					<h1>Player 1 - Player 2</h1>
 					<div class="container-item_player1">
@@ -59,6 +74,16 @@ export default class extends AbstractView {
 				</div>
 			</div>
 		`;
+	}
+
+	leave_game_multi() {
+		document.getElementById("leave_game_id").addEventListener("click", () => {
+			console.log("leave_the_game");
+			handleViewTransitions("vue2", "vue4");
+			setTimeout(() => {
+				leave_Multiplayer_Game();
+			}, 1500);
+		});
 	}
 
 	init_powerUP_player_multi() {
@@ -176,5 +201,28 @@ export default class extends AbstractView {
 				}, this.cooldownTimes[key]);
 			}
 		}
+	}
+
+	event_multiPlayer_game() {
+		const option = document.getElementById("option_btn");
+		const panel = document.getElementById("panel_id");
+		const option_remove = document.getElementById("option_btn-remove");
+
+		
+		option.addEventListener("click", () => {
+			console.log("option clicked");
+			panel.classList.add("active");
+			panel.classList.remove("remove");
+			option.classList.add("active");
+		});
+	
+		option_remove.addEventListener("click", () => {
+			console.log("option_remove clicked");
+			panel.classList.add("remove");
+			option.classList.remove("active");
+			setTimeout(() => {
+				panel.classList.remove("active");
+			}, 1100);
+		});
 	}
 }

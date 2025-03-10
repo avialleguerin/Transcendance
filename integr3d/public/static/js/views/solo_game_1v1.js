@@ -1,5 +1,8 @@
 import AbstractView from "./AbstractView.js";
 import { getPowerUP_value } from "./Game_menu.js";
+import { leave_Game } from "../../../srcs/game/gameplay/babylon.js";
+import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.js";
+import { getValue_leave_game, setLeaveGameVar } from "../index.js";
 
 export default class extends AbstractView {
 	constructor() {
@@ -17,7 +20,10 @@ export default class extends AbstractView {
 			"3": 15000
 		};
 
-		document.addEventListener("keydown", this.handleKeyPress.bind(this));
+		this.boundKeyPressHandler = this.handleKeyPress.bind(this);
+    
+		console.log("solo_game_1v1.js");
+		document.addEventListener("keydown", this.boundKeyPressHandler);
 	}
 
 	async getHtml() {
@@ -25,7 +31,21 @@ export default class extends AbstractView {
 			<link rel="stylesheet" href="./static/js/css/solo_game_1v1.css">
 			<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 			<div class="container">
-				<div class="container-Player1">
+				<div class="container-leave">
+					<button class="option" id="option_btn">
+						<img src="../../../srcs/game/assets/image/menu.svg" alt="leave">
+					</button>
+				</div>
+				<div class="panel" id="panel_id">
+					<button class="option-in-panel" id="option_btn-remove">
+						<img src="../../../srcs/game/assets/image/menu.svg" alt="leave">
+					</button>
+					<button class="leave_game" id="leave_game_id">
+						<a href="/Game_menu" class="nav-link" data-link>Leave Game</a>
+					</button>
+				</div>
+
+				<div class="container-Player1" id="container-player1_id">
 					<h1>Player 1</h1>
 					<div class="container-item_player1">
 						<p id="nb-item-grenade-1"></p>
@@ -48,7 +68,7 @@ export default class extends AbstractView {
 						</div>
 					</div>
 				</div>
-				<div class="container-Player2">
+				<div class="container-Player2" id="container-player2_id">
 					<h1>Player 2</h1>
 					<div class="container-item_player2">
 						<p id="nb-item-grenade-2"></p>
@@ -75,8 +95,46 @@ export default class extends AbstractView {
 		`;
 	}
 
+	cleanup() {
+		console.log("Cleaning up solo game event listeners");
+		document.removeEventListener("keydown", this.boundKeyPressHandler);
+	}
+
+	leave_game() {
+		document.getElementById("leave_game_id").addEventListener("click", () => {
+			console.log("leave_the_gameddddddddddddddddddddddd");
+			
+			this.cleanup();
+			setLeaveGameVar(true);
+			handleViewTransitions("vue2", "vue4");
+			setTimeout(() => {
+				leave_Game();
+			}, 1500);
+		});
+	}
+		
+
 	init_powerUP_player() {
 		console.log("powerUP value == ", getPowerUP_value());
+
+		const container_player1 = document.getElementById("container-player1_id");
+		const container_player2 = document.getElementById("container-player2_id");
+
+		if (getPowerUP_value() !== 0)
+		{
+			console.log("powerUP valueje reeeeedjkhkjefwhjkewhfkjwe == ", getPowerUP_value());
+			container_player1.classList.add("active");
+			container_player2.classList.add("active");
+		}
+		else
+		{
+			console.log(" else    powerUP valueje reeeeedjkhkjefwhjkewhfkjwe == ", getPowerUP_value());
+			if (container_player1.classList.contains("active"))
+				container_player1.classList.remove("active");
+			if (container_player2.classList.contains("active"))
+				container_player2.classList.remove("active");
+		}
+
 		document.getElementById("nb-item-grenade-1").innerHTML = getPowerUP_value();
 		document.getElementById("nb-item-teammate-1").innerHTML = getPowerUP_value();
 		document.getElementById("nb-item-autre-1").innerHTML = getPowerUP_value();
@@ -102,13 +160,8 @@ export default class extends AbstractView {
 	}
 
 	handleKeyPress(event) {
+		console.log("dddddddddddddddddddddddddddd");
 		const key = event.key;
-		let nb_powerUP_inverse_player1 = document.getElementById("nb-item-autre-1").innerHTML;
-		let nb_powerUP_inverse_player2 = document.getElementById("nb-item-autre-2").innerHTML;
-		let nb_powerUP_grenade_player1 = document.getElementById("nb-item-grenade-1").innerHTML;
-		let nb_powerUP_grenade_player2 = document.getElementById("nb-item-grenade-2").innerHTML;
-		let nb_powerUP_teammate_player1 = document.getElementById("nb-item-teammate-1").innerHTML;
-		let nb_powerUP_teammate_player2 = document.getElementById("nb-item-teammate-2").innerHTML;
 		
 		// Vérifier si la touche a un cooldown défini
 		if (!(key in this.cooldownTimes)) return;
@@ -222,66 +275,28 @@ export default class extends AbstractView {
 			}
 		}
 
+	}
+
+	event_solo_game() {
+		const option = document.getElementById("option_btn");
+		const panel = document.getElementById("panel_id");
+		const option_remove = document.getElementById("option_btn-remove");
+
+		
+		option.addEventListener("click", () => {
+			console.log("option clicked");
+			panel.classList.add("active");
+			panel.classList.remove("remove");
+			option.classList.add("active");
+		});
 	
-		// const overlay_grenade_1 = document.getElementById("overlay-grenade-1");
-		// const overlay_grenade_2 = document.getElementById("overlay-grenade-2");
-		// const overlay_teammate_1 = document.getElementById("overlay-teammate-1");
-		// const overlay_teammate_2 = document.getElementById("overlay-teammate-2");
-		// const overlay_inverse_1 = document.getElementById("overlay-inverse-1");
-		// const overlay_inverse_2 = document.getElementById("overlay-inverse-2");
-	
-		// if (nb_powerUP_grenade_player1 == 0) {
-		// 	overlay_grenade_1.classList.add("active");
-		// 	// itemCircle_grenade1.classList.add("active");
-		// } else {
-		// 	overlay_grenade_1.classList.remove("active");
-		// 	// itemCircle_grenade1.classList.remove("active");
-		// }
-		// if (nb_powerUP_grenade_player2 == 0)
-		// {
-		// 	// itemCircle_grenade2.classList.add("active");
-		// 	overlay_grenade_2.classList.add("active");
-		// }
-		// else{
-		// 	overlay_grenade_2.classList.remove("active");
-		// 	// itemCircle_grenade2.classList.remove("active");
-		// }
-	
-		// if (nb_powerUP_teammate_player1 == 0){
-		// 	overlay_teammate_1.classList.add("active");
-		// 	// itemCircle_teammate1.classList.add("active");
-		// }
-		// else {
-		// 	overlay_teammate_1.classList.remove("active");
-		// 	// itemCircle_teammate1.classList.remove("active");
-		// }
-	
-		// if (nb_powerUP_teammate_player2 == 0){
-		// 	overlay_teammate_2.classList.add("active");
-		// 	// itemCircle_teammate2.classList.add("active");
-		// }
-		// else{
-		// 	overlay_teammate_2.classList.remove("active");
-		// 	// itemCircle_teammate2.classList.remove("active");
-		// }
-	
-		// if (nb_powerUP_inverse_player1 == 0){
-		// 	overlay_inverse_1.classList.add("active");
-		// 	// itemCircle_inverse1.classList.add("active");
-		// }
-		// else
-		// {
-		// 	overlay_inverse_1.classList.remove("active");
-		// 	// itemCircle_inverse1.classList.remove("active");
-		// }
-	
-		// if (nb_powerUP_inverse_player2 == 0){
-		// 	overlay_inverse_2.classList.add("active");
-		// 	// itemCircle_inverse2.classList.add("active");
-		// }
-		// else {
-		// 	overlay_inverse_2.classList.remove("active");
-		// 	// itemCircle_inverse2.classList.remove("active");
-		// }
+		option_remove.addEventListener("click", () => {
+			console.log("option_remove clicked");
+			panel.classList.add("remove");
+			option.classList.remove("active");
+			setTimeout(() => {
+				panel.classList.remove("active");
+			}, 1100);
+		});
 	}
 }
