@@ -57,7 +57,7 @@ export function grenade_flash_Team_player1_2()
 		setTimeout(() => {
 			canUseFlashGrenade_1 = true;
 			console.log("Grenade flash rechargée !");
-		}, 10000);
+		}, 15000);
 	}
 }
 
@@ -76,6 +76,6 @@ export function grenade_flash_Team_player3_4()
 		setTimeout(() => {
 			canUseFlashGrenade_2 = true;
 			console.log("Grenade flash rechargée !");
-		}, 10000);
+		}, 15000);
 	}
 }

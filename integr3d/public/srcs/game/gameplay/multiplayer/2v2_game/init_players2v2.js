@@ -1,4 +1,5 @@
 import { grenade_flash_Team_player1_2, grenade_flash_Team_player3_4 } from "./init_powerUP_GernadeFlash_multi.js";
+import { activateFreezeTeam1, activateFreezeTeam2, isfreeze_team1, isfreeze_team2 } from "./init_power_up_freeze.js";
 
 let minX_player_1;
 let maxX_player_1;
@@ -314,12 +315,10 @@ const keys = {};
 addEventListener("keydown", (event) => keys[event.key] = true);
 addEventListener("keyup", (event) => keys[event.key] = false);
 
-let inverse_var_team_1 = false;
-let inverse_var_team_2 = false;
 
 export function UpdatePLayerPoseMulti(player_1, player_2, player_3, player_4) {
 	
-	if (inverse_var_team_1 == false)
+	if (isfreeze_team1 == false)
 	{
 		if (keys["w"] && player_1.position.x > minX_player_1) {
 			player_1.position.x -= paddleSpeed;
@@ -336,24 +335,13 @@ export function UpdatePLayerPoseMulti(player_1, player_2, player_3, player_4) {
 		}
 	}
 
-	if (inverse_var_team_1 == true)
+	if (isfreeze_team1 == true)
 	{
-		if (keys["w"] && player_1.position.x < minX_player_1) {
-			player_1.position.x += paddleSpeed;
-		}
-		if (keys["s"] && player_1.position.x > maxX_player_1) {
-			player_1.position.x -= paddleSpeed;
-		}
-
-		if (keys["e"] && player_2.position.x > minX_player_2) {
-			player_2.position.x -= paddleSpeed;
-		}
-		if (keys["d"] && player_2.position.x < maxX_player_2) {
-			player_2.position.x += paddleSpeed;
-		}
+		player_1.position.x = player_1.position.x;
+		player_2.position.x = player_2.position.x;
 	}
 
-	if (inverse_var_team_2 == false)
+	if (isfreeze_team2 == false)
 	{
 		if (keys["i"] && player_3.position.x > minX_player_3) {
 			player_3.position.x -= paddleSpeed;
@@ -369,41 +357,20 @@ export function UpdatePLayerPoseMulti(player_1, player_2, player_3, player_4) {
 		}
 	}
 
-	if (inverse_var_team_2 == false)
+	if (isfreeze_team2 == true)
 	{
-		if (keys["i"] && player_3.position.x < minX_player_3) {
-			player_3.position.x -= paddleSpeed;
-		}
-		if (keys["k"] && player_3.position.x > maxX_player_3) {
-			player_3.position.x += paddleSpeed;
-		}
-		if (keys["o"] && player_4.position.x < minX_player_4) {
-			player_4.position.x -= paddleSpeed;
-		}
-		if (keys["l"] && player_4.position.x > maxX_player_4) {
-			player_4.position.x += paddleSpeed;
-		}
+		player_3.position.x = player_3.position.x;
+		player_4.position.x = player_4.position.x;
 	}
 
-	if (keys["c"])
-	{
-		inverse_Team_player3_4()
-		inverse_var_team_2 = true;
-		setTimeout(() => {
-			inverse_var_team_2 = false;
-			console.log("inverse_player2 fini");
-		}, 5000);
-	}
+	if (keys["x"] && !isfreeze_team1) {
+        activateFreezeTeam2();
+    }
 
-	if (keys["2"])
-	{
-		inverse_Team_player1_2()
-		inverse_var_team_1 = true;
-		setTimeout(() => {
-			inverse_var_team_1 = false;
-			console.log("inverse_player1 fini");
-		}, 5000);
-	}
+    if (keys["2"] && !isfreeze_team2) {
+        activateFreezeTeam1();
+    }
+
 
 	if (keys["z"])
 	{

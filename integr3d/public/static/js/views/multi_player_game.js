@@ -10,11 +10,9 @@ export default class extends AbstractView {
 
 		this.cooldownTimes = {
 			"z": 15000,
-			"x": 20000,
-			"c": 15000,
+			"x": 15000,
 			"1": 15000,
-			"2": 20000,
-			"3": 15000
+			"2": 15000,
 		};
 
 		document.addEventListener("keydown", this.handleKeyPress.bind(this));
@@ -22,7 +20,7 @@ export default class extends AbstractView {
 
 	async getHtml() {
 		return `
-			<link rel="stylesheet" href="./static/js/css/solo_game_1v1.css">
+			<link rel="stylesheet" href="./static/js/css/multi_player_game.css">
 			<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 			<div class="container">
 				<div class="container-Player1">
@@ -36,15 +34,9 @@ export default class extends AbstractView {
 						</div>
 						<p id="nb-item-teammate-1"></p>
 						<div class="item-circle" id="item-circle-teammate1">
-							<img src="../../../srcs/game/assets/image/teammatev3.png" alt="Item 2">
+							<img src="../../../srcs/game/assets/image/freeze.png" alt="Item 2">
 							<div class="overlay" id="overlay-teammate-1"></div>
-							<div class="overlay-reloading-teammate" id="overlay-reloading-teammate-1"></div>
-						</div>
-						<p id="nb-item-autre-1"></p>
-						<div class="item-circle" id="item-circle-inverse1">
-							<img src="../../../srcs/game/assets/image/inverse_powerUP.png" alt="Item 3">
-							<div class="overlay" id="overlay-inverse-1"></div>
-							<div class="overlay-reloading" id="overlay-reloading-inverse-1"></div>
+							<div class="overlay-reloading-freeze" id="overlay-reloading-freeze-1"></div>
 						</div>
 					</div>
 				</div>
@@ -59,15 +51,9 @@ export default class extends AbstractView {
 						</div>
 						<p id="nb-item-teammate-2"></p>
 						<div class="item-circle" id="item-circle-teammate2">
-							<img src="../../../srcs/game/assets/image/teammatev3.png" alt="Item 2">
+							<img src="../../../srcs/game/assets/image/freeze.png" alt="Item 2">
 							<div class="overlay" id="overlay-teammate-2"></div>
-							<div class="overlay-reloading-teammate" id="overlay-reloading-teammate-2"></div>
-						</div>
-						<p id="nb-item-autre-2"></p>
-						<div class="item-circle" id="item-circle-inverse2">
-							<img src="../../../srcs/game/assets/image/inverse_powerUP.png" alt="Item 3">
-							<div class="overlay" id="overlay-inverse-2"></div>
-							<div class="overlay-reloading" id="overlay-reloading-inverse-2"></div>
+							<div class="overlay-reloading-freeze" id="overlay-reloading-freeze-2"></div>
 						</div>
 					</div>
 				</div>
@@ -79,10 +65,8 @@ export default class extends AbstractView {
 		// console.log("powerUP value == ", getPowerUP_value());
 		document.getElementById("nb-item-grenade-1").innerHTML = getPowerUP_value_multi();
 		document.getElementById("nb-item-teammate-1").innerHTML = getPowerUP_value_multi();
-		document.getElementById("nb-item-autre-1").innerHTML = getPowerUP_value_multi();
 		document.getElementById("nb-item-grenade-2").innerHTML = getPowerUP_value_multi();
 		document.getElementById("nb-item-teammate-2").innerHTML = getPowerUP_value_multi();
-		document.getElementById("nb-item-autre-2").innerHTML = getPowerUP_value_multi();
 	}
 
 	updateOverlays() {
@@ -90,15 +74,11 @@ export default class extends AbstractView {
 		const nb_powerUP_grenade_player2 = parseInt(document.getElementById("nb-item-grenade-2").innerHTML, 10);
 		const nb_powerUP_teammate_player1 = parseInt(document.getElementById("nb-item-teammate-1").innerHTML, 10);
 		const nb_powerUP_teammate_player2 = parseInt(document.getElementById("nb-item-teammate-2").innerHTML, 10);
-		const nb_powerUP_inverse_player1 = parseInt(document.getElementById("nb-item-autre-1").innerHTML, 10);
-		const nb_powerUP_inverse_player2 = parseInt(document.getElementById("nb-item-autre-2").innerHTML, 10);
 	
 		document.getElementById("overlay-grenade-1").classList.toggle("active", nb_powerUP_grenade_player1 === 0);
 		document.getElementById("overlay-grenade-2").classList.toggle("active", nb_powerUP_grenade_player2 === 0);
 		document.getElementById("overlay-teammate-1").classList.toggle("active", nb_powerUP_teammate_player1 === 0);
 		document.getElementById("overlay-teammate-2").classList.toggle("active", nb_powerUP_teammate_player2 === 0);
-		document.getElementById("overlay-inverse-1").classList.toggle("active", nb_powerUP_inverse_player1 === 0);
-		document.getElementById("overlay-inverse-2").classList.toggle("active", nb_powerUP_inverse_player2 === 0);
 	}
 
 	handleKeyPress(event) {
@@ -118,20 +98,13 @@ export default class extends AbstractView {
 			case "x":
 				elem = document.getElementById("nb-item-teammate-1");
 				break;
-			case "c":
-				elem = document.getElementById("nb-item-autre-1");
-				break;
 			case "1":
 				elem = document.getElementById("nb-item-grenade-2");
 				break;
 			case "2":
 				elem = document.getElementById("nb-item-teammate-2");
 				break;
-			case "3":
-				elem = document.getElementById("nb-item-autre-2");
-				break;
 		}
-	
 		if (elem) {
 			let currentValue = parseInt(elem.innerHTML, 10);
 			if (currentValue > 0) {
@@ -153,24 +126,16 @@ export default class extends AbstractView {
 						itemCircle = document.getElementById("item-circle-grenade1");
 						break;
 					case "x":
-						overlayReloading_teammate = document.getElementById("overlay-reloading-teammate-1");
+						overlayReloading_teammate = document.getElementById("overlay-reloading-freeze-1");
 						itemCircle = document.getElementById("item-circle-teammate1");
-						break;
-					case "c":
-						overlayReloading = document.getElementById("overlay-reloading-inverse-1");
-						itemCircle = document.getElementById("item-circle-inverse1");
 						break;
 					case "1":
 						overlayReloading = document.getElementById("overlay-reloading-grenade-2");
 						itemCircle = document.getElementById("item-circle-grenade2");
 						break;
 					case "2":
-						overlayReloading_teammate = document.getElementById("overlay-reloading-teammate-2");
+						overlayReloading_teammate = document.getElementById("overlay-reloading-freeze-2");
 						itemCircle = document.getElementById("item-circle-teammate2");
-						break;
-					case "3":
-						overlayReloading = document.getElementById("overlay-reloading-inverse-2");
-						itemCircle = document.getElementById("item-circle-inverse2");
 						break;
 				}
 
@@ -181,35 +146,32 @@ export default class extends AbstractView {
 					return;
 				}
 
-				if (overlayReloading && currentValue - 1 !== 0) {
-					// Lancer l'animation en ajoutant une classe CSS pour démarrer
-					overlayReloading.classList.add("active"); // Assurez-vous que .item-loading est défini dans votre CSS
+				if (overlayReloading && currentValue - 1 !== 0)
+				{
+					overlayReloading.classList.add("active");
 				}
 				if (itemCircle) {
 					itemCircle.classList.add("active");
 				}
 
-				if (overlayReloading_teammate && currentValue - 1 !== 0) {
-					// Lancer l'animation en ajoutant une classe CSS pour démarrer
-					overlayReloading_teammate.classList.add("active"); // Assurez-vous que .item-loading est défini dans votre CSS
+				if (overlayReloading_teammate && currentValue - 1 !== 0)
+				{
+					overlayReloading_teammate.classList.add("active");
 				}
 	
-				// Retirer le cooldown après le délai défini pour cette touche
-				setTimeout(() => {
-					// Terminer le cooldown et arrêter l'animation
+				setTimeout(() =>
+				{
 					delete this.cooldowns[key];
 					console.log(`${key} cooldown terminé`);
 	
-					// Retirer la classe d'animation après le cooldown
-					if (overlayReloading && currentValue - 1 !== 0) {
+					if (overlayReloading && currentValue - 1 !== 0)
 						overlayReloading.classList.remove("active");
-					}
-					if (overlayReloading_teammate && currentValue - 1 !== 0) {
+
+					if (overlayReloading_teammate && currentValue - 1 !== 0)
 						overlayReloading_teammate.classList.remove("active");
-					}
-					if (itemCircle && currentValue - 1 !== 0) {
+					
+					if (itemCircle && currentValue - 1 !== 0)
 						itemCircle.classList.remove("active");
-					}
 
 				}, this.cooldownTimes[key]);
 			}

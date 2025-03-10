@@ -6,7 +6,7 @@ import { init_nb_powerUP_grenadeFlash, reset_powerUP_grenade } from "../../../sr
 import { init_nb_powerUP_teammate, reset_powerUP_teammate } from "../../../srcs/game/gameplay/solo/1v1_player/init_powerUP_teammate.js";
 import { init_powerUP_inverse_player } from "../../../srcs/game/gameplay/solo/1v1_player/init_powerUP_inverse.js";
 import { init_nb_powerUP_grenadeFlash_team_player } from "../../../srcs/game/gameplay/multiplayer/2v2_game/init_powerUP_GernadeFlash_multi.js";
-import { init_powerUP_inverse_Team_player } from "../../../srcs/game/gameplay/multiplayer/2v2_game/init_powerUP_inverse_multi.js";
+import { init_powerUP_freeze_Team_player } from "../../../srcs/game/gameplay/multiplayer/2v2_game/init_power_up_freeze.js";
 
 let powerUP_nb = 0;
 let powerUP_nb_multi = 0;
@@ -423,7 +423,7 @@ export default class extends AbstractView {
 			number_powerUP_5_game_multi.classList.remove('checked');
 			console.log('1 powerUP selected and 3 and 5 unselected');
 			init_nb_powerUP_grenadeFlash_team_player(1);
-			init_powerUP_inverse_Team_player(1);
+			init_powerUP_freeze_Team_player(1);
 			powerUP_nb_multi = 1;
 		});
 
@@ -433,7 +433,7 @@ export default class extends AbstractView {
 			number_powerUP_5_game_multi.classList.remove('checked');
 			console.log('3 powerUP selected and 1 and 5 unselected');
 			init_nb_powerUP_grenadeFlash_team_player(3);
-			init_powerUP_inverse_Team_player(3);
+			init_powerUP_freeze_Team_player(3);
 			powerUP_nb_multi = 3;
 		});
 
@@ -443,7 +443,7 @@ export default class extends AbstractView {
 			number_powerUP_3_game_multi.classList.remove('checked');
 			console.log('5 powerUP selected and 1 and 3 unselected');
 			init_nb_powerUP_grenadeFlash_team_player(5);
-			init_powerUP_inverse_Team_player(5);
+			init_powerUP_freeze_Team_player(5);
 			powerUP_nb_multi = 5;
 		});
 	}

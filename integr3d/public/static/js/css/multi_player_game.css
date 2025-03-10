@@ -18,24 +18,12 @@
 
 
 
-.container-Player1 h1 {
+.container-Player1 h1, .container-Player2 h1 {
     position: absolute;
     color: rgb(0, 0, 0);
     font-size: 1vw;
-    left: 50%;
-    top: 5%;
-    transform: translate(-50%, -50%);
-    font-family: 'Black Ops One', sans-serif;
-    text-shadow: 2px 2px 2px #ffffff;
-}
-
-.container-Player2 h1 {
-    position: absolute;
-    color: rgb(0, 0, 0);
-    font-size: 1vw;
-    left: 50%;
-    top: 5%;
-    transform: translate(-50%, -50%);
+    left: 18%;
+    top: -7%;
     font-family: 'Black Ops One', sans-serif;
     text-shadow: 2px 2px 2px #ffffff;
 }
@@ -119,7 +107,7 @@
     animation: none;
   }
 
-  .overlay-reloading-teammate {
+  .overlay-reloading-freeze {
     position: absolute;
     top: 0;
     left: 0;
@@ -134,9 +122,9 @@
         animation: item-reloading 15s forwards;
     }
 
-    .overlay-reloading-teammate.active {
+    .overlay-reloading-freeze.active {
         visibility: visible;
-        animation: item-reloading 20s forwards;
+        animation: item-reloading 15s forwards;
     }
   
   .overlay.active {

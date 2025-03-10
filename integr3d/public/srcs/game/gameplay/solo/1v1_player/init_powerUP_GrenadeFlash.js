@@ -58,7 +58,7 @@ export function grenade_flash_player1()
 		setTimeout(() => {
 			canUseFlashGrenade_1 = true;
 			console.log("Grenade flash rechargée !");
-		}, 10000);
+		}, 15000);
 	}
 }
 
@@ -77,6 +77,6 @@ export function grenade_flash_player2()
 		setTimeout(() => {
 			canUseFlashGrenade_2 = true;
 			console.log("Grenade flash rechargée !");
-		}, 10000);
+		}, 15000);
 	}
 }
