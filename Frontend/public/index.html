@@ -38,7 +38,8 @@
 
 	<div class="flex mx-auto container">
 		
-		<form id="addForm" class="flex-1 max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg">
+		<form id="addForm" class="flex-1 max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg"
+				onsubmit="register(event)">
 			<h2 class="text-2xl font-semibold text-center mb-4">Add User</h2>
 			<div class="mb-4">
 				<label for="username" class="block text-gray-700 font-medium">Username :</label>
@@ -62,7 +63,8 @@
 			<p id="add-resultMessage" class="mt-4 text-center text-sm font-semibold text-gray-700"></p>
 		</form>
 
-		<form id="loginForm" class="flex-1 max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg">
+		<form id="loginForm" class="flex-1 max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg"
+			onsubmit="login(event)">
 			<h2 class="text-2xl font-semibold text-center mb-4">Log In</h2>
 			<div class="mb-4">
 				<label for="email" class="block text-gray-700 font-medium">Email :</label>

@@ -28,21 +28,25 @@ export async function register(request, reply) {
 
 export async function login(request, reply) {
 	const { email, password } = request.body;
+	const user = userModel.getUserByEmail(email);
 
 	try {
-		const user = userModel.getUserByEmail(email);
 
-		if (!user || !password)
+		if (!user || !await verifyPassword(user.password, password))
 			return reply.code(401).send({error: 'Invalid credentials'})
 
-		const isvalid = await verifyPassword(user.password, password);
+		// const isvalid = await verifyPassword(user.password, password);
 
-		if (!isvalid)
-			return reply.code(401).send({ error: "Invalid password" })
+		// if (!isvalid)
+		// 	return reply.code(401).send({ error: "Invalid password" })
 
 		userModel.updateConnected(user.id, 1)
+
 		const accessToken = fastify.jwt.sign({ userId: user.id, username:user.username }, {expiresIn: '1m' });
 		const refreshToken = fastify.jwt.sign({ userId: user.id }, {expiresIn: '7d' });
+
+		if (!accessToken || !refreshToken)
+			throw new Error("Error when creating JWT Tokens");
 
 		reply.setCookie('refreshToken', refreshToken, {
 			httpOnly: true,
@@ -51,34 +55,19 @@ export async function login(request, reply) {
 			path: '/'
 		});
 
-		return reply.code(200).send({
-			id: user.id,
-			connected: 1,
-			username: user.username,
-			email: user.email,
-			success: true,
-			accessToken
-		}, { message: "Connexion established"});
+		// return reply.code(200).send({
+		// 	id: user.id,
+		// 	connected: 1,
+		// 	username: user.username,
+		// 	email: user.email,
+		// 	success: true,
+		// 	accessToken,
+		// 	message: "Connexion established"
+		// });
+		return reply.code(200).send({ success: true, accessToken })
 
 	} catch (err) {
 		return reply.code(500).send({ error: err.message });
-	}
-}
-
-export async function refreshToken(request, reply) {
-	try {
-		const { refreshToken } = request.cookies;
-
-		if (!refreshToken) {
-			return reply.code(401).send({ error: 'Refresh token is missing'});
-		}
-
-		const decoded = fastify.jwt.verify(refreshToken);
-		const newAccessToken = fastify.jwt.sign({ userId: decoded.userId}, {expiresIn: '1m'});
-
-		return reply.send({ accessToken: newAccessToken });
-	} catch (err) {
-		return reply.code(401).send({ error: 'Invalid or expired refresh token' });
 	}
 }
 
@@ -122,32 +111,38 @@ export async function getUserProfile(request, reply) {
 
 export async function logout(request, reply) {
 	const { id } = request.body;
+	console.log("\n\n----Logout----\n", request.body)
 	console.log("headers of request :", request.headers)
-	console.log("headers of body :", request.body)
-
+	// console.log("headers of body :", request.body)
+	
 	const accessToken = request.headers.authorization?.split(" ")[1];
 	const refreshToken = request.cookies.refreshToken;
 	console.log("Access token when logout :", accessToken)
 	console.log("Refresh token when logout :", refreshToken)
 	try {
 		const user = userModel.getUserById(id)
-
+		
 		if (user.connected === 0)
 			return reply.send({ success: false, error: 'User already disconnected' });
+		console.log("je passe la")
 		if (user){
 
 			userModel.updateConnected(id, 0)
-			const updateUser = userModel.getUserById(id)
+			// const updateUser = userModel.getUserById(id)
 
-			reply.clearCookie('refreshToken');
+			// reply.clearCookie('refreshToken');
 
+			// return reply.clearCookie('refreshToken').code(200).send({
+			// 	id: updateUser.id,
+			// 	connected: updateUser.connected,
+			// 	username: updateUser.username,
+			// 	email: updateUser.email,
+			// 	success: true
+			// }, { message: 'Logged out successfully' })
 			return reply.clearCookie('refreshToken').code(200).send({
-				id: updateUser.id,
-				connected: updateUser.connected,
-				username: updateUser.username,
-				email: updateUser.email,
-				success: true
-			}, { message: 'Logged out successfully' })
+				success: true,
+				message: 'Logged out successfully'
+			})
 		}
 		else
 			return reply.code(404).send({ success: false, error: 'User not found' });
@@ -186,9 +181,8 @@ export async function refreshAccessToken(request, reply) {
 
 	console.log("je passe laaaoaoa")
 
-	if (!refreshToken) {
+	if (!refreshToken)
 		return reply.code(401).send({ error: 'Refresh token is missing'});
-	}
 
 	try {
 		const payload = fastify.jwt.verify(refreshToken);

@@ -19,7 +19,7 @@ await fastify.register(jwt, {
 await fastify.register(cookie);
 fastify.register(routes, { prefix: '/api' })
 
-fastify.decorate('authenticate', async function (request, reply) { 
+fastify.decorate('authenticate', async function (request, reply) {
 	try {
 		// console.log("🔹 Vérification du token JWT...");
 
