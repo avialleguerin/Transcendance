@@ -2,6 +2,8 @@ import AbstractView from "./AbstractView.js";
 import { getPowerUP_value_multi } from "./Game_menu.js";
 import { leave_Multiplayer_Game } from "../../../srcs/game/gameplay/babylon.js";
 import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.js";
+import { setLeaveGameVar } from "../index.js";
+import { getPowerUP_value } from "./Game_menu.js";
 
 export default class extends AbstractView {
 	constructor() {
@@ -17,7 +19,8 @@ export default class extends AbstractView {
 			"2": 15000,
 		};
 
-		document.addEventListener("keydown", this.handleKeyPress.bind(this));
+		this.boundKeyPressHandler = this.handleKeyPress.bind(this);
+		document.addEventListener("keydown", this.boundKeyPressHandler);
 	}
 
 	async getHtml() {
@@ -38,7 +41,7 @@ export default class extends AbstractView {
 						<a href="/Game_menu" class="nav-link" data-link>Leave Game</a>
 					</button>
 				</div>
-				<div class="container-Player1">
+				<div class="container-Player1" id="container-player1-id">
 					<h1>Player 1 - Player 2</h1>
 					<div class="container-item_player1">
 						<p id="nb-item-grenade-1"></p>
@@ -55,7 +58,7 @@ export default class extends AbstractView {
 						</div>
 					</div>
 				</div>
-				<div class="container-Player2">
+				<div class="container-Player2" id="container-player2-id">
 					<h1>Player 3 - Player 4</h1>
 					<div class="container-item_player2">
 						<p id="nb-item-grenade-2"></p>
@@ -76,9 +79,16 @@ export default class extends AbstractView {
 		`;
 	}
 
+	cleanup() {
+		document.removeEventListener("keydown", this.boundKeyPressHandler);
+	}
+
 	leave_game_multi() {
 		document.getElementById("leave_game_id").addEventListener("click", () => {
 			console.log("leave_the_game");
+			this.cleanup();
+
+			setLeaveGameVar(true);
 			handleViewTransitions("vue2", "vue4");
 			setTimeout(() => {
 				leave_Multiplayer_Game();
@@ -87,7 +97,30 @@ export default class extends AbstractView {
 	}
 
 	init_powerUP_player_multi() {
-		// console.log("powerUP value == ", getPowerUP_value());
+
+		const container_player1 = document.getElementById("container-player1-id");
+		const container_player2 = document.getElementById("container-player2-id");
+
+		console.log("powerUP_value_multi", getPowerUP_value_multi());
+
+		if (getPowerUP_value_multi() !== 0)
+		{
+			console.log("powerUP_value_multi je rentre ici");
+			// container_player1.classList.add("active");
+			// container_player2.classList.add("active");
+			container_player1.style.visibility = "visible";
+			container_player2.style.visibility = "visible";
+		}
+		else
+		{
+			console.log("powerUP_value_multi je rentre ici222");
+			// container_player1.classList.remove("active");
+			// container_player2.classList.remove("active");
+			container_player1.style.visibility = "hidden";
+			container_player2.style.visibility = "hidden";
+		}
+
+
 		document.getElementById("nb-item-grenade-1").innerHTML = getPowerUP_value_multi();
 		document.getElementById("nb-item-teammate-1").innerHTML = getPowerUP_value_multi();
 		document.getElementById("nb-item-grenade-2").innerHTML = getPowerUP_value_multi();

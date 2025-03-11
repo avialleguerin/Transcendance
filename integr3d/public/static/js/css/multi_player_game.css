@@ -1,21 +1,30 @@
 .container-Player1 {
-    position: absolute;
-    left : 5%;
-    bottom: 0%;
-    width: 15%;
-    height: 10%;
-    background: transparent;
+  position: absolute;
+  left : 5%;
+  bottom: 0%;
+  width: 15%;
+  height: 10%;
+  background: transparent;
+  visibility: hidden;
 }
 
 .container-Player2 {
-    position: absolute;
-    right : 5%;
-    bottom: 0%;
-    width: 15%;
-    height: 10%;
-    background: transparent;
+  position: absolute;
+  right : 5%;
+  bottom: 0%;
+  width: 15%;
+  height: 10%;
+  background: transparent;
+  visibility: hidden;
 }
 
+.container-Player1.active {
+  visibility: visible;
+}
+
+.container-Player2.active {
+  visibility: visible;
+}
 
 
 .container-Player1 h1, .container-Player2 h1 {

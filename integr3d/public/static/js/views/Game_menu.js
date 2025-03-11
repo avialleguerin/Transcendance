@@ -5,8 +5,8 @@ import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.
 import { init_nb_powerUP_grenadeFlash, reset_powerUP_grenade } from "../../../srcs/game/gameplay/solo/1v1_player/init_powerUP_GrenadeFlash.js";
 import { init_nb_powerUP_teammate, reset_powerUP_teammate } from "../../../srcs/game/gameplay/solo/1v1_player/init_powerUP_teammate.js";
 import { init_powerUP_inverse_player, reset_powerUP_inverse_player } from "../../../srcs/game/gameplay/solo/1v1_player/init_powerUP_inverse.js";
-import { init_nb_powerUP_grenadeFlash_team_player } from "../../../srcs/game/gameplay/multiplayer/2v2_game/init_powerUP_GernadeFlash_multi.js";
-import { init_powerUP_freeze_Team_player } from "../../../srcs/game/gameplay/multiplayer/2v2_game/init_power_up_freeze.js";
+import { init_nb_powerUP_grenadeFlash_team_player, reset_powerUP_grenadeTeam_player } from "../../../srcs/game/gameplay/multiplayer/2v2_game/init_powerUP_GernadeFlash_multi.js";
+import { init_powerUP_freeze_Team_player, reset_powerUP_freeze_Team_player } from "../../../srcs/game/gameplay/multiplayer/2v2_game/init_power_up_freeze.js";
 import { getValue_leave_game, setLeaveGameVar } from "../index.js";
 
 let powerUP_nb = 0;
@@ -34,138 +34,156 @@ export default class extends AbstractView {
 		<div class="back-home" id="back-home">
 			<button id="btn_back_home" class="btn">ACCUEIL</button>
 		</div>
-		<div id="container" class="container_menu">
-			<button id="btn_jouer">
-				<h1>JOUER</h1>
-			</button>
-			<div class="view2" id="view2">
-				<div class="view2-content">
-					<h1>CHOISIS TON MODE DE JEUX</h1>
-					<div id="game_mode_btn" class="game_mode_btn">
-						<button id="solo" class="btn">SOLO</button>
-						<button id="multiplayer" class="btn">MULTIPLAYER</button>
-					</div>
-				</div>
-			</div>
-			<div class="view3" id="view3">
-				<div class="view3-content">
-					<h1>MODE DE JEUX EN SOLO</h1>
-					<div id="game_mode_btn" class="game_mode_btn">
-						<button id="prepar_game_1v1" class="btn">1v1</button>
-						<button id="prepar_gane_ai" class="btn">ai</button>
-					</div>
-					<button id="back_to_menu_view3" class="btn">BACK TO MENU</button>
-				</div>
-			</div>
-			<div class="view4" id="view4">
-				<div class="view4-content">
-					<h1>MODE DE JEUX MULTIPLAYER</h1>
-					<div id="game_mode_btn" class="game_mode_btn">
-						<button id="prepar_game_multi" class="btn">2v2</button>
-					</div>
-					<button id="back_to_menu_view4" class="btn">BACK TO MENU</button>
-				</div>
-			</div>
-			<div class="view5" id="view5">
-				<div class="view5-content">
-					<h1>PARAMETRES</h1>
-				</div>
-			</div>
-			<div class="view6" id="view6">
-				<div class="view6-content">
-					<h1>CUSTOMISE TA GAME</h1>
-					<div class="powerUP">
-						<p>PowerUP :<span id="powerUP" class="active_powerUP"></span></p>
-						<div id="power_selector" class="power_selector">
-							<div class="powerUP_number">
-								<p>1</p>
-								<span id="number_powerUP_1" class="number_powerUP"></span>
-							</div>
-							<div class="powerUP_number">
-								<p>3</p>
-								<span id="number_powerUP_3" class="number_powerUP"></span>
-							</div>
-							<div class="powerUP_number">
-								<p>5</p>
-								<span id="number_powerUP_5" class="number_powerUP"></span>
-							</div>
+			<div id="container" class="container_menu">
+				<button id="btn_jouer">
+					<h1>JOUER</h1>
+				</button>
+				<div class="view2" id="view2">
+					<div class="view2-content">
+						<h1>CHOISIS TON MODE DE JEUX</h1>
+						<div id="game_mode_btn" class="game_mode_btn">
+							<button id="solo" class="btn">SOLO</button>
+							<button id="multiplayer" class="btn">MULTIPLAYER</button>
 						</div>
 					</div>
-					<div class="skin">
-						<p>Skin Personnalise :<span id="skin_perso" class="skin_perso"</span></p>
-					</div>
-					<button id="solo_1v1_btn" class="btn">
-						<a href="/solo_game_1v1" class="nav-link" data-link>Lancer la partie</a>
-					</button>
 				</div>
-			</div>
-			<div class="view7" id="view7">
-				<div class="view7-content">
-					<h1>CUSTOMISE TA GAME CONTRE L'IA</h1>
-					<div class="powerUP">
-						<p>PowerUP :<span id="powerUP" class="active_powerUP"></span></p>
-						<div id="power_selector" class="power_selector">
-							<div class="powerUP_number">
-								<p>1</p>
-								<span id="number_powerUP_1" class="number_powerUP"></span>
-							</div>
-							<div class="powerUP_number">
-								<p>3</p>
-								<span id="number_powerUP_3" class="number_powerUP"></span>
-							</div>
-							<div class="powerUP_number">
-								<p>5</p>
-								<span id="number_powerUP_5" class="number_powerUP"></span>
+				<div class="view3" id="view3">
+					<div class="view3-content">
+						<h1>MODE DE JEUX EN SOLO</h1>
+						<div id="game_mode_btn" class="game_mode_btn">
+							<button id="prepar_game_1v1" class="btn">1v1</button>
+							<button id="prepar_gane_ai" class="btn">ai</button>
+						</div>
+						<button id="back_to_menu_view3" class="btn">BACK TO MENU</button>
+					</div>
+				</div>
+				<div class="view4" id="view4">
+					<div class="view4-content">
+						<h1>MODE DE JEUX MULTIPLAYER</h1>
+						<div id="game_mode_btn" class="game_mode_btn">
+							<button id="prepar_game_multi" class="btn">2v2</button>
+						</div>
+						<button id="back_to_menu_view4" class="btn">BACK TO MENU</button>
+					</div>
+				</div>
+				<div class="view5" id="view5">
+					<div class="view5-content">
+						<h1>PARAMETRES</h1>
+					</div>
+				</div>
+				<div class="view6" id="view6">
+					<div class="view6-content">
+						<h1>CUSTOMISE TA GAME</h1>
+						<div class="powerUP">
+							<p>PowerUP :<span id="powerUP" class="active_powerUP"></span></p>
+							<div id="power_selector" class="power_selector">
+								<div class="powerUP_number">
+									<p>1</p>
+									<span id="number_powerUP_1" class="number_powerUP"></span>
+								</div>
+								<div class="powerUP_number">
+									<p>3</p>
+									<span id="number_powerUP_3" class="number_powerUP"></span>
+								</div>
+								<div class="powerUP_number">
+									<p>5</p>
+									<span id="number_powerUP_5" class="number_powerUP"></span>
+								</div>
 							</div>
 						</div>
+						<div class="skin">
+							<p>Skin Personnalise :<span id="skin_perso" class="skin_perso"</span></p>
+						</div>
+						<button id="solo_1v1_btn" class="btn">
+							<a href="/solo_game_1v1" class="nav-link" data-link>Lancer la partie</a>
+						</button>
 					</div>
-					<div class="skin">
-						<p>Skin Personnalise :<span id="skin_perso" class="skin_perso"</span></p>
-					</div>
-					<button id="solo_ai_btn" class="btn">
-						<a href="/solo_game_ai" class="nav-link" data-link>Lancer la partie</a>
-					</button>
 				</div>
-			</div>
-			<div class="view8" id="view8">
-				<div class="view8-content">
-					<h1>CUSTOMISE TA GAME EN MULTI</h1>
-					<div class="powerUP">
-						<p>PowerUP :<span id="powerUP_multi" class="active_powerUP"></span></p>
-						<div id="power_selector_game_multi" class="power_selector">
-							<div class="powerUP_number">
-								<p>1</p>
-								<span id="number_powerUP_1_game_multi" class="number_powerUP"></span>
-							</div>
-							<div class="powerUP_number">
-								<p>3</p>
-								<span id="number_powerUP_3_game_multi" class="number_powerUP"></span>
-							</div>
-							<div class="powerUP_number">
-								<p>5</p>
-								<span id="number_powerUP_5_game_multi" class="number_powerUP"></span>
+				<div class="view7" id="view7">
+					<div class="view7-content">
+						<h1>CUSTOMISE TA GAME CONTRE L'IA</h1>
+						<div class="powerUP">
+							<p>PowerUP :<span id="powerUP" class="active_powerUP"></span></p>
+							<div id="power_selector" class="power_selector">
+								<div class="powerUP_number">
+									<p>1</p>
+									<span id="number_powerUP_1" class="number_powerUP"></span>
+								</div>
+								<div class="powerUP_number">
+									<p>3</p>
+									<span id="number_powerUP_3" class="number_powerUP"></span>
+								</div>
+								<div class="powerUP_number">
+									<p>5</p>
+									<span id="number_powerUP_5" class="number_powerUP"></span>
+								</div>
 							</div>
 						</div>
+						<div class="skin">
+							<p>Skin Personnalise :<span id="skin_perso" class="skin_perso"</span></p>
+						</div>
+						<button id="solo_ai_btn" class="btn">
+							<a href="/solo_game_ai" class="nav-link" data-link>Lancer la partie</a>
+						</button>
 					</div>
-					<div class="skin">
-						<p>Skin Personnalise :<span id="skin_perso_game_multi" class="skin_perso"</span></p>
+				</div>
+				<div class="view8" id="view8">
+					<div class="view8-content">
+						<h1>CUSTOMISE TA GAME EN MULTI</h1>
+						<div class="powerUP">
+							<p>PowerUP :<span id="powerUP_multi" class="active_powerUP"></span></p>
+							<div id="power_selector_game_multi" class="power_selector">
+								<div class="powerUP_number">
+									<p>1</p>
+									<span id="number_powerUP_1_game_multi" class="number_powerUP"></span>
+								</div>
+								<div class="powerUP_number">
+									<p>3</p>
+									<span id="number_powerUP_3_game_multi" class="number_powerUP"></span>
+								</div>
+								<div class="powerUP_number">
+									<p>5</p>
+									<span id="number_powerUP_5_game_multi" class="number_powerUP"></span>
+								</div>
+							</div>
+						</div>
+						<div class="skin">
+							<p>Skin Personnalise :<span id="skin_perso_game_multi" class="skin_perso"</span></p>
+						</div>
+						<button id="multiplayer_btn" class="btn">
+							<a href="/multi_player_game" class="nav-link" data-link>Lancer la partie</a>
+						</button>
 					</div>
-					<button id="multiplayer_btn" class="btn">
-						<a href="/multi_player_game" class="nav-link" data-link>Lancer la partie</a>
-					</button>
 				</div>
 			</div>
+			<div class="back" id="back_to_select_mode_view6">
+				<button id="back_to_menu_view6" class="btn_back">BACK</button>
+			</div>
+			<div class="back" id="back_to_select_mode_view7">
+				<button id="back_to_menu_view7" class="btn_back">BACK</button>
+			</div>
+			<div class="back" id="back_to_select_mode_view8">
+				<button id="back_to_menu_view8" class="btn_back">BACK</button>
+			</div>
+
+			<div class="choose_your_skin" id="choose_your_skin">
+				<h1>PERSONNALISE TON SKIN</h1>
+				<div class="player1">
+					<button class="switch_skin_left" id="switch_skn_left_id1"></button>
+					<button class="switch_skin_right" id="switch_skn_right_id1"></button>
+					<p>Joueur 1</p>
+				</div>
+				<div class="player2">
+					<button class="switch_skin_left" id="switch_skn_left_id2"></button>
+					<button class="switch_skin_right" id="switch_skn_right_id2"></button>
+					<p>Joueur 2</p>
+				</div>
+				<button id="solo_1v1_btn" class="btn">
+					<a href="/solo_game_1v1" class="nav-link" data-link>Lancer la partie</a>
+				</button>
+			</div>
 		</div>
-		<div class="back" id="back_to_select_mode_view6">
-			<button id="back_to_menu_view6" class="btn_back">BACK</button>
-		</div>
-		<div class="back" id="back_to_select_mode_view7">
-			<button id="back_to_menu_view7" class="btn_back">BACK</button>
-		</div>
-		<div class="back" id="back_to_select_mode_view8">
-			<button id="back_to_menu_view8" class="btn_back">BACK</button>
-		</div>
-		</div>
+
 
 
 		`;
@@ -396,9 +414,30 @@ export default class extends AbstractView {
 			powerUP_nb = 5;
 		});
 
+
+
+
+
+		const choose_your_skin = document.getElementById('choose_your_skin');
+		const solo_1v1_btn = document.getElementById('solo_1v1_btn');
+
+
 		skin_perso.addEventListener('click', () => {
 			skin_perso.classList.toggle('checked');
-			console.log('Skin perso selected');
+			
+			if (skin_perso.classList.contains('checked')) {
+				console.log('Skin perso is active');
+				choose_your_skin.classList.add('active');
+				solo_1v1_btn.style.display = 'none';
+			}
+			else
+			{
+				console.log('Skin perso is inactive');
+				if (choose_your_skin.classList.contains('active')) {
+					choose_your_skin.classList.remove('active');
+					solo_1v1_btn.style.display = 'block';
+				}
+			}
 		});
 
 		const powerUP_multi = document.getElementById('powerUP_multi');
@@ -417,9 +456,10 @@ export default class extends AbstractView {
 			else {
 				console.log('PowerUP is inactive');
 				power_selector_game_multi.classList.remove('active');
-				reset_powerUP_grenade();
-				reset_powerUP_teammate();
-				
+				reset_powerUP_grenadeTeam_player();
+				reset_powerUP_freeze_Team_player();
+				powerUP_nb = 0;
+				powerUP_nb_multi = 0;
 			}
 		});
 
@@ -432,6 +472,7 @@ export default class extends AbstractView {
 			init_nb_powerUP_grenadeFlash_team_player(1);
 			init_powerUP_freeze_Team_player(1);
 			powerUP_nb_multi = 1;
+			
 		});
 
 		number_powerUP_3_game_multi.addEventListener('click', () => {
@@ -442,6 +483,7 @@ export default class extends AbstractView {
 			init_nb_powerUP_grenadeFlash_team_player(3);
 			init_powerUP_freeze_Team_player(3);
 			powerUP_nb_multi = 3;
+
 		});
 
 		number_powerUP_5_game_multi.addEventListener('click', () => {
@@ -457,6 +499,7 @@ export default class extends AbstractView {
 		if (getValue_leave_game() == true)
 		{
 			powerUP_nb = 0;
+			powerUP_nb_multi = 0;
 			setLeaveGameVar(false);
 		}
 	}

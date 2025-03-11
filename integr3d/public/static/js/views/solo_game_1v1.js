@@ -241,26 +241,25 @@ export default class extends AbstractView {
 					return;
 				}
 
-				if (overlayReloading && currentValue - 1 !== 0) {
-					// Lancer l'animation en ajoutant une classe CSS pour démarrer
-					overlayReloading.classList.add("active"); // Assurez-vous que .item-loading est défini dans votre CSS
+				if (overlayReloading && currentValue - 1 !== 0)
+				{
+					overlayReloading.classList.add("active");
 				}
-				if (itemCircle) {
+				if (itemCircle)
+				{
 					itemCircle.classList.add("active");
 				}
 
-				if (overlayReloading_teammate && currentValue - 1 !== 0) {
-					// Lancer l'animation en ajoutant une classe CSS pour démarrer
-					overlayReloading_teammate.classList.add("active"); // Assurez-vous que .item-loading est défini dans votre CSS
+				if (overlayReloading_teammate && currentValue - 1 !== 0)
+				{
+					overlayReloading_teammate.classList.add("active");
 				}
 	
-				// Retirer le cooldown après le délai défini pour cette touche
-				setTimeout(() => {
-					// Terminer le cooldown et arrêter l'animation
+				setTimeout(() =>
+				{
 					delete this.cooldowns[key];
 					console.log(`${key} cooldown terminé`);
-	
-					// Retirer la classe d'animation après le cooldown
+
 					if (overlayReloading && currentValue - 1 !== 0) {
 						overlayReloading.classList.remove("active");
 					}

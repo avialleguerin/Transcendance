@@ -6,6 +6,11 @@ export function init_powerUP_freeze_Team_player(number) {
 	nb_powerUP_freeze_Team_player3_4 = number;
 }
 
+export function reset_powerUP_freeze_Team_player() {
+    nb_powerUP_freeze_Team_player1_2 = 0;
+    nb_powerUP_freeze_Team_player3_4 = 0;
+}
+
 let isfreeze_team1 = false;
 let isfreeze_team2 = false;
 let canUsePowerUP_freeze_team1 = true;

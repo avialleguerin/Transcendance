@@ -428,6 +428,128 @@
 }
 
 
+.choose_your_skin {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -40%);
+    width: 70%;
+    height: 82%;
+    visibility: hidden;
+}
+
+.choose_your_skin h1 {
+    color: white;
+    font-family: 'Black Ops One', sans-serif;
+    font-size: 1.2vw;
+    text-align: center;
+    position: absolute;
+    left : 51%; 
+    top: 26%;
+    transform: translate(-50%, -50%);
+}
+
+.player1 {
+    position: absolute;
+    left: 35%;
+    bottom: 20%;
+    width: 16%;
+    height: 30%;
+}
+
+.player2 {
+    position: absolute;
+    right: 28%;
+    bottom: 20%;
+    width: 16%;
+    height: 30%;
+}
+
+.player1 p, .player2 p {
+    color: white;
+    font-family: 'Black Ops One', sans-serif;
+    font-size: 0.8vw;
+    position: absolute;
+    bottom: 0%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.choose_your_skin .btn {
+    padding: 15px 0px;
+    font-size: 0.7vw;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+    border: 2px solid #44444400;
+    background-color: transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    background-image: url("../../../srcs/game/assets/image/boutton.svg");
+    background-size: 100% auto;
+    background-position: center;
+    background-repeat: no-repeat;
+    line-height: 4vh;
+    
+    /* Ajout de dimensions fixes */
+    width: 120px;  /* Largeur fixe */
+    height: 70px;  /* Hauteur fixe */
+    display: flex; /* Pour aider au centrage du texte */
+    justify-content: center; /* Centre horizontalement */
+    align-items: center; /* Centre verticalement */
+
+    position: absolute;
+    bottom: 0%;
+    left: 52.5%;
+    transform: translate(-50%, -50%);
+}
+
+
+.choose_your_skin.active {
+    visibility: visible;
+}
+
+
+.player1 .switch_skin_left, .player2 .switch_skin_left {
+    position: absolute;
+    left: 0%;
+    bottom: 20%;
+    width: 15%;
+    height: 13%;
+    display: flex;
+
+    background-image: url("../../../srcs/game/assets/image/arrow_right.png");
+    background-size: 100% auto;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    background-color: transparent;
+    border: none;
+}
+
+.player1 .switch_skin_right, .player2 .switch_skin_right {
+    position: absolute;
+    right: 0%;
+    bottom: 20%;
+    width: 15%;
+    height: 13%;
+    display: flex;
+
+    background-image: url("../../../srcs/game/assets/image/arrow_left.png");
+    background-size: 100% auto;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    background-color: transparent;
+    border: none;
+}
+
+
+
 
 
 /* Initialement cacher les vues */
