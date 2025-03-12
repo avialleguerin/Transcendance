@@ -8,6 +8,10 @@ import { init_powerUP_inverse_player, reset_powerUP_inverse_player } from "../..
 import { init_nb_powerUP_grenadeFlash_team_player, reset_powerUP_grenadeTeam_player } from "../../../srcs/game/gameplay/multiplayer/2v2_game/init_powerUP_GernadeFlash_multi.js";
 import { init_powerUP_freeze_Team_player, reset_powerUP_freeze_Team_player } from "../../../srcs/game/gameplay/multiplayer/2v2_game/init_power_up_freeze.js";
 import { getValue_leave_game, setLeaveGameVar } from "../index.js";
+import { init_skin_perso_player1, init_skin_perso_player2, switch_skin_perso_player1_left, switch_skin_perso_player1_right, switch_skin_perso_player2_left, switch_skin_perso_player2_right, delete_skin_perso_player1, delete_skin_perso_player2 } from "../../../srcs/game/gameplay/solo/skin/init_skin_perso.js";
+import { init_skin_perso_player1_multi, init_skin_perso_player2_multi, init_skin_perso_player3_multi, init_skin_perso_player4_multi, delete_skin_perso_player1_multi, delete_skin_perso_player2_multi, delete_skin_perso_player3_multi,
+	 delete_skin_perso_player4_multi, switch_skin_perso_player1_left_multi, switch_skin_perso_player1_right_multi, switch_skin_perso_player2_left_multi, switch_skin_perso_player2_right_multi, 
+	 switch_skin_perso_player3_left_multi, switch_skin_perso_player3_right_multi, switch_skin_perso_player4_left_multi, switch_skin_perso_player4_right_multi } from "../../../srcs/game/gameplay/multiplayer/init_skin_perso_multi.js";
 
 let powerUP_nb = 0;
 let powerUP_nb_multi = 0;
@@ -73,7 +77,7 @@ export default class extends AbstractView {
 				</div>
 				<div class="view6" id="view6">
 					<div class="view6-content">
-						<h1>CUSTOMISE TA GAME</h1>
+						<h1 id="custom_ta_game">CUSTOMISE TA GAME</h1>
 						<div class="powerUP">
 							<p>PowerUP :<span id="powerUP" class="active_powerUP"></span></p>
 							<div id="power_selector" class="power_selector">
@@ -129,7 +133,7 @@ export default class extends AbstractView {
 				</div>
 				<div class="view8" id="view8">
 					<div class="view8-content">
-						<h1>CUSTOMISE TA GAME EN MULTI</h1>
+						<h1 id="custom_ta_game_multi">CUSTOMISE TA GAME EN MULTI</h1>
 						<div class="powerUP">
 							<p>PowerUP :<span id="powerUP_multi" class="active_powerUP"></span></p>
 							<div id="power_selector_game_multi" class="power_selector">
@@ -178,10 +182,32 @@ export default class extends AbstractView {
 					<button class="switch_skin_right" id="switch_skn_right_id2"></button>
 					<p>Joueur 2</p>
 				</div>
-				<button id="solo_1v1_btn" class="btn">
-					<a href="/solo_game_1v1" class="nav-link" data-link>Lancer la partie</a>
-				</button>
+				<button id="valide_ton_skin" class="btn">Valider</button>
 			</div>
+
+			<div class="choose_your_skin_game_multi" id="choose_your_skin_game_multi">
+				<h1>PERSONNALISE TON SKIN</h1>
+				<div class="player1_game_multi">
+					<button class="switch_skin_left" id="switch_skn_left_id1_game_multi"></button>
+					<button class="switch_skin_right" id="switch_skn_right_id1_game_multi"></button>
+					<p>Joueur 1</p>
+				</div>
+				<div class="player2_game_multi">
+					<button class="switch_skin_left" id="switch_skn_left_id2_game_multi"></button>
+					<button class="switch_skin_right" id="switch_skn_right_id2_game_multi"></button>
+					<p>Joueur 2</p>
+				</div>
+				<div class="player3_game_multi">
+					<button class="switch_skin_left" id="switch_skn_left_id3_game_multi"></button>
+					<button class="switch_skin_right" id="switch_skn_right_id3_game_multi"></button>
+					<p>Joueur 3</p>
+				</div>
+				<div class="player4_game_multi">
+					<button class="switch_skin_left" id="switch_skn_left_id4_game_multi"></button>
+					<button class="switch_skin_right" id="switch_skn_right_id4_game_multi"></button>
+					<p>Joueur 4</p>
+				</div>
+				<button id="valide_ton_skin_game_multi" class="btn">Valider</button>
 		</div>
 
 
@@ -268,11 +294,21 @@ export default class extends AbstractView {
 		});
 
 
+		/***********************************************************************/
+		/**************************SETTINGS************************************/
+		/***********************************************************************/
+
 
 		settings_btn.addEventListener('click', () => {
 			view2.classList.remove('active');
 			view5.classList.add('active');
 		});
+
+
+		/***********************************************************************/
+		/**************************MODE_DE_JEUX********************************/
+		/***********************************************************************/
+
 
 		solo.addEventListener('click', () => {
 			view2.classList.remove('active');
@@ -287,6 +323,11 @@ export default class extends AbstractView {
 			view1.classList.remove('active');
 			btn_back_home.classList.remove('active');
 		});
+
+
+		/***********************************************************************/
+		/**************************BACK_TO_MENU********************************/
+		/***********************************************************************/
 
 		if (!view3.classList.contains('active')) {
 			console.log('view3 is active');
@@ -307,6 +348,12 @@ export default class extends AbstractView {
 				btn_back_home.classList.add('active');
 			});
 		}
+
+
+		/***********************************************************************/
+		/**************************BACK_HOME************************************/
+		/***********************************************************************/
+
 
 		btn_back_home.addEventListener('click', () => {
 			if (view2.classList.contains('active')) {
@@ -346,20 +393,128 @@ export default class extends AbstractView {
 			view6.classList.remove('active');
 			view3.classList.add('active');
 			back_to_select_mode_view6.classList.remove('active');
+			if (skin_perso.classList.contains('checked'))
+			{
+				skin_perso.classList.remove('checked');
+				if (choose_your_skin.classList.contains('active'))
+				{
+					choose_your_skin.classList.remove('active');
+					solo_1v1_btn.style.display = 'block';
+					custom_ta_game.style.visibility = 'visible';
+					delete_skin_perso_player1();
+					delete_skin_perso_player2();
+				}
+			}
+			if (power_selector.classList.contains('active'))
+			{
+				power_selector.classList.remove('active');
+				powerUP.classList.remove('checked');
+				reset_powerUP_grenade();
+				reset_powerUP_teammate();
+				reset_powerUP_inverse_player();
+				powerUP_nb = 0;
+				if (number_powerUP_1.classList.contains('checked'))
+				{
+					number_powerUP_1.classList.remove('checked');
+				}
+				if (number_powerUP_3.classList.contains('checked'))
+				{
+					number_powerUP_3.classList.remove('checked');
+				}
+				if (number_powerUP_5.classList.contains('checked'))
+				{
+					number_powerUP_5.classList.remove('checked');
+				}
+			}
 		});
+
+
+		/***********************************************************************/
+		/**************************BACK_TO_MENU********************************/
+		/***********************************************************************/
+
+		const skin_perso_game_multi = document.getElementById('skin_perso_game_multi');
 
 		back_to_menu_view7.addEventListener('click', () => {
 			console.log('Back to menu view7 clicked');
 			view3.classList.add('active');
 			view7.classList.remove('active');
 			back_to_select_mode_view7.classList.remove('active');
+			if (skin_perso.classList.contains('checked'))
+			{
+				skin_perso.classList.remove('checked');
+				if (choose_your_skin.classList.contains('active'))
+				{
+					choose_your_skin.classList.remove('active');
+					solo_1v1_btn.style.display = 'block';
+					custom_ta_game.style.visibility = 'visible';
+				}
+			}
+			if (power_selector.classList.contains('active'))
+			{
+				power_selector.classList.remove('active');
+				powerUP.classList.remove('checked');
+				reset_powerUP_grenade();
+				reset_powerUP_teammate();
+				reset_powerUP_inverse_player();
+				powerUP_nb = 0;
+				if (number_powerUP_1.classList.contains('checked'))
+				{
+					number_powerUP_1.classList.remove('checked');
+				}
+				if (number_powerUP_3.classList.contains('checked'))
+				{
+					number_powerUP_3.classList.remove('checked');
+				}
+				if (number_powerUP_5.classList.contains('checked'))
+				{
+					number_powerUP_5.classList.remove('checked');
+				}
+			}
 		});
 
 		back_to_menu_view8.addEventListener('click', () => {
 			view8.classList.remove('active');
 			view4.classList.add('active');
 			back_to_select_mode_view8.classList.remove('active');
+			if (skin_perso_game_multi.classList.contains('checked'))
+			{
+				skin_perso_game_multi.classList.remove('checked');
+				if (choose_your_skin_game_multi.classList.contains('active'))
+				{
+					choose_your_skin_game_multi.classList.remove('active');
+					multiplayer_btn.style.display = 'block';
+					custom_ta_game_multi.style.visibility = 'visible';
+				}
+			}
+			if (power_selector_game_multi.classList.contains('active'))
+			{
+				power_selector_game_multi.classList.remove('active');
+				powerUP_multi.classList.remove('checked');
+				reset_powerUP_grenadeTeam_player();
+				reset_powerUP_freeze_Team_player();
+				powerUP_nb = 0;
+				powerUP_nb_multi = 0;
+				if (number_powerUP_1_game_multi.classList.contains('checked'))
+				{
+					number_powerUP_1_game_multi.classList.remove('checked');
+				}
+				if (number_powerUP_3_game_multi.classList.contains('checked'))
+				{
+					number_powerUP_3_game_multi.classList.remove('checked');
+				}
+				if (number_powerUP_5_game_multi.classList.contains('checked'))
+				{
+					number_powerUP_5_game_multi.classList.remove('checked');
+				}
+			}
 		});
+
+
+		/***********************************************************************/
+		/**************************POWER_UP_SOLO********************************/
+		/***********************************************************************/
+
 
 		powerUP.addEventListener('click', () => {
 			powerUP.classList.toggle('checked');
@@ -376,6 +531,18 @@ export default class extends AbstractView {
 				reset_powerUP_inverse_player();
 				powerUP_nb = 0;
 				powerUP_nb_multi = 0;
+				if (number_powerUP_1.classList.contains('checked'))
+				{
+					number_powerUP_1.classList.remove('checked');
+				}
+				if (number_powerUP_3.classList.contains('checked'))
+				{
+					number_powerUP_3.classList.remove('checked');
+				}
+				if (number_powerUP_5.classList.contains('checked'))
+				{
+					number_powerUP_5.classList.remove('checked');
+				}
 			}
 		});
 
@@ -418,27 +585,14 @@ export default class extends AbstractView {
 
 
 
-		const choose_your_skin = document.getElementById('choose_your_skin');
-		const solo_1v1_btn = document.getElementById('solo_1v1_btn');
 
 
-		skin_perso.addEventListener('click', () => {
-			skin_perso.classList.toggle('checked');
-			
-			if (skin_perso.classList.contains('checked')) {
-				console.log('Skin perso is active');
-				choose_your_skin.classList.add('active');
-				solo_1v1_btn.style.display = 'none';
-			}
-			else
-			{
-				console.log('Skin perso is inactive');
-				if (choose_your_skin.classList.contains('active')) {
-					choose_your_skin.classList.remove('active');
-					solo_1v1_btn.style.display = 'block';
-				}
-			}
-		});
+		/***********************************************************************/
+		/**************************POWER_UP_multi*******************************/
+		/***********************************************************************/
+
+
+
 
 		const powerUP_multi = document.getElementById('powerUP_multi');
 		const number_powerUP_1_game_multi = document.getElementById('number_powerUP_1_game_multi');
@@ -460,6 +614,18 @@ export default class extends AbstractView {
 				reset_powerUP_freeze_Team_player();
 				powerUP_nb = 0;
 				powerUP_nb_multi = 0;
+				if (number_powerUP_1_game_multi.classList.contains('checked'))
+				{
+					number_powerUP_1_game_multi.classList.remove('checked');
+				}
+				if (number_powerUP_3_game_multi.classList.contains('checked'))
+				{
+					number_powerUP_3_game_multi.classList.remove('checked');
+				}
+				if (number_powerUP_5_game_multi.classList.contains('checked'))
+				{
+					number_powerUP_5_game_multi.classList.remove('checked');
+				}
 			}
 		});
 
@@ -502,6 +668,173 @@ export default class extends AbstractView {
 			powerUP_nb_multi = 0;
 			setLeaveGameVar(false);
 		}
+
+
+
+
+		/***********************************************************************/
+		/**************************SKIN-SOLO************************************/
+		/***********************************************************************/
+
+
+		const choose_your_skin = document.getElementById('choose_your_skin');
+		const valide_ton_skin = document.getElementById('valide_ton_skin');
+		const custom_ta_game = document.getElementById('custom_ta_game');
+		const solo_1v1_btn = document.getElementById('solo_1v1_btn');
+		const switch_skn_left_id1 = document.getElementById('switch_skn_left_id1');
+		const switch_skn_right_id1 = document.getElementById('switch_skn_right_id1');
+		const switch_skn_left_id2 = document.getElementById('switch_skn_left_id2');
+		const switch_skn_right_id2 = document.getElementById('switch_skn_right_id2');
+
+		skin_perso.addEventListener('click', () => {
+			skin_perso.classList.toggle('checked');
+			
+			if (skin_perso.classList.contains('checked')) {
+				console.log('Skin perso is active');
+				choose_your_skin.classList.add('active');
+				solo_1v1_btn.style.display = 'none';
+				custom_ta_game.style.visibility = 'hidden';
+				init_skin_perso_player1();
+				init_skin_perso_player2();
+
+				if (valide_ton_skin.addEventListener('click', () => {
+					console.log('Valide ton skin button clicked');
+					choose_your_skin.classList.remove('active');
+					solo_1v1_btn.style.display = 'block';
+					custom_ta_game.style.visibility = 'visible';
+					delete_skin_perso_player1();
+					delete_skin_perso_player2();
+				}));
+			}
+			else
+			{
+				console.log('Skin perso is inactive');
+				if (choose_your_skin.classList.contains('active')) {
+					choose_your_skin.classList.remove('active');
+					solo_1v1_btn.style.display = 'block';
+					custom_ta_game.style.visibility = 'visible';
+					delete_skin_perso_player1();
+					delete_skin_perso_player2();
+				}
+			}
+		});
+
+		switch_skn_left_id1.addEventListener('click', () => {
+			console.log('Switch skin left id1 clicked');
+			switch_skin_perso_player1_left();
+		});
+
+		switch_skn_right_id1.addEventListener('click', () => {
+			console.log('Switch skin right id1 clicked');
+			switch_skin_perso_player1_right();
+		});
+
+		switch_skn_left_id2.addEventListener('click', () => {
+			console.log('Switch skin left id2 clicked');
+			switch_skin_perso_player2_left();
+		});
+
+		switch_skn_right_id2.addEventListener('click', () => {
+			console.log('Switch skin right id2 clicked');
+			switch_skin_perso_player2_right();
+		});
+
+
+		/***********************************************************************/
+		/**************************SKIN_MULTI***********************************/
+		/***********************************************************************/
+
+		const choose_your_skin_game_multi = document.getElementById('choose_your_skin_game_multi');
+		const valide_ton_skin_game_multi = document.getElementById('valide_ton_skin_game_multi');
+		const switch_skn_left_id1_game_multi = document.getElementById('switch_skn_left_id1_game_multi');
+		const switch_skn_right_id1_game_multi = document.getElementById('switch_skn_right_id1_game_multi');
+		const switch_skn_left_id2_game_multi = document.getElementById('switch_skn_left_id2_game_multi');
+		const switch_skn_right_id2_game_multi = document.getElementById('switch_skn_right_id2_game_multi');
+		const switch_skn_left_id3_game_multi = document.getElementById('switch_skn_left_id3_game_multi');
+		const switch_skn_right_id3_game_multi = document.getElementById('switch_skn_right_id3_game_multi');
+		const switch_skn_left_id4_game_multi = document.getElementById('switch_skn_left_id4_game_multi');
+		const switch_skn_right_id4_game_multi = document.getElementById('switch_skn_right_id4_game_multi');
+		const custom_ta_game_multi = document.getElementById('custom_ta_game_multi');
+		const multiplayer_btn = document.getElementById('multiplayer_btn');
+
+		skin_perso_game_multi.addEventListener('click', () => {
+			skin_perso_game_multi.classList.toggle('checked');
+			
+			if (skin_perso_game_multi.classList.contains('checked')) {
+				console.log('Skin perso is active');
+				choose_your_skin_game_multi.classList.add('active');
+				multiplayer_btn.style.display = 'none';
+				custom_ta_game_multi.style.visibility = 'hidden';
+				init_skin_perso_player1_multi();
+				init_skin_perso_player2_multi();
+				init_skin_perso_player3_multi();
+				init_skin_perso_player4_multi();
+
+				if (valide_ton_skin_game_multi.addEventListener('click', () => {
+					console.log('Valide ton skin button clicked');
+					choose_your_skin_game_multi.classList.remove('active');
+					multiplayer_btn.style.display = 'block';
+					custom_ta_game_multi.style.visibility = 'visible';
+					delete_skin_perso_player1_multi();
+					delete_skin_perso_player2_multi();
+					delete_skin_perso_player3_multi();
+					delete_skin_perso_player4_multi();
+				}));
+			}
+			else
+			{
+				console.log('Skin perso is inactive');
+				if (choose_your_skin_game_multi.classList.contains('active')) {
+					choose_your_skin_game_multi.classList.remove('active');
+					multiplayer_btn.style.display = 'block';
+					custom_ta_game_multi.style.visibility = 'visible';
+					delete_skin_perso_player1_multi();
+					delete_skin_perso_player2_multi();
+					delete_skin_perso_player3_multi();
+					delete_skin_perso_player4_multi();
+				}
+			}
+		});
+
+		switch_skn_left_id1_game_multi.addEventListener('click', () => {
+			console.log('Switch skin left id1 clicked');
+			switch_skin_perso_player1_left_multi();
+		});
+
+		switch_skn_right_id1_game_multi.addEventListener('click', () => {
+			console.log('Switch skin right id1 clicked');
+			switch_skin_perso_player1_right_multi();
+		});
+
+		switch_skn_left_id2_game_multi.addEventListener('click', () => {
+			console.log('Switch skin left id2 clicked');
+			switch_skin_perso_player2_left_multi();
+		});
+
+		switch_skn_right_id2_game_multi.addEventListener('click', () => {
+			console.log('Switch skin right id2 clicked');
+			switch_skin_perso_player2_right_multi();
+		});
+
+		switch_skn_left_id3_game_multi.addEventListener('click', () => {
+			console.log('Switch skin left id3 clicked');
+			switch_skin_perso_player3_left_multi();
+		});
+
+		switch_skn_right_id3_game_multi.addEventListener('click', () => {
+			console.log('Switch skin right id3 clicked');
+			switch_skin_perso_player3_right_multi();
+		});
+
+		switch_skn_left_id4_game_multi.addEventListener('click', () => {
+			console.log('Switch skin left id4 clicked');
+			switch_skin_perso_player4_left_multi();
+		});
+
+		switch_skn_right_id4_game_multi.addEventListener('click', () => {
+			console.log('Switch skin right id4 clicked');
+			switch_skin_perso_player4_right_multi();
+		});
 	}
 }
 

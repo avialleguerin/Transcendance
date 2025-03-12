@@ -302,9 +302,16 @@ engine.runRenderLoop(() =>
         }
     }
     // console.log(camera.rotation);
+    // console.log(camera.position);
     scene.render();
 });
 
 window.addEventListener('resize', () => {
 	engine.resize(true);
 });
+
+
+export function getScene()
+{
+    return scene;
+}
