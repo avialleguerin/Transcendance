@@ -1,19 +1,15 @@
+// Moduls
 import Fastify from "fastify";
-import Database from "better-sqlite3";
+import { initDb } from "./utils/db.js";
 import jwt from "@fastify/jwt";
 import cookie from "@fastify/cookie";
 import Vault from 'node-vault';
-// les autres pages js
-import routes from "./routes.js"
-// import registerPlugins from './register.js';
-import { CREATE_USERS_TABLE } from './models/userModel.js';
+// Pages
+import routes from "./routes/routes.js"
 
-export const fastify = Fastify({ logger: false }) //change ici laffichage des logs
-// export const db = new Database('database.sqlite', { verbose: console.log });
-export const db = new Database('database.sqlite');
-// Charger les variables d'environnement de Docker
-// const VAULT_ADDR = process.env.VAULT_ADDR;
-// const VAULT_TOKEN = process.env.VAULT_TOKEN;
+export const fastify = Fastify({ logger: false })
+initDb();
+
 const vault = Vault({ endopint: VAULT_ADDR });
 vault.token = VAULT_TOKEN;
 
@@ -24,21 +20,26 @@ await fastify.register(jwt, {
 		signed: false
 	}
 });
-
 await fastify.register(cookie);
-// fastify.register(routes)
-// fastify.register(routes, {db})
 fastify.register(routes, { prefix: '/api' })
-// await registerPlugins(fastify);
 
-db.prepare(CREATE_USERS_TABLE).run();
-
-
-fastify.decorate('authenticate', async function (request, reply) { 
+fastify.decorate('authenticate', async function (request, reply) {
 	try {
+		// console.log("🔹 Vérification du token JWT...");
+
 		await request.jwtVerify();
+
+		console.log("\n✅ Token valide, contenu extrait :", request.user);
+
+		if (!request.user || !request.user.userId) {
+			console.error("❌ Token valide mais `userId` manquant !");
+			return reply.code(401).send({ error: "Unauthorized: invalid payload" });
+		}
+
 	} catch (err) {
-		reply.code(401).send({error: 'Unauthorized'});
+		// console.error("❌ Token invalide ou expiré :", err);
+		console.error("❌ Token invalide ou expiré !");
+		reply.code(401).send({ error: 'You are not authorized' });
 	}
 });
 

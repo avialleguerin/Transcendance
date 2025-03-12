@@ -1,43 +1,34 @@
 //CRUD Model actually and MVC Structure
+import db from "../utils/db.js";
 
 export const CREATE_USERS_TABLE = `
   CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
+    username TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
-    admin BOOLEAN DEFAULT FALSE,
+    role TEXT CHECK(role IN ('user', 'admin')) DEFAULT 'user',
     connected BOOLEAN DEFAULT FALSE
   );
 `;
 
-export const INSERT_USER = `
-  INSERT INTO users (name, email, password) VALUES (?, ?, ?);
-`;
+const userModel = {
+  createUser: (username, email, password) => {
+    db.prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)").run(username, email, password);
+    return { username, email };
+  },
 
-export const GET_ALL_USERS = `
-  SELECT * FROM users;
-`;
+  getAllUsers: () => db.prepare("SELECT * FROM users").all(),
 
-export const GET_USER_BY_ID = `
-  SELECT * FROM users WHERE id = ?;
-`;
+  getUserById: (id) => { return db.prepare("SELECT * FROM users WHERE id = ?").get(id) },
 
-export const GET_USER_BY_NAME = `
-  SELECT * FROM users WHERE name = ? AND email = ?;
-`;
-export const GET_USER_BY_EMAIL = `
-  SELECT * FROM users WHERE email = ? AND password = ?;
-`;
+  getUserByEmail: (email) => { return db.prepare("SELECT * FROM users WHERE email = ?").get(email) },
 
-export const UPDATE_CONNECTION = `
-  UPDATE users SET connected = ? WHERE id = ?;
-`;
+  updateConnected: (id, connected) => { return db.prepare("UPDATE users SET connected = ? WHERE id = ?").run(connected, id) },
 
-export const UPDATE_ADMIN = `
-  UPDATE users SET admin = ? WHERE id = ?;
-`;
+  updateRole: (id, role) => { return db.prepare("UPDATE users SET role = ? WHERE id = ?").run(role === 'user' ? 'admin' : 'user', id) },
 
-export const DELETE_USER = `
-  DELETE FROM users WHERE id = ?;
-`;
+  unregister: (id) => { return db.prepare("DELETE FROM users WHERE id = ?").run(id) }
+}
+
+export default userModel;
