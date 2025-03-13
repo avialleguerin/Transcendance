@@ -1,5 +1,6 @@
 import { grenade_flash_Team_player1_2, grenade_flash_Team_player3_4 } from "./init_powerUP_GernadeFlash_multi.js";
 import { activateFreezeTeam1, activateFreezeTeam2, isfreeze_team1, isfreeze_team2 } from "./init_power_up_freeze.js";
+import { currentSkinPlayer1_multi, currentSkinPlayer2_multi, currentSkinPlayer3_multi, currentSkinPlayer4_multi } from "../init_skin_perso_multi.js";
 
 let minX_player_1;
 let maxX_player_1;
@@ -108,204 +109,137 @@ function createPaddle(name, position, parent) {
 		height: 1.5,
 		depth: 1.5
 	}, scene);
-	
+
 	paddle.position = position;
 	paddle.checkPaddleCollision = true;
 	paddle.visibility = 0;
 	paddle.setParent(parent);
 	console.log("parent === ", parent.name);
 
-	if (parent.name === "parent_player_1")
-	{
-		console.log("JE SUIS LA ");
-		BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/player/", "PlayerIdleAnnimation.glb", scene, function (newMeshes) {
-			const rootMesh = newMeshes.find(mesh => mesh.name === "__root__"); 
+	// Fonction pour importer un mesh joueur
+	function importPlayerMesh(path, filename) {
+		BABYLON.SceneLoader.ImportMesh("", path, filename, scene, function (newMeshes) {
+			const rootMesh = newMeshes.find(mesh => mesh.name === "__root__");
 			if (rootMesh) {
-				// Positionner initialement le modèle
 				rootMesh.position = paddle.getAbsolutePosition().clone();
 				rootMesh.scaling = new BABYLON.Vector3(6, 6, 6);
 				rootMesh.rotationQuaternion = BABYLON.Quaternion.FromEulerAngles(0, Math.PI, 0);
 				rootMesh.metadata = { isPlayer: true };
 			}
 
-			newMeshes.forEach(mesh => {
-				if (mesh instanceof BABYLON.Mesh) {
-					mesh.rotationQuaternion = null;
-					mesh.rotation = new BABYLON.Vector3(Math.PI, 0, 0);
-					mesh.metadata = { isPlayer: true };
-				}
-			});
-
+			// Créer un repère pour la position du joueur
 			const playerRepere = new BABYLON.MeshBuilder.CreateBox("playerRepere", {
 				width: 10,
 				height: 0.1,
 				depth: 1
 			}, scene);
-
-			const paddleAbsolutePosition = paddle.getAbsolutePosition();
-			playerRepere.position = new BABYLON.Vector3(
-				paddleAbsolutePosition.x, 
-				paddleAbsolutePosition.y, 
-				paddleAbsolutePosition.z
-			);
+			playerRepere.position = paddle.getAbsolutePosition().clone();
 			playerRepere.material = new BABYLON.StandardMaterial("playerRepereMat", scene);
 			playerRepere.material.emissiveColor = new BABYLON.Color3.Red();
 			playerRepere.metadata = { isPlayerRepere: true };
 
-			// Synchroniser avec la position ABSOLUE du paddle
+			// Synchroniser la position ABSOLUE avec le paddle
 			scene.registerBeforeRender(() => {
 				const paddleAbsPos = paddle.getAbsolutePosition();
-				
-				rootMesh.position.x = paddleAbsPos.x;
-				rootMesh.position.y = paddleAbsPos.y;
-				rootMesh.position.z = paddleAbsPos.z;
-				
-				playerRepere.position.x = paddleAbsPos.x;
-				playerRepere.position.y = paddleAbsPos.y;
-				playerRepere.position.z = paddleAbsPos.z;
+				rootMesh.position.copyFrom(paddleAbsPos);
+				playerRepere.position.copyFrom(paddleAbsPos);
 			});
 		});
 	}
 
-	if (parent.name === "parent_player_2")
-	{
+	// Vérification du parent et chargement du modèle 3D approprié
+	if (parent.name.startsWith("parent_player_")) {
 		console.log("JE SUIS LA ");
-		BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/player/", "PlayerIdleAnnimation.glb", scene, function (newMeshes) {
-			const rootMesh = newMeshes.find(mesh => mesh.name === "__root__"); 
-			if (rootMesh) {
-				// Positionner initialement le modèle
-				rootMesh.position = paddle.getAbsolutePosition().clone();
-				rootMesh.scaling = new BABYLON.Vector3(6, 6, 6);
-				rootMesh.rotationQuaternion = BABYLON.Quaternion.FromEulerAngles(0, Math.PI, 0);
-				rootMesh.metadata = { isPlayer: true };
+		
+		// Cas spécial pour "parent_player_4" avec plusieurs skins
+		if (parent.name === "parent_player_4") {
+			let skinPath = null;
+			let skinFile = null;
+
+			if (currentSkinPlayer4_multi === 0) {
+				skinPath = "/srcs/game/assets/player_skin/";
+				skinFile = "player_blanc.glb";
+			}
+			else if (currentSkinPlayer4_multi === 1) {
+				skinPath = "/srcs/game/assets/player_skin/";
+				skinFile = "player_bleuv2.glb";
+			} else if (currentSkinPlayer4_multi === 2) {
+				skinPath = "/srcs/game/assets/player_skin/";
+				skinFile = "player_rougev2.glb";
+			} else if (currentSkinPlayer4_multi === 3) {
+				skinPath = "/srcs/game/assets/player_skin/";
+				skinFile = "player_vert.glb";
 			}
 
-			newMeshes.forEach(mesh => {
-				if (mesh instanceof BABYLON.Mesh) {
-					mesh.rotationQuaternion = null;
-					mesh.rotation = new BABYLON.Vector3(Math.PI, 0, 0);
-					mesh.metadata = { isPlayer: true };
-				}
-			});
+			importPlayerMesh(skinPath, skinFile);
+		} else if (parent.name === "parent_player_3") {
+			let skinPath = null;
+			let skinFile = null;
 
-			const playerRepere = new BABYLON.MeshBuilder.CreateBox("playerRepere", {
-				width: 10,
-				height: 0.1,
-				depth: 1
-			}, scene);
-
-			const paddleAbsolutePosition = paddle.getAbsolutePosition();
-			playerRepere.position = new BABYLON.Vector3(
-				paddleAbsolutePosition.x, 
-				paddleAbsolutePosition.y, 
-				paddleAbsolutePosition.z
-			);
-			playerRepere.material = new BABYLON.StandardMaterial("playerRepereMat", scene);
-			playerRepere.material.emissiveColor = new BABYLON.Color3.Red();
-			playerRepere.metadata = { isPlayerRepere: true };
-
-			// Synchroniser avec la position ABSOLUE du paddle
-			scene.registerBeforeRender(() => {
-				const paddleAbsPos = paddle.getAbsolutePosition();
-				
-				rootMesh.position.x = paddleAbsPos.x;
-				rootMesh.position.y = paddleAbsPos.y;
-				rootMesh.position.z = paddleAbsPos.z;
-				
-				playerRepere.position.x = paddleAbsPos.x;
-				playerRepere.position.y = paddleAbsPos.y;
-				playerRepere.position.z = paddleAbsPos.z;
-			});
-		});
-	}
-
-	if (parent.name === "parent_player_3")
-	{
-		console.log("JE SUIS LA ");
-		BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/player/", "PlayerIdleAnnimation.glb", scene, function (newMeshes) {
-			const rootMesh = newMeshes.find(mesh => mesh.name === "__root__"); 
-			if (rootMesh) {
-				// Positionner initialement le modèle
-				rootMesh.position = paddle.getAbsolutePosition().clone();
-				rootMesh.scaling = new BABYLON.Vector3(6, 6, 6);
-				rootMesh.rotationQuaternion = BABYLON.Quaternion.FromEulerAngles(0, Math.PI, 0);
-				rootMesh.metadata = { isPlayer: true };
+			if (currentSkinPlayer3_multi === 0) {
+				skinPath = "/srcs/game/assets/player_skin/";
+				skinFile = "player_blanc.glb";
+			}
+			if (currentSkinPlayer3_multi === 1) {
+				skinPath = "/srcs/game/assets/player_skin/";
+				skinFile = "player_bleuv2.glb";
+			} else if (currentSkinPlayer3_multi === 2) {
+				skinPath = "/srcs/game/assets/player_skin/";
+				skinFile = "player_rougev2.glb";
+			} else if (currentSkinPlayer3_multi === 3) {
+				skinPath = "/srcs/game/assets/player_skin/";
+				skinFile = "player_vert.glb";
 			}
 
-			const playerRepere = new BABYLON.MeshBuilder.CreateBox("playerRepere", {
-				width: 10,
-				height: 0.1,
-				depth: 1
-			}, scene);
+			importPlayerMesh(skinPath, skinFile);
+		}
+		else if (parent.name === "parent_player_2") {
+			let skinPath = null;
+			let skinFile = null;
 
-			const paddleAbsolutePosition = paddle.getAbsolutePosition();
-			playerRepere.position = new BABYLON.Vector3(
-				paddleAbsolutePosition.x, 
-				paddleAbsolutePosition.y, 
-				paddleAbsolutePosition.z
-			);
-			playerRepere.material = new BABYLON.StandardMaterial("playerRepereMat", scene);
-			playerRepere.material.emissiveColor = new BABYLON.Color3.Red();
-			playerRepere.metadata = { isPlayerRepere: true };
-
-			// Synchroniser avec la position ABSOLUE du paddle
-			scene.registerBeforeRender(() => {
-				const paddleAbsPos = paddle.getAbsolutePosition();
-				
-				rootMesh.position.x = paddleAbsPos.x;
-				rootMesh.position.y = paddleAbsPos.y;
-				rootMesh.position.z = paddleAbsPos.z;
-				
-				playerRepere.position.x = paddleAbsPos.x;
-				playerRepere.position.y = paddleAbsPos.y;
-				playerRepere.position.z = paddleAbsPos.z;
-			});
-		});
-	}
-
-	if (parent.name === "parent_player_4")
-	{
-		console.log("JE SUIS LA ");
-		BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/player/", "PlayerIdleAnnimation.glb", scene, function (newMeshes) {
-			const rootMesh = newMeshes.find(mesh => mesh.name === "__root__"); 
-			if (rootMesh) {
-				// Positionner initialement le modèle
-				rootMesh.position = paddle.getAbsolutePosition().clone();
-				rootMesh.scaling = new BABYLON.Vector3(6, 6, 6);
-				rootMesh.rotationQuaternion = BABYLON.Quaternion.FromEulerAngles(0, Math.PI, 0);
-				rootMesh.metadata = { isPlayer: true };
+			if (currentSkinPlayer2_multi === 0) {
+				skinPath = "/srcs/game/assets/player_skin/";
+				skinFile = "player_blanc.glb";
+			}
+			else if (currentSkinPlayer2_multi === 1) {
+				skinPath = "/srcs/game/assets/player_skin/";
+				skinFile = "player_bleuv2.glb";
+			} else if (currentSkinPlayer2_multi === 2) {
+				skinPath = "/srcs/game/assets/player_skin/";
+				skinFile = "player_rougev2.glb";
+			} else if (currentSkinPlayer2_multi === 3) {
+				skinPath = "/srcs/game/assets/player_skin/";
+				skinFile = "player_vert.glb";
 			}
 
-			const playerRepere = new BABYLON.MeshBuilder.CreateBox("playerRepere", {
-				width: 10,
-				height: 0.1,
-				depth: 1
-			}, scene);
+			importPlayerMesh(skinPath, skinFile);
+		}
 
-			const paddleAbsolutePosition = paddle.getAbsolutePosition();
-			playerRepere.position = new BABYLON.Vector3(
-				paddleAbsolutePosition.x, 
-				paddleAbsolutePosition.y, 
-				paddleAbsolutePosition.z
-			);
-			playerRepere.material = new BABYLON.StandardMaterial("playerRepereMat", scene);
-			playerRepere.material.emissiveColor = new BABYLON.Color3.Red();
-			playerRepere.metadata = { isPlayerRepere: true };
+		else if (parent.name === "parent_player_1") {
+			let skinPath = null;
+			let skinFile = null;
 
-			// Synchroniser avec la position ABSOLUE du paddle
-			scene.registerBeforeRender(() => {
-				const paddleAbsPos = paddle.getAbsolutePosition();
-				
-				rootMesh.position.x = paddleAbsPos.x;
-				rootMesh.position.y = paddleAbsPos.y;
-				rootMesh.position.z = paddleAbsPos.z;
-				
-				playerRepere.position.x = paddleAbsPos.x;
-				playerRepere.position.y = paddleAbsPos.y;
-				playerRepere.position.z = paddleAbsPos.z;
-			});
-		});
+			if (currentSkinPlayer1_multi === 0) {
+				skinPath = "/srcs/game/assets/player_skin/";
+				skinFile = "player_blanc.glb";
+			}
+			else if (currentSkinPlayer1_multi === 1) {
+				skinPath = "/srcs/game/assets/player_skin/";
+				skinFile = "player_bleuv2.glb";
+			} else if (currentSkinPlayer1_multi === 2) {
+				skinPath = "/srcs/game/assets/player_skin/";
+				skinFile = "player_rougev2.glb";
+			} else if (currentSkinPlayer1_multi === 3) {
+				skinPath = "/srcs/game/assets/player_skin/";
+				skinFile = "player_vert.glb";
+			}
+
+			importPlayerMesh(skinPath, skinFile);
+		}
+
+		// Cas général pour les autres joueurs
 	}
+
 	return paddle;
 }
 

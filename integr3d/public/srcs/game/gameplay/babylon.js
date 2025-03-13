@@ -6,7 +6,8 @@ import { init_game_multiplayer, destroy_game_multiplayer } from "./multiplayer/i
 import { UpdatePLayerPoseMulti } from "./multiplayer/2v2_game/init_players2v2.js";
 import { init_game_ai } from "./solo/1v1_ai/init_game_ai.js";
 import { UpdatePlayerAndAI_Pose } from "./solo/1v1_ai/init_player_and_ai.js";
-
+import { init_skins_perso_player1, init_skins_perso_player2 } from "./solo/skin/init_skin_perso.js";
+import { init_skins_perso_player1_multi, init_skins_perso_player2_multi, init_skins_perso_player3_multi, init_skins_perso_player4_multi } from "./multiplayer/init_skin_perso_multi.js";
 
 const canvas = document.getElementById('renderCanvas');
 const engine = new BABYLON.Engine(canvas, true, {
@@ -75,6 +76,12 @@ ambientLight.intensity = 3;
 
 
 create_environment_view1(scene);
+init_skins_perso_player1(scene);
+init_skins_perso_player2(scene);
+init_skins_perso_player1_multi(scene);
+init_skins_perso_player2_multi(scene);
+init_skins_perso_player3_multi(scene);
+init_skins_perso_player4_multi(scene);
 // create_environment_view2(scene);
 // create_environment_view3(scene);
 
@@ -311,7 +318,7 @@ window.addEventListener('resize', () => {
 });
 
 
-export function getScene()
-{
-    return scene;
-}
+// export function getScene()
+// {
+//     return scene;
+// }

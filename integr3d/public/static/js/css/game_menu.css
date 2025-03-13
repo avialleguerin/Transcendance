@@ -459,7 +459,7 @@
 .player1 {
     position: absolute;
     left: 35%;
-    bottom: 20%;
+    bottom: 17%;
     width: 16%;
     height: 30%;
 }
@@ -467,7 +467,7 @@
 .player2 {
     position: absolute;
     right: 28%;
-    bottom: 20%;
+    bottom: 17%;
     width: 16%;
     height: 30%;
 }

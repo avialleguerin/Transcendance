@@ -1,191 +1,200 @@
-// import { getScene } from "../babylon";
-
-const skinColors_multi = [
-	new BABYLON.Color3(1, 1, 0),
-	new BABYLON.Color3(0, 1, 0),
-	new BABYLON.Color3(0, 0, 1),
-	new BABYLON.Color3(1, 0, 0)
-];
-
 let currentSkinPlayer1_multi = 0;
 let currentSkinPlayer2_multi = 0;
 let currentSkinPlayer3_multi = 0;
 let currentSkinPlayer4_multi = 0;
 
-let player1Mesh_multi;
-let player2Mesh_multi;
-let player3Mesh_multi;
-let player4Mesh_multi;
+let defaultSkinPlayer1 = 0;
+let defaultSkinPlayer2 = 0;
+let defaultSkinPlayer3 = 0;
+let defaultSkinPlayer4 = 0;
+
+const skinPaths = [
+    { name: "player_skin_1", path: "/srcs/game/assets/player_skin/", file: "player_blanc.glb" },
+    { name: "player_skin_2", path: "/srcs/game/assets/player_skin/", file: "player_bleuv2.glb" },
+    { name: "player_skin_3", path: "/srcs/game/assets/player_skin/", file: "player_rougev2.glb" },
+    { name: "player_skin_4", path: "/srcs/game/assets/player_skin/", file: "player_vert.glb" }
+];
+
+let player1Skins = [];
+let player2Skins = [];
+let player3Skins = [];
+let player4Skins = [];
 
 
-// const scene = getScene();
+function loadSkin(skin, scene, x, y, z, scaleX, scaleY, scaleZ) {
+    return new Promise((resolve, reject) => {
+        BABYLON.SceneLoader.ImportMesh("", skin.path, skin.file, scene, (meshes) => {
+            const rootMesh = meshes.find(mesh => mesh.name === "__root__");
+            if (rootMesh) {
+                rootMesh.position = new BABYLON.Vector3(x, y, z);
+                rootMesh.scaling = new BABYLON.Vector3(scaleX, scaleY, scaleZ);
+                rootMesh.rotation = new BABYLON.Vector3(0, 0, 0);
+                rootMesh.metadata = { isPlayer: true };
 
-export function init_skin_perso_player1_multi() {
-	player1Mesh_multi = new BABYLON.MeshBuilder.CreateBox("player1Box", {height: 1, width: 1, depth: 1}, scene);
-	player1Mesh_multi.position = new BABYLON.Vector3(-16, 100, -28);
-	player1Mesh_multi.scaling = new BABYLON.Vector3(2.5, 7, 2.5);
-	
-	const material = new BABYLON.StandardMaterial("material1", scene);
-	material.diffuseColor = skinColors_multi[currentSkinPlayer1_multi];
-	player1Mesh_multi.material = material;
-	
+                rootMesh.setEnabled(false);
+                resolve(rootMesh);
+            } else {
+                reject(`Erreur lors du chargement de ${skin.name}`);
+            }
+        });
+    });
 }
 
-export function init_skin_perso_player2_multi() {
-	player2Mesh_multi = new BABYLON.MeshBuilder.CreateBox("player2Box", {height: 1, width: 1, depth: 1}, scene);
-	player2Mesh_multi.position = new BABYLON.Vector3(-27, 100, -28);
-	player2Mesh_multi.scaling = new BABYLON.Vector3(2.5, 7, 2.5);
-	
-	const material = new BABYLON.StandardMaterial("material2", scene);
-	material.diffuseColor = skinColors_multi[currentSkinPlayer2_multi];
-	player2Mesh_multi.material = material;
-	
+
+function loadSkinsForPlayer(skinPaths, scene, playerSkins, offsetX, offsetY, offsetZ, scaleX, scaleY, scaleZ)
+{
+    let loadPromises = skinPaths.map((skin) => loadSkin(skin, scene, offsetX, offsetY, offsetZ, scaleX, scaleY, scaleZ));
+
+    Promise.all(loadPromises)
+        .then((meshes) => {
+            meshes.forEach((mesh, index) =>
+            {
+                mesh.position = new BABYLON.Vector3(offsetX, offsetY, offsetZ);
+                playerSkins.push(mesh);
+                console.log(`Skin ${skinPaths[index].name} chargé avec succès pour l'index ${index}`);
+            });
+        })
+        .catch((error) => {
+            console.error(error);
+        });
 }
 
-export function init_skin_perso_player3_multi() {
-	player3Mesh_multi = new BABYLON.MeshBuilder.CreateBox("player3Box", {height: 1, width: 1, depth: 1}, scene);
-	player3Mesh_multi.position = new BABYLON.Vector3(-14.5, 100, -2);
-	player3Mesh_multi.scaling = new BABYLON.Vector3(2.5, 5, 2.5);
-	
-	const material = new BABYLON.StandardMaterial("material3", scene);
-	material.diffuseColor = skinColors_multi[currentSkinPlayer3_multi];
-	player3Mesh_multi.material = material;
-	
+export function init_skins_perso_player1_multi(scene) {
+    loadSkinsForPlayer(skinPaths, scene, player1Skins, -16, 100, -28, 4, 4, 4);
 }
 
-export function init_skin_perso_player4_multi() {
-	player4Mesh_multi = new BABYLON.MeshBuilder.CreateBox("player4Box", {height: 1, width: 1, depth: 1}, scene);
-	player4Mesh_multi.position = new BABYLON.Vector3(-26.5, 100, -2);
-	player4Mesh_multi.scaling = new BABYLON.Vector3(2.5, 5, 2.5);
-	
-	const material = new BABYLON.StandardMaterial("material4", scene);
-	material.diffuseColor = skinColors_multi[currentSkinPlayer4_multi];
-	player4Mesh_multi.material = material;
-	
+export function init_skins_perso_player2_multi(scene) {
+    loadSkinsForPlayer(skinPaths, scene, player2Skins, -27, 100, -28, 4, 4, 4);
+}
+
+export function init_skins_perso_player3_multi(scene) {
+    loadSkinsForPlayer(skinPaths, scene, player3Skins, -14.5, 100, -2, 2.5, 2.5, 2.5);
+}
+
+export function init_skins_perso_player4_multi(scene) {
+    loadSkinsForPlayer(skinPaths, scene, player4Skins, -26.5, 100, -2, 2.5, 2.5, 2.5);
+}
+
+export function enable_skin_multi() {
+    if (player1Skins.length === 0) return;
+    if (player2Skins.length === 0) return;
+    if (player3Skins.length === 0) return;
+    if (player4Skins.length === 0) return;
+
+    player1Skins.forEach(skin => skin.setEnabled(false));
+    player1Skins[defaultSkinPlayer1].setEnabled(true);
+
+    player2Skins.forEach(skin => skin.setEnabled(false));
+    player2Skins[defaultSkinPlayer2].setEnabled(true);
+
+    player3Skins.forEach(skin => skin.setEnabled(false));
+    player3Skins[defaultSkinPlayer3].setEnabled(true);
+
+    player4Skins.forEach(skin => skin.setEnabled(false));
+    player4Skins[defaultSkinPlayer4].setEnabled(true);
+}
+
+
+export function disable_skin_multi() {
+    if (player1Skins.length === 0) return;
+    if (player2Skins.length === 0) return;
+    if (player3Skins.length === 0) return;
+    if (player4Skins.length === 0) return;
+
+    player1Skins[currentSkinPlayer1_multi].setEnabled(false);
+    currentSkinPlayer1_multi = defaultSkinPlayer1;
+
+    player2Skins[currentSkinPlayer2_multi].setEnabled(false);
+    currentSkinPlayer2_multi = defaultSkinPlayer2;
+
+    player3Skins[currentSkinPlayer3_multi].setEnabled(false);
+    currentSkinPlayer3_multi = defaultSkinPlayer3;
+    
+    player4Skins[currentSkinPlayer4_multi].setEnabled(false);
+    currentSkinPlayer4_multi = defaultSkinPlayer4;
+}
+
+
+export function disable_skin_and_save_multi() {
+    if (player1Skins.length === 0) return;
+    if (player2Skins.length === 0) return;
+    if (player3Skins.length === 0) return;
+    if (player4Skins.length === 0) return;
+
+    player1Skins[currentSkinPlayer1_multi].setEnabled(false);
+    player2Skins[currentSkinPlayer2_multi].setEnabled(false);
+    player3Skins[currentSkinPlayer3_multi].setEnabled(false);
+    player4Skins[currentSkinPlayer4_multi].setEnabled(false);
+
+
+}
+
+
+export function switch_skin_perso_player1_right_multi() {
+    if (player1Skins.length === 0) return;
+
+    player1Skins[currentSkinPlayer1_multi].setEnabled(false);
+    currentSkinPlayer1_multi = (currentSkinPlayer1_multi + 1) % player1Skins.length;
+    player1Skins[currentSkinPlayer1_multi].setEnabled(true);
 }
 
 export function switch_skin_perso_player1_left_multi() {
-    if (!player1Mesh_multi || !player1Mesh_multi.material) {
-        console.error("Player 1 mesh or material not found!");
-        return;
-    }
-    
-    currentSkinPlayer1_multi = (currentSkinPlayer1_multi - 1 + skinColors_multi.length) % skinColors_multi.length;
-    
-    // Créer un nouveau matériau à chaque changement
-    const newMaterial = new BABYLON.StandardMaterial("material1_" + currentSkinPlayer1_multi, scene);
-    newMaterial.diffuseColor = skinColors_multi[currentSkinPlayer1_multi];
-    player1Mesh_multi.material = newMaterial;
-    
-}
+    if (player1Skins.length === 0) return;
 
-export function switch_skin_perso_player1_right_multi() {
-    if (!player1Mesh_multi || !player1Mesh_multi.material) {
-        console.error("Player 1 mesh or material not found!");
-        return;
-    }
-    
-    currentSkinPlayer1_multi = (currentSkinPlayer1_multi + 1) % skinColors_multi.length;
-    
-    // Créer un nouveau matériau à chaque changement
-    const newMaterial = new BABYLON.StandardMaterial("material1_" + currentSkinPlayer1_multi, scene);
-    newMaterial.diffuseColor = skinColors_multi[currentSkinPlayer1_multi];
-    player1Mesh_multi.material = newMaterial;
-    
-}
-
-export function switch_skin_perso_player2_left_multi() {
-	if (!player2Mesh_multi || !player2Mesh_multi.material) {
-		console.error("Player 2 mesh or material not found!");
-		return;
-	}
-	
-	currentSkinPlayer2_multi = (currentSkinPlayer2_multi - 1 + skinColors_multi.length) % skinColors_multi.length;
-
-	const newMaterial = new BABYLON.StandardMaterial("material2_" + currentSkinPlayer2_multi, scene);
-	newMaterial.diffuseColor = skinColors_multi[currentSkinPlayer2_multi];
-	player2Mesh_multi.material = newMaterial;
-	
+    player1Skins[currentSkinPlayer1_multi].setEnabled(false);
+    currentSkinPlayer1_multi = (currentSkinPlayer1_multi - 1 + player1Skins.length) % player1Skins.length;
+    player1Skins[currentSkinPlayer1_multi].setEnabled(true);
 }
 
 export function switch_skin_perso_player2_right_multi() {
-	if (!player2Mesh_multi || !player2Mesh_multi.material) {
-		console.error("Player 2 mesh or material not found!");
-		return;
-	}
-	
-	currentSkinPlayer2_multi = (currentSkinPlayer2_multi + 1) % skinColors_multi.length;
-	
-	const newMaterial = new BABYLON.StandardMaterial("material2_" + currentSkinPlayer2_multi, scene);
-	newMaterial.diffuseColor = skinColors_multi[currentSkinPlayer2_multi];
-	player2Mesh_multi.material = newMaterial;
+    if (player2Skins.length === 0) return;
+
+    player2Skins[currentSkinPlayer2_multi].setEnabled(false);
+    currentSkinPlayer2_multi = (currentSkinPlayer2_multi + 1) % player2Skins.length;
+    player2Skins[currentSkinPlayer2_multi].setEnabled(true);
+}
+
+export function switch_skin_perso_player2_left_multi() {
+    if (player2Skins.length === 0) return;
+
+    player2Skins[currentSkinPlayer2_multi].setEnabled(false);
+    currentSkinPlayer2_multi = (currentSkinPlayer2_multi - 1 + player2Skins.length) % player2Skins.length;
+    player2Skins[currentSkinPlayer2_multi].setEnabled(true);
+}
+
+
+export function switch_skin_perso_player3_right_multi() {
+    if (player3Skins.length === 0) return;
+
+    player3Skins[currentSkinPlayer3_multi].setEnabled(false);
+    currentSkinPlayer3_multi = (currentSkinPlayer3_multi + 1) % player3Skins.length;
+    player3Skins[currentSkinPlayer3_multi].setEnabled(true);
 }
 
 export function switch_skin_perso_player3_left_multi() {
-	if (!player3Mesh_multi || !player3Mesh_multi.material) {
-		console.error("Player 3 mesh or material not found!");
-		return;
-	}
-	
-	currentSkinPlayer3_multi = (currentSkinPlayer3_multi - 1 + skinColors_multi.length) % skinColors_multi.length;
+    if (player3Skins.length === 0) return;
 
-	const newMaterial = new BABYLON.StandardMaterial("material3_" + currentSkinPlayer3_multi, scene);
-	newMaterial.diffuseColor = skinColors_multi[currentSkinPlayer3_multi];
-	player3Mesh_multi.material = newMaterial;
-	
-}
-
-export function switch_skin_perso_player3_right_multi() {
-	if (!player3Mesh_multi || !player3Mesh_multi.material) {
-		console.error("Player 3 mesh or material not found!");
-		return;
-	}
-	
-	currentSkinPlayer3_multi = (currentSkinPlayer3_multi + 1) % skinColors_multi.length;
-	
-	const newMaterial = new BABYLON.StandardMaterial("material3_" + currentSkinPlayer3_multi, scene);
-	newMaterial.diffuseColor = skinColors_multi[currentSkinPlayer3_multi];
-	player3Mesh_multi.material = newMaterial;
-}
-
-export function switch_skin_perso_player4_left_multi() {
-	if (!player4Mesh_multi || !player4Mesh_multi.material) {
-		console.error("Player 4 mesh or material not found!");
-		return;
-	}
-	
-	currentSkinPlayer4_multi = (currentSkinPlayer4_multi - 1 + skinColors_multi.length) % skinColors_multi.length;
-
-	const newMaterial = new BABYLON.StandardMaterial("material4_" + currentSkinPlayer4_multi, scene);
-	newMaterial.diffuseColor = skinColors_multi[currentSkinPlayer4_multi];
-	player4Mesh_multi.material = newMaterial;
+    player3Skins[currentSkinPlayer3_multi].setEnabled(false);
+    currentSkinPlayer3_multi = (currentSkinPlayer3_multi - 1 + player3Skins.length) % player3Skins.length;
+    player3Skins[currentSkinPlayer3_multi].setEnabled(true);
 }
 
 export function switch_skin_perso_player4_right_multi() {
-	if (!player4Mesh_multi || !player4Mesh_multi.material) {
-		console.error("Player 4 mesh or material not found!");
-		return;
-	}
-	
-	currentSkinPlayer4_multi = (currentSkinPlayer4_multi + 1) % skinColors_multi.length;
-	
-	const newMaterial = new BABYLON.StandardMaterial("material4_" + currentSkinPlayer4_multi, scene);
-	newMaterial.diffuseColor = skinColors_multi[currentSkinPlayer4_multi];
-	player4Mesh_multi.material = newMaterial;
+    if (player4Skins.length === 0) return;
+
+    player4Skins[currentSkinPlayer4_multi].setEnabled(false);
+    currentSkinPlayer4_multi = (currentSkinPlayer4_multi + 1) % player4Skins.length;
+    player4Skins[currentSkinPlayer4_multi].setEnabled(true);
 }
 
-export function delete_skin_perso_player1_multi() {
-	player1Mesh_multi.dispose();
+export function switch_skin_perso_player4_left_multi() {
+    if (player4Skins.length === 0) return;
+
+    player4Skins[currentSkinPlayer4_multi].setEnabled(false);
+    currentSkinPlayer4_multi = (currentSkinPlayer4_multi - 1 + player4Skins.length) % player4Skins.length;
+    player4Skins[currentSkinPlayer4_multi].setEnabled(true);
 }
 
-export function delete_skin_perso_player2_multi() {
-	player2Mesh_multi.dispose();
-}
 
-export function delete_skin_perso_player3_multi() {
-	player3Mesh_multi.dispose();
-}
 
-export function delete_skin_perso_player4_multi() {
-	player4Mesh_multi.dispose();
-}
+export { currentSkinPlayer1_multi, currentSkinPlayer2_multi, currentSkinPlayer3_multi, currentSkinPlayer4_multi };

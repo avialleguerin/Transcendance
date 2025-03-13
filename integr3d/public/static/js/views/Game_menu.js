@@ -8,10 +8,8 @@ import { init_powerUP_inverse_player, reset_powerUP_inverse_player } from "../..
 import { init_nb_powerUP_grenadeFlash_team_player, reset_powerUP_grenadeTeam_player } from "../../../srcs/game/gameplay/multiplayer/2v2_game/init_powerUP_GernadeFlash_multi.js";
 import { init_powerUP_freeze_Team_player, reset_powerUP_freeze_Team_player } from "../../../srcs/game/gameplay/multiplayer/2v2_game/init_power_up_freeze.js";
 import { getValue_leave_game, setLeaveGameVar } from "../index.js";
-import { init_skin_perso_player1, init_skin_perso_player2, switch_skin_perso_player1_left, switch_skin_perso_player1_right, switch_skin_perso_player2_left, switch_skin_perso_player2_right, delete_skin_perso_player1, delete_skin_perso_player2 } from "../../../srcs/game/gameplay/solo/skin/init_skin_perso.js";
-import { init_skin_perso_player1_multi, init_skin_perso_player2_multi, init_skin_perso_player3_multi, init_skin_perso_player4_multi, delete_skin_perso_player1_multi, delete_skin_perso_player2_multi, delete_skin_perso_player3_multi,
-	 delete_skin_perso_player4_multi, switch_skin_perso_player1_left_multi, switch_skin_perso_player1_right_multi, switch_skin_perso_player2_left_multi, switch_skin_perso_player2_right_multi, 
-	 switch_skin_perso_player3_left_multi, switch_skin_perso_player3_right_multi, switch_skin_perso_player4_left_multi, switch_skin_perso_player4_right_multi } from "../../../srcs/game/gameplay/multiplayer/init_skin_perso_multi.js";
+import { enable_skin_perso_player1, enable_skin_perso_player2, disable_skin_perso_player1, disable_skin_perso_player2, disable_skin_perso_player1_and_save, disable_skin_perso_player2_and_save, switch_skin_perso_player1_left, switch_skin_perso_player1_right, switch_skin_perso_player2_left, switch_skin_perso_player2_right } from "../../../srcs/game/gameplay/solo/skin/init_skin_perso.js";
+import { enable_skin_multi, disable_skin_and_save_multi, disable_skin_multi, switch_skin_perso_player1_right_multi, switch_skin_perso_player1_left_multi, switch_skin_perso_player2_left_multi, switch_skin_perso_player2_right_multi, switch_skin_perso_player3_left_multi, switch_skin_perso_player3_right_multi, switch_skin_perso_player4_left_multi, switch_skin_perso_player4_right_multi } from "../../../srcs/game/gameplay/multiplayer/init_skin_perso_multi.js";
 
 let powerUP_nb = 0;
 let powerUP_nb_multi = 0;
@@ -401,8 +399,7 @@ export default class extends AbstractView {
 					choose_your_skin.classList.remove('active');
 					solo_1v1_btn.style.display = 'block';
 					custom_ta_game.style.visibility = 'visible';
-					delete_skin_perso_player1();
-					delete_skin_perso_player2();
+					
 				}
 			}
 			if (power_selector.classList.contains('active'))
@@ -485,6 +482,7 @@ export default class extends AbstractView {
 					choose_your_skin_game_multi.classList.remove('active');
 					multiplayer_btn.style.display = 'block';
 					custom_ta_game_multi.style.visibility = 'visible';
+					disable_skin_multi();
 				}
 			}
 			if (power_selector_game_multi.classList.contains('active'))
@@ -694,16 +692,16 @@ export default class extends AbstractView {
 				choose_your_skin.classList.add('active');
 				solo_1v1_btn.style.display = 'none';
 				custom_ta_game.style.visibility = 'hidden';
-				init_skin_perso_player1();
-				init_skin_perso_player2();
+				enable_skin_perso_player1();
+				enable_skin_perso_player2();
 
 				if (valide_ton_skin.addEventListener('click', () => {
 					console.log('Valide ton skin button clicked');
 					choose_your_skin.classList.remove('active');
 					solo_1v1_btn.style.display = 'block';
 					custom_ta_game.style.visibility = 'visible';
-					delete_skin_perso_player1();
-					delete_skin_perso_player2();
+					disable_skin_perso_player1_and_save();
+					disable_skin_perso_player2_and_save();
 				}));
 			}
 			else
@@ -713,8 +711,8 @@ export default class extends AbstractView {
 					choose_your_skin.classList.remove('active');
 					solo_1v1_btn.style.display = 'block';
 					custom_ta_game.style.visibility = 'visible';
-					delete_skin_perso_player1();
-					delete_skin_perso_player2();
+					disable_skin_perso_player1();
+					disable_skin_perso_player2();
 				}
 			}
 		});
@@ -765,20 +763,14 @@ export default class extends AbstractView {
 				choose_your_skin_game_multi.classList.add('active');
 				multiplayer_btn.style.display = 'none';
 				custom_ta_game_multi.style.visibility = 'hidden';
-				init_skin_perso_player1_multi();
-				init_skin_perso_player2_multi();
-				init_skin_perso_player3_multi();
-				init_skin_perso_player4_multi();
+				enable_skin_multi();
 
 				if (valide_ton_skin_game_multi.addEventListener('click', () => {
 					console.log('Valide ton skin button clicked');
 					choose_your_skin_game_multi.classList.remove('active');
 					multiplayer_btn.style.display = 'block';
 					custom_ta_game_multi.style.visibility = 'visible';
-					delete_skin_perso_player1_multi();
-					delete_skin_perso_player2_multi();
-					delete_skin_perso_player3_multi();
-					delete_skin_perso_player4_multi();
+					disable_skin_and_save_multi();
 				}));
 			}
 			else
@@ -788,10 +780,7 @@ export default class extends AbstractView {
 					choose_your_skin_game_multi.classList.remove('active');
 					multiplayer_btn.style.display = 'block';
 					custom_ta_game_multi.style.visibility = 'visible';
-					delete_skin_perso_player1_multi();
-					delete_skin_perso_player2_multi();
-					delete_skin_perso_player3_multi();
-					delete_skin_perso_player4_multi();
+					disable_skin_multi();
 				}
 			}
 		});
