@@ -1,6 +1,7 @@
 // Moduls
 import Fastify from "fastify";
 import { initDb } from "./utils/db.js";
+// import { authenticate } from "./utils/vault.js";
 import jwt from "@fastify/jwt";
 import cookie from "@fastify/cookie";
 // Pages
@@ -8,6 +9,7 @@ import routes from "./routes/routes.js"
 
 export const fastify = Fastify({ logger: false })
 initDb();
+// await authenticate(); // S'authentifier au démarrage
 
 
 await fastify.register(jwt, {
@@ -38,6 +40,7 @@ fastify.decorate('authenticate', async function (request, reply) {
 		reply.code(401).send({ error: 'You are not authorized' });
 	}
 });
+
 
 /**
  * Main function for run the server

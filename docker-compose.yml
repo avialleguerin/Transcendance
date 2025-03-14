@@ -74,11 +74,12 @@ services:
       - VAULT_ADDR=http://127.0.0.1:8200
       - VAULT_DEV_ROOT_TOKEN_ID=root
     volumes:
-      # - ./Security/Vault/vault_data:/vault/data
+      - ./Data/vault_data:/vault/data
       - ./Security/Vault/scripts:/vault/scripts
+      # - ./Security/Vault/vault_data:/vault/data
     cap_add:
       - IPC_LOCK
-    entrypoint: "vault server -dev -dev-listen-address=0.0.0.0:8200"
+    # entrypoint: "vault server -dev -dev-listen-address=0.0.0.0:8200"
 
 # networks:
 #   transcendence-network:

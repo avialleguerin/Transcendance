@@ -114,7 +114,7 @@ Transcendance/
 ============ IN HASHICORP VAULT ============
 
 - Hashicorp Vault :
-	* secret/
+	* kv/
 		+ data/
 			- fastify/
 				- DB_USER

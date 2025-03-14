@@ -1,1 +1,0 @@
-echo "📦 Secrets added to Vault successfully."

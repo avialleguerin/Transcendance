@@ -24,4 +24,8 @@ up:
 down:
 	@docker compose down
 
-.PHONY: up all down
+re:
+	@make down
+	@make up
+
+.PHONY: up all down re
