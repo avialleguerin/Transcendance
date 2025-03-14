@@ -110,3 +110,41 @@ Transcendance/
 └── var
 	 └── log
 		  └── nginx			// Logs d'accès et d'erreur
+
+============ IN HASHICORP VAULT ============
+
+- Hashicorp Vault :
+	* secret/
+		+ data/
+			- fastify/
+				- DB_USER
+				- DB_PASSWORD
+				- ...
+			- nginx/
+				- NGINX_USER
+				- NGINX_PASSWORD
+				- ...
+			- elk/
+				- ELASTICSEARCH_USER
+				- ELASTICSEARCH_PASSWORD
+				- KIBANA_USER
+				- KIBANA_PASSWORD
+				- ...
+			- sqlite/
+				- username
+				- password
+				- ...
+		+ metadata/
+			- fastify/
+			...
+		+ policies/
+			- fastify/
+			- nginx/
+			- elk/
+			- sqlite/
+			- vault/
+			- sonarqube/
+			- dependency-check/
+			- modsecurity/
+			...
+
