@@ -1,7 +1,12 @@
 import { fastify } from '../server.js'
+import { redisClient } from '../utils/redis.js';
 import userModel from '../models/userModel.js';
 import tokenModel from '../models/tokenModel.js';
 import { hashPassword, verifyPassword } from '../utils/hashUtils.js';
+import { randomUUID } from 'crypto';
+
+// import { addToBlacklist, storeAccessToken, storeRefreshToken, deleteAccessToken, deleteRefreshToken, getRedisAccessToken, getRedisRefreshToken, isAccessTokenPresent, isRefreshTokenPresent } from '../utils/redis.js';
+import { redisModel } from '../models/redisModel.js';
 
 export async function register(request, reply) {
 	const { username, email, password } = request.body;
@@ -28,48 +33,81 @@ export async function register(request, reply) {
 
 export async function login(request, reply) {
 	const { email, password } = request.body;
+	console.log("📧 Email reçu :", email);
+	console.log("🔑 Mot de passe reçu :", password);
 	const user = userModel.getUserByEmail(email);
-
+	const userId = user.userId;
+	console.log("👤 Utilisateur trouvé :", user);
 	try {
+		if (!user || !await verifyPassword(user.password, password)) {
+			console.error("❌ Identifiants invalides");
+			return reply.code(401).send({ error: 'Invalid credentials' });
+		}
 
-		if (!user || !await verifyPassword(user.password, password))
-			return reply.code(401).send({error: 'Invalid credentials'})
+		userModel.updateConnected(user.userId, 1)
+		const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, {expiresIn: '15m' });
+		const refreshToken = fastify.jwt.sign({ userId: user.userId }, {expiresIn: '7d' });
+		console.log("🔑 Access Token créé :", accessToken);
+		console.log("🔑 Refresh Token créé :", refreshToken);
 
-		// const isvalid = await verifyPassword(user.password, password);
+		if (!accessToken || !refreshToken) {
+			console.error("❌ Erreur lors de la création des tokens JWT");
+			return reply.code(500).send({ error: 'Internal Server Error' });
+		}
+		const sessionId = randomUUID();
+		console.log("🆔 Session ID créé :", sessionId);
 
-		// if (!isvalid)
-		// 	return reply.code(401).send({ error: "Invalid password" })
+		await redisModel.storeAccessToken(user.userId, sessionId, accessToken, 15 * 60);
+		console.log("🔑 Access Token stocké dans Redis :", `access:${user.userId}:${sessionId}`);
 
-		userModel.updateConnected(user.id, 1)
+		await redisModel.storeRefreshToken(user.userId, sessionId, refreshToken, 7 * 24 * 60 * 60);
+		console.log("🔑 Refresh Token stocké dans Redis :", `refresh:${user.userId}:${sessionId}`);
 
-		const accessToken = fastify.jwt.sign({ userId: user.id, username:user.username }, {expiresIn: '1m' });
-		const refreshToken = fastify.jwt.sign({ userId: user.id }, {expiresIn: '7d' });
-
-		if (!accessToken || !refreshToken)
-			throw new Error("Error when creating JWT Tokens");
-
-		reply.setCookie('refreshToken', refreshToken, {
+		reply
+		.setCookie('refreshToken', refreshToken, {
 			httpOnly: true,
 			secure: true,
-			sameSite: 'Strict',
-			path: '/'
-		});
-
-		// return reply.code(200).send({
-		// 	id: user.id,
-		// 	connected: 1,
-		// 	username: user.username,
-		// 	email: user.email,
-		// 	success: true,
-		// 	accessToken,
-		// 	message: "Connexion established"
-		// });
-		return reply.code(200).send({ success: true, accessToken })
-
+			sameSite: 'strict',
+			path: '/',
+		})
+		.send({ success:true, message: 'Logged in', userId, sessionId, accessToken });
 	} catch (err) {
 		return reply.code(500).send({ error: err.message });
 	}
 }
+
+// export async function login(request, reply) {
+// 	const { email, password } = request.body;
+// 	const user = userModel.getUserByEmail(email);
+
+// 	try {
+
+// 		if (!user || !await verifyPassword(user.password, password))
+// 			return reply.code(401).send({error: 'Invalid credentials'})
+
+// 		userModel.updateConnected(user.userId, 1)
+
+// 		const accessToken = fastify.jwt.sign({ userId: user.userId, username:user.username }, {expiresIn: '15m' });
+// 		const refreshToken = fastify.jwt.sign({ userId: user.userId }, {expiresIn: '7d' });
+
+// 		if (!accessToken || !refreshToken)
+// 			throw new Error("Error when creating JWT Tokens");
+// 		console.log("Generated AccessToken: ", accessToken);
+// 		console.log("Generated RefreshToken: ", refreshToken);
+
+// 		reply.setCookie('refreshToken', refreshToken, {
+// 		httpOnly: true,
+// 		secure: true,
+// 		sameSite: 'strict',
+// 		path: '/',
+// 		})
+		
+// 		return reply.code(200).send({ success: true, accessToken })
+
+// 	} catch (err) {
+// 		return reply.code(500).send({ error: err.message });
+// 	}
+// }
 
 
 export async function selectUsers(request, reply) {
@@ -110,58 +148,71 @@ export async function getUserProfile(request, reply) {
 }
 
 export async function logout(request, reply) {
-	const { id } = request.body;
-	console.log("\n\n----Logout----\n", request.body)
-	console.log("headers of request :", request.headers)
-	// console.log("headers of body :", request.body)
-	
-	const accessToken = request.headers.authorization?.split(" ")[1];
+	const { userId, sessionId } = request.body;
+
+	const accessToken = await redisClient.get(`access:${userId}:${sessionId}`);
 	const refreshToken = request.cookies.refreshToken;
-	console.log("Access token when logout :", accessToken)
-	console.log("Refresh token when logout :", refreshToken)
-	try {
-		const user = userModel.getUserById(id)
-		
-		if (user.connected === 0)
-			return reply.send({ success: false, error: 'User already disconnected' });
-		console.log("je passe la")
-		if (user){
-
-			userModel.updateConnected(id, 0)
-			// const updateUser = userModel.getUserById(id)
-
-			// reply.clearCookie('refreshToken');
-
-			// return reply.clearCookie('refreshToken').code(200).send({
-			// 	id: updateUser.id,
-			// 	connected: updateUser.connected,
-			// 	username: updateUser.username,
-			// 	email: updateUser.email,
-			// 	success: true
-			// }, { message: 'Logged out successfully' })
-			return reply.clearCookie('refreshToken').code(200).send({
-				success: true,
-				message: 'Logged out successfully'
-			})
-		}
-		else
-			return reply.code(404).send({ success: false, error: 'User not found' });
-	} catch (err) {
-		return reply.code(500).send({ error: 'Logout failed' });
+	console.log("👤 User ID :", userId);
+	console.log("🆔 Session ID :", sessionId);
+	console.log("🔑 Access Token :", accessToken);
+	console.log("🔄 Refresh Token :", refreshToken);
+	if (!sessionId) {
+		console.error("❌ Aucun sessionId reçu !");
+		return reply.code(401).send({ error: 'Session ID manquant' });
 	}
+	if (accessToken) {
+		const decoded = fastify.jwt.decode(accessToken);
+		const expiresIn = decoded.exp - Math.floor(Date.now() / 1000);
+		if (expiresIn > 0) {
+			redisModel.addToBlacklist(accessToken, expiresIn);
+		}
+		redisModel.deleteAccessToken(userId, sessionId);
+	}
+	if (refreshToken) {
+		const decoded = fastify.jwt.decode(refreshToken);
+		const expiresIn = decoded.exp - Math.floor(Date.now() / 1000);
+		if (expiresIn > 0) {
+			redisModel.addToBlacklist(refreshToken, expiresIn);
+		}
+		redisModel.deleteRefreshToken(userId, sessionId);
+	}
+	userModel.updateConnected(userId, 0);
+
+	reply.clearCookie('sessionId', { path: '/' }).clearCookie('refreshToken', { path: '/' }).clearCookie('userId', { path: '/' }).send({ success: true, message: 'Logged out' });
+
+
+
+	// const { userId } = request.body;
+
+	// const user = userModel.getUserById(userId)
+	
+	// if (user.connected === 0)
+	// 	return reply.send({ success: false, error: 'User already disconnected' });
+	// console.log("je passe la")
+	// if (user)
+	// 	userModel.updateConnected(userId, 0)
+	// const accessToken = request.headers.authorization?.split(" ")[1];
+	// if (accessToken) {
+	// 	const decoded = fastify.jwt.decode(accessToken);
+	// 	const expiresIn = decoded.exp - Math.floor(Date.now() / 1000);
+	// 	if (expiresIn > 0) {
+	// 		await redisClient.set(`blacklist:${accessToken}`, 'true', { EX: expiresIn });
+	// 	}
+	// }
+	// reply.clearCookie('refreshToken', { path: '/refresh-token' }).send({ message: 'Logged out' });
 }
 
 export async function changeRole(request, reply) {
-	const { id } = request.body;
+	const { userId } = request.body;
 	try {
-		const user = userModel.getUserById(id);
+		const user = userModel.getUserById(userId);
 		if (user){
-			userModel.updateRole(id, user.role)
-			const updateUser = userModel.getUserById(id);
+			userModel.updateRole(userId, user.role)
+			const updateUser = userModel.getUserById(userId);
 			reply.code(200);
-
+			
 			return reply.send({
-				id: updateUser.id,
+				userId: updateUser.userId,
 				username: updateUser.username,
 				email: updateUser.email,
 				connected: updateUser.connected,
@@ -170,48 +221,77 @@ export async function changeRole(request, reply) {
 			})
 		}
 		else
-			return reply.code(404).send({ success: false, error: 'User not found' });
-	} catch (err) {
+		return reply.code(404).send({ success: false, error: 'User not found' });
+} catch (err) {
 		return reply.code(500).send({ error: err.message });
 	}
 }
 
 export async function refreshAccessToken(request, reply) {
 	const { refreshToken } = request.cookies;
-
-	console.log("je passe laaaoaoa")
-
+	
 	if (!refreshToken)
 		return reply.code(401).send({ error: 'Refresh token is missing'});
-
+	
 	try {
+		const userId = request.user?.userId;
+		const sessionId = request.cookies.sessionId;
+		if (!userId || !sessionId)
+			return reply.code(401).send({ error: 'Invalid session' });
+
+		if (await redisModel.isTokenBlacklisted(refreshToken))
+			return reply.code(401).send({ error: 'Refresh token is blacklisted' });
+		
 		const payload = fastify.jwt.verify(refreshToken);
-		console.log("payload :", payload)
-		
-		
-		const newAccessToken = fastify.jwt.sign(
-			{ userId: payload.userId },
-			{ expiresIn: '1m'}
-		);
+		console.log("payload :", payload);
+
+		// Générer un nouvel accessToken
+		const newAccessToken = fastify.jwt.sign({ userId: payload.userId }, { expiresIn: '15m' });
+		await redisModel.storeAccessToken(userId, sessionId, newAccessToken, 15 * 60);
+
+		console.log("newAccessToken :", newAccessToken);
 		
 		return reply.send({ accessToken: newAccessToken });
 	} catch (err) {
-		return reply.code(403).send({ error: 'Invalid or expired refresh token' });
+		return reply.code(403).send({ error: 'Invalid refresh token' });
+	}
+}
+
+export async function getAccessToken(request, reply) {
+	if (!request.body || !request.body.userId || !request.body.sessionId) {
+		console.error("❌ Données manquantes dans request.body !");
+		return reply.code(400).send({ error: 'Données manquantes' });
+	}
+	const { userId, sessionId } = request.body;
+	console.log("Session ID récupéré :", sessionId);
+	console.log("ID de l'utilisateur récupéré :", userId);
+	if (!sessionId)
+		return reply.status(401).send({ error: 'No session' });
+	if (!userId)
+		return reply.status(400).send({ error: 'User ID is required' });
+	try {
+		const accessToken = await redisClient.get(`access:${userId}:${sessionId}`);
+		console.log("Access token récupéré :", accessToken);
+		if (!accessToken)
+			return reply.status(403).send({ error: 'Token expired or invalid' });
+
+		return reply.send({ success: true, accessToken });
+	} catch (err) {
+		return reply.code(500).send({ error: err.message });
 	}
 }
 
 export async function unregister(request, reply) {
-	const { id } = request.params;
-	if (!id)
+	const { userId } = request.params;
+	if (!userId)
 		return reply.code(400).send({ error: "User id is required" });
-
+	
 	try {
-
-		const info = userModel.unregister(id)
-
+		
+		const info = userModel.unregister(userId)
+		
 		if (info.changes === 0)
 			return reply.code(404).send({ error: "User not found" });
-
 		return reply.send({ success: true, message: "User deleted successfully"});
 	} catch (err) {
 		fastify.log.error(err)

@@ -1,4 +1,4 @@
-import { register, selectUsers, unregister, login, logout, changeRole, refreshAccessToken, getUserProfile} from '../controllers/authController.js';
+import { register, selectUsers, unregister, login, logout, changeRole, refreshAccessToken, getUserProfile, getAccessToken} from '../controllers/authController.js';
 
 /**
  * Encapsulates the routes
@@ -7,8 +7,8 @@ import { register, selectUsers, unregister, login, logout, changeRole, refreshAc
 export default async function routes (fastify) {
 
 	fastify.addHook("onRequest", async (request, reply) => {
-        console.log(`📡 Requête reçue : [${request.method}] ${request.url}`);
-    });
+		console.log(`📡 Requête reçue : [${request.method}] ${request.url}`);
+	});
 	//userController
 	fastify.get('/users', selectUsers);
 
@@ -18,9 +18,10 @@ export default async function routes (fastify) {
 
 	fastify.post('/users/add', register);
 	fastify.put('/users/login', login);
-	fastify.put('/users/logout/:id', logout);
-	fastify.put('/users/role/:id', changeRole);
-	fastify.delete('/users/delete/:id', unregister);
+	fastify.post('/users/logout/:userId', logout);
+	fastify.put('/users/role/:userId', changeRole);
+	fastify.delete('/users/delete/:userId', unregister);
 	// Tokens
 	fastify.post('/refresh-token', refreshAccessToken);
+	fastify.post('/users/get-access-token', getAccessToken);
 }

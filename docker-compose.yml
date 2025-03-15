@@ -15,6 +15,13 @@
 ####################################
 
 services:
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    restart: always
+
   fastify:
     build:
       context: ./Backend
@@ -22,6 +29,10 @@ services:
     # extends:
     #   file: Backend/docker-compose.yml
     #   service: fastify
+    depends_on:
+      - redis
+    environment:
+      REDIS_URL: "redis://redis:6379"
     ports:
       - "3000:3000"
     restart: always
