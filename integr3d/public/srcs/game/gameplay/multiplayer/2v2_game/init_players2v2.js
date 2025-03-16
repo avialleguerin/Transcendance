@@ -157,18 +157,18 @@ function createPaddle(name, position, parent) {
 			let skinFile = null;
 
 			if (currentSkinPlayer4_multi === 0) {
-				skinPath = "/srcs/game/assets/player_skin/";
-				skinFile = "player_blanc.glb";
+				skinPath = "/srcs/game/assets/player/";
+				skinFile = "PlayerIdleAnnimation.glb";
 			}
 			else if (currentSkinPlayer4_multi === 1) {
 				skinPath = "/srcs/game/assets/player_skin/";
-				skinFile = "player_bleuv2.glb";
+				skinFile = "idle_bleu.glb";
 			} else if (currentSkinPlayer4_multi === 2) {
 				skinPath = "/srcs/game/assets/player_skin/";
-				skinFile = "player_rougev2.glb";
+				skinFile = "idle_rouge.glb";
 			} else if (currentSkinPlayer4_multi === 3) {
 				skinPath = "/srcs/game/assets/player_skin/";
-				skinFile = "player_vert.glb";
+				skinFile = "idle_vert.glb";
 			}
 
 			importPlayerMesh(skinPath, skinFile);
@@ -177,18 +177,18 @@ function createPaddle(name, position, parent) {
 			let skinFile = null;
 
 			if (currentSkinPlayer3_multi === 0) {
-				skinPath = "/srcs/game/assets/player_skin/";
-				skinFile = "player_blanc.glb";
+				skinPath = "/srcs/game/assets/player/";
+				skinFile = "PlayerIdleAnnimation.glb";
 			}
 			if (currentSkinPlayer3_multi === 1) {
 				skinPath = "/srcs/game/assets/player_skin/";
-				skinFile = "player_bleuv2.glb";
+				skinFile = "idle_bleu.glb";
 			} else if (currentSkinPlayer3_multi === 2) {
 				skinPath = "/srcs/game/assets/player_skin/";
-				skinFile = "player_rougev2.glb";
+				skinFile = "idle_rouge.glb";
 			} else if (currentSkinPlayer3_multi === 3) {
 				skinPath = "/srcs/game/assets/player_skin/";
-				skinFile = "player_vert.glb";
+				skinFile = "idle_vert.glb";
 			}
 
 			importPlayerMesh(skinPath, skinFile);
@@ -198,18 +198,18 @@ function createPaddle(name, position, parent) {
 			let skinFile = null;
 
 			if (currentSkinPlayer2_multi === 0) {
-				skinPath = "/srcs/game/assets/player_skin/";
-				skinFile = "player_blanc.glb";
+				skinPath = "/srcs/game/assets/player/";
+				skinFile = "PlayerIdleAnnimation.glb";
 			}
 			else if (currentSkinPlayer2_multi === 1) {
 				skinPath = "/srcs/game/assets/player_skin/";
-				skinFile = "player_bleuv2.glb";
+				skinFile = "idle_bleu.glb";
 			} else if (currentSkinPlayer2_multi === 2) {
 				skinPath = "/srcs/game/assets/player_skin/";
-				skinFile = "player_rougev2.glb";
+				skinFile = "idle_rouge.glb";
 			} else if (currentSkinPlayer2_multi === 3) {
 				skinPath = "/srcs/game/assets/player_skin/";
-				skinFile = "player_vert.glb";
+				skinFile = "idle_vert.glb";
 			}
 
 			importPlayerMesh(skinPath, skinFile);
@@ -220,18 +220,18 @@ function createPaddle(name, position, parent) {
 			let skinFile = null;
 
 			if (currentSkinPlayer1_multi === 0) {
-				skinPath = "/srcs/game/assets/player_skin/";
-				skinFile = "player_blanc.glb";
+				skinPath = "/srcs/game/assets/player";
+				skinFile = "PlayerIdleAnnimation.glb";
 			}
 			else if (currentSkinPlayer1_multi === 1) {
 				skinPath = "/srcs/game/assets/player_skin/";
-				skinFile = "player_bleuv2.glb";
+				skinFile = "idle_bleu.glb";
 			} else if (currentSkinPlayer1_multi === 2) {
 				skinPath = "/srcs/game/assets/player_skin/";
-				skinFile = "player_rougev2.glb";
+				skinFile = "idle_rouge.glb";
 			} else if (currentSkinPlayer1_multi === 3) {
 				skinPath = "/srcs/game/assets/player_skin/";
-				skinFile = "player_vert.glb";
+				skinFile = "idle_vert.glb";
 			}
 
 			importPlayerMesh(skinPath, skinFile);
