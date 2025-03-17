@@ -94,14 +94,6 @@ async function login(event) {
 		return ;
 	}
 	const data = await apiRequest("users/login", "PUT", { email, password }, {})
-	// const response = await fetch("/api/users/login", {
-	// 	method: 'PUT',
-	// 	// body: JSON.stringify({ email, password, userId, sessionId }),
-	// 	body: JSON.stringify({ email, password }),
-	// 	headers: { 'Content-Type': 'application/json' },
-	// 	credentials: 'include',
-	// });
-	// const data = await response.json();
 	accessToken = data.accessToken
 	if (!data.accessToken) {
 		console.error("❌ Aucun accessToken reçue !");
@@ -115,7 +107,6 @@ async function login(event) {
 		}, 300);
 	} else
 		console.log("Error :", data.error)
-	// fetchUserProfile();
 }
 
 
@@ -148,26 +139,13 @@ function getCookie(name) {
 }
 
 async function fetchProfile() {
-	const sessionId = localStorage.getItem('sessionId'); // Fonction pour récupérer le cookie sessionId
-	const userId = localStorage.getItem('userId'); // Fonction pour récupérer l'ID de l'utilisateur
+	const sessionId = localStorage.getItem('sessionId');
+	const userId = localStorage.getItem('userId');
 	console.log("🆔 Session ID récupéré :", sessionId);
 	console.log("🆔 ID de l'utilisateur récupéré :", userId);
 	const data = await apiRequest("users/get-access-token", "POST", { sessionId, userId }, {})
-	// const response = await fetch('/api/users/get-access-token', {
-		// 	method: 'POST',
-	// 	headers: { 'Content-Type': 'application/json' },
-	// 	body: JSON.stringify({ sessionId, userId }),
-	// 	credentials: 'include'
-	// });
-	// const data = await response.json();
 	if (data.accessToken) {
 		const profileData = await apiRequest("profile", "GET", null, {}, data.accessToken)
-		// const profileResponse = await fetch('/api/profile', {
-		// 	method: 'GET',
-		// 	headers: { Authorization: `Bearer ${data.accessToken}` },
-		// 	credentials: 'include'
-		// });
-		// const profileData = await profileResponse.json();
 		if (!profileData.user) {
 			console.error("Aucun utilisateur dans la réponse !");
 			return;
