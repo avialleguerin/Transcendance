@@ -19,7 +19,7 @@ all:
 
 up:
 	@docker compose up --build
-	@rm -rf ./MiniBackend/Fastify/node_modules
+	@rm -rf ./Backend/Fastify/node_modules
 
 down:
 	@docker compose down
