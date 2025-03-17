@@ -123,8 +123,17 @@ function createPaddle(name, position, parent) {
 			if (rootMesh) {
 				rootMesh.position = paddle.getAbsolutePosition().clone();
 				rootMesh.scaling = new BABYLON.Vector3(6, 6, 6);
+				// console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 				rootMesh.rotationQuaternion = BABYLON.Quaternion.FromEulerAngles(0, Math.PI, 0);
 				rootMesh.metadata = { isPlayer: true };
+			}
+
+			if (parent.name === "parent_player_1" || parent.name === "parent_player_2") {
+				newMeshes.forEach(mesh => {
+					if (mesh instanceof BABYLON.Mesh) {
+						mesh.rotation = new BABYLON.Vector3(Math.PI, 0, 0);
+					}
+				});
 			}
 
 			// Créer un repère pour la position du joueur
@@ -220,7 +229,7 @@ function createPaddle(name, position, parent) {
 			let skinFile = null;
 
 			if (currentSkinPlayer1_multi === 0) {
-				skinPath = "/srcs/game/assets/player";
+				skinPath = "/srcs/game/assets/player/";
 				skinFile = "PlayerIdleAnnimation.glb";
 			}
 			else if (currentSkinPlayer1_multi === 1) {
