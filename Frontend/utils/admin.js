@@ -10,7 +10,6 @@ async function fetchUsers() {
 				<td class="border px-4 py-2">${user.username}</td>
 				<td class="border px-4 py-2">${user.email}</td>
 				<td class="border px-4 py-2">********</td>
-				<td class="border px-4 py-2">${user.connected === 1 ? "Yes" : "No"}</td>
 				<td class="border px-4 py-2">${user.role}</td>
 				<td class="border px-4 py-2 flex">
 					<button class="bg-gray-700 hover:bg-sky-500 m-2 text-white px-2 py-1 rounded" onclick="logout(${user.userId})">Logout</button>

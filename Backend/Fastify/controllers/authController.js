@@ -1,23 +1,19 @@
 import { fastify } from '../server.js'
 import { redisClient } from '../utils/redis.js';
 import userModel from '../models/userModel.js';
-import tokenModel from '../models/tokenModel.js';
 import { hashPassword, verifyPassword } from '../utils/hashUtils.js';
 import { randomUUID } from 'crypto';
-
-// import { addToBlacklist, storeAccessToken, storeRefreshToken, deleteAccessToken, deleteRefreshToken, getRedisAccessToken, getRedisRefreshToken, isAccessTokenPresent, isRefreshTokenPresent } from '../utils/redis.js';
 import { redisModel } from '../models/redisModel.js';
 
 export async function register(request, reply) {
 	const { username, email, password } = request.body;
 
-	if (!username || !password) {
+	if (!username || !password)
 		return reply.code(400).send({ error: 'Username, Email and Password are required' });
-	}
 
 	const user = userModel.getUserByEmail(email)
 
-	if(user)
+	if (user)
 		return reply.code(500).send({ error: "This email is already used" });
 
 	try {
@@ -33,6 +29,13 @@ export async function register(request, reply) {
 
 export async function login(request, reply) {
 	const { email, password } = request.body;
+	// const { email, password, userId, sessionId } = request.body;
+	// const accessToken = redisModel.getRedisAccessToken(userId, sessionId)
+	// if (accessToken)
+	// {
+	// 	console.error("❌ User is already connected");
+	// 	return reply.code(401).send({ error: 'User already connected' });
+	// }
 	console.log("📧 Email reçu :", email);
 	console.log("🔑 Mot de passe reçu :", password);
 	const user = userModel.getUserByEmail(email);
@@ -44,18 +47,17 @@ export async function login(request, reply) {
 			return reply.code(401).send({ error: 'Invalid credentials' });
 		}
 
-		userModel.updateConnected(user.userId, 1)
 		const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, {expiresIn: '15m' });
 		const refreshToken = fastify.jwt.sign({ userId: user.userId }, {expiresIn: '7d' });
-		console.log("🔑 Access Token créé :", accessToken);
-		console.log("🔑 Refresh Token créé :", refreshToken);
+		console.log("🔑 Access Token created :", accessToken);
+		console.log("🔑 Refresh Token created :", refreshToken);
 
 		if (!accessToken || !refreshToken) {
 			console.error("❌ Erreur lors de la création des tokens JWT");
 			return reply.code(500).send({ error: 'Internal Server Error' });
 		}
 		const sessionId = randomUUID();
-		console.log("🆔 Session ID créé :", sessionId);
+		console.log("🆔 Session ID created :", sessionId);
 
 		await redisModel.storeAccessToken(user.userId, sessionId, accessToken, 15 * 60);
 		console.log("🔑 Access Token stocké dans Redis :", `access:${user.userId}:${sessionId}`);
@@ -75,40 +77,6 @@ export async function login(request, reply) {
 		return reply.code(500).send({ error: err.message });
 	}
 }
-
-// export async function login(request, reply) {
-// 	const { email, password } = request.body;
-// 	const user = userModel.getUserByEmail(email);
-
-// 	try {
-
-// 		if (!user || !await verifyPassword(user.password, password))
-// 			return reply.code(401).send({error: 'Invalid credentials'})
-
-// 		userModel.updateConnected(user.userId, 1)
-
-// 		const accessToken = fastify.jwt.sign({ userId: user.userId, username:user.username }, {expiresIn: '15m' });
-// 		const refreshToken = fastify.jwt.sign({ userId: user.userId }, {expiresIn: '7d' });
-
-// 		if (!accessToken || !refreshToken)
-// 			throw new Error("Error when creating JWT Tokens");
-// 		console.log("Generated AccessToken: ", accessToken);
-// 		console.log("Generated RefreshToken: ", refreshToken);
-
-// 		reply.setCookie('refreshToken', refreshToken, {
-// 		httpOnly: true,
-// 		secure: true,
-// 		sameSite: 'strict',
-// 		path: '/',
-// 		})
-		
-// 		return reply.code(200).send({ success: true, accessToken })
-
-// 	} catch (err) {
-// 		return reply.code(500).send({ error: err.message });
-// 	}
-// }
-
 
 export async function selectUsers(request, reply) {
 	try {
@@ -176,8 +144,6 @@ export async function logout(request, reply) {
 		}
 		redisModel.deleteRefreshToken(userId, sessionId);
 	}
-	userModel.updateConnected(userId, 0);
-
 	reply.clearCookie('sessionId', { path: '/' }).clearCookie('refreshToken', { path: '/' }).clearCookie('userId', { path: '/' }).send({ success: true, message: 'Logged out' });
 
 
@@ -215,7 +181,6 @@ export async function changeRole(request, reply) {
 				userId: updateUser.userId,
 				username: updateUser.username,
 				email: updateUser.email,
-				connected: updateUser.connected,
 				role: updateUser.role,
 				success: true
 			})
@@ -245,7 +210,6 @@ export async function refreshAccessToken(request, reply) {
 		const payload = fastify.jwt.verify(refreshToken);
 		console.log("payload :", payload);
 
-		// Générer un nouvel accessToken
 		const newAccessToken = fastify.jwt.sign({ userId: payload.userId }, { expiresIn: '15m' });
 		await redisModel.storeAccessToken(userId, sessionId, newAccessToken, 15 * 60);
 

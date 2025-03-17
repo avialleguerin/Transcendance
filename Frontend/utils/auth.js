@@ -56,10 +56,16 @@ async function login(event) {
 
 	const email = document.getElementById("login-email").value;
 	const password = document.getElementById("login-password").value;
-
-	// const data = await apiRequest("users/login", "PUT", { email, password })
+	const userId = localStorage.getItem("userId")
+	const sessionId = localStorage.getItem("sessionId")
+	if (userId && sessionId)
+	{
+		console.error("❌ User already connected !");
+		return ;
+	}
 	const response = await fetch("/api/users/login", {
 		method: 'PUT',
+		// body: JSON.stringify({ email, password, userId, sessionId }),
 		body: JSON.stringify({ email, password }),
 		headers: { 'Content-Type': 'application/json' },
 		credentials: 'include',
@@ -170,7 +176,7 @@ async function fetchProfile() {
 				<td class="border px-4 py-2">${user.username}</td>
 				<td class="border px-4 py-2">${user.email}</td>
 				<td class="border px-4 py-2">********</td> <!-- Masquer le mot de passe -->
-				<td class="border px-4 py-2">${user.admin === 1 ? "Yes" : "No"}</td>
+				<td class="border px-4 py-2">${user.role}</td>
 			</tr>
 		`;
 	} else {

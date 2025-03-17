@@ -7,8 +7,7 @@ export const CREATE_USERS_TABLE = `
     username TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
-    role TEXT CHECK(role IN ('user', 'admin')) DEFAULT 'user',
-    connected BOOLEAN DEFAULT FALSE
+    role TEXT CHECK(role IN ('user', 'admin')) DEFAULT 'user'
   );
 `;
 
@@ -24,7 +23,7 @@ const userModel = {
 
   getUserByEmail: (email) => { return db.prepare("SELECT * FROM users WHERE email = ?").get(email) },
 
-  updateConnected: (userId, connected) => { return db.prepare("UPDATE users SET connected = ? WHERE userId = ?").run(connected, userId) },
+  // updateConnected: (userId, connected) => { return db.prepare("UPDATE users SET connected = ? WHERE userId = ?").run(connected, userId) },
 
   updateRole: (userId, role) => { return db.prepare("UPDATE users SET role = ? WHERE userId = ?").run(role === 'user' ? 'admin' : 'user', userId) },
 

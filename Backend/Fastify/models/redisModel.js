@@ -1,4 +1,5 @@
 import { redisClient } from '../utils/redis.js';
+import { fastify } from '../server.js'
 import jwt from '@fastify/jwt'; // Assuming you have jwt installed
 
 export const redisModel = {
@@ -41,27 +42,27 @@ export const redisModel = {
 		await redisClient.del(redisKey);
 	},
 
-	getRedisAccessToken: async (userId, sessionId) => {
-		const redisKey = `access:${userId}:${sessionId}`;
-		return await getToken(redisKey);
-	},
-
-	getRedisRefreshToken: async (userId, sessionId) => {
-		const redisKey = `refresh:${userId}:${sessionId}`;
-		return await getToken(redisKey);
-	},
-
 	getToken: async (key) => {
 		const token = await redisClient.get(key);
 		if (!token)
 			return null;
 
-		const decoded = jwt.decode(token);
+		const decoded = fastify.jwt.decode(token);
 		if (decoded && decoded.exp && decoded.exp * 1000 < Date.now()) {
 			await redisClient.del(key);
 			return null;
 		}
 		return token;
+	},
+
+	getRedisAccessToken: async (userId, sessionId) => {
+		const redisKey = `access:${userId}:${sessionId}`;
+		return await redisModel.getToken(redisKey);
+	},
+
+	getRedisRefreshToken: async (userId, sessionId) => {
+		const redisKey = `refresh:${userId}:${sessionId}`;
+		return await redisModel.getToken(redisKey);
 	},
 
 }
