@@ -1,0 +1,273 @@
+.container-Player1 {
+  position: absolute;
+  left : 5%;
+  bottom: 0%;
+  width: 15%;
+  height: 10%;
+  background: transparent;
+  visibility: hidden;
+}
+
+.container-Player2 {
+  position: absolute;
+  right : 5%;
+  bottom: 0%;
+  width: 15%;
+  height: 10%;
+  background: transparent;
+  visibility: hidden;
+}
+
+.container-Player1.active {
+  visibility: visible;
+}
+
+.container-Player2.active {
+  visibility: visible;
+}
+
+
+.container-Player1 h1, .container-Player2 h1 {
+    position: absolute;
+    color: rgb(0, 0, 0);
+    font-size: 1vw;
+    left: 18%;
+    top: -7%;
+    font-family: 'Black Ops One', sans-serif;
+    text-shadow: 2px 2px 2px #ffffff;
+}
+
+.container-item_player1, .container-item_player2 {
+    position: absolute;
+    display: flex;
+    gap: 20px;
+    left: 50%;
+    top: 60%;
+    transform: translate(-50%, -50%);
+    flex-direction: row;
+    background-color: #000000ad;
+    border-radius: 10px;
+    border: 2px solid #777;
+    padding: 0px 15px;
+    align-items: center;
+}
+
+.container-item_player1 > div,
+.container-item_player2 > div {
+    margin-left: -10px;  /* Plus petit espace à gauche */
+    margin-right: 10px; /* 20px d'espace à droite */
+}
+
+.item-circle {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #000;
+    border: 2px solid #ffce0a;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+  
+  .item-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @keyframes item-reloading {
+    0% {
+        background-color: #000;
+    }
+    30% {
+        background-color: rgba(0, 0, 0, 0.7);
+    }
+    50% {
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+    70% {
+        background-color: rgba(0, 0, 0, 0.3);
+    }
+    100% {
+        background-color: rgba(0, 0, 0, 0);
+    }
+  }
+
+
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* couleur noire avec opacité */
+    visibility: hidden; /* par défaut, ne pas visible */
+  }
+
+  .overlay-reloading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    visibility: hidden; /* par défaut, ne pas visible */
+    animation: none;
+  }
+
+  .overlay-reloading-freeze {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    visibility: hidden; /* par défaut, ne pas visible */
+    animation: none;
+  }
+
+    .overlay-reloading.active {
+        visibility: visible;
+        animation: item-reloading 15s forwards;
+    }
+
+    .overlay-reloading-freeze.active {
+        visibility: visible;
+        animation: item-reloading 15s forwards;
+    }
+  
+  .overlay.active {
+    visibility: visible;
+  }
+
+  .item-circle.active {
+    border: 2px solid #000000;
+  }
+
+
+
+p {
+    font-family: 'Black Ops One', sans-serif;
+    font-size: 0.8vw;
+    color: rgb(255, 255, 255);
+    text-shadow: 2px 2px 2px #000000;
+}
+
+.container-leave {
+  position: absolute;
+  right: 0%;
+  top: 20%;
+  width: 100%;
+  height: 5%;
+  background: rgb(56, 56, 56);
+}
+
+.option {
+  right: 2%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  cursor: pointer;
+  background-color: #a5a5a5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-color: #a5a5a5;
+  visibility:  visible;
+
+}
+
+.option img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+@keyframes panel_spawn {
+  0% {
+      transform: translateX(100%);
+  }
+  100% {
+      transform: translateX(0%);
+  }
+}
+
+@keyframes panel_despawn {
+from {
+    opacity: 1;
+    transform: translateX(0);
+}
+to {
+    opacity: 0;
+    transform: translateX(100%);
+}
+}
+
+
+.panel {
+  position: absolute;
+  top : 0%;
+  right : 0%;
+  width: 20%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 100;
+  visibility: hidden;
+  background: #c1c1c1bf;
+}
+
+.option-in-panel {
+  right: 10%;
+  top: 2.5%;
+  transform: translate(-50%, -50%);
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  cursor: pointer;
+  background-color: #a5a5a5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-color: #a5a5a5;
+}
+
+.option-in-panel img {
+width: 100%;
+height: 100%;
+object-fit: contain;
+}
+
+.leave_game {
+  position: absolute;
+  bottom: 5%;
+  left : 5%;
+
+  width: 40%;
+  height: 5%;
+  background: #000000;
+  border: 2px solid #e00000;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+
+}
+
+.panel.active {
+  visibility: visible;
+  animation: panel_spawn 1s forwards;
+}
+
+.panel.remove {
+  animation: panel_despawn 1s forwards;
+}
+
+.option.active {
+  visibility: hidden;
+}

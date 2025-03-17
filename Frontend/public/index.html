@@ -1,102 +1,112 @@
-<!-- public/admin.html -->
 <!DOCTYPE html>
 <html lang="fr">
 
 <head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>Admin - Gestion des Users</title>
-	<script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <style>
+        /* Style global */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Les boutons en haut qui ne bougent jamais */
+        .navbar {
+            position: fixed; /* Rendre la barre de navigation fixe */
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #000000;
+            padding: 10px 0;
+            display: flex;
+            justify-content: center; /* Centrer les boutons */
+            z-index: 3;
+        }
+
+        .navbar button {
+            background-color: #180247;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            margin: 0 10px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .navbar button:hover {
+            background-color: #6f45a0;
+        }
+
+        /* Le contenu principal en dessous des boutons */
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+            display: block; /* Élimine l'espace blanc sous le canvas */
+            touch-action: none; /* Améliore la prise en charge tactile */
+        }
+
+        #app {
+        transition: opacity 0.5s ease-in-out;
+        }
+
+        .fade-out {
+            opacity: 0;
+        }
+
+        .fade-in {
+            opacity: 1;
+        }
+
+
+
+    </style>
 </head>
 
-<body class="bg-gray-100 text-gray-800">
+<body>
 
-	<header class="bg-blue-600 text-white p-4">
-		<div class="container mx-auto">
-			<h1 class="text-3xl font-bold">Administration - Gestion des Users</h1>
-		</div>
-	</header>
+    <div class="navbar">
+        <button data-view="vue1">
+            <a href="/Game_menu" class="nav-link" data-link>Game_menu</a>
+        </button>
+    </div>
+	<canvas id="renderCanvas" style="width: 100%; height: 100vh;"></canvas>
 
-	<main class="container mb-6 mx-auto">
-		<h2 class="text-xl font-semibold mb-4 mt-4">List of Users</h2>
-		<table class="min-w-full bg-white shadow-md rounded">
-			<thead>
-				<tr>
-					<th class="py-2 border">ID</th>
-					<th class="py-2 border">Username</th>
-					<th class="py-2 border">Email</th>
-					<th class="py-2 border">Password</th>
-					<th class="py-2 border">Role</th>
-					<th class="py-2 border">Actions</th>
-				</tr>
-			</thead>
-			<tbody id="users-table">
-			</tbody>
-		</table>
-	</main>
+    <script type="module" src="/static/js/index.js"></script>
+    <div id="app"></div>
 
-	<div class="flex mx-auto container">
-		
-		<form id="addForm" class="flex-1 max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg"
-				onsubmit="register(event)">
-			<h2 class="text-2xl font-semibold text-center mb-4">Add User</h2>
-			<div class="mb-4">
-				<label for="username" class="block text-gray-700 font-medium">Username :</label>
-				<input type="text" id="add-username" name="username" placeholder="Username" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-			</div>
-			<div class="mb-4">
-				<label for="email" class="block text-gray-700 font-medium">Email :</label>
-				<input type="email" id="add-email" name="email" placeholder="Email" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-			</div>
-			<div class="mb-4">
-				<label for="password" class="block text-gray-700 font-medium">Password :</label>
-				<input type="password" id="add-password" name="password" placeholder="Password" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-			</div>
-			<div class="mb-4">
-				<label for="password" class="block text-gray-700 font-medium">Confirm password :</label>
-				<input type="password" id="add-confirm-password" name="password" placeholder="Password" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-			</div>
-			<button type="submit" class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition">
-					Add
-			</button>
-			<p id="add-resultMessage" class="mt-4 text-center text-sm font-semibold text-gray-700"></p>
-		</form>
+    <!-- <script src="./static/js/script/game_menu.js"></script> -->
+	<script src="https://cdn.babylonjs.com/babylon.js"></script>
+	<script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+    <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
+	<script type="module" src="srcs/game/gameplay/babylon.js"></script>
+    <script type="module" src="test.js"></script>
 
-		<form id="loginForm" class="flex-1 max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg"
-			onsubmit="login(event)">
-			<h2 class="text-2xl font-semibold text-center mb-4">Log In</h2>
-			<div class="mb-4">
-				<label for="email" class="block text-gray-700 font-medium">Email :</label>
-				<input type="email" id="login-email" name="email" placeholder="Email" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-			</div>
-			<div class="mb-4">
-				<label for="password" class="block text-gray-700 font-medium">Password :</label>
-				<input type="password" id="login-password" name="password" placeholder="Password" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-			</div>
-			<button type="submit" class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition">
-					Log In
-			</button>
-			<p id="login-resultMessage" class="mt-4 text-center text-sm font-semibold text-gray-700"></p>
-		</form>
-
-	</div>
-	<div class="mt-6 mx-auto max-w-md bg-white">
-		<table class="min-w-full bg-white shadow-md rounded">
-			<thead>
-				<tr>
-					<th class="px-4 py-2 border">ID</th>
-					<th class="px-4 py-2 border">Username</th>
-					<th class="px-4 py-2 border">Email</th>
-					<th class="px-4 py-2 border">Password</th>
-					<th class="px-4 py-2 border">Role</th>
-				</tr>
-			</thead>
-			<tbody id="user-table">
-			</tbody>
-		</table>
-	</div>
-
-	<script src="../utils/auth.js"></script>
-	<script src="../utils/admin.js"></script>
 </body>
+
 </html>
+
+
+        <!-- <style>
+        /* Style global pour empêcher le défilement */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* Empêche le défilement */
+        }
+        
+        /* Le canvas remplit tout l'espace disponible */
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+            display: block; /* Élimine l'espace blanc sous le canvas */
+            touch-action: none; /* Améliore la prise en charge tactile */
+        }
+    </style> -->
