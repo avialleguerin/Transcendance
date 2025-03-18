@@ -139,6 +139,14 @@ export function init_players(scene, player_1, player_2) {
 			playerModel.scaling = new BABYLON.Vector3(6, 6, 6);
 			playerModel.rotation = new BABYLON.Vector3(0, Math.PI, 0);
 			playerModel.metadata = { isPlayer: true };  // Tag ajouté pour le joueur 2
+
+			newMeshes.forEach(mesh => {
+				if (mesh instanceof BABYLON.Mesh) {
+					mesh.rotationQuaternion = null;
+					mesh.rotation = new BABYLON.Vector3(Math.PI, 0, 0);
+					mesh.metadata = { isPlayer: true };  // Tag ajouté pour identifier ce mesh comme joueur
+				}
+			});
 		
 			const playerRepere = new BABYLON.MeshBuilder.CreateBox("playerRepere", {
 				width: 10,
@@ -199,6 +207,14 @@ export function init_players(scene, player_1, player_2) {
 			playerModel.scaling = new BABYLON.Vector3(6, 6, 6);
 			playerModel.rotation = new BABYLON.Vector3(0, Math.PI, 0);
 			playerModel.metadata = { isPlayer: true };  // Tag ajouté pour le joueur 2
+
+			newMeshes.forEach(mesh => {
+				if (mesh instanceof BABYLON.Mesh) {
+					mesh.rotationQuaternion = null;
+					mesh.rotation = new BABYLON.Vector3(Math.PI, 0, 0);
+					mesh.metadata = { isPlayer: true };  // Tag ajouté pour identifier ce mesh comme joueur
+				}
+			});
 		
 			const playerRepere = new BABYLON.MeshBuilder.CreateBox("playerRepere", {
 				width: 10,
@@ -259,6 +275,14 @@ export function init_players(scene, player_1, player_2) {
 			playerModel.scaling = new BABYLON.Vector3(6, 6, 6);
 			playerModel.rotation = new BABYLON.Vector3(0, Math.PI, 0);
 			playerModel.metadata = { isPlayer: true };  // Tag ajouté pour le joueur 2
+
+			newMeshes.forEach(mesh => {
+				if (mesh instanceof BABYLON.Mesh) {
+					mesh.rotationQuaternion = null;
+					mesh.rotation = new BABYLON.Vector3(Math.PI, 0, 0);
+					mesh.metadata = { isPlayer: true };  // Tag ajouté pour identifier ce mesh comme joueur
+				}
+			});
 		
 			const playerRepere = new BABYLON.MeshBuilder.CreateBox("playerRepere", {
 				width: 10,

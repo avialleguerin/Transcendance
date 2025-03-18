@@ -49,9 +49,10 @@ const router = async () => {
         app.innerHTML = await view.getHtml();
         app.style.transition = "opacity 0.5s ease-in-out";
         app.style.opacity = "1";
-
+        
         // Exécute les fonctions si elles existent
         if (typeof view.initEvents === "function") view.initEvents();
+        if (typeof view.createAccount === "function") view.createAccount();
         if (typeof view.init_solo_game === "function") view.init_solo_game();
         if (typeof view.Back_to_Menu === "function") view.Back_to_Menu();
         if (typeof view.Back_to_Menu_duo === "function") view.Back_to_Menu_duo();

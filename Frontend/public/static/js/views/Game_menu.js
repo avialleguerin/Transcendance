@@ -8,7 +8,7 @@ import { init_powerUP_inverse_player, reset_powerUP_inverse_player } from "../..
 import { init_nb_powerUP_grenadeFlash_team_player, reset_powerUP_grenadeTeam_player } from "../../../srcs/game/gameplay/multiplayer/2v2_game/init_powerUP_GernadeFlash_multi.js";
 import { init_powerUP_freeze_Team_player, reset_powerUP_freeze_Team_player } from "../../../srcs/game/gameplay/multiplayer/2v2_game/init_power_up_freeze.js";
 import { getValue_leave_game, setLeaveGameVar } from "../index.js";
-import { enable_skin_perso_player1, enable_skin_perso_player2, disable_skin_perso_player1, disable_skin_perso_player2, disable_skin_perso_player1_and_save, disable_skin_perso_player2_and_save, switch_skin_perso_player1_left, switch_skin_perso_player1_right, switch_skin_perso_player2_left, switch_skin_perso_player2_right } from "../../../srcs/game/gameplay/solo/skin/init_skin_perso.js";
+import { enable_skin_perso_player_solo, disable_skin_perso_player_solo, disable_skin_perso_player_solo_and_save, switch_skin_perso_player1_left, switch_skin_perso_player1_right, switch_skin_perso_player2_left, switch_skin_perso_player2_right } from "../../../srcs/game/gameplay/solo/skin/init_skin_perso.js";
 import { enable_skin_multi, disable_skin_and_save_multi, disable_skin_multi, switch_skin_perso_player1_right_multi, switch_skin_perso_player1_left_multi, switch_skin_perso_player2_left_multi, switch_skin_perso_player2_right_multi, switch_skin_perso_player3_left_multi, switch_skin_perso_player3_right_multi, switch_skin_perso_player4_left_multi, switch_skin_perso_player4_right_multi } from "../../../srcs/game/gameplay/multiplayer/init_skin_perso_multi.js";
 
 let powerUP_nb = 0;
@@ -206,6 +206,7 @@ export default class extends AbstractView {
 					<p>Joueur 4</p>
 				</div>
 				<button id="valide_ton_skin_game_multi" class="btn">Valider</button>
+			</div>
 		</div>
 
 
@@ -386,6 +387,10 @@ export default class extends AbstractView {
 			view8.classList.add('active');
 			back_to_select_mode_view8.classList.add('active');
 		});
+		
+		/***********************************************************************/
+		/**************************BACK_TO_MENU********************************/
+		/***********************************************************************/
 
 		back_to_menu_view6.addEventListener('click', () => {
 			view6.classList.remove('active');
@@ -399,7 +404,8 @@ export default class extends AbstractView {
 					choose_your_skin.classList.remove('active');
 					solo_1v1_btn.style.display = 'block';
 					custom_ta_game.style.visibility = 'visible';
-					
+					disable_skin_perso_player1();
+					disable_skin_perso_player2();
 				}
 			}
 			if (power_selector.classList.contains('active'))
@@ -426,9 +432,6 @@ export default class extends AbstractView {
 		});
 
 
-		/***********************************************************************/
-		/**************************BACK_TO_MENU********************************/
-		/***********************************************************************/
 
 		const skin_perso_game_multi = document.getElementById('skin_perso_game_multi');
 
@@ -445,6 +448,7 @@ export default class extends AbstractView {
 					choose_your_skin.classList.remove('active');
 					solo_1v1_btn.style.display = 'block';
 					custom_ta_game.style.visibility = 'visible';
+					disable_skin_perso_player_solo();
 				}
 			}
 			if (power_selector.classList.contains('active'))
@@ -692,16 +696,14 @@ export default class extends AbstractView {
 				choose_your_skin.classList.add('active');
 				solo_1v1_btn.style.display = 'none';
 				custom_ta_game.style.visibility = 'hidden';
-				enable_skin_perso_player1();
-				enable_skin_perso_player2();
+				enable_skin_perso_player_solo();
 
 				if (valide_ton_skin.addEventListener('click', () => {
 					console.log('Valide ton skin button clicked');
 					choose_your_skin.classList.remove('active');
 					solo_1v1_btn.style.display = 'block';
 					custom_ta_game.style.visibility = 'visible';
-					disable_skin_perso_player1_and_save();
-					disable_skin_perso_player2_and_save();
+					disable_skin_perso_player_solo_and_save();
 				}));
 			}
 			else
@@ -711,8 +713,7 @@ export default class extends AbstractView {
 					choose_your_skin.classList.remove('active');
 					solo_1v1_btn.style.display = 'block';
 					custom_ta_game.style.visibility = 'visible';
-					disable_skin_perso_player1();
-					disable_skin_perso_player2();
+					disable_skin_perso_player_solo();
 				}
 			}
 		});

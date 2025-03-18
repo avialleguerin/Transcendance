@@ -29,7 +29,7 @@ function loadSkin(skin, scene, x, y, z, scaleX, scaleY, scaleZ) {
                 rootMesh.position = new BABYLON.Vector3(x, y, z);
                 rootMesh.scaling = new BABYLON.Vector3(scaleX, scaleY, scaleZ);
                 rootMesh.rotation = new BABYLON.Vector3(0, 0, 0);
-                rootMesh.metadata = { isPlayer: true };
+                rootMesh.metadata = { isPlayer_skin: true };
 
                 rootMesh.setEnabled(false);
                 resolve(rootMesh);

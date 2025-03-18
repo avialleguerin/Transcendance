@@ -25,7 +25,7 @@ function loadSkin(skin, scene) {
                 rootMesh.position = new BABYLON.Vector3(0, 100, -15); // Modifier selon la position voulue
                 rootMesh.scaling = new BABYLON.Vector3(4, 4, 4);
                 rootMesh.rotation = new BABYLON.Vector3(0, 0, 0);
-                rootMesh.metadata = { isPlayer: true };
+                rootMesh.metadata = { isPlayer_skin: true };
 
                 rootMesh.setEnabled(false); // Masquer tous les skins au départ
                 resolve(rootMesh); // Résoudre la promesse avec le mesh
@@ -36,102 +36,73 @@ function loadSkin(skin, scene) {
     });
 }
 
-// Fonction pour charger tous les skins dans l'ordre
-function loadSkinsForPlayer(skinPaths, scene, playerSkins, offsetX) {
-    let loadPromises = skinPaths.map((skin) => loadSkin(skin, scene)); // Créer un tableau de promesses
+function loadSkinsForPlayer(skinPaths, scene, playerSkins, offsetX)
+{
+    let loadPromises = skinPaths.map((skin) => loadSkin(skin, scene));
 
-    // Attendre que toutes les promesses soient résolues dans l'ordre
     Promise.all(loadPromises)
         .then((meshes) => {
-            meshes.forEach((mesh, index) => {
-                mesh.position.x += offsetX; // Modifier la position de chaque mesh selon le joueur
-                playerSkins.push(mesh); // Ajouter chaque skin au tableau du joueur
+            meshes.forEach((mesh, index) =>
+            {
+                mesh.position.x += offsetX;
+                playerSkins.push(mesh);
                 console.log(`Skin ${skinPaths[index].name} chargé avec succès pour l'index ${index}`);
             });
         })
-        .catch((error) => {
+        .catch((error) =>
+        {
             console.error(error);
         });
 }
 
-// Initialiser les skins pour Player 1
-export function init_skins_perso_player1(scene) {
-    loadSkinsForPlayer(skinPaths, scene, player1Skins, -15); // Positionner Player 1 à X = 25
+export function init_skins_perso_player1(scene)
+{
+    loadSkinsForPlayer(skinPaths, scene, player1Skins, -15);
 }
 
-// Initialiser les skins pour Player 2
-export function init_skins_perso_player2(scene) {
-    loadSkinsForPlayer(skinPaths, scene, player2Skins, -25); // Positionner Player 2 à X = -25
+export function init_skins_perso_player2(scene)
+{
+    loadSkinsForPlayer(skinPaths, scene, player2Skins, -25);
 }
 
-export function enable_skin_perso_player1() {
-    if (player1Skins.length === 0)
-	{
-		console.log("player1Skins.length === 0");
-		return;
-	}
-    // Désactiver tous les skins avant d'en activer un
-    player1Skins.forEach(skin => skin.setEnabled(false));
+export function enable_skin_perso_player_solo()
+{
+    currentSkinPlayer1 = defaultSkinPlayer1;
+    currentSkinPlayer2 = defaultSkinPlayer2;
 
-	console.log("defaultSkinPlayer1", defaultSkinPlayer1);
-    // Activer le skin blanc (default)
-
-	player1Skins[defaultSkinPlayer1].setEnabled(true);
-	console.log("defaultSkinPlayer1wwww", defaultSkinPlayer1);
-
-    // Mettre à jour le skin actuel
-    // currentSkinPlayer1 = defaultSkinPlayer1;
-	console.log("currentSkinPlayer1", currentSkinPlayer1);
-}
-
-export function enable_skin_perso_player2() {
+    if (player1Skins.length === 0) return;
     if (player2Skins.length === 0) return;
 
+
+    player1Skins.forEach(skin => skin.setEnabled(false));
+	player1Skins[defaultSkinPlayer1].setEnabled(true);
+
     player2Skins.forEach(skin => skin.setEnabled(false));
-
-	console.log("defaultSkinPlayer2", defaultSkinPlayer2);
     player2Skins[defaultSkinPlayer2].setEnabled(true);
-	console.log("defaultSkinPlayer2", defaultSkinPlayer2);
 
-    // currentSkinPlayer2 = defaultSkinPlayer2;
-	console.log("currentSkinPlayer2", currentSkinPlayer2);
+
 }
 
-export function disable_skin_perso_player1() {
+export function disable_skin_perso_player_solo()
+{
     if (player1Skins.length === 0) return;
+    if (player2Skins.length === 0) return;
 
-    // Désactiver uniquement le skin actuellement actif
     player1Skins[currentSkinPlayer1].setEnabled(false);
 	currentSkinPlayer1 = defaultSkinPlayer1;
 
-	console.log("currentSkinPlayer1", currentSkinPlayer1);
-}
-
-export function disable_skin_perso_player2() {
-    if (player2Skins.length === 0) return;
-
     player2Skins[currentSkinPlayer2].setEnabled(false);
 	currentSkinPlayer2 = defaultSkinPlayer2;
-
-	console.log("currentSkinPlayer2", currentSkinPlayer2);
 }
 
 
-export function disable_skin_perso_player1_and_save() {
+export function disable_skin_perso_player_solo_and_save()
+{
     if (player1Skins.length === 0) return;
-
-    // Désactiver uniquement le skin actuellement actif
-    player1Skins[currentSkinPlayer1].setEnabled(false);
-
-	console.log("currentSkinPlayer1", currentSkinPlayer1);
-}
-
-export function disable_skin_perso_player2_and_save() {
     if (player2Skins.length === 0) return;
 
+    player1Skins[currentSkinPlayer1].setEnabled(false);
     player2Skins[currentSkinPlayer2].setEnabled(false);
-
-	console.log("currentSkinPlayer2", currentSkinPlayer2);
 }
 
 
