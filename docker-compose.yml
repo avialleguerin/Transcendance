@@ -31,17 +31,15 @@ services:
     # extends:
     #   file: Backend/docker-compose.yml
     #   service: fastify
-    depends_on:
-      - redis
-    environment:
-      REDIS_URL: "redis://redis:6379"
     ports:
       - "3000:3000"
     restart: always
     environment:
+      - REDIS_URL="redis://redis:6379"
       - VAULT_DEV_ROOT_TOKEN_ID=root
       - VAULT_ADDR=http://vault:8200
     depends_on:
+      - redis
       - vault
     volumes:
       - ./Backend/Fastify:/app
