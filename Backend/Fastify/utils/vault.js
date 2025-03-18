@@ -24,7 +24,7 @@ const vault = Vault({
   
 export async function getSQLiteCreds() {
 	try {
-		const secret = await vault.read("kv/data/sqlite").then(res => res.data)
+		const secret = await vault.read("secret/data/sqlite").then(res => res.data)
 
 		// console.log(secret)
 		return {

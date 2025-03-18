@@ -32,7 +32,7 @@ services:
     volumes:
       - ./Backend/Fastify:/app
       - /app/node_modules   # Préserve les modules installés dans le container
-      - ./Security/Vault/vault_data:/vault/data
+      - ./Data/vault_data:/app/vault/data
 
   nginx:
     container_name: nginx
