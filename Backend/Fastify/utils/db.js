@@ -22,9 +22,9 @@ async function setupDatabase() {
 
 export function initDb() {
 	db.prepare(CREATE_USERS_TABLE).run();
-	db.prepare(CREATE_BLACKLIST_ACCESS_TOKENS_TABLE).run();
-	db.prepare(CREATE_BLACKLIST_ACCESS_TOKENS_TABLE).run();
-	db.prepare(CREATE_BLACKLIST_REFRESH_TOKENS_TABLE).run();
+	// db.prepare(CREATE_BLACKLIST_ACCESS_TOKENS_TABLE).run();
+	// db.prepare(CREATE_BLACKLIST_ACCESS_TOKENS_TABLE).run();
+	// db.prepare(CREATE_BLACKLIST_REFRESH_TOKENS_TABLE).run();
 
 	console.log("\n✅ Base de données initialisée !");
 }
