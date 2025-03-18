@@ -1,4 +1,3 @@
-
 async function logout(userId) {
 	const sessionId = localStorage.getItem('sessionId');
 	console.log("🆔 Session ID récupéré :", sessionId);
@@ -86,7 +85,6 @@ async function login(event) {
 		console.log("Error :", data.error)
 	fetchUserProfile();
 }
-
 
 async function apiRequest(endpoint, method = "GET", body = null, params = {}) {
 	const headers = { "Content-Type": "application/json" };

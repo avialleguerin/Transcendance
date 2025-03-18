@@ -26,18 +26,17 @@ export default class extends AbstractView {
 							<label for="password">Mot de passe :</label>
 							<input type="password" id="login-password" name="password" placeholder="Votre mot de passe" required>
 						</div>
-						<button class="connexion"> Se connecter</button>
-						
-						
+						<button type="submit" class="connexion">Se connecter</button>
 						<button class="creer-compte" id="create-Account">Créer un compte</button>
+						<p id="login-resultMessage" class="mt-4 text-center text-sm font-semibold text-gray-700"></p>
 					</form>
 				</div>
 				<div class="register-form" id="create_account_id" onsubmit="register(event)">
 					<h1>CRÉER UN COMPTE</h1>
 					<form class="form-group" id="addForm">
 						<div class="input-container">
-							<label for="username">Nom :</label>
-							<input type="text" id="add-username" name="username" placeholder="Votre nom" required>
+							<label for="username">Username :</label>
+							<input type="text" id="add-username" name="username" placeholder="Votre nom d'utilisateur" required>
 						</div>
 
 						<div class="input-container">
@@ -54,8 +53,9 @@ export default class extends AbstractView {
 							<label for="confirm-password">Confirmer le mot de passe :</label>
 							<input type="password" id="add-confirm-password" name="password" placeholder="Confirmer votre mot de passe" required>
 						</div>
-						<button class="connexion">Se connecter</button>
+						<button type="submit" class="connexion">Creer mon compte</button>
 						<button class="connexion" id="alreadyHaveAccountButton_id">Déjà un compte ?</button>
+						<p id="add-resultMessage" class="mt-4 text-center text-sm font-semibold text-gray-700"></p>
 					</form>
 				</div>
 			</div>
