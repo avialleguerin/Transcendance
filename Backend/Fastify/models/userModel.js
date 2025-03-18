@@ -3,12 +3,11 @@ import db from "../utils/db.js";
 
 export const CREATE_USERS_TABLE = `
   CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    userId INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
-    role TEXT CHECK(role IN ('user', 'admin')) DEFAULT 'user',
-    connected BOOLEAN DEFAULT FALSE
+    role TEXT CHECK(role IN ('user', 'admin')) DEFAULT 'user'
   );
 `;
 
@@ -20,15 +19,15 @@ const userModel = {
 
   getAllUsers: () => db.prepare("SELECT * FROM users").all(),
 
-  getUserById: (id) => { return db.prepare("SELECT * FROM users WHERE id = ?").get(id) },
+  getUserById: (userId) => { return db.prepare("SELECT * FROM users WHERE userId = ?").get(userId) },
 
   getUserByEmail: (email) => { return db.prepare("SELECT * FROM users WHERE email = ?").get(email) },
 
-  updateConnected: (id, connected) => { return db.prepare("UPDATE users SET connected = ? WHERE id = ?").run(connected, id) },
+  // updateConnected: (userId, connected) => { return db.prepare("UPDATE users SET connected = ? WHERE userId = ?").run(connected, userId) },
 
-  updateRole: (id, role) => { return db.prepare("UPDATE users SET role = ? WHERE id = ?").run(role === 'user' ? 'admin' : 'user', id) },
+  updateRole: (userId, role) => { return db.prepare("UPDATE users SET role = ? WHERE userId = ?").run(role === 'user' ? 'admin' : 'user', userId) },
 
-  unregister: (id) => { return db.prepare("DELETE FROM users WHERE id = ?").run(id) }
+  unregister: (userId) => { return db.prepare("DELETE FROM users WHERE userId = ?").run(userId) }
 }
 
 export default userModel;

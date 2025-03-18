@@ -1,17 +1,24 @@
-async function logout(id) {
-	try {
-		const response = await apiRequest("users/logout/:id", "PUT", { id }, { id: id })
 
-		if (response.success) {
-			window.accessToken = null;
-			fetchUsers();
-			console.log("✅ Déconnecté avec succès !");
-		} else
-			console.log(response.error)
-
-	} catch (err) {
-		console.error('Error:', err);
-	}
+async function logout(userId) {
+	const sessionId = localStorage.getItem('sessionId');
+	console.log("🆔 Session ID récupéré :", sessionId);
+	const response = await fetch(`/api/users/logout/:${ userId }`, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({ userId, sessionId }),
+		credentials: 'include',
+	});
+	const data = await response.json();
+	if (data.success) {
+		fetchUsers();
+		console.log("✅ Déconnecté avec succès !");
+		localStorage.removeItem('sessionId');
+		localStorage.removeItem('userId');
+		setTimeout(() => {
+			location.reload();
+		}, 300);
+	} else
+		console.log(data.error)
 }
 
 async function register(event) {
@@ -36,7 +43,7 @@ async function register(event) {
 		resultMessage.classList.add("text-green-500");
 
 		setTimeout(() => {
-			location.reload(); // Rafraîchit la page après 1 seconde
+			location.reload();
 		}, 300);
 	} else {
 		resultMessage.textContent = "Error : " + result.error;
@@ -49,18 +56,35 @@ async function login(event) {
 
 	const email = document.getElementById("login-email").value;
 	const password = document.getElementById("login-password").value;
-
-	const data = await apiRequest("users/login", "PUT", { email, password })
-
+	const userId = localStorage.getItem("userId")
+	const sessionId = localStorage.getItem("sessionId")
+	if (userId && sessionId)
+	{
+		console.error("❌ User already connected !");
+		return ;
+	}
+	const response = await fetch("/api/users/login", {
+		method: 'PUT',
+		// body: JSON.stringify({ email, password, userId, sessionId }),
+		body: JSON.stringify({ email, password }),
+		headers: { 'Content-Type': 'application/json' },
+		credentials: 'include',
+	});
+	const data = await response.json();
+	accessToken = data.accessToken
+	if (!data.accessToken) {
+		console.error("❌ Aucun accessToken reçue !");
+	}
 	if (data.success) {
-		window.accessToken = data.accessToken
-		console.log("✅ Connected, Token :", window.accessToken)
-		
+		console.log("✅ Connected, Token :", accessToken)
+		localStorage.setItem('sessionId', data.sessionId);
+		localStorage.setItem('userId', data.userId);
 		setTimeout(() => {
 			location.reload();
 		}, 300);
 	} else
 		console.log("Error :", data.error)
+	fetchUserProfile();
 }
 
 
@@ -79,20 +103,18 @@ async function apiRequest(endpoint, method = "GET", body = null, params = {}) {
 	const response = await fetch(`/api/${endpoint}`, {
 		method,
 		headers,
-		credentials: "include", // ✅ Envoie les cookies (Refresh Token)
+		credentials: "include",
 		body: body ? JSON.stringify(body) : null
 	});
 
 	if (response.status === 401) {
 		console.warn("Token expired... ");
-		await refreshToken(); // Appel à la fonction de refresh
-		return apiRequest(endpoint, method, body, params); // Refaire la requête avec le nouveau token
+		await refreshToken();
+		return apiRequest(endpoint, method, body, params);
 	} else if (response.status === 403) {
 		console.error("Acces interdit !");
-		// return null;
 	} else if (response.status === 500) {
 		console.error("Error: Server");
-		// return null;
 	}
 
 	return response.json();
@@ -103,32 +125,67 @@ async function refreshToken() {
 
 	const response = await fetch("/api/refresh-token", {
 		method: "POST",
-		credentials: "include" // ✅ Envoie le Refresh Token en cookie
+		credentials: "include"
 	});
 
-	// if (!response.ok) {
-	// 	console.error("Échec du rafraîchissement du token");
-	// 	return;
-	// }
-
-	const data = await response.json();
-	if (data.accessToken) {
-		window.accessToken = data.accessToken // ✅ Mettre à jour en mémoire
+	if (response.success) {
+		const data = await response.json();
 		console.log("🔄 Token rafraîchi :", data.accessToken);
+		return true
 	}
+	return false
+}
 
-	// sessionStorage.setItem("accessToken", data.accessToken);
-	// console.log("🔄 Token rafraîchi :", window.accessToken);
+function getCookie(name) {
+	const value = `; ${document.cookie}`;
+	const parts = value.split(`; ${name}=`);
+	if (parts.length === 2) return parts.pop().split(';').shift();
+	return null;
+}
+
+async function fetchProfile() {
+	const sessionId = localStorage.getItem('sessionId'); // Fonction pour récupérer le cookie sessionId
+	const userId = localStorage.getItem('userId'); // Fonction pour récupérer l'ID de l'utilisateur
+	console.log("🆔 Session ID récupéré :", sessionId);
+	console.log("🆔 ID de l'utilisateur récupéré :", userId);
+	const response = await fetch('/api/users/get-access-token', {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({ sessionId, userId }),
+		credentials: 'include'
+	});
+	const data = await response.json();
+	console.log("Access token récupéré :", data.accessToken);
+	if (data.accessToken) {
+		const profileResponse = await fetch('/api/profile', {
+			method: 'GET',
+			headers: { Authorization: `Bearer ${data.accessToken}` },
+			credentials: 'include'
+		});
+		const profileData = await profileResponse.json();
+		if (!profileData.user) {
+			console.error("Aucun utilisateur dans la réponse !");
+			return;
+		}
+	
+		const user = profileData.user;
+	
+		document.getElementById('user-table').innerHTML = `
+			<tr>
+				<td class="border px-4 py-2">${user.userId}</td>
+				<td class="border px-4 py-2">${user.username}</td>
+				<td class="border px-4 py-2">${user.email}</td>
+				<td class="border px-4 py-2">********</td> <!-- Masquer le mot de passe -->
+				<td class="border px-4 py-2">${user.role}</td>
+			</tr>
+		`;
+	} else {
+		console.log("❌ Aucun accessToken reçu:", data.error);
+	}
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-
-	console.log("AccessToken lors du chargement de la page :", window.accessToken)
-
-	if (window.accessToken) {
-		console.log("✅ Access Token récupéré depuis la mémoire :", window.accessToken);
-		// fetchUserProfile(window.accessToken);
-	} else
-		console.warn("⚠️ Aucun accessToken trouvé, l'utilisateur doit se reconnecter.");
 	fetchUsers();
+	fetchProfile();
+	// fetchUserProfile();
 });

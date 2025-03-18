@@ -1,4 +1,4 @@
-import { register, selectUsers, unregister, login, logout, changeRole, refreshAccessToken} from '../controllers/authController.js';
+import { register, selectUsers, unregister, login, logout, changeRole, refreshAccessToken, getAccessToken} from '../controllers/authController.js';
 import { getSQLiteCreds } from '../utils/vault.js'
 
 /**
@@ -7,14 +7,19 @@ import { getSQLiteCreds } from '../utils/vault.js'
  * @param {Object} options 
  */
 export default async function routes (fastify) {
+
+	fastify.addHook("onRequest", async (request, reply) => {
+		console.log(`📡 Requête reçue : [${request.method}] ${request.url}`);
+	});
 	//userController
 	fastify.get('/users', selectUsers);
 	fastify.post('/users/add', register);
 	fastify.put('/users/login', login);
-	fastify.put('/users/logout/:id', logout);
-	fastify.put('/users/admin/:id', changeRole);
-	fastify.delete('/users/delete/:id', unregister);
-	// Tokens, Vault ...
-	fastify.post('/refresh', refreshAccessToken);
+	fastify.post('/users/logout/:userId', logout);
+	fastify.put('/users/role/:userId', changeRole);
+	fastify.delete('/users/delete/:userId', unregister);
+	// Tokens
+	fastify.post('/refresh-token', refreshAccessToken);
+	fastify.post('/users/get-access-token', getAccessToken);
 	fastify.get('/db-credentials', getSQLiteCreds);
 }
