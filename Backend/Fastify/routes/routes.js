@@ -1,4 +1,4 @@
-import { register, selectUsers, unregister, login, logout, changeRole, refreshAccessToken, getAccessToken} from '../controllers/authController.js';
+import { register, selectUsers, unregister, login, logout, changeRole, refreshAccessToken, getAccessToken, getUserProfile} from '../controllers/authController.js';
 import { getSQLiteCreds } from '../utils/vault.js'
 
 /**
