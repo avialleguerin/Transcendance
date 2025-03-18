@@ -26,7 +26,7 @@ export default class extends AbstractView {
 							<label for="password">Mot de passe :</label>
 							<input type="password" id="login-password" name="password" placeholder="Votre mot de passe" required>
 						</div>
-						<button class="connexion"> Se connecter</button>
+						<button type="submit" class="connexion"> Se connecter</button>
 						
 						
 						<button class="creer-compte" id="create-Account">Créer un compte</button>
@@ -54,7 +54,7 @@ export default class extends AbstractView {
 							<label for="confirm-password">Confirmer le mot de passe :</label>
 							<input type="password" id="add-confirm-password" name="password" placeholder="Confirmer votre mot de passe" required>
 						</div>
-						<button class="connexion">Se connecter</button>
+						<button type="submit" class="connexion">Sign In</button>
 						<button class="connexion" id="alreadyHaveAccountButton_id">Déjà un compte ?</button>
 					</form>
 				</div>
@@ -83,37 +83,6 @@ export default class extends AbstractView {
 			loginForm.classList.remove("active");
 		});
 	}
+
+	
 }
-
-
-
-
-
-
-
-// <link rel="stylesheet" href="./static/js/css/home.css">
-// <div class="container">
-// 	<form id="login-form" method="POST">
-// 		<h1>Login Page</h1>
-// 		<div class="form-group">
-// 			<label for="username">Username:</label>
-// 			<input type="text" id="username" name="username" required>
-// 		</div>
-// 		<div class="form-group">
-// 			<label for="email">Email:</label>
-// 			<input type="email" id="email" name="email" required>
-// 		</div>
-// 		<div class="form-group">
-// 			<label for="password">Password:</label>
-// 			<input type="password" id="password" name="password" required>
-// 		</div>
-// 		<div class="form-group">
-// 			<label for="Confirm-password">Confirm-password:</label>
-// 			<input type="Confirm-password" id="Confirm-password" name="Confirm-password" required>
-// 		</div>
-// 		<div class="form-group">
-// 			<button type="submit">Login</button>
-// 		</div>
-// 	</form>
-// 	<button><a href="/Game_menu" class="nav-link" data-link>Jouer</a></button>
-// </div>
