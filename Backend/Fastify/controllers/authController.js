@@ -47,7 +47,7 @@ export async function login(request, reply) {
 			return reply.code(401).send({ error: 'Invalid credentials' });
 		}
 
-		const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, {expiresIn: '15m' });
+		const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, {expiresIn: '1m' });
 		const refreshToken = fastify.jwt.sign({ userId: user.userId }, {expiresIn: '7d' });
 		console.log("🔑 Access Token created :", accessToken);
 		console.log("🔑 Refresh Token created :", refreshToken);
@@ -59,7 +59,7 @@ export async function login(request, reply) {
 		const sessionId = randomUUID();
 		console.log("🆔 Session ID created :", sessionId);
 
-		await redisModel.storeAccessToken(user.userId, sessionId, accessToken, 15 * 60);
+		await redisModel.storeAccessToken(user.userId, sessionId, accessToken, 1 * 60);
 		console.log("🔑 Access Token stocké dans Redis :", `access:${user.userId}:${sessionId}`);
 
 		await redisModel.storeRefreshToken(user.userId, sessionId, refreshToken, 7 * 24 * 60 * 60);
@@ -194,13 +194,15 @@ export async function changeRole(request, reply) {
 
 export async function refreshAccessToken(request, reply) {
 	const { refreshToken } = request.cookies;
+	const { userId, sessionId } = request.body;
+	console.log("userId:", userId)
+	console.log("sessionId:", sessionId)
+	// const sessionId = request.cookies.sessionId;
 	
 	if (!refreshToken)
 		return reply.code(401).send({ error: 'Refresh token is missing'});
 	
 	try {
-		const userId = request.user?.userId;
-		const sessionId = request.cookies.sessionId;
 		if (!userId || !sessionId)
 			return reply.code(401).send({ error: 'Invalid session' });
 
@@ -210,14 +212,17 @@ export async function refreshAccessToken(request, reply) {
 		const payload = fastify.jwt.verify(refreshToken);
 		console.log("payload :", payload);
 
-		const newAccessToken = fastify.jwt.sign({ userId: payload.userId }, { expiresIn: '15m' });
-		await redisModel.storeAccessToken(userId, sessionId, newAccessToken, 15 * 60);
+		const accessToken = await redisModel.getRedisAccessToken(userId, sessionId)
+		await redisModel.addToBlacklist(accessToken, 1 * 60)
+		await redisModel.deleteAccessToken(userId, sessionId)
+		const newAccessToken = fastify.jwt.sign({ userId: payload.userId }, { expiresIn: '1m' });
+		await redisModel.storeAccessToken(userId, sessionId, newAccessToken, 1 * 60);
 
 		console.log("newAccessToken :", newAccessToken);
 		
-		return reply.send({ accessToken: newAccessToken });
+		return reply.send({ success: true, accessToken: newAccessToken });
 	} catch (err) {
-		return reply.code(403).send({ error: 'Invalid refresh token' });
+		return reply.code(403).send({ success: false, error: 'Invalid refresh token' });
 	}
 }
 

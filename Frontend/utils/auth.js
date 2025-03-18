@@ -1,3 +1,33 @@
+async function apiRequest(endpoint, method = "GET", body = null, params = {}, accessToken) {
+	const headers = { "Content-Type": "application/json" };
+	
+	
+	console.log("accessToken in apiRequest :", accessToken)
+	if (accessToken)
+		headers["Authorization"] = `Bearer ${accessToken}`;
+	console.log("headers: ", headers)
+	Object.keys(params).forEach(key => {
+		endpoint = endpoint.replace(`:${key}`, encodeURIComponent(params[key]));
+	});
+
+	const response = await fetch(`/api/${endpoint}`, {
+		method,
+		headers: headers,
+		credentials: "include",
+		body: body ? JSON.stringify(body) : null
+	});
+	if (response.status === 401) {
+		console.log(response.error);
+		accessToken = await refreshToken();
+		return apiRequest(endpoint, method, body, params, accessToken);
+	} else if (response.status === 403) {
+		console.error("Acces interdit !");
+	} else if (response.status === 500) {
+		console.error("Error: Server");
+	}
+
+	return response.json();
+}
 
 async function logout(userId) {
 	const sessionId = localStorage.getItem('sessionId');
@@ -36,8 +66,8 @@ async function register(event) {
 		return ;
 	}
 
-	const result = await apiRequest("users/add", "POST", { username, email, password })
-
+	const result = await apiRequest("users/add", "POST", { username, email, password }, {})
+	
 	if (result.success) {
 		resultMessage.textContent = `User added : ${result.username} (${result.email})`;
 		resultMessage.classList.add("text-green-500");
@@ -63,14 +93,7 @@ async function login(event) {
 		console.error("❌ User already connected !");
 		return ;
 	}
-	const response = await fetch("/api/users/login", {
-		method: 'PUT',
-		// body: JSON.stringify({ email, password, userId, sessionId }),
-		body: JSON.stringify({ email, password }),
-		headers: { 'Content-Type': 'application/json' },
-		credentials: 'include',
-	});
-	const data = await response.json();
+	const data = await apiRequest("users/login", "PUT", { email, password }, {})
 	accessToken = data.accessToken
 	if (!data.accessToken) {
 		console.error("❌ Aucun accessToken reçue !");
@@ -84,56 +107,28 @@ async function login(event) {
 		}, 300);
 	} else
 		console.log("Error :", data.error)
-	fetchUserProfile();
 }
 
 
-async function apiRequest(endpoint, method = "GET", body = null, params = {}) {
-	const headers = { "Content-Type": "application/json" };
-
-	console.log("accessToken in apiRequest :", window.accessToken)
-
-	if (window.accessToken)
-		headers["Authorization"] = `Bearer ${window.accessToken}`;
-
-	Object.keys(params).forEach(key => {
-		endpoint = endpoint.replace(`:${key}`, encodeURIComponent(params[key]));
-	});
-
-	const response = await fetch(`/api/${endpoint}`, {
-		method,
-		headers,
-		credentials: "include",
-		body: body ? JSON.stringify(body) : null
-	});
-
-	if (response.status === 401) {
-		console.warn("Token expired... ");
-		await refreshToken();
-		return apiRequest(endpoint, method, body, params);
-	} else if (response.status === 403) {
-		console.error("Acces interdit !");
-	} else if (response.status === 500) {
-		console.error("Error: Server");
-	}
-
-	return response.json();
-}
 
 async function refreshToken() {
 	console.log("je passe pour refresh le token access")
-
+	const userId = localStorage.getItem("userId")
+	const sessionId = localStorage.getItem("sessionId")
 	const response = await fetch("/api/refresh-token", {
 		method: "POST",
+		body: JSON.stringify({ userId, sessionId }),
+		headers: { 'Content-Type': 'application/json' },
 		credentials: "include"
 	});
 
-	if (response.success) {
-		const data = await response.json();
+	const data = await response.json();
+	if (data.success) {
 		console.log("🔄 Token rafraîchi :", data.accessToken);
-		return true
+		return data.accessToken
 	}
-	return false
+	console.log("Error:", data.error)
+	return null
 }
 
 function getCookie(name) {
@@ -144,25 +139,13 @@ function getCookie(name) {
 }
 
 async function fetchProfile() {
-	const sessionId = localStorage.getItem('sessionId'); // Fonction pour récupérer le cookie sessionId
-	const userId = localStorage.getItem('userId'); // Fonction pour récupérer l'ID de l'utilisateur
+	const sessionId = localStorage.getItem('sessionId');
+	const userId = localStorage.getItem('userId');
 	console.log("🆔 Session ID récupéré :", sessionId);
 	console.log("🆔 ID de l'utilisateur récupéré :", userId);
-	const response = await fetch('/api/users/get-access-token', {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ sessionId, userId }),
-		credentials: 'include'
-	});
-	const data = await response.json();
-	console.log("Access token récupéré :", data.accessToken);
+	const data = await apiRequest("users/get-access-token", "POST", { sessionId, userId }, {})
 	if (data.accessToken) {
-		const profileResponse = await fetch('/api/profile', {
-			method: 'GET',
-			headers: { Authorization: `Bearer ${data.accessToken}` },
-			credentials: 'include'
-		});
-		const profileData = await profileResponse.json();
+		const profileData = await apiRequest("profile", "GET", null, {}, data.accessToken)
 		if (!profileData.user) {
 			console.error("Aucun utilisateur dans la réponse !");
 			return;
@@ -181,11 +164,12 @@ async function fetchProfile() {
 		`;
 	} else {
 		console.log("❌ Aucun accessToken reçu:", data.error);
+		localStorage.removeItem("userId")
+		localStorage.removeItem("sessionId")
 	}
 }
 
 window.addEventListener('DOMContentLoaded', () => {
 	fetchUsers();
 	fetchProfile();
-	// fetchUserProfile();
 });

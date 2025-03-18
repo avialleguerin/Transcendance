@@ -24,38 +24,40 @@ async function fetchUsers() {
 }
 
 
-async function fetchUserProfile() {
-	try {
-		const response = await fetch('/api/profile', {
-			headers: { Authorization: `Bearer ${accessToken}` }
-		});
+// async function fetchUserProfile() {
+// 	try {
 
-		if (!response.ok) {
-			throw new Error(`Erreur HTTP ${response.status}`);
-		}
+// 		console.log(accessToken)
+// 		const response = await fetch('/api/profile', {
+// 			headers: { Authorization: `Bearer ${accessToken}` }
+// 		});
 
-		const data = await response.json();
+// 		if (!response.ok) {
+// 			throw new Error(`Erreur HTTP ${response.status}`);
+// 		}
 
-		if (!data.user) {
-			console.error("Aucun utilisateur dans la réponse !");
-			return;
-		}
+// 		const data = await response.json();
 
-		const user = data.user;
+// 		if (!data.user) {
+// 			console.error("Aucun utilisateur dans la réponse !");
+// 			return;
+// 		}
 
-		document.getElementById('user-table').innerHTML = `
-			<tr>
-				<td class="border px-4 py-2">${user.userId}</td>
-				<td class="border px-4 py-2">${user.username}</td>
-				<td class="border px-4 py-2">${user.email}</td>
-				<td class="border px-4 py-2">********</td> <!-- Masquer le mot de passe -->
-				<td class="border px-4 py-2">${user.admin === 1 ? "Yes" : "No"}</td>
-			</tr>
-		`;
-	} catch (err) {
-		console.error('\x1b[31m%s\x1b[0m', 'Erreur lors de la récupération du profil :', err);
-	}
-}
+// 		const user = data.user;
+
+// 		document.getElementById('user-table').innerHTML = `
+// 			<tr>
+// 				<td class="border px-4 py-2">${user.userId}</td>
+// 				<td class="border px-4 py-2">${user.username}</td>
+// 				<td class="border px-4 py-2">${user.email}</td>
+// 				<td class="border px-4 py-2">********</td> <!-- Masquer le mot de passe -->
+// 				<td class="border px-4 py-2">${user.admin === 1 ? "Yes" : "No"}</td>
+// 			</tr>
+// 		`;
+// 	} catch (err) {
+// 		console.error('\x1b[31m%s\x1b[0m', 'Erreur lors de la récupération du profil :', err);
+// 	}
+// }
 
 async function changeRole(userId) {
 	try {

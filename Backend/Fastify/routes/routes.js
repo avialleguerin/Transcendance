@@ -9,15 +9,17 @@ import { getSQLiteCreds } from '../utils/vault.js'
 export default async function routes (fastify) {
 
 	fastify.addHook("onRequest", async (request, reply) => {
-		console.log(`📡 Requête reçue : [${request.method}] ${request.url}`);
+		console.log(`\n📡 Requête reçue : [${request.method}] ${request.url}\n`);
 	});
-	//userController
+	//authController
+	fastify.get('/profile', { preHandler: fastify.authenticate}, getUserProfile);
 	fastify.get('/users', selectUsers);
 	fastify.post('/users/add', register);
-	fastify.put('/users/login', login);
 	fastify.post('/users/logout/:userId', logout);
+	fastify.put('/users/login', login);
 	fastify.put('/users/role/:userId', changeRole);
 	fastify.delete('/users/delete/:userId', unregister);
+
 	// Tokens
 	fastify.post('/refresh-token', refreshAccessToken);
 	fastify.post('/users/get-access-token', getAccessToken);
