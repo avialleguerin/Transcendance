@@ -175,6 +175,20 @@ export function create_environment_view3(scene) {
 	createGrassPlane2("grassPlane8", new BABYLON.Vector3(-23.6, 299.8, -44));
 	createGrassPlane2("grassPlane9", new BABYLON.Vector3(9.2, 299.8, -102));
 	createGrassPlane2("grassPlane10", new BABYLON.Vector3(9.2, 299.8, -44));
+
+	BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/3d_object/", "podium.glb", scene, function (newMeshes) {
+		console.log("Podium chargé avec succès !");
+
+		let container = new BABYLON.TransformNode("container", scene);
+		newMeshes.forEach(mesh => {
+			mesh.setParent(container);
+			view3Meshes.push(mesh);
+		});
+		container.position = new BABYLON.Vector3(-57, 302, -55);
+		container.scaling = new BABYLON.Vector3(5, 5, 5);
+		container.rotation = new BABYLON.Vector3(0, Math.PI, 0);
+		view3Meshes.push(container);
+	});
 }
 
 export function destroy_environement_view3() {

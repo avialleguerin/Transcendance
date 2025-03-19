@@ -26,6 +26,10 @@ const views = {
     aerienne: {
         position: new BABYLON.Vector3(0, 100, 0),
         rotation: new BABYLON.Vector3(Math.PI/2, 0, 0)
+    },
+    winner: {
+        position: new BABYLON.Vector3(-30, 309, -55),
+        rotation: new BABYLON.Vector3(0.04585831303667534, -1.5694725474476896, 0)
     }
 };
 
@@ -164,5 +168,9 @@ export function handleViewTransitions(viewName, previousView)
             changeView('default', true);
             isLoading = false;
         }, 3500);
+    }
+    if (viewName === 'winner')
+    {
+        changeView('winner', true);
     }
 }

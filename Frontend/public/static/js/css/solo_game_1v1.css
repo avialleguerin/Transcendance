@@ -283,3 +283,81 @@ p {
 .option.active {
     visibility: hidden;
 }
+
+
+/******************************************/
+/******************END_GAME****************/
+/******************************************/
+
+
+.container-EndGame {
+    position: absolute;
+    top: 50%;
+    left: 57%;
+    transform: translate(-50%, -50%);
+    width: 30%;
+    height: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    /* background-color: red; */
+    visibility: hidden;
+}
+
+.winner {
+    position: absolute;
+    top: 8%;
+    left: 16%;
+    font-size: 2vw;
+    font-family: 'Black Ops One', sans-serif;
+    color: rgb(255, 255, 255);
+    text-shadow: 2px 2px 2px #000000;
+}
+
+.looser {
+    position: absolute;
+    top: 22%;
+    right: 25%;
+    font-size: 2vw;
+    font-family: 'Black Ops One', sans-serif;
+    color: rgb(255, 255, 255);
+    text-shadow: 2px 2px 2px #000000;
+}
+
+.container-EndGame h1 {
+    font-size: 1vw;
+    font-family: 'Black Ops One', sans-serif;
+    color: rgb(255, 255, 255);
+    text-shadow: 2px 2px 2px #000000;
+}
+
+.container-EndGame.active {
+    visibility: visible;
+}
+
+@keyframes press_space {
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+
+.press_space h1 {
+    position: absolute;
+    top: 58%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.5vw;
+    font-family: 'Black Ops One', sans-serif;
+    color: rgb(0, 0, 0);
+    text-shadow: 2px 2px 2px #ff0000;
+    animation: press_space 2s infinite;
+    visibility: visible
+}

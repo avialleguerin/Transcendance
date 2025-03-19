@@ -3,6 +3,7 @@ import { getPowerUP_value } from "./Game_menu.js";
 import { leave_Game } from "../../../srcs/game/gameplay/babylon.js";
 import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.js";
 import { getValue_leave_game, setLeaveGameVar } from "../index.js";
+import { isGameFinished } from "../../../srcs/game/gameplay/score.js";
 
 export default class extends AbstractView {
 	constructor() {
@@ -24,6 +25,10 @@ export default class extends AbstractView {
     
 		console.log("solo_game_1v1.js");
 		document.addEventListener("keydown", this.boundKeyPressHandler);
+
+		if (window.location.pathname === "/solo_game_1v1") {
+			this.gameLoop = setInterval(() => { this.checkGameOver(); 1000 });
+		}
 	}
 
 	async getHtml() {
@@ -31,6 +36,9 @@ export default class extends AbstractView {
 			<link rel="stylesheet" href="./static/js/css/solo_game_1v1.css">
 			<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 			<div class="container">
+				<div class="press_space" >
+					<h1 id="press_space_id">Press SPACE to Start</h1>
+				</div>
 				<div class="container-leave">
 					<button class="option" id="option_btn">
 						<img src="../../../srcs/game/assets/image/menu.svg" alt="leave">
@@ -91,6 +99,14 @@ export default class extends AbstractView {
 						</div>
 					</div>
 				</div>
+				<div class="container-EndGame">
+					<div class="winner">
+						<h1>Player 1 Win</h1>
+					</div>
+					<div class="looser">
+						<h1>Player 2 Loose</h1>
+					</div>
+				</div>
 			</div>
 		`;
 	}
@@ -98,6 +114,7 @@ export default class extends AbstractView {
 	cleanup() {
 		console.log("Cleaning up solo game event listeners");
 		document.removeEventListener("keydown", this.boundKeyPressHandler);
+		clearInterval(this.gameLoop);
 	}
 
 	leave_game() {
@@ -162,6 +179,10 @@ export default class extends AbstractView {
 	handleKeyPress(event) {
 		console.log("dddddddddddddddddddddddddddd");
 		const key = event.key;
+		const press_space = document.getElementById("press_space_id");
+
+
+
 		
 		// Vérifier si la touche a un cooldown défini
 		if (!(key in this.cooldownTimes)) return;
@@ -178,17 +199,20 @@ export default class extends AbstractView {
 			case "x":
 				elem = document.getElementById("nb-item-teammate-1");
 				break;
-				case "c":
-					elem = document.getElementById("nb-item-autre-1");
-					break;
-					case "1":
-						elem = document.getElementById("nb-item-grenade-2");
-						break;
-						case "2":
+			case "c":
+				elem = document.getElementById("nb-item-autre-1");
+				break;
+			case "1":
+				elem = document.getElementById("nb-item-grenade-2");
+				break;
+			case "2":
 				elem = document.getElementById("nb-item-teammate-2");
 				break;
 			case "3":
 				elem = document.getElementById("nb-item-autre-2");
+				break;
+			case " ":
+				press_space.style.display = "none";
 				break;
 		}
 	
@@ -297,5 +321,21 @@ export default class extends AbstractView {
 				panel.classList.remove("active");
 			}, 1100);
 		});
+	}
+
+	checkGameOver() {
+		if (window.location.pathname !== "/solo_game_1v1")
+			return;
+		const winnerContainer = document.querySelector(".container-EndGame");
+		if (!winnerContainer)
+			return;
+		if (isGameFinished()) {
+			winnerContainer.classList.add("active");
+			clearInterval(this.gameLoop); // Arrête la boucle quand la partie est finie
+		}
+		else 
+		{
+			winnerContainer.classList.remove("active");
+		}
 	}
 }

@@ -83,6 +83,4 @@ export default class extends AbstractView {
 			loginForm.classList.remove("active");
 		});
 	}
-
-	
 }

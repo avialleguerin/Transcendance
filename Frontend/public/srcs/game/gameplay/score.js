@@ -1,7 +1,22 @@
+import { handleViewTransitions } from "./views/camera.js";
+import { enable_skin_perso_player_first_and_second } from "./solo/skin/init_skin_player_podium.js";
+
 let scoreLeft = 0;
 let scoreRight = 0;
 let scoreLeftMesh = null;
 let scoreRightMesh = null;
+let gameIsFinished = false;
+
+let isPlayer1_win = false;
+let isPlayer2_win = false;
+
+export function getPlayer_1_win() {
+    return isPlayer1_win;
+}
+
+export function getPlayer_2_win() {
+    return isPlayer2_win;
+}
 
 export function loadScoreModel(score, position, isLeft) {
     // Si un mesh existe déjà pour ce côté, le supprimer
@@ -18,7 +33,7 @@ export function loadScoreModel(score, position, isLeft) {
         `3d_number_-_${score}_${getNumberWord(score)}.glb`,
         scene,
         function (newMeshes, particleSystems, skeletons, animationGroups) {
-
+            
             // Trouver le mesh racine
             let rootMesh = null;
             newMeshes.forEach(mesh => {
@@ -37,9 +52,9 @@ export function loadScoreModel(score, position, isLeft) {
                     rootMesh.position = new BABYLON.Vector3(-65, 325, -65);
                     scoreRightMesh = rootMesh;
                 }
-
+                
                 // Appliquer les transformations communes
-                rootMesh.scaling = new BABYLON.Vector3(5, 5, 5);
+                rootMesh.scaling = new BABYLON.Vector3(10, 10, 10);
                 rootMesh.rotation = new BABYLON.Vector3(0, -Math.PI/2, 0);
             } else {
                 // Créer un conteneur si pas de mesh racine
@@ -47,7 +62,7 @@ export function loadScoreModel(score, position, isLeft) {
                 newMeshes.forEach(mesh => {
                     mesh.setParent(container);
                 });
-
+                
                 // Configurer le conteneur
                 if (isLeft) {
                     container.position = new BABYLON.Vector3(-65, 325, -80);
@@ -56,8 +71,8 @@ export function loadScoreModel(score, position, isLeft) {
                     container.position = new BABYLON.Vector3(-65, 325, -65);
                     scoreRightMesh = container;
                 }
-
-                container.scaling = new BABYLON.Vector3(5, 5, 5);
+                
+                container.scaling = new BABYLON.Vector3(10, 10, 10);
                 container.rotation = new BABYLON.Vector3(0, -Math.PI/2, 0);
             }
         }
@@ -69,6 +84,7 @@ export function getNumberWord(number) {
     return words[number] || 'zero';
 }
 
+
 export function updateScore(side) {
     if (side === 'left') {
         scoreLeft++;
@@ -78,6 +94,21 @@ export function updateScore(side) {
         scoreRight++;
         if (scoreRight > 9) scoreRight = 0;
         loadScoreModel(scoreRight, 'right', false);
+    }
+    if (scoreLeft === 1 || scoreRight === 1) {
+        SetIsGameFinished(true);
+        if (scoreLeft === 1)
+        {
+            isPlayer1_win = true;
+            isPlayer2_win = false;
+        }
+        else
+        {
+            isPlayer1_win = false;
+            isPlayer2_win = true;
+        }
+        handleViewTransitions('winner', true);
+        enable_skin_perso_player_first_and_second();
     }
 }
 
@@ -108,3 +139,14 @@ export function initScoreDisplay() {
     loadScoreModel(scoreLeft, 'left', true);
     loadScoreModel(scoreRight, 'right', false);
 }
+
+export function isGameFinished() {
+    return gameIsFinished;
+}
+
+export function SetIsGameFinished(value) {
+    gameIsFinished = value;
+}
+
+
+export { gameIsFinished };

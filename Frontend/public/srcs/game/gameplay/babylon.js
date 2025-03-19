@@ -8,6 +8,10 @@ import { init_game_ai } from "./solo/1v1_ai/init_game_ai.js";
 import { UpdatePlayerAndAI_Pose } from "./solo/1v1_ai/init_player_and_ai.js";
 import { init_skins_perso_player1, init_skins_perso_player2 } from "./solo/skin/init_skin_perso.js";
 import { init_skins_perso_player1_multi, init_skins_perso_player2_multi, init_skins_perso_player3_multi, init_skins_perso_player4_multi } from "./multiplayer/init_skin_perso_multi.js";
+import { init_skins_perso_first, init_skins_perso_seconde } from "./solo/skin/init_skin_player_podium.js";
+import { isGameFinished } from "./score.js";
+import { gameIsFinished } from "./score.js";
+import { SetIsGameFinished } from "./score.js";
 
 const canvas = document.getElementById('renderCanvas');
 const engine = new BABYLON.Engine(canvas, true, {
@@ -76,12 +80,14 @@ ambientLight.intensity = 3;
 
 
 create_environment_view1(scene);
-init_skins_perso_player1(scene);
-init_skins_perso_player2(scene);
-init_skins_perso_player1_multi(scene);
-init_skins_perso_player2_multi(scene);
-init_skins_perso_player3_multi(scene);
-init_skins_perso_player4_multi(scene);
+// init_skins_perso_first(scene);
+// init_skins_perso_seconde(scene);
+// init_skins_perso_player1(scene);
+// init_skins_perso_player2(scene);
+// init_skins_perso_player1_multi(scene);
+// init_skins_perso_player2_multi(scene);
+// init_skins_perso_player3_multi(scene);
+// init_skins_perso_player4_multi(scene);
 // create_environment_view2(scene);
 // create_environment_view3(scene);
 
@@ -157,6 +163,7 @@ export function startGame()
     Solo_gameStart = true;
     Multi_gameStart = false;
     AI_gameStart = false;
+    SetIsGameFinished(false);
 }
 
 export function startMultiGame()
@@ -239,6 +246,7 @@ export function leave_AI_Game()
     play = false;
 }
 
+// let gameIsFinished = isGameFinished();
 
 engine.runRenderLoop(() =>
 {
@@ -250,7 +258,7 @@ engine.runRenderLoop(() =>
         canvas.height = canvas.clientHeight * scale;
     }
 
-    if (Solo_gameStart)
+    if (Solo_gameStart && !gameIsFinished)
     {
         if (!initialized)
         {
@@ -271,7 +279,7 @@ engine.runRenderLoop(() =>
         }
     }
 
-    if (Multi_gameStart)
+    if (Multi_gameStart && !gameIsFinished)
     {
         if (!initialized)
         {
@@ -290,7 +298,7 @@ engine.runRenderLoop(() =>
         }
     }
 
-    if (AI_gameStart)
+    if (AI_gameStart && !gameIsFinished)
     {
         if (!initialized)
         {
@@ -308,6 +316,7 @@ engine.runRenderLoop(() =>
             }
         }
     }
+
     // console.log(camera.rotation);
     // console.log(camera.position);
     scene.render();

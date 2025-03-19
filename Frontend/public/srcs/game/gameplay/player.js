@@ -133,7 +133,7 @@ export function init_players(scene, player_1, player_2) {
 
 	if (currentSkinPlayer1 === 1)
 	{
-		BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/player_skin/", "player_bleuv2.glb", scene, function (newMeshes) {
+		BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/player_skin/", "idle_bleu.glb", scene, function (newMeshes) {
 			const playerModel = newMeshes[0];
 			playerModel.position = player_1.position.clone();
 			playerModel.scaling = new BABYLON.Vector3(6, 6, 6);
@@ -171,7 +171,7 @@ export function init_players(scene, player_1, player_2) {
 
 	if (currentSkinPlayer2 === 1)
 	{
-		BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/player_skin/", "player_bleuv2.glb", scene, function (newMeshes) {
+		BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/player_skin/", "idle_bleu.glb", scene, function (newMeshes) {
 			const playerModel = newMeshes[0];
 			playerModel.position = player_2.position.clone();
 			playerModel.scaling = new BABYLON.Vector3(6, 6, 6);
@@ -201,7 +201,7 @@ export function init_players(scene, player_1, player_2) {
 
 	if (currentSkinPlayer1 === 2)
 	{
-		BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/player_skin/", "player_rougev2.glb", scene, function (newMeshes) {
+		BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/player_skin/", "idle_rouge.glb", scene, function (newMeshes) {
 			const playerModel = newMeshes[0];
 			playerModel.position = player_1.position.clone();
 			playerModel.scaling = new BABYLON.Vector3(6, 6, 6);
@@ -239,7 +239,7 @@ export function init_players(scene, player_1, player_2) {
 
 	if (currentSkinPlayer2 === 2)
 	{
-		BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/player_skin/", "player_rougev2.glb", scene, function (newMeshes) {
+		BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/player_skin/", "idle_rouge.glb", scene, function (newMeshes) {
 			const playerModel = newMeshes[0];
 			playerModel.position = player_2.position.clone();
 			playerModel.scaling = new BABYLON.Vector3(6, 6, 6);
@@ -269,7 +269,7 @@ export function init_players(scene, player_1, player_2) {
 
 	if (currentSkinPlayer1 === 3)
 	{
-		BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/player_skin/", "player_vert.glb", scene, function (newMeshes) {
+		BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/player_skin/", "idle_vert.glb", scene, function (newMeshes) {
 			const playerModel = newMeshes[0];
 			playerModel.position = player_1.position.clone();
 			playerModel.scaling = new BABYLON.Vector3(6, 6, 6);
@@ -307,7 +307,7 @@ export function init_players(scene, player_1, player_2) {
 
 	if (currentSkinPlayer2 === 3)
 	{
-		BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/player_skin/", "player_vert.glb", scene, function (newMeshes) {
+		BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/player_skin/", "idle_vert.glb", scene, function (newMeshes) {
 			const playerModel = newMeshes[0];
 			playerModel.position = player_2.position.clone();
 			playerModel.scaling = new BABYLON.Vector3(6, 6, 6);
