@@ -21,7 +21,7 @@ const vault = Vault({
 // 		console.error("Vault authentication failed:", error);
 // 	}
 // }
-  
+
 export async function getSQLiteCreds() {
 	try {
 		const secret = await vault.read("secret/data/sqlite").then(res => res.data)

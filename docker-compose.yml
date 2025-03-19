@@ -45,6 +45,7 @@ services:
       - ./Backend/Fastify:/app
       - /app/node_modules   # Préserve les modules installés dans le container
       - ./Data/vault_data:/app/vault/data
+      - ./Data/sqlite_data:/app/Data/db
 
   nginx:
     container_name: nginx

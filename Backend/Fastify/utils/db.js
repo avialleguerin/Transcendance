@@ -7,7 +7,7 @@ async function setupDatabase() {
 	try {
 		const { user, pass } = await getSQLiteCreds()
 		
-		const db = new Database('database.sqlite', { verbose: console.log })
+		const db = new Database('Data/db/database.sqlite', { verbose: console.log })
 		// const db = new Database('database.sqlite');
 
 		db.pragma(`user_key = '${user}'`)

@@ -19,7 +19,9 @@ all:
 
 up:
 	@docker compose up --build
-	@rm -rf ./MiniBackend/Fastify/node_modules
+	@rm -rf ./Backend/Fastify/node_modules
+	@rm -rf ./Backend/Fastfy/Data
+	@rm -rf ./Backend/Fastfy/vault
 
 down:
 	@docker compose down
