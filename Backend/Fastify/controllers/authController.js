@@ -181,3 +181,11 @@ export async function refreshAccessToken(request, reply) {
 		return reply.code(403).send({ success: false, error: 'Invalid refresh token' });
 	}
 }
+
+export async function generate_doubleAuth(request, reply) {
+	const { userId } = request.params
+
+	const secret = speakeasy.generateSecret({ length: 20 })
+
+	users[userId]
+}

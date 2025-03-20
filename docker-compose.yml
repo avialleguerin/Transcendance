@@ -26,9 +26,6 @@ services:
     build:
       context: ./Backend
       dockerfile: Fastify/Dockerfile
-    # extends:
-    #   file: Backend/docker-compose.yml
-    #   service: fastify
     depends_on:
       - redis
     environment:
@@ -39,13 +36,8 @@ services:
     volumes:
       - ./Backend/Fastify:/app
       - /app/node_modules   # Préserve les modules installés dans le container
-    # networks:
-    #   - transcendence-network
 
   nginx:
-    # extends:
-    #   file: Backend/docker-compose.yml
-    #   service: nginx
     image: nginx:latest     # pour ne pas a avoir besoin de Dockerfile
     ports:
       - "8080:80"           #80:80 necessite des privilege
@@ -56,16 +48,10 @@ services:
       - ./Frontend/public:/usr/share/nginx/html:ro
       - ./Frontend/utils:/usr/share/nginx/utils:ro
       - ./Frontend3d/public:/usr/share/nginx/3d:ro
-    # networks:
-    #   - transcendence-network
 
   # Devops (Grafana + Prometheus + ELK) - À activer plus tard
   # grafana:
   #   extends:
-  #     file: Devops/docker-compose.yml
-  #     service: grafana
-  #   networks:
-  #     - transcendence-network
 
   # Sécurité (Vault + SonarQube) - À activer plus tard
   # vault:

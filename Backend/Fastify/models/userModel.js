@@ -7,8 +7,11 @@ export const CREATE_USERS_TABLE = `
     username TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
-    role TEXT CHECK(role IN ('user', 'admin')) DEFAULT 'user'
-  );
+    role TEXT CHECK(role IN ('user', 'admin')) DEFAULT 'user',
+    doubleAuth_enabled INTEGER DEFAULT 0,
+    doubleAuth_secret TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
 `;
 
 const userModel = {
