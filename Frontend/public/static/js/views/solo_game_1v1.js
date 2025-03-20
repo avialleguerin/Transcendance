@@ -18,7 +18,9 @@ export default class extends AbstractView {
 			"c": 15000,
 			"1": 15000,
 			"2": 20000,
-			"3": 15000
+			"3": 15000,
+			"t": 1000,
+			" ": 1000,
 		};
 
 		this.boundKeyPressHandler = this.handleKeyPress.bind(this);
@@ -178,8 +180,8 @@ export default class extends AbstractView {
 
 	handleKeyPress(event) {
 		console.log("dddddddddddddddddddddddddddd");
+		console.log("Key pressed:", event.key);
 		const key = event.key;
-		const press_space = document.getElementById("press_space_id");
 
 
 
@@ -212,7 +214,14 @@ export default class extends AbstractView {
 				elem = document.getElementById("nb-item-autre-2");
 				break;
 			case " ":
-				press_space.style.display = "none";
+				console.log("space pressed");
+				const press_space = document.getElementById("press_space_id");
+				if (press_space) {
+					press_space.style.visibility = "hidden";
+					press_space.style.animation = "none";
+				} else {
+					console.error("press_space_id introuvable !");
+				}
 				break;
 		}
 	

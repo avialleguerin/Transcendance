@@ -359,5 +359,10 @@ p {
     color: rgb(0, 0, 0);
     text-shadow: 2px 2px 2px #ff0000;
     animation: press_space 2s infinite;
-    visibility: visible
+    visibility: visible;
+}
+
+.press_space.active {
+	visibility: hidden;
+	animation: none;
 }
