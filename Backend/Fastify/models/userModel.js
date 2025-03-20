@@ -7,8 +7,9 @@ export const CREATE_USERS_TABLE = `
     username TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
-    role TEXT CHECK(role IN ('user', 'admin')) DEFAULT 'user'
-  );
+    role TEXT CHECK(role IN ('user', 'admin')) DEFAULT 'user',
+    doubleAuth BOOL DEFAULT FALSE
+    );
 `;
 
 const userModel = {
