@@ -4,6 +4,10 @@ import { leave_Multiplayer_Game } from "../../../srcs/game/gameplay/babylon.js";
 import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.js";
 import { setLeaveGameVar } from "../index.js";
 import { getPowerUP_value } from "./Game_menu.js";
+import { disable_skin_multi_podium } from "../../../srcs/game/gameplay/multiplayer/init_teamPlayer_podium.js";
+import { isGameFinished } from "../../../srcs/game/gameplay/score.js";
+
+let space_pressed = false;
 
 export default class extends AbstractView {
 	constructor() {
@@ -17,10 +21,15 @@ export default class extends AbstractView {
 			"x": 15000,
 			"1": 15000,
 			"2": 15000,
+			" ": 1000,
 		};
 
 		this.boundKeyPressHandler = this.handleKeyPress.bind(this);
 		document.addEventListener("keydown", this.boundKeyPressHandler);
+
+		if (window.location.pathname === "/multi_player_game") {
+			this.gameLoop = setInterval(() => { this.checkGameOver(); 1000 });
+		}
 	}
 
 	async getHtml() {
@@ -28,6 +37,9 @@ export default class extends AbstractView {
 			<link rel="stylesheet" href="./static/js/css/multi_player_game.css">
 			<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 			<div class="container">
+				<div class="press_space" >
+					<h1 id="press_space_id">Press SPACE to Start</h1>
+				</div>
 				<div class="container-leave">
 					<button class="option" id="option_btn">
 						<img src="../../../srcs/game/assets/image/menu.svg" alt="leave">
@@ -75,12 +87,24 @@ export default class extends AbstractView {
 						</div>
 					</div>
 				</div>
+				<div class="container-EndGame">
+					<div class="winner">
+						<h1>Player 1 - Player 2</h1>
+					</div>
+					<div class="looser">
+						<h1>Player 3 - Player 4</h1>
+					</div>
+					<button class="leave_game_2" id="leave_game_2_id">
+						<a href="/Game_menu" class="nav-link" data-link>Quitter la partie</a>
+					</button>
+				</div>
 			</div>
 		`;
 	}
 
 	cleanup() {
 		document.removeEventListener("keydown", this.boundKeyPressHandler);
+		clearInterval(this.gameLoop);
 	}
 
 	leave_game_multi() {
@@ -89,6 +113,22 @@ export default class extends AbstractView {
 			this.cleanup();
 
 			setLeaveGameVar(true);
+			space_pressed = false;
+			handleViewTransitions("vue2", "vue4");
+			setTimeout(() => {
+				leave_Multiplayer_Game();
+			}, 1500);
+		});
+	}
+
+	leave_game_2_multi() {
+		document.getElementById("leave_game_2_id").addEventListener("click", () => {
+			console.log("leave_the_game2222222222");
+			this.cleanup();
+
+			setLeaveGameVar(true);
+			disable_skin_multi_podium();
+			space_pressed = false;
 			handleViewTransitions("vue2", "vue4");
 			setTimeout(() => {
 				leave_Multiplayer_Game();
@@ -147,91 +187,105 @@ export default class extends AbstractView {
 		// Vérifier si la touche est en cooldown
 		if (this.cooldowns[key]) return; // Ignore l'action si en cooldown
 
-	
-		let elem = null;
-		switch (key) {
-			case "z":
-				elem = document.getElementById("nb-item-grenade-1");
-				break;
-			case "x":
-				elem = document.getElementById("nb-item-teammate-1");
-				break;
-			case "1":
-				elem = document.getElementById("nb-item-grenade-2");
-				break;
-			case "2":
-				elem = document.getElementById("nb-item-teammate-2");
-				break;
+		if (key === " ") {
+			console.log("space pressed");
+			const press_space = document.getElementById("press_space_id");
+			if (press_space) {
+				press_space.style.visibility = "hidden";
+				press_space.style.animation = "none";
+			} else {
+				console.error("press_space_id introuvable !");
+			}
+			space_pressed = true;
 		}
-		if (elem) {
-			let currentValue = parseInt(elem.innerHTML, 10);
-			if (currentValue > 0) {
-				elem.innerHTML = currentValue - 1;
-				
-				console.log(`${key} utilisé, cooldown activé pour ${this.cooldownTimes[key]}ms`);
-				
-				// Mettre en cooldown cette touche
-				this.cooldowns[key] = true;
-				
-				// Ajouter la classe d'animation pour démarrer l'overlay reloading
-				let itemCircle = null;
-				let overlayReloading = null;
-				let overlayReloading_teammate = null;
 
-				switch (key) {
-					case "z":
-						overlayReloading = document.getElementById("overlay-reloading-grenade-1");
-						itemCircle = document.getElementById("item-circle-grenade1");
-						break;
-					case "x":
-						overlayReloading_teammate = document.getElementById("overlay-reloading-freeze-1");
-						itemCircle = document.getElementById("item-circle-teammate1");
-						break;
-					case "1":
-						overlayReloading = document.getElementById("overlay-reloading-grenade-2");
-						itemCircle = document.getElementById("item-circle-grenade2");
-						break;
-					case "2":
-						overlayReloading_teammate = document.getElementById("overlay-reloading-freeze-2");
-						itemCircle = document.getElementById("item-circle-teammate2");
-						break;
-				}
-
-				if (currentValue - 1 === 0)
-				{
-					itemCircle.classList.add("active");
-					this.updateOverlays();
-					return;
-				}
-
-				if (overlayReloading && currentValue - 1 !== 0)
-				{
-					overlayReloading.classList.add("active");
-				}
-				if (itemCircle) {
-					itemCircle.classList.add("active");
-				}
-
-				if (overlayReloading_teammate && currentValue - 1 !== 0)
-				{
-					overlayReloading_teammate.classList.add("active");
-				}
+		if (space_pressed)
+		{
+			let elem = null;
+			switch (key) {
+				case "z":
+					elem = document.getElementById("nb-item-grenade-1");
+					break;
+				case "x":
+					elem = document.getElementById("nb-item-teammate-1");
+					break;
+				case "1":
+					elem = document.getElementById("nb-item-grenade-2");
+					break;
+				case "2":
+					elem = document.getElementById("nb-item-teammate-2");
+					break;
+			}
+			if (elem) {
+				let currentValue = parseInt(elem.innerHTML, 10);
+				if (currentValue > 0) {
+					elem.innerHTML = currentValue - 1;
+					
+					console.log(`${key} utilisé, cooldown activé pour ${this.cooldownTimes[key]}ms`);
+					
+					// Mettre en cooldown cette touche
+					this.cooldowns[key] = true;
+					
+					// Ajouter la classe d'animation pour démarrer l'overlay reloading
+					let itemCircle = null;
+					let overlayReloading = null;
+					let overlayReloading_teammate = null;
 	
-				setTimeout(() =>
-				{
-					delete this.cooldowns[key];
-					console.log(`${key} cooldown terminé`);
+					switch (key) {
+						case "z":
+							overlayReloading = document.getElementById("overlay-reloading-grenade-1");
+							itemCircle = document.getElementById("item-circle-grenade1");
+							break;
+						case "x":
+							overlayReloading_teammate = document.getElementById("overlay-reloading-freeze-1");
+							itemCircle = document.getElementById("item-circle-teammate1");
+							break;
+						case "1":
+							overlayReloading = document.getElementById("overlay-reloading-grenade-2");
+							itemCircle = document.getElementById("item-circle-grenade2");
+							break;
+						case "2":
+							overlayReloading_teammate = document.getElementById("overlay-reloading-freeze-2");
+							itemCircle = document.getElementById("item-circle-teammate2");
+							break;
+					}
+	
+					if (currentValue - 1 === 0)
+					{
+						itemCircle.classList.add("active");
+						this.updateOverlays();
+						return;
+					}
 	
 					if (overlayReloading && currentValue - 1 !== 0)
-						overlayReloading.classList.remove("active");
-
+					{
+						overlayReloading.classList.add("active");
+					}
+					if (itemCircle) {
+						itemCircle.classList.add("active");
+					}
+	
 					if (overlayReloading_teammate && currentValue - 1 !== 0)
-						overlayReloading_teammate.classList.remove("active");
-					
-					if (itemCircle && currentValue - 1 !== 0)
-						itemCircle.classList.remove("active");
-
-				}, this.cooldownTimes[key]);
+					{
+						overlayReloading_teammate.classList.add("active");
+					}
+		
+					setTimeout(() =>
+					{
+						delete this.cooldowns[key];
+						console.log(`${key} cooldown terminé`);
+		
+						if (overlayReloading && currentValue - 1 !== 0)
+							overlayReloading.classList.remove("active");
+	
+						if (overlayReloading_teammate && currentValue - 1 !== 0)
+							overlayReloading_teammate.classList.remove("active");
+						
+						if (itemCircle && currentValue - 1 !== 0)
+							itemCircle.classList.remove("active");
+	
+					}, this.cooldownTimes[key]);
+				}
 			}
 		}
 	}
@@ -257,5 +311,21 @@ export default class extends AbstractView {
 				panel.classList.remove("active");
 			}, 1100);
 		});
+	}
+
+	checkGameOver() {
+		if (window.location.pathname !== "/multi_player_game")
+			return;
+		const winnerContainer = document.querySelector(".container-EndGame");
+		if (!winnerContainer)
+			return;
+		if (isGameFinished()) {
+			winnerContainer.classList.add("active");
+			clearInterval(this.gameLoop); // Arrête la boucle quand la partie est finie
+		}
+		else 
+		{
+			winnerContainer.classList.remove("active");
+		}
 	}
 }

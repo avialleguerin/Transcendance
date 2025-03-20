@@ -16,21 +16,18 @@ const skinPaths = [
 let player1Skins_podium = [];
 let player2Skins_podium = [];
 
-// Fonction pour charger les skins
-// Fonction pour charger les skins, avec promesses pour garantir l'ordre
 function loadSkin(skin, scene, x, y, z) {
     return new Promise((resolve, reject) => {
         BABYLON.SceneLoader.ImportMesh("", skin.path, skin.file, scene, (meshes) => {
             const rootMesh = meshes.find(mesh => mesh.name === "__root__");
-            if (rootMesh) {
-                rootMesh.position = new BABYLON.Vector3(x, y, z); // Modifier selon la position voulue
+            if (rootMesh)
+			{
+                rootMesh.position = new BABYLON.Vector3(x, y, z);
                 rootMesh.scaling = new BABYLON.Vector3(4, 4, 4);
                 rootMesh.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
 
-                rootMesh.setEnabled(false); // Masquer tous les skins au départ
-                resolve(rootMesh); // Résoudre la promesse avec le mesh
-            } else {
-                reject(`Erreur lors du chargement de ${skin.name}`);
+                rootMesh.setEnabled(false);
+                resolve(rootMesh);
             }
         });
     });
@@ -45,7 +42,6 @@ function loadSkinsForPlayer(skinPaths, scene, playerSkins, x, y, z)
             meshes.forEach((mesh, index) =>
             {
                 playerSkins.push(mesh);
-                console.log(`Skin ${skinPaths[index].name} chargé avec succès pour l'index ${index}`);
             });
         })
         .catch((error) =>
@@ -69,27 +65,15 @@ export function enable_skin_perso_player_first_and_second()
 {
 	let isPlayer1_win_score = getPlayer_1_win();
 	let isPlayer2_win_score = getPlayer_2_win();
-	console.log("player_1_win", isPlayer1_win_score);
-	console.log("player_2_win", isPlayer2_win_score);
 
 	if (player1Skins_podium.length === 0)
-	{
-		console.log("player1Skins_podium.length === 0");
 		return;
-	}
 	if (player2Skins_podium.length === 0)
-	{
-		console.log("player2Skins_podium.length === 0");
 		return;
-	}
 	if (isPlayer1_win_score && !isPlayer2_win_score)
 	{
-		console.log("currentSkinPlayerFirst = currentSkinPlayer1;currentSkinPlayerSeconde = currentSkinPlayer2;", currentSkinPlayerFirst, currentSkinPlayerSeconde);
-
 		currentSkinPlayerFirst = currentSkinPlayer1;
 		currentSkinPlayerSeconde = currentSkinPlayer2;
-
-		console.log("currentSkinPlayerFirst = currentSkinPlayer1;currentSkinPlayerSeconde = currentSkinPlayer2;", currentSkinPlayerFirst, currentSkinPlayerSeconde);
 
 		player1Skins_podium.forEach(skin => skin.setEnabled(false));
 		player1Skins_podium[currentSkinPlayerFirst].setEnabled(true);
@@ -103,14 +87,11 @@ export function enable_skin_perso_player_first_and_second()
 		currentSkinPlayerSeconde = currentSkinPlayer1;
 
 		player1Skins_podium.forEach(skin => skin.setEnabled(false));
-		player1Skins_podium[currentSkinPlayerSeconde].setEnabled(true);
+		player1Skins_podium[currentSkinPlayerFirst].setEnabled(true);
 		
 		player2Skins_podium.forEach(skin => skin.setEnabled(false));
-		player2Skins_podium[currentSkinPlayerFirst].setEnabled(true);
+		player2Skins_podium[currentSkinPlayerSeconde].setEnabled(true);
 	}
-	console.log("Skins activéswwwwwwwwwwwwwwwww");
-
-
 }
 
 export function disable_skin_perso_player_first_and_seconde()

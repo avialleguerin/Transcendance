@@ -63,8 +63,10 @@ const router = async () => {
         if (typeof view.init_powerUP_player_multi === "function") view.init_powerUP_player_multi();
         if (typeof view.event_solo_game === "function") view.event_solo_game();
         if (typeof view.leave_game === "function") view.leave_game();
+        if (typeof view.leave_game_2 === "function") view.leave_game_2();
         if (typeof view.leave_game_multi === "function") view.leave_game_multi();
         if (typeof view.event_multiPlayer_game === "function") view.event_multiPlayer_game();
+        if (typeof view.leave_game_2_multi === "function") view.leave_game_2_multi();
     }, 1500); // Attente de 1,5 seconde avant le changement de page
 };
 

@@ -292,11 +292,11 @@ p {
 
 .container-EndGame {
     position: absolute;
-    top: 50%;
+    top: 64%;
     left: 57%;
     transform: translate(-50%, -50%);
-    width: 30%;
-    height: 50%;
+    width: 40%;
+    height: 72%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -307,8 +307,8 @@ p {
 
 .winner {
     position: absolute;
-    top: 8%;
-    left: 16%;
+    top: 2%;
+    left: 25%;
     font-size: 2vw;
     font-family: 'Black Ops One', sans-serif;
     color: rgb(255, 255, 255);
@@ -317,8 +317,8 @@ p {
 
 .looser {
     position: absolute;
-    top: 22%;
-    right: 25%;
+    top: 11%;
+    right: 31%;
     font-size: 2vw;
     font-family: 'Black Ops One', sans-serif;
     color: rgb(255, 255, 255);
@@ -357,7 +357,7 @@ p {
     font-size: 1.5vw;
     font-family: 'Black Ops One', sans-serif;
     color: rgb(0, 0, 0);
-    text-shadow: 2px 2px 2px #ff0000;
+    text-shadow: 2px 2px 2px #ffffff;
     animation: press_space 2s infinite;
     visibility: visible;
 }
@@ -365,4 +365,41 @@ p {
 .press_space.active {
 	visibility: hidden;
 	animation: none;
+}
+
+.leave_game_2
+{
+    position: absolute;
+    /* top: 50%; */
+    left: 35%;
+    transform: translate(-50%, -50%);
+    /* padding: 20px 30px; */
+    font-weight: bold;
+    background-color: transparent;
+    color: rgb(255, 255, 255);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3sease;
+    background-image: url("../../../srcs/game/assets/image/boutton.svg");
+    background-size: 100% auto;
+    background-position: center;
+    background-repeat: no-repeat;
+    /* line-height: 3vh; */
+    width: 170px;
+    height: 112px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    bottom: -4%;
+
+}
+
+.nav-link {
+    color: #000000;
+    font-size: 0.8vw;
+    font-family: 'Black Ops One', sans-serif;
+    text-shadow: 2px 2px 2px #ffffff;
+    text-decoration: none;
 }

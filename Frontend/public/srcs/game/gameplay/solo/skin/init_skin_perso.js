@@ -15,20 +15,18 @@ const skinPaths = [
 let player1Skins = [];
 let player2Skins = [];
 
-// Fonction pour charger les skins
-// Fonction pour charger les skins, avec promesses pour garantir l'ordre
 function loadSkin(skin, scene) {
     return new Promise((resolve, reject) => {
         BABYLON.SceneLoader.ImportMesh("", skin.path, skin.file, scene, (meshes) => {
             const rootMesh = meshes.find(mesh => mesh.name === "__root__");
             if (rootMesh) {
-                rootMesh.position = new BABYLON.Vector3(0, 100, -15); // Modifier selon la position voulue
+                rootMesh.position = new BABYLON.Vector3(0, 100, -15);
                 rootMesh.scaling = new BABYLON.Vector3(4, 4, 4);
                 rootMesh.rotation = new BABYLON.Vector3(0, 0, 0);
                 rootMesh.metadata = { isPlayer_skin: true };
 
-                rootMesh.setEnabled(false); // Masquer tous les skins au départ
-                resolve(rootMesh); // Résoudre la promesse avec le mesh
+                rootMesh.setEnabled(false);
+                resolve(rootMesh);
             } else {
                 reject(`Erreur lors du chargement de ${skin.name}`);
             }

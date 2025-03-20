@@ -12,6 +12,7 @@ import { init_skins_perso_first, init_skins_perso_seconde } from "./solo/skin/in
 import { isGameFinished } from "./score.js";
 import { gameIsFinished } from "./score.js";
 import { SetIsGameFinished } from "./score.js";
+import { init_skins_perso_player1_multi_podium, init_skins_perso_player2_multi_podium, init_skins_perso_player3_multi_podium, init_skins_perso_player4_multi_podium } from "./multiplayer/init_teamPlayer_podium.js";
 
 const canvas = document.getElementById('renderCanvas');
 const engine = new BABYLON.Engine(canvas, true, {
@@ -88,6 +89,11 @@ create_environment_view1(scene);
 // init_skins_perso_player2_multi(scene);
 // init_skins_perso_player3_multi(scene);
 // init_skins_perso_player4_multi(scene);
+// init_skins_perso_player1_multi_podium(scene);
+// init_skins_perso_player2_multi_podium(scene);
+// init_skins_perso_player3_multi_podium(scene);
+// init_skins_perso_player4_multi_podium(scene);
+
 // create_environment_view2(scene);
 // create_environment_view3(scene);
 
@@ -171,6 +177,7 @@ export function startMultiGame()
     Multi_gameStart = true;
     Solo_gameStart = false;
     AI_gameStart = false;
+    SetIsGameFinished(false);
 }
 
 export function startAI_Game()
@@ -178,6 +185,7 @@ export function startAI_Game()
     AI_gameStart = true;
     Solo_gameStart = false;
     Multi_gameStart = false;
+    SetIsGameFinished(false);
 }
 
 scene.inputStates = { space: false };
@@ -325,6 +333,21 @@ engine.runRenderLoop(() =>
 window.addEventListener('resize', () => {
 	engine.resize(true);
 });
+
+export function getSoloGameStart()
+{
+    return Solo_gameStart;
+}
+
+export function getMultiGameStart()
+{
+    return Multi_gameStart;
+}
+
+export function getAIGameStart()
+{
+    return AI_gameStart;
+}
 
 
 // export function getScene()

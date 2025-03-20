@@ -1,6 +1,11 @@
+
+import { getSoloGameStart, getMultiGameStart } from "./babylon.js";
+
 let view1Meshes = [];
 let view2Meshes = [];
 let view3Meshes = [];
+
+
 
 export function create_environment_view1(scene) {
 	view1Meshes = []; // Réinitialise la liste pour éviter les doublons
@@ -125,23 +130,26 @@ export function destroy_environement_view2() {
 // ========================= VIEW 3 =========================
 
 export function create_environment_view3(scene) {
-	view3Meshes = []; // Réinitialise la liste
+
+	let soloGameStart = getSoloGameStart();
+	let multi_player_game = getMultiGameStart();
+
+	view3Meshes = [];
 
 	const grassTexture = new BABYLON.Texture("/srcs/game/assets/image/perfect-green-grass.jpg", scene);
-    grassTexture.anisotropicFilteringLevel = 8; // Réduit de 16 à 8 pour de meilleures performances
+    grassTexture.anisotropicFilteringLevel = 8;
     grassTexture.uScale = 5;
     grassTexture.vScale = 5;
-    grassTexture.hasAlpha = false; // Indiquer explicitement qu'il n'y a pas de canal alpha
+    grassTexture.hasAlpha = false;
     grassTexture.wrapU = BABYLON.Texture.WRAP_ADDRESSMODE;
     grassTexture.wrapV = BABYLON.Texture.WRAP_ADDRESSMODE;
     
-    // Création d'un matériau réutilisable pour toutes les instances de terrain
+    
     const grassMaterial = new BABYLON.StandardMaterial("grassMaterial", scene);
     grassMaterial.diffuseTexture = grassTexture;
     grassMaterial.backFaceCulling = false;
-    grassMaterial.specularColor = new BABYLON.Color3(0.1, 0.1, 0.1); // Réduit les reflets
-    
-    // Attendre que la texture soit complètement chargée avant de l'utiliser
+    grassMaterial.specularColor = new BABYLON.Color3(0.1, 0.1, 0.1);
+
     grassTexture.onLoadObservable.add(() => {
         console.log("Texture d'herbe chargée");
     });
@@ -176,6 +184,20 @@ export function create_environment_view3(scene) {
 	createGrassPlane2("grassPlane9", new BABYLON.Vector3(9.2, 299.8, -102));
 	createGrassPlane2("grassPlane10", new BABYLON.Vector3(9.2, 299.8, -44));
 
+
+	if (soloGameStart)
+	{
+		create_podium(scene, 5, 5, 5);
+	}
+
+	if (multi_player_game)
+	{
+		create_podium(scene, 8, 5, 8);
+	}
+}
+
+function create_podium(scene, scaleX, scaleY, scaleZ)
+{
 	BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/3d_object/", "podium.glb", scene, function (newMeshes) {
 		console.log("Podium chargé avec succès !");
 
@@ -185,7 +207,7 @@ export function create_environment_view3(scene) {
 			view3Meshes.push(mesh);
 		});
 		container.position = new BABYLON.Vector3(-57, 302, -55);
-		container.scaling = new BABYLON.Vector3(5, 5, 5);
+		container.scaling = new BABYLON.Vector3(scaleX, scaleY, scaleZ);
 		container.rotation = new BABYLON.Vector3(0, Math.PI, 0);
 		view3Meshes.push(container);
 	});
