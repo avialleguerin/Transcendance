@@ -98,7 +98,6 @@ export async function login(request, reply) {
 }
 
 export async function logout(request, reply) {
-	// const { userId, sessionId } = request.body;
 	const accessToken = request.headers.authorization?.split(" ")[1];
 	const { refreshToken } = request.cookies;
 

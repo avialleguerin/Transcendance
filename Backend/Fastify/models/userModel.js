@@ -23,8 +23,6 @@ const userModel = {
 
   getUserByEmail: (email) => { return db.prepare("SELECT * FROM users WHERE email = ?").get(email) },
 
-  // updateConnected: (userId, connected) => { return db.prepare("UPDATE users SET connected = ? WHERE userId = ?").run(connected, userId) },
-
   updateRole: (userId, role) => { return db.prepare("UPDATE users SET role = ? WHERE userId = ?").run(role === 'user' ? 'admin' : 'user', userId) },
 
   unregister: (userId) => { return db.prepare("DELETE FROM users WHERE userId = ?").run(userId) }

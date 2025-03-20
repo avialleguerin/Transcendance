@@ -16,7 +16,6 @@ async function apiRequest(endpoint, method = "GET", body = null, params = {}) {
 		body: body ? JSON.stringify(body) : null
 	});
 	if (response.status === 401) {
-		console.log(response.error);
 		await refreshToken();
 		return apiRequest(endpoint, method, body, params);
 	} else if (response.status === 403) {
@@ -120,7 +119,6 @@ async function refreshToken() {
 		console.log("🔄 Token rafraîchi :", accessToken);
 	}
 	console.log("Error:", data.error)
-	return null
 }
 
 async function fetchProfile() {
