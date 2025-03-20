@@ -1,4 +1,4 @@
-import { register, selectUsers, unregister, login, logout, changeRole, refreshAccessToken, getUserProfile, getAccessToken} from '../controllers/authController.js';
+import { register, selectUsers, unregister, login, logout, changeRole, refreshAccessToken, getUserProfile } from '../controllers/authController.js';
 
 /**
  * Encapsulates the routes
@@ -20,5 +20,4 @@ export default async function routes (fastify) {
 
 	// Tokens
 	fastify.post('/refresh-token', refreshAccessToken);
-	fastify.post('/users/get-access-token', getAccessToken);
 }

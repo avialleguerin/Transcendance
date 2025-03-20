@@ -1,11 +1,10 @@
-async function apiRequest(endpoint, method = "GET", body = null, params = {}, accessToken) {
+let accessToken = sessionStorage.getItem("accessToken")
+
+async function apiRequest(endpoint, method = "GET", body = null, params = {}) {
 	const headers = { "Content-Type": "application/json" };
-	
-	
-	console.log("accessToken in apiRequest :", accessToken)
+
 	if (accessToken)
 		headers["Authorization"] = `Bearer ${accessToken}`;
-	console.log("headers: ", headers)
 	Object.keys(params).forEach(key => {
 		endpoint = endpoint.replace(`:${key}`, encodeURIComponent(params[key]));
 	});
@@ -18,8 +17,8 @@ async function apiRequest(endpoint, method = "GET", body = null, params = {}, ac
 	});
 	if (response.status === 401) {
 		console.log(response.error);
-		accessToken = await refreshToken();
-		return apiRequest(endpoint, method, body, params, accessToken);
+		await refreshToken();
+		return apiRequest(endpoint, method, body, params);
 	} else if (response.status === 403) {
 		console.error("Acces interdit !");
 	} else if (response.status === 500) {
@@ -30,20 +29,23 @@ async function apiRequest(endpoint, method = "GET", body = null, params = {}, ac
 }
 
 async function logout(userId) {
-	const sessionId = localStorage.getItem('sessionId');
-	console.log("🆔 Session ID récupéré :", sessionId);
+	if (!accessToken)
+		return console.log("✅ Vous etes deja deconnecte !");
 	const response = await fetch(`/api/users/logout/:${ userId }`, {
 		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ userId, sessionId }),
+		body: JSON.stringify({}),
+		headers: { 
+			'Content-Type': 'application/json',
+			'Authorization': `Bearer ${accessToken}`
+		},
 		credentials: 'include',
 	});
 	const data = await response.json();
 	if (data.success) {
+		sessionStorage.removeItem("accessToken")
+		accessToken = null
 		fetchUsers();
 		console.log("✅ Déconnecté avec succès !");
-		localStorage.removeItem('sessionId');
-		localStorage.removeItem('userId');
 		setTimeout(() => {
 			location.reload();
 		}, 300);
@@ -86,22 +88,14 @@ async function login(event) {
 
 	const email = document.getElementById("login-email").value;
 	const password = document.getElementById("login-password").value;
-	const userId = localStorage.getItem("userId")
-	const sessionId = localStorage.getItem("sessionId")
-	if (userId && sessionId)
-	{
-		console.error("❌ User already connected !");
-		return ;
-	}
 	const data = await apiRequest("users/login", "PUT", { email, password }, {})
-	accessToken = data.accessToken
-	if (!data.accessToken) {
+	sessionStorage.setItem("accessToken", data.accessToken)
+	accessToken = sessionStorage.getItem("accessToken")
+	if (!accessToken) {
 		console.error("❌ Aucun accessToken reçue !");
 	}
 	if (data.success) {
 		console.log("✅ Connected, Token :", accessToken)
-		localStorage.setItem('sessionId', data.sessionId);
-		localStorage.setItem('userId', data.userId);
 		setTimeout(() => {
 			location.reload();
 		}, 300);
@@ -112,40 +106,26 @@ async function login(event) {
 
 
 async function refreshToken() {
-	console.log("je passe pour refresh le token access")
-	const userId = localStorage.getItem("userId")
-	const sessionId = localStorage.getItem("sessionId")
 	const response = await fetch("/api/refresh-token", {
 		method: "POST",
-		body: JSON.stringify({ userId, sessionId }),
-		headers: { 'Content-Type': 'application/json' },
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify({}),
 		credentials: "include"
 	});
 
 	const data = await response.json();
 	if (data.success) {
-		console.log("🔄 Token rafraîchi :", data.accessToken);
-		return data.accessToken
+		accessToken = data.accessToken
+		sessionStorage.setItem("accessToken", accessToken)
+		console.log("🔄 Token rafraîchi :", accessToken);
 	}
 	console.log("Error:", data.error)
 	return null
 }
 
-function getCookie(name) {
-	const value = `; ${document.cookie}`;
-	const parts = value.split(`; ${name}=`);
-	if (parts.length === 2) return parts.pop().split(';').shift();
-	return null;
-}
-
 async function fetchProfile() {
-	const sessionId = localStorage.getItem('sessionId');
-	const userId = localStorage.getItem('userId');
-	console.log("🆔 Session ID récupéré :", sessionId);
-	console.log("🆔 ID de l'utilisateur récupéré :", userId);
-	const data = await apiRequest("users/get-access-token", "POST", { sessionId, userId }, {})
-	if (data.accessToken) {
-		const profileData = await apiRequest("profile", "GET", null, {}, data.accessToken)
+	if (accessToken) {
+		const profileData = await apiRequest("profile", "GET", null, {})
 		if (!profileData.user) {
 			console.error("Aucun utilisateur dans la réponse !");
 			return;
@@ -163,13 +143,12 @@ async function fetchProfile() {
 			</tr>
 		`;
 	} else {
-		console.log("❌ Aucun accessToken reçu:", data.error);
-		localStorage.removeItem("userId")
-		localStorage.removeItem("sessionId")
+		console.log("❌ Aucun accessToken reçu !");
 	}
 }
 
 window.addEventListener('DOMContentLoaded', () => {
+	console.log("accessToken: ", accessToken)
 	fetchUsers();
 	fetchProfile();
 });
