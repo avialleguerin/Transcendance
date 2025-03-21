@@ -5,6 +5,7 @@ import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.
 import { getValue_leave_game, setLeaveGameVar } from "../index.js";
 import { isGameFinished } from "../../../srcs/game/gameplay/score.js";
 import { disable_skin_perso_player_first_and_seconde } from "../../../srcs/game/gameplay/solo/skin/init_skin_player_podium.js";
+import { getPlayer_1_win, getPlayer_2_win } from "../../../srcs/game/gameplay/score.js";
 
 let spacePressed = false;
 
@@ -106,10 +107,10 @@ export default class extends AbstractView {
 				</div>
 				<div class="container-EndGame">
 					<div class="winner">
-						<h1>Player 1 Win</h1>
+						<h1 id="winner_id"></h1>
 					</div>
 					<div class="looser">
-						<h1>Player 2 Loose</h1>
+						<h1 id="looser_id"></h1>
 					</div>
 					<button class="leave_game_2" id="leave_game_2_id">
 						<a href="/Game_menu" class="nav-link" data-link>Quitter la partie</a>
@@ -363,11 +364,23 @@ export default class extends AbstractView {
 		if (window.location.pathname !== "/solo_game_1v1")
 			return;
 		const winnerContainer = document.querySelector(".container-EndGame");
+		let player_1_win = getPlayer_1_win();
+		let player_2_win = getPlayer_2_win();	
 		if (!winnerContainer)
 			return;
 		if (isGameFinished()) {
 			winnerContainer.classList.add("active");
 			clearInterval(this.gameLoop); // Arrête la boucle quand la partie est finie
+			if (player_1_win)
+			{
+				document.getElementById("winner_id").innerHTML = "Player 1 Win";
+				document.getElementById("looser_id").innerHTML = "Player 2 Loose";
+			}
+			else if (player_2_win)
+			{
+				document.getElementById("winner_id").innerHTML = "Player 2 Win";
+				document.getElementById("looser_id").innerHTML = "Player 1 Loose";
+			}
 		}
 		else 
 		{

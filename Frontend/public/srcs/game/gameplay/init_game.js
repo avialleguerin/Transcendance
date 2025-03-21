@@ -194,6 +194,13 @@ export function create_environment_view3(scene) {
 	{
 		create_podium(scene, 8, 5, 8);
 	}
+	create_spot_particule(scene, -57, 299.5, -65);
+	create_spot_particule(scene, -57, 299.5, -45);
+	create_spot_particule(scene, 27, 299.5, -120);
+	create_spot_particule(scene, -42, 299.5, -120);
+	create_spot_particule(scene, 27, 299.5, -24);
+	create_spot_particule(scene, -42, 299.5, -24);
+
 }
 
 function create_podium(scene, scaleX, scaleY, scaleZ)
@@ -209,6 +216,21 @@ function create_podium(scene, scaleX, scaleY, scaleZ)
 		container.position = new BABYLON.Vector3(-57, 302, -55);
 		container.scaling = new BABYLON.Vector3(scaleX, scaleY, scaleZ);
 		container.rotation = new BABYLON.Vector3(0, Math.PI, 0);
+		view3Meshes.push(container);
+	});
+}
+
+function create_spot_particule(scene, x, y, z)
+{
+	BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/3d_object/", "spot_particule.glb", scene, function (newMeshes) {
+		console.log("Spot particule chargé avec succès !");
+
+		let container = new BABYLON.TransformNode("container", scene);
+		newMeshes.forEach(mesh => {
+			mesh.setParent(container);
+			view3Meshes.push(mesh);
+		});
+		container.position = new BABYLON.Vector3(x, y, z);
 		view3Meshes.push(container);
 	});
 }

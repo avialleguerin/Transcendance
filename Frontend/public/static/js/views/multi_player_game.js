@@ -6,6 +6,7 @@ import { setLeaveGameVar } from "../index.js";
 import { getPowerUP_value } from "./Game_menu.js";
 import { disable_skin_multi_podium } from "../../../srcs/game/gameplay/multiplayer/init_teamPlayer_podium.js";
 import { isGameFinished } from "../../../srcs/game/gameplay/score.js";
+import { getIsTeam1Win, getIsTeam2Win } from "../../../srcs/game/gameplay/score.js";
 
 let space_pressed = false;
 
@@ -89,10 +90,10 @@ export default class extends AbstractView {
 				</div>
 				<div class="container-EndGame">
 					<div class="winner">
-						<h1>Player 1 - Player 2</h1>
+						<h1 id="Winner_id"></h1>
 					</div>
 					<div class="looser">
-						<h1>Player 3 - Player 4</h1>
+						<h1 id="looser_id"></h1>
 					</div>
 					<button class="leave_game_2" id="leave_game_2_id">
 						<a href="/Game_menu" class="nav-link" data-link>Quitter la partie</a>
@@ -317,11 +318,23 @@ export default class extends AbstractView {
 		if (window.location.pathname !== "/multi_player_game")
 			return;
 		const winnerContainer = document.querySelector(".container-EndGame");
+		let team_player1_win = getIsTeam1Win();
+		let team_player2_win = getIsTeam2Win();
 		if (!winnerContainer)
 			return;
 		if (isGameFinished()) {
 			winnerContainer.classList.add("active");
 			clearInterval(this.gameLoop); // Arrête la boucle quand la partie est finie
+			if (team_player1_win)
+			{
+				document.getElementById("Winner_id").innerHTML = "Player 1 - Player 2 Win";
+				document.getElementById("looser_id").innerHTML = "Player 3 - Player 4 Loose";
+			}
+			else if (team_player2_win)
+			{
+				document.getElementById("Winner_id").innerHTML = "Player 3 - Player 4 Win";
+				document.getElementById("looser_id").innerHTML = "Player 1 - Player 2 Loose";
+			}
 		}
 		else 
 		{

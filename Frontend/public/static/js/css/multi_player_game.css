@@ -297,7 +297,7 @@ object-fit: contain;
 .winner {
   position: absolute;
   top: 2%;
-  left: 34%;
+  left: 32%;
   font-size: 2vw;
   font-family: 'Black Ops One', sans-serif;
   color: rgb(255, 255, 255);
@@ -307,7 +307,7 @@ object-fit: contain;
 .looser {
   position: absolute;
   top: 11%;
-  right: 31%;
+  right: 28%;
   font-size: 2vw;
   font-family: 'Black Ops One', sans-serif;
   color: rgb(255, 255, 255);

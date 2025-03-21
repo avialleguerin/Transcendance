@@ -14,6 +14,7 @@ import { gameIsFinished } from "./score.js";
 import { SetIsGameFinished } from "./score.js";
 import { init_skins_perso_player1_multi_podium, init_skins_perso_player2_multi_podium, init_skins_perso_player3_multi_podium, init_skins_perso_player4_multi_podium } from "./multiplayer/init_teamPlayer_podium.js";
 
+
 const canvas = document.getElementById('renderCanvas');
 const engine = new BABYLON.Engine(canvas, true, {
 	preserveDrawingBuffer: true,
@@ -93,6 +94,8 @@ create_environment_view1(scene);
 // init_skins_perso_player2_multi_podium(scene);
 // init_skins_perso_player3_multi_podium(scene);
 // init_skins_perso_player4_multi_podium(scene);
+
+
 
 // create_environment_view2(scene);
 // create_environment_view3(scene);
@@ -190,7 +193,6 @@ export function startAI_Game()
 
 scene.inputStates = { space: false };
 
-// Ensuite, configurez les écouteurs d'événements pour le clavier
 window.addEventListener("keydown", (event) => {
     if (event.code === "Space") {
         scene.inputStates.space = true;
@@ -253,8 +255,6 @@ export function leave_AI_Game()
     initialized = false;
     play = false;
 }
-
-// let gameIsFinished = isGameFinished();
 
 engine.runRenderLoop(() =>
 {

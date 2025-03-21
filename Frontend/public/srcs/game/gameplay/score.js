@@ -2,6 +2,7 @@ import { handleViewTransitions } from "./views/camera.js";
 import { enable_skin_perso_player_first_and_second } from "./solo/skin/init_skin_player_podium.js";
 import { getSoloGameStart, getMultiGameStart } from "./babylon.js";
 import { enable_skin_multi_podium } from "./multiplayer/init_teamPlayer_podium.js";
+import { SpawnParticules_endGame, SpawnParticules_GOAL } from "./particule_and_game.js";
 
 let scoreLeft = 0;
 let scoreRight = 0;
@@ -97,18 +98,22 @@ export function updateScore(side)
     let multi_player_game = getMultiGameStart();
     if (side === 'left') {
         scoreLeft++;
+        SpawnParticules_GOAL(scene, 27, 299.5, -120, true);
+        SpawnParticules_GOAL(scene, -42, 299.5, -120, true);
         if (scoreLeft > 9) scoreLeft = 0;
         loadScoreModel(scoreLeft, 'left', true);
     } else if (side === 'right') {
         scoreRight++;
+        SpawnParticules_GOAL(scene, 27, 299.5, -24, false);
+        SpawnParticules_GOAL(scene, -42, 299.5, -24, false);
         if (scoreRight > 9) scoreRight = 0;
         loadScoreModel(scoreRight, 'right', false);
     }
     if (soloGameStart)
     {
-        if (scoreLeft === 1 || scoreRight === 1) {
+        if (scoreLeft === 3 || scoreRight === 3) {
             SetIsGameFinished(true);
-            if (scoreLeft === 1)
+            if (scoreLeft === 3)
             {
                 isPlayer1_win = true;
                 isPlayer2_win = false;
@@ -120,13 +125,15 @@ export function updateScore(side)
             }
             handleViewTransitions('winner', true);
             enable_skin_perso_player_first_and_second();
+            SpawnParticules_endGame(scene, -57, 300, -65);
+            SpawnParticules_endGame(scene, -57, 300, -45);
         }
     }
     else if (multi_player_game)
     {
-        if (scoreLeft === 1 || scoreRight === 1) {
+        if (scoreLeft === 3 || scoreRight === 3) {
             SetIsGameFinished(true);
-            if (scoreLeft === 1)
+            if (scoreLeft === 3)
             {
                 isTeam1_win = true;
                 isTeam2_win = false;
