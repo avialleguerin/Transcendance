@@ -18,13 +18,17 @@ all:
 	@make -j4 up
 
 up:
-	@docker compose up --build
+	@docker compose up
 	@rm -rf ./Backend/Fastify/node_modules
-	@rm -rf ./Backend/Fastfy/Data
-	@rm -rf ./Backend/Fastfy/vault
+	@rm -rf ./Backend/Fastify/Data
+	@rm -rf ./Backend/Fastify/vault
+
+build:
+	@docker compose build
 
 down:
 	@docker compose down
+
 
 re:
 	@make down
