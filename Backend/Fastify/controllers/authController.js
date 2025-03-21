@@ -2,6 +2,10 @@ import { fastify } from '../server.js'
 import userModel from '../models/userModel.js';
 import { hashPassword, verifyPassword } from '../utils/hashUtils.js';
 import { redisModel } from '../models/redisModel.js';
+import speakeasy from 'speakeasy'
+import qrcode from 'qrcode'
+
+const SECRET_LENGHT = 30
 
 export async function selectUsers(request, reply) {
 	try {
@@ -67,7 +71,6 @@ export async function login(request, reply) {
 	console.log("📧 Email reçu :", email);
 	console.log("🔑 Mot de passe reçu :", password);
 	const user = userModel.getUserByEmail(email);
-	const userId = user.userId;
 	console.log("👤 Utilisateur trouvé :", user);
 	try {
 		if (!user || !await verifyPassword(user.password, password)) {
@@ -84,6 +87,9 @@ export async function login(request, reply) {
 			console.error("❌ Erreur lors de la création des tokens JWT");
 			return reply.code(500).send({ error: 'Internal Server Error' });
 		}
+		if (user.doubleAuth_enabled)
+			generate_doubleAuth(user.userId)
+
 		reply
 		.setCookie('refreshToken', refreshToken, {
 			httpOnly: true,
@@ -118,6 +124,32 @@ export async function logout(request, reply) {
 		}
 	}
 	reply.clearCookie('refreshToken', { path: '/' }).send({ success: true, message: 'Logged out' });
+}
+
+export async function changeDoubleAuth(request, reply) {
+	const { userId } = request.body;
+	try {
+		const user = userModel.getUserById(userId);
+		if (user){
+			userModel.updateDoubleAuth(userId, user.doubleAuth_enabled)
+			const updateUser = userModel.getUserById(userId);
+			if (!updateUser.doubleAuth_enabled)
+				userModel.updateDoubleAuth_secret(userId, null)
+			reply.code(200);
+			
+			return reply.send({
+				userId: updateUser.userId,
+				username: updateUser.username,
+				email: updateUser.email,
+				role: updateUser.doubleAuth_enabled,
+				success: true
+			})
+		}
+		else
+			return reply.code(404).send({ success: false, error: 'User not found' });
+} catch (err) {
+		return reply.code(500).send({ error: err.message });
+	}
 }
 
 export async function changeRole(request, reply) {
@@ -182,10 +214,11 @@ export async function refreshAccessToken(request, reply) {
 	}
 }
 
-export async function generate_doubleAuth(request, reply) {
-	const { userId } = request.params
+export async function generate_doubleAuth(userId) {
+	// const { userId } = request.params
+	const user = userModel.getUserById(userId)
 
-	const secret = speakeasy.generateSecret({ length: 20 })
+	user.doubleAuth_secret = speakeasy.generateSecret({ length: SECRET_LENGHT })
 
-	users[userId]
+	
 }

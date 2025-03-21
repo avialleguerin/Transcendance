@@ -138,7 +138,7 @@ async function fetchProfile() {
 				<td class="border px-4 py-2">${user.email}</td>
 				<td class="border px-4 py-2">********</td> <!-- Masquer le mot de passe -->
 				<td class="border px-4 py-2">${user.role}</td>
-				<td class="border px-4 py-2">${user.doubleAuth}</td>
+				<td class="border px-4 py-2">${user.doubleAuth_enabled === 0 ? "disabled" : "enabled"}</td>
 				<td class="border px-4 py-2">${user.doubleAuth_secret}</td>
 			</tr>
 		`;
