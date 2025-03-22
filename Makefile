@@ -15,6 +15,7 @@ MAGENTA		:=	\e[35m
 CYAN		:=	\e[36m
 
 all:
+	@make build
 	@make -j4 up
 
 up:
@@ -32,6 +33,6 @@ down:
 
 re:
 	@make down
-	@make up
+	@make all
 
 .PHONY: up all down re
