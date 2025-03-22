@@ -1,8 +1,10 @@
-import { register, selectUsers, unregister, login, logout, changeRole, refreshAccessToken, getUserProfile } from '../controllers/authController.js';
+import { register, selectUsers, unregister, login, logout, changeRole, refreshAccessToken, getUserProfile} from '../controllers/authController.js';
+import { getSQLiteCreds } from '../utils/vault.js'
 
 /**
  * Encapsulates the routes
  * @param {FastifyInstance} fastify  Encapsulated Fastify Instance
+ * @param {Object} options 
  */
 export default async function routes (fastify) {
 
@@ -20,4 +22,5 @@ export default async function routes (fastify) {
 
 	// Tokens
 	fastify.post('/refresh-token', refreshAccessToken);
+	fastify.get('/db-credentials', getSQLiteCreds);
 }

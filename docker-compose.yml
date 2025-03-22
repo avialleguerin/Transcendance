@@ -23,26 +23,32 @@ services:
     restart: always
 
   fastify:
+    container_name: fastify
+    image: custom-fastify
     build:
       context: ./Backend
       dockerfile: Fastify/Dockerfile
     # extends:
     #   file: Backend/docker-compose.yml
     #   service: fastify
-    depends_on:
-      - redis
-    environment:
-      REDIS_URL: "redis://redis:6379"
     ports:
       - "3000:3000"
     restart: always
+    environment:
+      - REDIS_URL="redis://redis:6379"
+      - VAULT_DEV_ROOT_TOKEN_ID=root
+      - VAULT_ADDR=http://vault:8200
+    depends_on:
+      - redis
+      - vault
     volumes:
       - ./Backend/Fastify:/app
       - /app/node_modules   # Préserve les modules installés dans le container
-    # networks:
-    #   - transcendence-network
+      - ./Data/vault_data:/app/vault/data
+      - ./Data/sqlite_data:/app/Data/db
 
   nginx:
+    container_name: nginx
     # extends:
     #   file: Backend/docker-compose.yml
     #   service: nginx
@@ -56,10 +62,9 @@ services:
       - ./Frontend/public:/usr/share/nginx/html:ro
       - ./Frontend/utils:/usr/share/nginx/utils:ro
       - ./Frontend3d/public:/usr/share/nginx/3d:ro
-    # networks:
-    #   - transcendence-network
 
-  # Devops (Grafana + Prometheus + ELK) - À activer plus tard
+
+  # Devops (Grafana + Prometheus + ELK)
   # grafana:
   #   extends:
   #     file: Devops/docker-compose.yml
@@ -67,13 +72,27 @@ services:
   #   networks:
   #     - transcendence-network
 
-  # Sécurité (Vault + SonarQube) - À activer plus tard
-  # vault:
-  #   extends:
-  #     file: Security/docker-compose.yml
-  #     service: vault
-  #   networks:
-  #     - transcendence-network
+
+  # Sécurité (Vault + SonarQube + Modsecurity)
+  vault:
+    image: custom-vault
+    container_name: vault
+    build:
+      context: ./Security/Vault
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8200:8200"
+    environment:
+      - VAULT_ADDR=http://127.0.0.1:8200
+      - VAULT_DEV_ROOT_TOKEN_ID=root
+    volumes:
+      - ./Data/vault_data:/vault/data
+      - ./Security/Vault/scripts:/vault/scripts
+      # - ./Security/Vault/vault_data:/vault/data
+    cap_add:
+      - IPC_LOCK
+    # entrypoint: "vault server -dev -dev-listen-address=0.0.0.0:8200"
 
 # networks:
 #   transcendence-network:

@@ -18,10 +18,20 @@ all:
 	@make -j4 up
 
 up:
-	@docker compose up --build
-	@rm -rf ./MiniBackend/Fastify/node_modules
+	@docker compose up
+	@rm -rf ./Backend/Fastify/node_modules
+	@rm -rf ./Backend/Fastify/Data
+	@rm -rf ./Backend/Fastify/vault
+
+build:
+	@docker compose build
 
 down:
 	@docker compose down
 
-.PHONY: up all down
+
+re:
+	@make down
+	@make up
+
+.PHONY: up all down re
