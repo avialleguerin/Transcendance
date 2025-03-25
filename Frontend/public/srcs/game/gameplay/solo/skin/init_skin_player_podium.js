@@ -25,7 +25,7 @@ function loadSkin(skin, scene, x, y, z) {
                 rootMesh.position = new BABYLON.Vector3(x, y, z);
                 rootMesh.scaling = new BABYLON.Vector3(4, 4, 4);
                 rootMesh.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
-
+                rootMesh.metadata = { isPlayer_skin_podium: true };
                 rootMesh.setEnabled(false);
                 resolve(rootMesh);
             }
@@ -107,4 +107,4 @@ export function disable_skin_perso_player_first_and_seconde()
 }
 
 
-export { currentSkinPlayerFirst, currentSkinPlayerSeconde };
+export { currentSkinPlayerFirst, currentSkinPlayerSeconde, player1Skins_podium, player2Skins_podium };

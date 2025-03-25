@@ -1,7 +1,7 @@
 .container-Player1 {
     position: absolute;
-    left : 5%;
-    bottom: 0%;
+    left : 10%;
+    bottom: 1%;
     width: 15%;
     height: 10%;
     background: transparent;
@@ -10,8 +10,8 @@
 
 .container-Player2 {
     position: absolute;
-    right : 5%;
-    bottom: 0%;
+    right : 10%;
+    bottom: 1%;
     width: 15%;
     height: 10%;
     background: transparent;
@@ -55,14 +55,15 @@
     display: flex;
     gap: 20px;
     left: 50%;
-    top: 60%;
+    top: 65%;
     transform: translate(-50%, -50%);
     flex-direction: row;
     background-color: #000000ad;
     border-radius: 10px;
     border: 2px solid #777;
-    padding: 0px 15px;
-    align-items: center;
+    padding: 5px 15px;
+    align-items: self-start;
+    height: 50%;
 }
 
 .container-item_player1 > div,
@@ -195,6 +196,7 @@ p {
     font-size: 0.8vw;
     color: rgb(255, 255, 255);
     text-shadow: 2px 2px 2px #000000;
+    margin-top: 8px;
 }
 
 @keyframes panel_spawn {
@@ -402,4 +404,46 @@ p {
     font-family: 'Black Ops One', sans-serif;
     text-shadow: 2px 2px 2px #ffffff;
     text-decoration: none;
+}
+
+
+.touch_player2 , .touch_player1 {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    font-size: 0.6vw;
+}
+
+.touch_player2:nth-child(2) {
+    left: 38px; /* Décalage à gauche */
+    top: 44%;
+}
+
+.touch_player2:nth-child(5) {
+    right: 42%; /* Décalage à droite */
+    top: 44%;
+}
+
+.touch_player2:nth-child(8) {
+    right: 10%; /* Encore plus à droite */
+    top: 44%;
+}
+
+.touch_player1:nth-child(2) {
+    left: 38px; /* Décalage à gauche */
+    top: 44%;
+}
+
+.touch_player1:nth-child(5) {
+    right: 42%; /* Décalage à droite */
+    top: 44%;
+}
+
+.touch_player1:nth-child(8) {
+    right: 10%; /* Encore plus à droite */
+    top: 44%;
 }

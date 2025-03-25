@@ -63,18 +63,21 @@ export default class extends AbstractView {
 					<h1>Player 1</h1>
 					<div class="container-item_player1">
 						<p id="nb-item-grenade-1"></p>
+						<p class="touch_player1">Z</p>
 						<div class="item-circle" id="item-circle-grenade1">
 							<img src="../../../srcs/game/assets/image/grenadeflashTest.jpg" alt="Item 1">
 							<div class="overlay" id="overlay-grenade-1"></div>
 							<div class="overlay-reloading" id="overlay-reloading-grenade-1"></div>
 						</div>
 						<p id="nb-item-teammate-1"></p>
+						<p class="touch_player1">X</p>
 						<div class="item-circle" id="item-circle-teammate1">
 							<img src="../../../srcs/game/assets/image/teammatev3.png" alt="Item 2">
 							<div class="overlay" id="overlay-teammate-1"></div>
 							<div class="overlay-reloading-teammate" id="overlay-reloading-teammate-1"></div>
 						</div>
 						<p id="nb-item-autre-1"></p>
+						<p class="touch_player1">C</p>
 						<div class="item-circle" id="item-circle-inverse1">
 							<img src="../../../srcs/game/assets/image/inverse_powerUP.png" alt="Item 3">
 							<div class="overlay" id="overlay-inverse-1"></div>
@@ -86,18 +89,21 @@ export default class extends AbstractView {
 					<h1>Player 2</h1>
 					<div class="container-item_player2">
 						<p id="nb-item-grenade-2"></p>
+						<p class="touch_player2">1</p>
 						<div class="item-circle" id="item-circle-grenade2">
 							<img src="../../../srcs/game/assets/image/grenadeflashTest.jpg" alt="Item 1">
 							<div class="overlay" id="overlay-grenade-2"></div>
 							<div class="overlay-reloading" id="overlay-reloading-grenade-2"></div>
 						</div>
 						<p id="nb-item-teammate-2"></p>
+						<p class="touch_player2">2</p>
 						<div class="item-circle" id="item-circle-teammate2">
 							<img src="../../../srcs/game/assets/image/teammatev3.png" alt="Item 2">
 							<div class="overlay" id="overlay-teammate-2"></div>
 							<div class="overlay-reloading-teammate" id="overlay-reloading-teammate-2"></div>
 						</div>
 						<p id="nb-item-autre-2"></p>
+						<p class="touch_player2">3</p>
 						<div class="item-circle" id="item-circle-inverse2">
 							<img src="../../../srcs/game/assets/image/inverse_powerUP.png" alt="Item 3">
 							<div class="overlay" id="overlay-inverse-2"></div>

@@ -77,7 +77,7 @@ export default class extends AbstractView {
 					<div class="view6-content">
 						<h1 id="custom_ta_game">CUSTOMISE TA GAME</h1>
 						<div class="powerUP">
-							<p>PowerUP :<span id="powerUP" class="active_powerUP"></span></p>
+							<p>PowerUP :<span id="power_up_info_id" class="power_up_info"></span><span id="powerUP" class="active_powerUP"></span></p>
 							<div id="power_selector" class="power_selector">
 								<div class="powerUP_number">
 									<p>1</p>
@@ -133,7 +133,7 @@ export default class extends AbstractView {
 					<div class="view8-content">
 						<h1 id="custom_ta_game_multi">CUSTOMISE TA GAME EN MULTI</h1>
 						<div class="powerUP">
-							<p>PowerUP :<span id="powerUP_multi" class="active_powerUP"></span></p>
+							<p>PowerUP :<span id="power_up_info_id_multi" class="power_up_info"></span><span id="powerUP_multi" class="active_powerUP"></span></p>
 							<div id="power_selector_game_multi" class="power_selector">
 								<div class="powerUP_number">
 									<p>1</p>
@@ -207,10 +207,41 @@ export default class extends AbstractView {
 				</div>
 				<button id="valide_ton_skin_game_multi" class="btn">Valider</button>
 			</div>
+			<div id="container_info_power_up" class="container_info_power_up">
+				<div class="text_powerUP">
+					<h1>Power-UP</h1>
+					<p class="explication_general">Le Power-Up est un bonus qui te donne un avantage sur ton adversaire. En activant cette option, tu commenceras la partie avec au moins un Power-Up de chaque type. Tu peux également personnaliser ce nombre et en obtenir trois ou cinq de chaque.</p>
+					<p class="explication_powerUP_grenade">Le Power-Up Grenade Flash te permet de lancer une grenade qui aveuglera ton adversaire. Mais attention ! Son fonctionnement est simple : elle obscurcit entièrement l’écran de jeu, ce qui signifie que même celui qui la lance est ébloui.</p>
+					<p class="explication_powerUP_teammate">Le Power-Up Coéquipier te permet d'appeler un nouveau joueur dans la partie pour une courte durée. Tu peux le déplacer avec E/D pour le joueur 1 et O/L pour le joueur 2.</p>
+					<p class="explication_powerUP_inverse">Le Power-Up Inverse te permet d'inverser les contrôles de ton adversaire pendant une courte durée.</p>
+				</div>
+				<div class="container_image_powerUP">
+					<img src="../../../srcs/game/assets/image/grenade_no_bg.png" alt="grenade" class="grenade">
+					<img src="../../../srcs/game/assets/image/teammate_no_bg.png" alt="teammate" class="teammate">
+					<img src="../../../srcs/game/assets/image/reverse_no_bg.png" alt="inverse_player" class="inverse_player">
+				</div>
+				<div id="exit_powerUP_info" class="exit_powerUP_info">
+					<button id="exit_powerUP_info_btn" class="btn">EXIT</button>
+				</div>
+			</div>
+
+
+			<div id="container_info_power_up_multi" class="container_info_power_up">
+				<div class="text_powerUP">
+					<h1>Power-UP</h1>
+					<p class="explication_general">Le Power-Up est un bonus qui te donne un avantage sur ton adversaire. En activant cette option, tu commenceras la partie avec au moins un Power-Up de chaque type. Tu peux également personnaliser ce nombre et en obtenir trois ou cinq de chaque.</p>
+					<p class="explication_powerUP_grenade_multi">Le Power-Up Grenade Flash te permet de lancer une grenade qui aveuglera ton adversaire. Mais attention ! Son fonctionnement est simple : elle obscurcit entièrement l’écran de jeu, ce qui signifie que même celui qui la lance est ébloui.</p>
+					<p class="explication_powerUP_freeze">Le Power-Up Freeze permet de rendre immobile l'equipe adverse pendant un cour instant.</p>
+				</div>
+				<div class="container_image_powerUP_multi">
+					<img src="../../../srcs/game/assets/image/grenade_no_bg.png" alt="grenade" class="grenade">
+					<img src="../../../srcs/game/assets/image/freeze_no_bg.png" alt="freeze" class="freeze">
+				</div>
+				<div id="exit_powerUP_info_multi" class="exit_powerUP_info">
+					<button id="exit_powerUP_info_btn_multi" class="btn">EXIT</button>
+				</div>
+			</div>
 		</div>
-
-
-
 		`;
 	}
 
@@ -824,6 +855,50 @@ export default class extends AbstractView {
 		switch_skn_right_id4_game_multi.addEventListener('click', () => {
 			console.log('Switch skin right id4 clicked');
 			switch_skin_perso_player4_right_multi();
+		});
+
+
+
+		/***********************************************************************/
+		/**************************POWER_UP_INFO*******************************/
+		/***********************************************************************/
+
+
+		const power_up_info_id = document.getElementById('power_up_info_id');
+		const container_info_power_up = document.getElementById('container_info_power_up');
+		const exit_powerUP_info = document.getElementById('exit_powerUP_info');
+
+		power_up_info_id.addEventListener('click', () => {
+			container_info_power_up.classList.add('active');
+			view6.classList.remove('active');
+			back_to_select_mode_view6.classList.remove('active');
+		});
+
+		exit_powerUP_info.addEventListener('click', () => {
+			container_info_power_up.classList.remove('active');
+			view6.classList.add('active');
+			back_to_select_mode_view6.classList.add('active');
+		});
+
+
+		/***********************************************************************/
+		/**************************POWER_UP_INFO_MULTI*************************/
+		/***********************************************************************/
+
+		const power_up_info_id_multi = document.getElementById('power_up_info_id_multi');
+		const container_info_power_up_multi = document.getElementById('container_info_power_up_multi');
+		const exit_powerUP_info_multi = document.getElementById('exit_powerUP_info_multi');
+
+		power_up_info_id_multi.addEventListener('click', () => {
+			container_info_power_up_multi.classList.add('active');
+			view8.classList.remove('active');
+			back_to_select_mode_view8.classList.remove('active');
+		});
+
+		exit_powerUP_info_multi.addEventListener('click', () => {
+			container_info_power_up_multi.classList.remove('active');
+			view8.classList.add('active');
+			back_to_select_mode_view8.classList.add('active');
 		});
 	}
 }

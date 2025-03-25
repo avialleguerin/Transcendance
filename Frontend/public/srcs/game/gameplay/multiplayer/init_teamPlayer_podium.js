@@ -30,7 +30,7 @@ function loadSkin(skin, scene, x, y, z, scaleX, scaleY, scaleZ) {
                 rootMesh.position = new BABYLON.Vector3(x, y, z);
                 rootMesh.scaling = new BABYLON.Vector3(scaleX, scaleY, scaleZ);
                 rootMesh.rotation = new BABYLON.Vector3(0, Math.PI/2, 0);
-
+                rootMesh.metadata = { isPlayer_skin_podium: true };
                 rootMesh.setEnabled(false);
                 resolve(rootMesh);
             } else {
@@ -141,4 +141,4 @@ export function disable_skin_multi_podium() {
 	currentSkinTeamPlayerSecond_multi_2 = defaultSkinPlayerSecond_multi;
 }
 
-export { currentSkinTeamPlayerFirst_multi_1, currentSkinTeamPlayerFirst_multi_2, currentSkinTeamPlayerSecond_multi_1, currentSkinTeamPlayerSecond_multi_2 };
+export { currentSkinTeamPlayerFirst_multi_1, currentSkinTeamPlayerFirst_multi_2, currentSkinTeamPlayerSecond_multi_1, currentSkinTeamPlayerSecond_multi_2, player1_podium_multi, player2_podium_multi, player3_podium_multi, player4_podium_multi };

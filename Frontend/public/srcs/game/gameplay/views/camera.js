@@ -1,6 +1,10 @@
 import { createLoadingOverlay, removeLoadingOverlay } from './loading_screen.js';
 import { destroy_environement_view1, destroy_environement_view2, create_environment_view1, create_environment_view2 } from '../init_game.js';
-
+import { init_skins_perso_player1, init_skins_perso_player2 } from '../solo/skin/init_skin_perso.js';
+import { init_skins_perso_player1_multi, init_skins_perso_player2_multi, init_skins_perso_player3_multi, init_skins_perso_player4_multi } from '../multiplayer/init_skin_perso_multi.js';
+import { destroy_all_by_metadata_skin } from '../solo/skin/init_skin_perso.js';
+import { init_skins_perso_first, init_skins_perso_seconde } from '../solo/skin/init_skin_player_podium.js';
+import { init_skins_perso_player1_multi_podium, init_skins_perso_player2_multi_podium, init_skins_perso_player3_multi_podium, init_skins_perso_player4_multi_podium } from '../multiplayer/init_teamPlayer_podium.js';
 
 const views = {
     default: {
@@ -113,46 +117,67 @@ export function handleViewTransitions(viewName, previousView)
 			window.currentView = 'vue1';
 			createLoadingOverlay();
             destroy_environement_view1(scene);
+            init_skins_perso_player1(scene);
+            init_skins_perso_player2(scene);
+            init_skins_perso_player1_multi(scene);
+            init_skins_perso_player2_multi(scene);
+            init_skins_perso_player3_multi(scene);
+            init_skins_perso_player4_multi(scene);
 		}, 1500);
 		setTimeout(() =>
 		{
             create_environment_view2(scene);
 			changeView('vue2', true);
 		}, 3500);
-		setTimeout(() => removeLoadingOverlay(), 5000);
+		setTimeout(() => removeLoadingOverlay(), 8000);
         
 	}
 	if (viewName === 'vue3' && previousView === 'vue2')
 	{
 		createLoadingOverlay();
         destroy_environement_view2(scene);
+        init_skins_perso_first(scene);
+        init_skins_perso_seconde(scene);
+        init_skins_perso_player1_multi_podium(scene);
+        init_skins_perso_player2_multi_podium(scene);
+        init_skins_perso_player3_multi_podium(scene);
+        init_skins_perso_player4_multi_podium(scene);
 		setTimeout(() =>
 		{
 			changeView('vue3', true);
 			window.currentView = 'vue3';
-		}, 3500);
+            destroy_all_by_metadata_skin(scene, "isPlayer_skin_menu");
+		}, 8500);
 		setTimeout(() => 
 		{
 			removeLoadingOverlay();
 			changeView('vue4', true);
-		}, 5500);
+		}, 10500);
 	}
-    if (viewName === 'vue2' && previousView === 'vue4') {
+    if (viewName === 'vue2' && (previousView === 'vue4' || previousView === 'winner')) {
         isLoading = true;
         changeView('vue3', true);
         setTimeout(() => {
             createLoadingOverlay();
+            destroy_all_by_metadata_skin(scene, "isPlayer_skin_podium");
+            init_skins_perso_player1(scene);
+            init_skins_perso_player2(scene);
+            init_skins_perso_player1_multi(scene);
+            init_skins_perso_player2_multi(scene);
+            init_skins_perso_player3_multi(scene);
+            init_skins_perso_player4_multi(scene);
         }, 1500);
         setTimeout(() => {
             create_environment_view2(scene);
             changeView('vue2', true);
             window.currentView = 'vue2'; 
+
         }, 3500);
         
         setTimeout(() => {
             removeLoadingOverlay();
             isLoading = false;
-        }, 5000);
+        }, 15000);
     }
     if (viewName === 'vue1' && previousView === 'vue2')
     {
@@ -162,6 +187,7 @@ export function handleViewTransitions(viewName, previousView)
         
         setTimeout(() => {
             changeView('vue1', true);
+            destroy_all_by_metadata_skin(scene, "isPlayer_skin_menu");
         }, 1500);
         setTimeout(() => {
             removeLoadingOverlay();
