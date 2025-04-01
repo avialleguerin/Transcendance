@@ -350,7 +350,3 @@ export function getAIGameStart()
 }
 
 
-// export function getScene()
-// {
-//     return scene;
-// }

@@ -66,6 +66,12 @@ export function enable_skin_perso_player_first_and_second()
 	let isPlayer1_win_score = getPlayer_1_win();
 	let isPlayer2_win_score = getPlayer_2_win();
 
+    console.log("enable_skin_perso_player_first_and_second");
+    console.log("isPlayer1_win_score: ", isPlayer1_win_score);
+    console.log("isPlayer2_win_score: ", isPlayer2_win_score);
+
+    console.log("player1Skins_podium: ", player1Skins_podium);
+    console.log("player2Skins_podium: ", player2Skins_podium);
 	if (player1Skins_podium.length === 0)
 		return;
 	if (player2Skins_podium.length === 0)

@@ -5,6 +5,8 @@ import { init_skins_perso_player1_multi, init_skins_perso_player2_multi, init_sk
 import { destroy_all_by_metadata_skin } from '../solo/skin/init_skin_perso.js';
 import { init_skins_perso_first, init_skins_perso_seconde } from '../solo/skin/init_skin_player_podium.js';
 import { init_skins_perso_player1_multi_podium, init_skins_perso_player2_multi_podium, init_skins_perso_player3_multi_podium, init_skins_perso_player4_multi_podium } from '../multiplayer/init_teamPlayer_podium.js';
+import { getSoloGameStart, getAIGameStart, getMultiGameStart } from '../babylon.js';
+
 
 const views = {
     default: {
@@ -100,33 +102,34 @@ export function changeView(viewName, force = false) {
     }
 }
 
+
 export function handleViewTransitions(viewName, previousView)
 {
     console.log("je rentre dans handleViewTransitions");
     console.log(viewName, previousView);
 	if (isLoading)
-		return;
-    if (!previousView)
-        previousView = 'default';
+    return;
+if (!previousView)
+previousView = 'default';
 
-	if (viewName === 'vue1' && previousView === 'default')
-	{
-		changeView('vue1', true);
-		setTimeout(() =>
-		{
-			window.currentView = 'vue1';
-			createLoadingOverlay();
-            destroy_environement_view1(scene);
-            init_skins_perso_player1(scene);
-            init_skins_perso_player2(scene);
-            init_skins_perso_player1_multi(scene);
-            init_skins_perso_player2_multi(scene);
-            init_skins_perso_player3_multi(scene);
-            init_skins_perso_player4_multi(scene);
-		}, 1500);
-		setTimeout(() =>
-		{
-            create_environment_view2(scene);
+if (viewName === 'vue1' && previousView === 'default')
+{
+    changeView('vue1', true);
+    setTimeout(() =>
+    {
+        window.currentView = 'vue1';
+        createLoadingOverlay();
+        destroy_environement_view1(scene);
+        init_skins_perso_player1(scene);
+        init_skins_perso_player2(scene);
+        init_skins_perso_player1_multi(scene);
+        init_skins_perso_player2_multi(scene);
+        init_skins_perso_player3_multi(scene);
+        init_skins_perso_player4_multi(scene);
+    }, 1500);
+    setTimeout(() =>
+    {
+        create_environment_view2(scene);
 			changeView('vue2', true);
 		}, 3500);
 		setTimeout(() => removeLoadingOverlay(), 8000);
@@ -134,14 +137,33 @@ export function handleViewTransitions(viewName, previousView)
 	}
 	if (viewName === 'vue3' && previousView === 'vue2')
 	{
+        let soloGameStart = getSoloGameStart();
+        let aiGameStart = getAIGameStart();
+        let multiGameStart = getMultiGameStart();
+        console.log("soloGameStart: ", soloGameStart);
+        console.log("aiGameStart: ", aiGameStart);
+        console.log("multiGameStart: ", multiGameStart);
 		createLoadingOverlay();
         destroy_environement_view2(scene);
-        init_skins_perso_first(scene);
-        init_skins_perso_seconde(scene);
-        init_skins_perso_player1_multi_podium(scene);
-        init_skins_perso_player2_multi_podium(scene);
-        init_skins_perso_player3_multi_podium(scene);
-        init_skins_perso_player4_multi_podium(scene);
+        if (soloGameStart && !aiGameStart && !multiGameStart)
+        {
+            console.log("je suis la init_skins_perso_first");
+            init_skins_perso_first(scene);
+            init_skins_perso_seconde(scene);
+        }
+        // else if (aiGameStart)
+        // {
+        //     init_skins_perso_player1_multi_podium(scene);
+        //     init_skins_perso_player2_multi_podium(scene);
+        // }
+        else if (multiGameStart && !aiGameStart && !soloGameStart)
+        {
+            console.log("je suis la init_skins_perso_player1_multi_podium");
+            init_skins_perso_player1_multi_podium(scene);
+            init_skins_perso_player2_multi_podium(scene);
+            init_skins_perso_player3_multi_podium(scene);
+            init_skins_perso_player4_multi_podium(scene);
+        }
 		setTimeout(() =>
 		{
 			changeView('vue3', true);

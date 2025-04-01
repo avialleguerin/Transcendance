@@ -164,22 +164,34 @@ function setEnabledAllByMetadata(scene, metadataKey, enabled) {
 
 
 export function destroy_all_by_metadata_skin(scene, metadataKey) {
-    player1Skins.length = 0;
-    player2Skins.length = 0;
-    player1Skins_multi.length = 0;
-    player2Skins_multi.length = 0;
-    player3Skins_multi.length = 0;
-    player4Skins_multi.length = 0;
-    player1_podium_multi.length = 0;
-    player2_podium_multi.length = 0;
-    player3_podium_multi.length = 0;
-    player4_podium_multi.length = 0;
-    player1Skins_podium.length = 0;
-    player2Skins_podium.length = 0;
-    setEnabledAllByMetadata(scene, "isPlayer_skin_menu", false);
-	scene.meshes
-		.filter(mesh => mesh.metadata && mesh.metadata[metadataKey])
-		.forEach(mesh => mesh.dispose());
+
+    if (metadataKey == "isPlayer_skin_menu")
+    {
+        player1Skins.length = 0;
+        player2Skins.length = 0;
+        player1Skins_multi.length = 0;
+        player2Skins_multi.length = 0;
+        player3Skins_multi.length = 0;
+        player4Skins_multi.length = 0;
+        setEnabledAllByMetadata(scene, "isPlayer_skin_menu", false);
+        scene.meshes
+            .filter(mesh => mesh.metadata && mesh.metadata[metadataKey])
+            .forEach(mesh => mesh.dispose());
+    }
+    else if (metadataKey == "isPlayer_skin_podium")
+    {
+        player1_podium_multi.length = 0;
+        player2_podium_multi.length = 0;
+        player3_podium_multi.length = 0;
+        player4_podium_multi.length = 0;
+        player1Skins_podium.length = 0;
+        player2Skins_podium.length = 0;
+
+        setEnabledAllByMetadata(scene, "isPlayer_skin_podium", false);
+        scene.meshes
+            .filter(mesh => mesh.metadata && mesh.metadata[metadataKey])
+            .forEach(mesh => mesh.dispose());
+    }
 }
 
 

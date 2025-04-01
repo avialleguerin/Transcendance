@@ -856,11 +856,17 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
     font-size: 0.6vw;
     text-align: center;
     position: absolute;
-    top: 55%;
+    top: 65%;
     left: 20%;
     transform: translateX(-50%);
     text-align: justify;
     width: 21%;
+    background-color: gray;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    height: 22%;
 }
 
 .explication_powerUP_teammate {
@@ -869,11 +875,17 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
     font-size: 0.6vw;
     text-align: center;
     position: absolute;
-    top: 55%;
+    top: 65%;
     left: 50%;
     transform: translateX(-50%);
     text-align: justify;
     width: 15%;
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background-color: gray;
+    height: 22%;
 }
 
 .explication_powerUP_inverse {
@@ -882,11 +894,17 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
     font-size: 0.6vw;
     text-align: center;
     position: absolute;
-    top: 55%;
+    top: 65%;
     left: 81%;
     transform: translateX(-50%);
     text-align: justify;
     width: 15%;
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background-color: gray; 
+    height: 22%;
 }
 
 .explication_powerUP_freeze {
@@ -895,11 +913,17 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
     font-size: 0.6vw;
     text-align: center;
     position: absolute;
-    top: 55%;
+    top: 65%;
     left: 63%;
     transform: translateX(-50%);
     text-align: justify;
     width: 21%;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background-color: gray;
+    height: 22%;
 }
 
 .explication_powerUP_grenade_multi {
@@ -908,26 +932,34 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
     font-size: 0.6vw;
     text-align: center;
     position: absolute;
-    top: 55%;
+    top: 65%;
     left: 28%;
     transform: translateX(-50%);
     text-align: justify;
     width: 21%;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background-color: gray;
+    height: 22%;
 }
 
 .container_image_powerUP {
     position: absolute;
-    top: 55%;
+    top: 62%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 75%;
     height: 60%;
-    /* background-color: blue; */
     flex-direction: row;
     align-items: start;
     display: flex;
     padding-top: 5%;
     gap: 20%;
+    background-color: #80808091;
+    padding-left: 60px;
+    padding-right: 60px;
 }
 
 .container_image_powerUP img {
@@ -949,28 +981,30 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
 
 .container_image_powerUP_multi {
     position: absolute;
-    top: 55%;
-    left: 40%;
+    top: 62%;
+    left: 45%;
     transform: translate(-50%, -50%);
-    width: 38%;
+    width: 75%;
     height: 60%;
-    /* background-color: blue; */
     flex-direction: row;
     align-items: start;
     display: flex;
     padding-top: 5%;
-    gap: 57%;
+    gap: 28%;
+    background-color: #80808091;
+    padding-left: 15%;
+    margin-left: 50px;
 }
 
 .container_image_powerUP_multi img {
-    width: 40%;
+    width: 20%;
     height: 40%;
     object-fit: contain;
     border: 2px solid #ffffff;
     border-radius: 50%;
-    box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.6); /* Lueur extérieure */
+    box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.6);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    background: rgba(161, 161, 161, 0.9); /* Légère transparence */
+    background: rgba(161, 161, 161, 0.9);
 }
 
 .container_image_powerUP_multi img:hover {
@@ -978,46 +1012,211 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
     box-shadow: 0px 0px 20px rgba(255, 255, 255, 1);
 }
 
-
 .exit_powerUP_info {
     position: absolute;
-    right: 5%;
-    bottom: 5%;
-    width: 120px;  /* Largeur fixe */
-    height: 70px;  /* Hauteur fixe */
+    right: 0%;
+    top: 5%;
+    width: 120px;
+    height: 70px;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
     z-index: 15;
-}
-
-.exit_powerUP_info .btn {
-    padding: 15px 0px;
-    font-size: 0.7vw;
+    clip-path: polygon(16.84% 20%, 100.84% 20%, 101.16% 77.13%, 30.83% 75.71%);
+  }
+  
+  .exit_powerUP_info .btn {
+    padding: 15px 0;
+    font-size: 14px;
     font-weight: bold;
-    color: rgb(255, 255, 255);
-    border: 2px solid #44444400;
-    background-color: transparent;
+    color: #ffffff;
+    border: 19px solid #0070ff45;
+    background-color: rgba(0, 195, 255, 0.87);
     border-radius: 8px;
     cursor: pointer;
     text-align: center;
-    background-image: url("../../../srcs/game/assets/image/boutton.svg");
-    background-size: 100% auto;
-    background-position: center;
-    background-repeat: no-repeat;
-    line-height: 4vh;
-    
-    /* Ajout de dimensions fixes */
-    width: 120px;  /* Largeur fixe */
-    height: 70px;  /* Hauteur fixe */
-    display: flex; /* Pour aider au centrage du texte */
-    justify-content: center; /* Centre horizontalement */
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.2s ease;
+    font-size: 24px;
+    line-height: 1;
+    position: relative;
+    font-family: 'Black Ops One', sans-serif;
+    text-shadow: #ffffff 0px 0px 10px;
+  }
 
+.delay_powerUP_1 {
     position: absolute;
-    bottom: 0%;
-    left: 50%;
-
+    top: 90%;
+    left: 20%;
     transform: translate(-50%, -50%);
-    align-items: center; /* Centre verticalement */
+    width: 22%;
+    height: 3%;
+    background-color: #333333ba;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+
+}
+
+.delay_powerUP_1 p {
+    color: white;
+    font-family: 'Black Ops One', sans-serif;
+    font-size: 0.5vw;
+    position: absolute;
+    left: 34px;
+    transform: translateY(10%);
+}
+
+.delay_powerUP_1 img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    position: absolute;
+    left: 10px;
+}
+
+.delay_powerUP_2 {
+    position: absolute;
+    top: 90%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 17%;
+    height: 3%;
+    background-color: #333333ba;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+
+}
+
+.delay_powerUP_2 p {
+    color: white;
+    font-family: 'Black Ops One', sans-serif;
+    font-size: 0.5vw;
+    position: absolute;
+    left: 34px;
+    transform: translateY(10%);
+}
+
+.delay_powerUP_2 img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    position: absolute;
+    left: 10px;
+}
+
+.delay_powerUP_3 {
+    position: absolute;
+    top: 90%;
+    left: 81%;
+    transform: translate(-50%, -50%);
+    width: 17%;
+    height: 3%;
+    background-color: #333333ba;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+
+}
+
+.delay_powerUP_3 p {
+    color: white;
+    font-family: 'Black Ops One', sans-serif;
+    font-size: 0.5vw;
+    position: absolute;
+    left: 34px;
+    transform: translateY(10%);
+}
+
+.delay_powerUP_3 img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    position: absolute;
+    left: 10px;
+}
+
+
+
+.delay_powerUP_1_multi {
+    position: absolute;
+    top: 90%;
+    left: 28%;
+    transform: translate(-50%, -50%);
+    width: 22%;
+    height: 3%;
+    background-color: #333333ba;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+
+}
+
+.delay_powerUP_1_multi p {
+    color: white;
+    font-family: 'Black Ops One', sans-serif;
+    font-size: 0.5vw;
+    position: absolute;
+    left: 34px;
+    transform: translateY(10%);
+}
+
+.delay_powerUP_1_multi img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    position: absolute;
+    left: 10px;
+}
+
+.delay_powerUP_2_multi {
+    position: absolute;
+    top: 90%;
+    left: 63%;
+    transform: translate(-50%, -50%);
+    width: 22%;
+    height: 3%;
+    background-color: #333333ba;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+
+}
+
+.delay_powerUP_2_multi p {
+    color: white;
+    font-family: 'Black Ops One', sans-serif;
+    font-size: 0.5vw;
+    position: absolute;
+    left: 34px;
+    transform: translateY(10%);
+}
+
+.delay_powerUP_2_multi img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    position: absolute;
+    left: 10px;
 }

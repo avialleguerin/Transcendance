@@ -214,6 +214,18 @@ export default class extends AbstractView {
 					<p class="explication_powerUP_grenade">Le Power-Up Grenade Flash te permet de lancer une grenade qui aveuglera ton adversaire. Mais attention ! Son fonctionnement est simple : elle obscurcit entièrement l’écran de jeu, ce qui signifie que même celui qui la lance est ébloui.</p>
 					<p class="explication_powerUP_teammate">Le Power-Up Coéquipier te permet d'appeler un nouveau joueur dans la partie pour une courte durée. Tu peux le déplacer avec E/D pour le joueur 1 et O/L pour le joueur 2.</p>
 					<p class="explication_powerUP_inverse">Le Power-Up Inverse te permet d'inverser les contrôles de ton adversaire pendant une courte durée.</p>
+					<div class="delay_powerUP_1">
+						<img src="../../../srcs/game/assets/image/timer-reset.svg" alt="delay">
+						<p>DELAIS DE RECUPERATION                  : 10s</p>
+					</div>
+					<div class="delay_powerUP_2">
+						<img src="../../../srcs/game/assets/image/timer-reset.svg" alt="delay">
+						<p>DELAIS DE RECUPERATION : 15s</p>
+					</div>
+					<div class="delay_powerUP_3">
+						<img src="../../../srcs/game/assets/image/timer-reset.svg" alt="delay">
+						<p>DELAIS DE RECUPERATION : 10s</p>
+					</div>
 				</div>
 				<div class="container_image_powerUP">
 					<img src="../../../srcs/game/assets/image/grenade_no_bg.png" alt="grenade" class="grenade">
@@ -221,7 +233,9 @@ export default class extends AbstractView {
 					<img src="../../../srcs/game/assets/image/reverse_no_bg.png" alt="inverse_player" class="inverse_player">
 				</div>
 				<div id="exit_powerUP_info" class="exit_powerUP_info">
-					<button id="exit_powerUP_info_btn" class="btn">EXIT</button>
+					<button id="exit_powerUP_info_btn" class="btn">
+						X
+					</button>
 				</div>
 			</div>
 
@@ -232,13 +246,23 @@ export default class extends AbstractView {
 					<p class="explication_general">Le Power-Up est un bonus qui te donne un avantage sur ton adversaire. En activant cette option, tu commenceras la partie avec au moins un Power-Up de chaque type. Tu peux également personnaliser ce nombre et en obtenir trois ou cinq de chaque.</p>
 					<p class="explication_powerUP_grenade_multi">Le Power-Up Grenade Flash te permet de lancer une grenade qui aveuglera ton adversaire. Mais attention ! Son fonctionnement est simple : elle obscurcit entièrement l’écran de jeu, ce qui signifie que même celui qui la lance est ébloui.</p>
 					<p class="explication_powerUP_freeze">Le Power-Up Freeze permet de rendre immobile l'equipe adverse pendant un cour instant.</p>
+					<div class="delay_powerUP_1_multi">
+						<img src="../../../srcs/game/assets/image/timer-reset.svg" alt="delay">
+						<p>DELAIS DE RECUPERATION : 10s</p>
+					</div>
+					<div class="delay_powerUP_2_multi">
+						<img src="../../../srcs/game/assets/image/timer-reset.svg" alt="delay">
+						<p>DELAIS DE RECUPERATION : 10s</p>
+					</div>
 				</div>
 				<div class="container_image_powerUP_multi">
 					<img src="../../../srcs/game/assets/image/grenade_no_bg.png" alt="grenade" class="grenade">
 					<img src="../../../srcs/game/assets/image/freeze_no_bg.png" alt="freeze" class="freeze">
 				</div>
 				<div id="exit_powerUP_info_multi" class="exit_powerUP_info">
-					<button id="exit_powerUP_info_btn_multi" class="btn">EXIT</button>
+					<button id="exit_powerUP_info_btn_multi" class="btn">
+						X
+					</button>
 				</div>
 			</div>
 		</div>
@@ -248,24 +272,24 @@ export default class extends AbstractView {
 	init_solo_game() {
 		document.getElementById("solo_1v1_btn").addEventListener("click", () => {
 			console.log("Solo 1v1 game started");
-			handleViewTransitions("vue3", "vue2");
 			startGame();
+			handleViewTransitions("vue3", "vue2");
 		});
 	}
 
 	initEvents() {
 		document.getElementById("multiplayer_btn").addEventListener("click", () => {
 			console.log("Multiplayer 2v2 game started");
-			handleViewTransitions("vue3", "vue2");
 			startMultiGame();
+			handleViewTransitions("vue3", "vue2");
 		});
 	}
 
 	init_solo_game_ai() {
 		document.getElementById("solo_ai_btn").addEventListener("click", () => {
 			console.log("Solo AI game started");
-			handleViewTransitions("vue3", "vue2");
 			startAI_Game();
+			handleViewTransitions("vue3", "vue2");
 		});
 	}
 
