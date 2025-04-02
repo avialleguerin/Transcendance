@@ -54,21 +54,27 @@ export function createBall(scene) {
 
 function resetBall(ball) { 
 	ball.position = new BABYLON.Vector3(-7, 300.8, -72.5);
-	ballSpeed = 0.35;
-	ballDirection = {
-		x: 1,
-		z: 1
-	};
+	ballSpeed = 0.7;
+	ballDirection = getRandomDirection();
 }
 
-let ballSpeed = 0.35;
+let ballSpeed = 0.7;
 
-let ballDirection =
+function getRandomDirection()
 {
-	x: 1,
-	z: 1
-};
+	let x = Math.random() * 2 - 1;
+	let z = Math.random() * 2 - 1;
+	
+	const length = Math.sqrt(x * x + z * z);
+	x /= length;
+	z /= length;
 
+	if (Math.abs(x) < 0.3) x = x > 0 ? 0.3 : -0.3;
+	if (Math.abs(z) < 0.3) z = z > 0 ? 0.3 : -0.3;
+	return { x, z };
+}
+
+let ballDirection = getRandomDirection();
 
 
 
@@ -88,7 +94,9 @@ export function MoveBall(player_1, player_2, ball, player_1_bonus, player_2_bonu
 	const BALL_RADIUS = 1.5;
 
 	ball.position.x += ballDirection.x * ballSpeed;
+	console.log(ballDirection.x);
 	ball.position.z += ballDirection.z * ballSpeed;
+	console.log(ballDirection.z);
 
 	ball.rotate(BABYLON.Axis.X, 0.1 * ballSpeed);
 	ball.rotate(BABYLON.Axis.Z, 0.1 * ballDirection.x * ballSpeed);
@@ -119,18 +127,48 @@ export function MoveBall(player_1, player_2, ball, player_1_bonus, player_2_bonu
 		ball.position.x - BALL_RADIUS <= player_1.position.x + PADDLE_WIDTH / 2 &&
 		ball.position.z + BALL_RADIUS >= player_1.position.z - PADDLE_HEIGHT / 2 &&
 		ball.position.z - BALL_RADIUS <= player_1.position.z + PADDLE_HEIGHT / 2) {
+		
+		// Inverser la direction x
+		ballDirection.x *= -1; 
+		
+		// Calculer l'impact relatif (-1 à 1)
 		const relativeImpact = (ball.position.z - player_1.position.z) / (PADDLE_HEIGHT / 2);
-		ballDirection.z = relativeImpact * 1;
+		
+		// Appliquer un facteur d'angle MAX_ANGLE_FACTOR pour contrôler l'angle maximum
+		const MAX_ANGLE_FACTOR = 0.8;
+		ballDirection.z = relativeImpact * MAX_ANGLE_FACTOR;
+		
+		// Normaliser le vecteur pour maintenir une vitesse constante
+		const length = Math.sqrt(ballDirection.x * ballDirection.x + ballDirection.z * ballDirection.z);
+		ballDirection.x /= length;
+		ballDirection.z /= length;
+		
+		// Augmenter légèrement la vitesse à chaque rebond
 		ballSpeed += 0.05;
+		
+		// Éviter que la balle reste coincée
+		ball.position.x += ballDirection.x * 0.1;
 	}
 
 	if (ball.position.x + BALL_RADIUS >= player_2.position.x - PADDLE_WIDTH / 2 &&
 		ball.position.x - BALL_RADIUS <= player_2.position.x + PADDLE_WIDTH / 2 &&
 		ball.position.z + BALL_RADIUS >= player_2.position.z - PADDLE_HEIGHT / 2 &&
 		ball.position.z - BALL_RADIUS <= player_2.position.z + PADDLE_HEIGHT / 2) {
+		ballDirection.x *= -1; // Inverser la direction x
 		const relativeImpact = (ball.position.z - player_2.position.z) / (PADDLE_HEIGHT / 2);
-		ballDirection.z = relativeImpact * 1;
+		const MAX_ANGLE_FACTOR = 0.8;
+		ballDirection.z = relativeImpact * MAX_ANGLE_FACTOR;
+		
+		// Normaliser le vecteur pour maintenir une vitesse constante
+		const length = Math.sqrt(ballDirection.x * ballDirection.x + ballDirection.z * ballDirection.z);
+		ballDirection.x /= length;
+		ballDirection.z /= length;
+		
+		// Augmenter légèrement la vitesse à chaque rebond
 		ballSpeed += 0.05;
+		
+		// Éviter que la balle reste coincée
+		ball.position.x += ballDirection.x * 0.1;
 	}
 
 	if (player_1_bonus)
@@ -141,7 +179,7 @@ export function MoveBall(player_1, player_2, ball, player_1_bonus, player_2_bonu
 			ball.position.z - BALL_RADIUS <= player_1_bonus.position.z + PADDLE_HEIGHT / 2) {
 			const relativeImpact = (ball.position.z - player_1_bonus.position.z) / (PADDLE_HEIGHT / 2);
 			ballDirection.z = relativeImpact * 1;
-			ballSpeed += 0.05;
+			ballSpeed += 0.01;
 		}
 	}
 
@@ -153,7 +191,7 @@ export function MoveBall(player_1, player_2, ball, player_1_bonus, player_2_bonu
 			ball.position.z - BALL_RADIUS <= player_2_bonus.position.z + PADDLE_HEIGHT / 2) {
 			const relativeImpact = (ball.position.z - player_2_bonus.position.z) / (PADDLE_HEIGHT / 2);
 			ballDirection.z = relativeImpact * 1;
-			ballSpeed += 0.05;
+			ballSpeed += 0.01;
 		}
 	}
 }
@@ -239,7 +277,7 @@ function checkPaddleCollision(paddle, ball, BALL_RADIUS, PADDLE_WIDTH, PADDLE_HE
 		ballDirection.z = relativeImpact * 1;
 		
 		// Augmenter la vitesse de la balle
-		ballSpeed += 0.05;
+		ballSpeed += 0.01;
 	}
 }
 

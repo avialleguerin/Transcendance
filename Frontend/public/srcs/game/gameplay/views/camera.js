@@ -36,6 +36,10 @@ const views = {
     winner: {
         position: new BABYLON.Vector3(-30, 309, -55),
         rotation: new BABYLON.Vector3(0.04585831303667534, -1.5694725474476896, 0)
+    },
+    tournament: {
+        position: new BABYLON.Vector3(-18.428470385182532, 107.62138152604801, -14.139896745255728),
+        rotation: new BABYLON.Vector3(-0.03079079706537804, -3.1248471752812232, 0)
     }
 };
 
@@ -220,5 +224,13 @@ if (viewName === 'vue1' && previousView === 'default')
     if (viewName === 'winner')
     {
         changeView('winner', true);
+    }
+    if (viewName === 'tournament')
+    {
+        changeView('tournament', true);
+    }
+    if (viewName === 'vue2' && previousView === 'tournament')
+    {
+        changeView('vue2', true);
     }
 }
