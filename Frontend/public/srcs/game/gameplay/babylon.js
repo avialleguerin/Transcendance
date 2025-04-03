@@ -13,7 +13,7 @@ import { isGameFinished } from "./score.js";
 import { gameIsFinished } from "./score.js";
 import { SetIsGameFinished } from "./score.js";
 import { init_skins_perso_player1_multi_podium, init_skins_perso_player2_multi_podium, init_skins_perso_player3_multi_podium, init_skins_perso_player4_multi_podium } from "./multiplayer/init_teamPlayer_podium.js";
-
+import { start_tournament_game, init_game_tournament } from "./tournament/tournament.js";
 
 const canvas = document.getElementById('renderCanvas');
 const engine = new BABYLON.Engine(canvas, true, {
@@ -51,6 +51,7 @@ scene.imageProcessingConfiguration.toneMappingEnabled = true;
 scene.getEngine().setHardwareScalingLevel(1.0);
 scene.performancePriority = BABYLON.Scene.PRIORITY_ANTIALIAS;
 
+
 window.camera = new BABYLON.FreeCamera("camera", new BABYLON.Vector3(7.860370854357264, 4, -55.57231601704761), scene);
 camera.attachControl(canvas, true);
 camera.position = new BABYLON.Vector3(-45.79301951065982, 5.879735371044789, -31.342210947081313),
@@ -82,37 +83,6 @@ ambientLight.intensity = 3;
 
 
 create_environment_view1(scene);
-// init_skins_perso_first(scene);
-// init_skins_perso_seconde(scene);
-// init_skins_perso_player1(scene);
-// init_skins_perso_player2(scene);
-// init_skins_perso_player1_multi(scene);
-// init_skins_perso_player2_multi(scene);
-// init_skins_perso_player3_multi(scene);
-// init_skins_perso_player4_multi(scene);
-// init_skins_perso_player1_multi_podium(scene);
-// init_skins_perso_player2_multi_podium(scene);
-// init_skins_perso_player3_multi_podium(scene);
-// init_skins_perso_player4_multi_podium(scene);
-
-
-
-// create_environment_view2(scene);
-// create_environment_view3(scene);
-
-
-// const environment = scene.createDefaultEnvironment( {
-//     createSkybox: false,
-// 	// CreateGround: true,
-// 	// enableGroundShadow: true,
-// 	groundYBias: 1
-// });
-
-
-// const skysphere = BABYLON.MeshBuilder.CreateSphere("skysphere", {
-// 	diameter: 1000,
-// 	segments: 32
-// }, scene);
 
 function createOptimizedSkybox(scene) {
     // Créer un matériau optimisé pour la skybox
@@ -165,6 +135,7 @@ let Solo_gameStart = false;
 let Multi_gameStart = false;
 let AI_gameStart = false;
 let ball;
+let tournament_game = false;
 
 export function startGame()
 {
@@ -188,6 +159,15 @@ export function startAI_Game()
     AI_gameStart = true;
     Solo_gameStart = false;
     Multi_gameStart = false;
+    SetIsGameFinished(false);
+}
+
+export function startTournamentGame()
+{
+    tournament_game = true;
+    Solo_gameStart = false;
+    Multi_gameStart = false;
+    AI_gameStart = false;
     SetIsGameFinished(false);
 }
 
@@ -230,6 +210,14 @@ async function initialize_AI_game()
     let players = await init_game_ai(scene);
     player_1 = players.player_1;
     AI_player = players.ai_player;
+    ball = players.ball;
+}
+
+async function initializeGame_tournament()
+{
+    let players = await init_game_tournament(scene);
+    player_1 = players.player_1;
+    player_2 = players.player_2;
     ball = players.ball;
 }
 
@@ -325,6 +313,25 @@ engine.runRenderLoop(() =>
         }
     }
 
+    if (tournament_game && !gameIsFinished)
+    {
+        if (!initialized)
+        {
+            initializeGame_tournament();
+            initialized = true;
+        }
+        if (initialized)
+        {
+            if (scene.inputStates.space && !play)
+                play = true;
+            if (play)
+            {
+                UpdatePlayerPose(player_1, player_2);
+                MoveBall(player_1, player_2, ball);
+            }
+        }
+    }
+
     // console.log(camera.rotation);
     // console.log(camera.position);
     scene.render();
@@ -347,6 +354,11 @@ export function getMultiGameStart()
 export function getAIGameStart()
 {
     return AI_gameStart;
+}
+
+export function getTournamentGameStart()
+{
+    return tournament_game;
 }
 
 

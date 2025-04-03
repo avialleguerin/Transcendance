@@ -46,7 +46,9 @@ export default class extends AbstractView {
 						<div id="game_mode_btn" class="game_mode_btn">
 							<button id="solo" class="btn">SOLO</button>
 							<button id="multiplayer" class="btn">MULTIJOUEUR</button>
-							<button id="tournament" class="btn">TOURNOI</button>
+							<button id="tournament_view" class="btn">
+								<a href="/tournament" class="nav-link" data-link>TOURNOI</a>
+							</button>
 						</div>
 					</div>
 				</div>
@@ -158,41 +160,6 @@ export default class extends AbstractView {
 						</button>
 					</div>
 				</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 			</div>
 			<div class="back" id="back_to_select_mode_view6">
 				<button id="back_to_menu_view6" class="btn_back">BACK</button>
@@ -300,24 +267,6 @@ export default class extends AbstractView {
 					</button>
 				</div>
 			</div>
-
-			<div class="tournament_view" id="tournament_view">
-				<div class="tournament_view-content">
-					<h1>TOURNOI</h1>
-					<div class="tournament_graphic" id="tournament_graphic_id">
-						<p class="upper_bracket">upper bracket</p>
-						<p class="lower_bracket">lower bracket</p>
-						<p class="joueur1" id="joueur1_id">joueur 1</p>
-						<p class="joueur2" id="joueur2_id">joueur 2</p>
-						<p class="joueur3" id="joueur3_id">joueur 3</p>
-						<p class="joueur4" id="joueur4_id">joueur 4</p>
-						<img src="../../../srcs/game/assets/image/Untitled.svg" alt="tournament">
-					</div>
-					<button id="start_tournament" class="btn_start_tournament">Lancer le tournoi</button>
-					<button id="back_to_menu_view_tournament" class="btn_back_tournament">BACK</button>
-					<button id="incremente_place" class="btn_incremente_place">+</button>
-				</div>
-			</div>
 		</div>
 		`;
 	}
@@ -343,6 +292,14 @@ export default class extends AbstractView {
 			console.log("Solo AI game started");
 			startAI_Game();
 			handleViewTransitions("vue3", "vue2");
+		});
+	}
+
+	tournament_view()
+	{
+		document.getElementById("tournament_view").addEventListener("click", () => {
+			console.log("Tournament view started");
+			handleViewTransitions("tournament");
 		});
 	}
 
@@ -380,10 +337,7 @@ export default class extends AbstractView {
 		const back_to_select_mode_view7 = document.getElementById('back_to_select_mode_view7');
 		const back_to_select_mode_view8 = document.getElementById('back_to_select_mode_view8');
 
-
-		const tournament_btn = document.getElementById('tournament');
-		const tournament_view = document.getElementById('tournament_view');
-		const back_to_menu_view_tournament = document.getElementById('back_to_menu_view_tournament');
+		// const back_to_menu_view_tournament = document.getElementById('back_to_menu_view_tournament');
 
 		btn_jouer.addEventListener('click', () => {
 			console.log('JOUER button clicked');
@@ -461,15 +415,15 @@ export default class extends AbstractView {
 			});
 		}
 
-		back_to_menu_view_tournament.addEventListener('click', () => {
-			handleViewTransitions("vue2", "tournament");
-			tournament_view.classList.remove('active');
-			setTimeout(() => {
-				view2.classList.add('active');
-				view1.classList.add('active');
-				btn_back_home.classList.add('active');
-			} , 1000);
-		});
+		// back_to_menu_view_tournament.addEventListener('click', () => {
+		// 	handleViewTransitions("vue2", "tournament");
+		// 	tournament_view.classList.remove('active');
+		// 	setTimeout(() => {
+		// 		view2.classList.add('active');
+		// 		view1.classList.add('active');
+		// 		btn_back_home.classList.add('active');
+		// 	} , 1000);
+		// });
 
 
 
@@ -999,94 +953,84 @@ export default class extends AbstractView {
 		/***************************TOURNAMENT**********************************/
 		/***********************************************************************/
 
-		const incremente_place = document.getElementById('incremente_place');
-		const joueur1_id = document.getElementById('joueur1_id');
-		const joueur2_id = document.getElementById('joueur2_id');
-		const joueur3_id = document.getElementById('joueur3_id');
-		const joueur4_id = document.getElementById('joueur4_id');
+		// const incremente_place = document.getElementById('incremente_place');
+		// const joueur1_id = document.getElementById('joueur1_id');
+		// const joueur2_id = document.getElementById('joueur2_id');
+		// const joueur3_id = document.getElementById('joueur3_id');
+		// const joueur4_id = document.getElementById('joueur4_id');
 
-		tournament_btn.addEventListener('click', () => {
-			handleViewTransitions("tournament", "vue2");
-			console.log('Tournament button clicked');
-			view2.classList.remove('active');
-			view1.classList.remove('active');
-			btn_back_home.classList.remove('active');
-			setTimeout(() => {
-				tournament_view.classList.add('active');
-			}, 1000);
-		});
-		const counter = createCounter();
+		// tournament_btn.addEventListener('click', () => {
+		// 	handleViewTransitions("tournament", "vue2");
+		// 	console.log('Tournament button clicked');
+		// 	view2.classList.remove('active');
+		// 	view1.classList.remove('active');
+		// 	btn_back_home.classList.remove('active');
+		// 	setTimeout(() => {
+		// 		tournament_view.classList.add('active');
+		// 	}, 1000);
+		// });
+		// const counter = createCounter();
 
-		incremente_place.addEventListener('click', () => {
-			console.log('Incremente place clicked');
+		// incremente_place.addEventListener('click', () => {
+		// 	console.log('Incremente place clicked');
 			
-			const count = counter();
-			if (count == 1)
-			{
-				joueur1_id.style.top = '13%';
-				joueur1_id.style.left = '37%';
-				joueur2_id.style.top = '63%';
-				joueur2_id.style.left = '24%';
-				joueur1_id.style.color = 'white';
-				joueur2_id.style.color = 'white';
-				joueur3_id.style.color = 'forestgreen';
-				joueur4_id.style.color = 'forestgreen';
-			}
-			if (count == 2)
-			{
-				joueur3_id.style.top = '33%';
-				joueur3_id.style.left = '37%';
-				joueur4_id.style.top = '71%';
-				joueur4_id.style.left = '24%';
-				joueur3_id.style.color = 'white';
-				joueur2_id.style.color = 'forestgreen';
-			}
-			if (count == 3)
-			{
-				joueur2_id.style.top = '67%';
-				joueur2_id.style.left = '37%';
-				joueur4_id.style.color = 'red';
-				joueur2_id.style.color = 'white';
-				joueur1_id.style.color = 'forestgreen';
-				joueur3_id.style.color = 'forestgreen';
-			}
-			if (count == 4)
-			{
-				joueur3_id.style.top = '76%';
-				joueur3_id.style.left = '37%';
-				joueur1_id.style.top = '35%';
-				joueur1_id.style.left = '58%';
-				joueur1_id.style.color = 'white';
-				joueur2_id.style.color = 'forestgreen';
-			}
-			if (count == 5)
-			{
-				joueur2_id.style.top = '44%';
-				joueur2_id.style.left = '58%';
-				joueur3_id.style.color = 'red';
-				joueur1_id.style.color = 'forestgreen';
-			}
-			if (count == 6)
-			{
-				joueur1_id.style.top = '39%';
-				joueur1_id.style.left = '72%';
-				joueur2_id.style.color = 'red';
-				joueur1_id.style.color = 'yellow';
-			}
-		});
+		// 	const count = counter();
+		// 	if (count == 1)
+		// 	{
+		// 		joueur1_id.style.top = '13%';
+		// 		joueur1_id.style.left = '37%';
+		// 		joueur2_id.style.top = '63%';
+		// 		joueur2_id.style.left = '24%';
+		// 		joueur1_id.style.color = 'white';
+		// 		joueur2_id.style.color = 'white';
+		// 		joueur3_id.style.color = 'forestgreen';
+		// 		joueur4_id.style.color = 'forestgreen';
+		// 	}
+		// 	if (count == 2)
+		// 	{
+		// 		joueur3_id.style.top = '33%';
+		// 		joueur3_id.style.left = '37%';
+		// 		joueur4_id.style.top = '71%';
+		// 		joueur4_id.style.left = '24%';
+		// 		joueur3_id.style.color = 'white';
+		// 		joueur2_id.style.color = 'forestgreen';
+		// 	}
+		// 	if (count == 3)
+		// 	{
+		// 		joueur2_id.style.top = '67%';
+		// 		joueur2_id.style.left = '37%';
+		// 		joueur4_id.style.color = 'red';
+		// 		joueur2_id.style.color = 'white';
+		// 		joueur1_id.style.color = 'forestgreen';
+		// 		joueur3_id.style.color = 'forestgreen';
+		// 	}
+		// 	if (count == 4)
+		// 	{
+		// 		joueur3_id.style.top = '76%';
+		// 		joueur3_id.style.left = '37%';
+		// 		joueur1_id.style.top = '35%';
+		// 		joueur1_id.style.left = '58%';
+		// 		joueur1_id.style.color = 'white';
+		// 		joueur2_id.style.color = 'forestgreen';
+		// 	}
+		// 	if (count == 5)
+		// 	{
+		// 		joueur2_id.style.top = '44%';
+		// 		joueur2_id.style.left = '58%';
+		// 		joueur3_id.style.color = 'red';
+		// 		joueur1_id.style.color = 'forestgreen';
+		// 	}
+		// 	if (count == 6)
+		// 	{
+		// 		joueur1_id.style.top = '39%';
+		// 		joueur1_id.style.left = '72%';
+		// 		joueur2_id.style.color = 'red';
+		// 		joueur1_id.style.color = 'yellow';
+		// 	}
+		// });
 
 	}
 }
-
-function createCounter() {
-	// Cette variable est "enfermée" dans la closure
-	let count = 0;
-	
-	return function() {
-	  count++;
-	  return count;
-	};
-  }
 
 
 export function getPowerUP_value() {

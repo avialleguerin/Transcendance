@@ -1,8 +1,9 @@
 import { handleViewTransitions } from "./views/camera.js";
 import { enable_skin_perso_player_first_and_second } from "./solo/skin/init_skin_player_podium.js";
-import { getSoloGameStart, getMultiGameStart } from "./babylon.js";
+import { getSoloGameStart, getMultiGameStart, getTournamentGameStart } from "./babylon.js";
 import { enable_skin_multi_podium } from "./multiplayer/init_teamPlayer_podium.js";
 import { SpawnParticules_endGame, SpawnParticules_GOAL } from "./particule_and_game.js";
+
 
 let scoreLeft = 0;
 let scoreRight = 0;
@@ -96,6 +97,7 @@ export function updateScore(side)
 {
     let soloGameStart = getSoloGameStart();
     let multi_player_game = getMultiGameStart();
+    let tournament_game = getTournamentGameStart();
     if (side === 'left') {
         scoreLeft++;
         SpawnParticules_GOAL(scene, 27, 299.5, -120, true);
@@ -145,6 +147,22 @@ export function updateScore(side)
             }
             handleViewTransitions('winner', true);
             enable_skin_multi_podium();
+        }
+    }
+    else if (tournament_game)
+    {
+        if (scoreLeft === 1 || scoreRight === 1) {
+            SetIsGameFinished(true);
+            if (scoreLeft === 1)
+            {
+                isPlayer1_win = true;
+                isPlayer2_win = false;
+            }
+            else
+            {
+                isPlayer1_win = false;
+                isPlayer2_win = true;
+            }
         }
     }
 }

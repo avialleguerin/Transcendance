@@ -155,11 +155,6 @@ if (viewName === 'vue1' && previousView === 'default')
             init_skins_perso_first(scene);
             init_skins_perso_seconde(scene);
         }
-        // else if (aiGameStart)
-        // {
-        //     init_skins_perso_player1_multi_podium(scene);
-        //     init_skins_perso_player2_multi_podium(scene);
-        // }
         else if (multiGameStart && !aiGameStart && !soloGameStart)
         {
             console.log("je suis la init_skins_perso_player1_multi_podium");
@@ -232,5 +227,46 @@ if (viewName === 'vue1' && previousView === 'default')
     if (viewName === 'vue2' && previousView === 'tournament')
     {
         changeView('vue2', true);
+    }
+    if (viewName === 'tournament_game_start' && previousView === 'tournament')
+	{
+		createLoadingOverlay();
+        destroy_environement_view2(scene);
+		setTimeout(() =>
+		{
+			changeView('vue3', true);
+			window.currentView = 'vue3';
+            destroy_all_by_metadata_skin(scene, "isPlayer_skin_menu");
+		}, 5500);
+		setTimeout(() => 
+		{
+			removeLoadingOverlay();
+			changeView('vue4', true);
+		}, 8500);
+	}
+    if (viewName === 'tournament' && previousView === 'vue4')
+    {
+        isLoading = true;
+        changeView('vue3', true);
+        setTimeout(() => {
+            createLoadingOverlay();
+            init_skins_perso_player1(scene);
+            init_skins_perso_player2(scene);
+            init_skins_perso_player1_multi(scene);
+            init_skins_perso_player2_multi(scene);
+            init_skins_perso_player3_multi(scene);
+            init_skins_perso_player4_multi(scene);
+        }, 1500);
+        setTimeout(() => {
+            create_environment_view2(scene);
+            changeView('tournament', true);
+            window.currentView = 'tournament'; 
+
+        }, 3500);
+        
+        setTimeout(() => {
+            removeLoadingOverlay();
+            isLoading = false;
+        }, 5000);
     }
 }
