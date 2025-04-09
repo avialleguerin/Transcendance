@@ -284,3 +284,22 @@
 	color: black;
 	font-family: 'Black Ops One', sans-serif;
 }
+
+.btn_finished_game {
+    position: absolute;
+	right: 32%;
+	top: 60%;
+	width: 120px;
+	height: 70px;
+	display: none;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+	z-index: 15;
+	clip-path: polygon(0% 20%, 80% 20%, 101.16% 77.13%, 15% 77.13%);
+	background-color: aqua;
+	border: 19px solid #0070ff45;
+	font-size: 0.8vw;
+	color: black;
+	font-family: 'Black Ops One', sans-serif;
+}

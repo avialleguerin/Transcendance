@@ -1,7 +1,8 @@
 import AbstractView from "./AbstractView.js";
 import { getPlayer_1_win, getPlayer_2_win, isGameFinished } from "../../../srcs/game/gameplay/score.js";
-import { leave_Game } from "../../../srcs/game/gameplay/babylon.js";
+import { leave_Game, leave_tournament_game } from "../../../srcs/game/gameplay/babylon.js";
 import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.js";
+import { destroy_game_solo_tournament } from "../../../srcs/game/gameplay/tournament/tournament.js";
 
 export default class extends AbstractView {
 	constructor() {
@@ -34,9 +35,7 @@ export default class extends AbstractView {
 			<div class="winner">
 				<h1 id="winner_id"></h1>
 			</div>
-			<button class="leave_game_2" id="leave_game_2_id">
-				<a href="/tournament" class="nav-link" data-link>Quitter la partie</a>
-			</button>
+			<button class="leave_game_2" id="leave_game_2_id">Quitter la partie</button>
 		</div>
 	</div>
 	`;
@@ -92,8 +91,9 @@ export default class extends AbstractView {
 			window.history.back();
 			clearInterval(this.gameLoop); // Arrête la boucle quand la partie est finie
 			handleViewTransitions('tournament', 'vue4');
+			console.log("Destruction de l'environnement et des objets du jeudeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
 			setTimeout(() => {
-				leave_Game();
+				leave_tournament_game();
 			}, 1500);
 		});
 	}

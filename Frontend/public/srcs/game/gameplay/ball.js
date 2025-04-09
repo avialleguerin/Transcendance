@@ -82,7 +82,7 @@ export function MoveBall(player_1, player_2, ball, player_1_bonus, player_2_bonu
 
 	if (!ball)
 	{
-		console.error('Ball is not created yet');
+		console.error('Ball is not created yeefwwwwwwwwwwwwwwwwwwwwwwwwwewwwwwwwwwwwwwwwwwwwwwwwwwt');
 		return;
 	}
 
@@ -94,9 +94,9 @@ export function MoveBall(player_1, player_2, ball, player_1_bonus, player_2_bonu
 	const BALL_RADIUS = 1.5;
 
 	ball.position.x += ballDirection.x * ballSpeed;
-	console.log(ballDirection.x);
+	console.log("ball direction", ballDirection.x * ballSpeed);
 	ball.position.z += ballDirection.z * ballSpeed;
-	console.log(ballDirection.z);
+	console.log("ball direction", ballDirection.z * ballSpeed);
 
 	ball.rotate(BABYLON.Axis.X, 0.1 * ballSpeed);
 	ball.rotate(BABYLON.Axis.Z, 0.1 * ballDirection.x * ballSpeed);
@@ -212,15 +212,12 @@ export function MoveBall2v2(player_1, player_2, player_3, player_4, ball) {
 	const PADDLE_HEIGHT = 1.5;
 	const PADDLE_DEPTH = 1.5;
 
-	// Mise à jour de la position de la balle
 	ball.position.x += ballDirection.x * ballSpeed;
 	ball.position.z += ballDirection.z * ballSpeed;
 
-	// Rotation de la balle pour l'effet visuel
 	ball.rotate(BABYLON.Axis.X, 0.1 * ballSpeed);
 	ball.rotate(BABYLON.Axis.Z, 0.1 * ballDirection.x * ballSpeed);
 
-	// Vérifier les collisions avec les bords du terrain
 	if (ball.position.z <= FIELD_BOTTOM + BALL_RADIUS) {
 		ball.position.z = FIELD_BOTTOM + BALL_RADIUS;
 		resetBall(ball);
@@ -243,7 +240,6 @@ export function MoveBall2v2(player_1, player_2, player_3, player_4, ball) {
 		ballDirection.x *= -1;
 	}
 
-	// Vérifier les collisions avec tous les paddles de chaque joueur
 	checkPaddleCollision(player_1.leftPaddle, ball, BALL_RADIUS, PADDLE_WIDTH, PADDLE_HEIGHT);
 	checkPaddleCollision(player_1.rightPaddle, ball, BALL_RADIUS, PADDLE_WIDTH, PADDLE_HEIGHT);
 	
@@ -257,32 +253,34 @@ export function MoveBall2v2(player_1, player_2, player_3, player_4, ball) {
 	checkPaddleCollision(player_4.rightPaddle, ball, BALL_RADIUS, PADDLE_WIDTH, PADDLE_HEIGHT);
 }
 
-// Fonction pour vérifier la collision avec un paddle
 function checkPaddleCollision(paddle, ball, BALL_RADIUS, PADDLE_WIDTH, PADDLE_HEIGHT) {
 	if (!paddle) return;
-	
-	// Obtenir la position mondiale du paddle
+
 	const paddleWorldPosition = paddle.getAbsolutePosition();
 	
 	if (ball.position.x + BALL_RADIUS >= paddleWorldPosition.x - PADDLE_WIDTH / 2 &&
 		ball.position.x - BALL_RADIUS <= paddleWorldPosition.x + PADDLE_WIDTH / 2 &&
 		ball.position.z + BALL_RADIUS >= paddleWorldPosition.z - PADDLE_DEPTH / 2 &&
 		ball.position.z - BALL_RADIUS <= paddleWorldPosition.z + PADDLE_DEPTH / 2) {
-		
-		// Calculer l'impact relatif pour déterminer l'angle de rebond
+
 		const relativeImpact = (ball.position.z - paddleWorldPosition.z) / (PADDLE_DEPTH / 2);
-		
-		// Inverser la direction de la balle en x et ajuster la direction en z
+
 		ballDirection.x *= -1;
 		ballDirection.z = relativeImpact * 1;
-		
-		// Augmenter la vitesse de la balle
+
 		ballSpeed += 0.01;
 	}
 }
 
 export function destroy_ball(ball) {
+
+	if (!ball) {
+		console.error('Ball is not created yet');
+		return;
+	}
+
 	if (ball) {
+		console.log("Destruction de la balle");
 		ball.dispose();
 	}
 

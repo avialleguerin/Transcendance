@@ -31,13 +31,13 @@ export function create_environment_view1(scene) {
 	BABYLON.SceneLoader.Append("/srcs/game/assets/3d_object/", "ImageToStl.com_football_stadiumv2.glb", scene, function () {
 		console.log("Stade chargé avec succès !");
 	
+		const stadiumGroup = new BABYLON.TransformNode("stadiumGroup", scene);
 		scene.meshes.forEach(m => {
-			if (m.name === "test6") {
-				m.scaling = new BABYLON.Vector3(0, 0, 0);
-				m.position = new BABYLON.Vector3(0, 0, 0);
-				view1Meshes.push(m);
+			if (m.name.includes("__root__")) {
+				m.parent = stadiumGroup;
 			}
 		});
+		view1Meshes.push(stadiumGroup);
 	});
 
 	BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/3d_object/", "testPersoPageDeGardeV1.glb", scene, function (newMeshes) {
@@ -86,6 +86,7 @@ export function create_environment_view1(scene) {
 }
 
 export function destroy_environement_view1() {
+	console.log("Destruction des éléments :", view1Meshes.map(m => m.name));
 	view1Meshes.forEach(mesh => mesh.dispose());
 	view1Meshes = []; // Vide la liste après destruction
 }
