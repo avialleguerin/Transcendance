@@ -341,7 +341,6 @@ export function init_players(scene, player_1, player_2) {
 	return { player_1, player_2 };
 }
 
-// Fonction pour récupérer les références des joueurs
 export function getPlayerRef() {
 	console.log("player 1 bis " + player_1.position);
 	console.log("player 2 bis " + player_2.position);
@@ -352,7 +351,6 @@ export function getPlayerRef() {
 
 const paddleSpeed = 1.1;
 const keys = {}; 
-// const init_players_instance = init_players(scene);
 
 addEventListener("keydown", (event) => keys[event.key] = true);
 addEventListener("keyup", (event) => keys[event.key] = false);
@@ -472,9 +470,9 @@ export function UpdatePlayerPose(player_1, player_2) {
 	}
 
 
-    return {
-        player_1_bonus: player_1_bonus,
-        player_2_bonus: player_2_bonus
-    };
+	return {
+		player_1_bonus: player_1_bonus,
+		player_2_bonus: player_2_bonus
+	};
 
 }

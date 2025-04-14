@@ -46,7 +46,7 @@ export function createBall(scene) {
 			} else {
 				reject("Impossible de trouver le root mesh de la balle.");
 			}
-		}, null, function (scene, message) {
+		}, null, function (message) {
 			reject(`Erreur lors du chargement du modèle: ${message}`);
 		});
 	});
@@ -82,21 +82,17 @@ export function MoveBall(player_1, player_2, ball, player_1_bonus, player_2_bonu
 
 	if (!ball)
 	{
-		console.error('Ball is not created yeefwwwwwwwwwwwwwwwwwwwwwwwwwewwwwwwwwwwwwwwwwwwwwwwwwwt');
 		return;
 	}
 
 	if (!player_1 || !player_2) {
-		console.error('Players are not created yet');
 		return;
 	}
 
 	const BALL_RADIUS = 1.5;
 
 	ball.position.x += ballDirection.x * ballSpeed;
-	console.log("ball direction", ballDirection.x * ballSpeed);
 	ball.position.z += ballDirection.z * ballSpeed;
-	console.log("ball direction", ballDirection.z * ballSpeed);
 
 	ball.rotate(BABYLON.Axis.X, 0.1 * ballSpeed);
 	ball.rotate(BABYLON.Axis.Z, 0.1 * ballDirection.x * ballSpeed);
@@ -127,26 +123,15 @@ export function MoveBall(player_1, player_2, ball, player_1_bonus, player_2_bonu
 		ball.position.x - BALL_RADIUS <= player_1.position.x + PADDLE_WIDTH / 2 &&
 		ball.position.z + BALL_RADIUS >= player_1.position.z - PADDLE_HEIGHT / 2 &&
 		ball.position.z - BALL_RADIUS <= player_1.position.z + PADDLE_HEIGHT / 2) {
-		
-		// Inverser la direction x
+
 		ballDirection.x *= -1; 
-		
-		// Calculer l'impact relatif (-1 à 1)
 		const relativeImpact = (ball.position.z - player_1.position.z) / (PADDLE_HEIGHT / 2);
-		
-		// Appliquer un facteur d'angle MAX_ANGLE_FACTOR pour contrôler l'angle maximum
 		const MAX_ANGLE_FACTOR = 0.8;
 		ballDirection.z = relativeImpact * MAX_ANGLE_FACTOR;
-		
-		// Normaliser le vecteur pour maintenir une vitesse constante
 		const length = Math.sqrt(ballDirection.x * ballDirection.x + ballDirection.z * ballDirection.z);
 		ballDirection.x /= length;
 		ballDirection.z /= length;
-		
-		// Augmenter légèrement la vitesse à chaque rebond
 		ballSpeed += 0.05;
-		
-		// Éviter que la balle reste coincée
 		ball.position.x += ballDirection.x * 0.1;
 	}
 
@@ -154,20 +139,14 @@ export function MoveBall(player_1, player_2, ball, player_1_bonus, player_2_bonu
 		ball.position.x - BALL_RADIUS <= player_2.position.x + PADDLE_WIDTH / 2 &&
 		ball.position.z + BALL_RADIUS >= player_2.position.z - PADDLE_HEIGHT / 2 &&
 		ball.position.z - BALL_RADIUS <= player_2.position.z + PADDLE_HEIGHT / 2) {
-		ballDirection.x *= -1; // Inverser la direction x
+		ballDirection.x *= -1;
 		const relativeImpact = (ball.position.z - player_2.position.z) / (PADDLE_HEIGHT / 2);
 		const MAX_ANGLE_FACTOR = 0.8;
 		ballDirection.z = relativeImpact * MAX_ANGLE_FACTOR;
-		
-		// Normaliser le vecteur pour maintenir une vitesse constante
 		const length = Math.sqrt(ballDirection.x * ballDirection.x + ballDirection.z * ballDirection.z);
 		ballDirection.x /= length;
 		ballDirection.z /= length;
-		
-		// Augmenter légèrement la vitesse à chaque rebond
 		ballSpeed += 0.05;
-		
-		// Éviter que la balle reste coincée
 		ball.position.x += ballDirection.x * 0.1;
 	}
 
@@ -196,16 +175,13 @@ export function MoveBall(player_1, player_2, ball, player_1_bonus, player_2_bonu
 	}
 }
 
-export function MoveBall2v2(player_1, player_2, player_3, player_4, ball) {
-	if (!ball) {
-		console.error('Ball is not created yet');
+export function MoveBall2v2(player_1, player_2, player_3, player_4, ball)
+{
+	if (!ball)
 		return;
-	}
 
-	if (!player_1 || !player_2 || !player_3 || !player_4) {
-		console.error('Players are not created yet');
+	if (!player_1 || !player_2 || !player_3 || !player_4)
 		return;
-	}
 
 	const BALL_RADIUS = 1.5;
 	const PADDLE_WIDTH = 10;
@@ -240,49 +216,54 @@ export function MoveBall2v2(player_1, player_2, player_3, player_4, ball) {
 		ballDirection.x *= -1;
 	}
 
-	checkPaddleCollision(player_1.leftPaddle, ball, BALL_RADIUS, PADDLE_WIDTH, PADDLE_HEIGHT);
-	checkPaddleCollision(player_1.rightPaddle, ball, BALL_RADIUS, PADDLE_WIDTH, PADDLE_HEIGHT);
+	checkPaddleCollision(player_1.leftPaddle, ball, BALL_RADIUS, PADDLE_WIDTH);
+	checkPaddleCollision(player_1.rightPaddle, ball, BALL_RADIUS, PADDLE_WIDTH);
 	
-	checkPaddleCollision(player_2.leftPaddle, ball, BALL_RADIUS, PADDLE_WIDTH, PADDLE_HEIGHT);
-	checkPaddleCollision(player_2.rightPaddle, ball, BALL_RADIUS, PADDLE_WIDTH, PADDLE_HEIGHT);
+	checkPaddleCollision(player_2.leftPaddle, ball, BALL_RADIUS, PADDLE_WIDTH);
+	checkPaddleCollision(player_2.rightPaddle, ball, BALL_RADIUS, PADDLE_WIDTH);
 	
-	checkPaddleCollision(player_3.leftPaddle, ball, BALL_RADIUS, PADDLE_WIDTH, PADDLE_HEIGHT);
-	checkPaddleCollision(player_3.rightPaddle, ball, BALL_RADIUS, PADDLE_WIDTH, PADDLE_HEIGHT);
+	checkPaddleCollision(player_3.leftPaddle, ball, BALL_RADIUS, PADDLE_WIDTH);
+	checkPaddleCollision(player_3.rightPaddle, ball, BALL_RADIUS, PADDLE_WIDTH);
 	
-	checkPaddleCollision(player_4.leftPaddle, ball, BALL_RADIUS, PADDLE_WIDTH, PADDLE_HEIGHT);
-	checkPaddleCollision(player_4.rightPaddle, ball, BALL_RADIUS, PADDLE_WIDTH, PADDLE_HEIGHT);
+	checkPaddleCollision(player_4.leftPaddle, ball, BALL_RADIUS, PADDLE_WIDTH);
+	checkPaddleCollision(player_4.rightPaddle, ball, BALL_RADIUS, PADDLE_WIDTH);
 }
 
-function checkPaddleCollision(paddle, ball, BALL_RADIUS, PADDLE_WIDTH, PADDLE_HEIGHT) {
-	if (!paddle) return;
+function checkPaddleCollision(paddle, ball, BALL_RADIUS, PADDLE_WIDTH)
+{
+	if (!paddle)
+		return;
 
 	const paddleWorldPosition = paddle.getAbsolutePosition();
 	
 	if (ball.position.x + BALL_RADIUS >= paddleWorldPosition.x - PADDLE_WIDTH / 2 &&
 		ball.position.x - BALL_RADIUS <= paddleWorldPosition.x + PADDLE_WIDTH / 2 &&
 		ball.position.z + BALL_RADIUS >= paddleWorldPosition.z - PADDLE_DEPTH / 2 &&
-		ball.position.z - BALL_RADIUS <= paddleWorldPosition.z + PADDLE_DEPTH / 2) {
+		ball.position.z - BALL_RADIUS <= paddleWorldPosition.z + PADDLE_DEPTH / 2)
+	{
+		// const relativeImpact = (ball.position.z - paddleWorldPosition.z) / (PADDLE_DEPTH / 2);
 
-		const relativeImpact = (ball.position.z - paddleWorldPosition.z) / (PADDLE_DEPTH / 2);
+		// ballDirection.x *= -1;
+		// ballDirection.z = relativeImpact * 1;
 
+		// ballSpeed += 0.01;
 		ballDirection.x *= -1;
-		ballDirection.z = relativeImpact * 1;
-
-		ballSpeed += 0.01;
+		const relativeImpact = (ball.position.z - paddleWorldPosition.z) / (PADDLE_DEPTH / 2);
+		const MAX_ANGLE_FACTOR = 0.8;
+		ballDirection.z = relativeImpact * MAX_ANGLE_FACTOR;
+		const length = Math.sqrt(ballDirection.x * ballDirection.x + ballDirection.z * ballDirection.z);
+		ballDirection.x /= length;
+		ballDirection.z /= length;
+		ballSpeed += 0.05;
+		ball.position.x += ballDirection.x * 0.1;
 	}
 }
 
-export function destroy_ball(ball) {
-
-	if (!ball) {
-		console.error('Ball is not created yet');
+export function destroy_ball(ball)
+{
+	if (!ball)
 		return;
-	}
-
-	if (ball) {
-		console.log("Destruction de la balle");
+	if (ball)
 		ball.dispose();
-	}
-
 	ball = null;
 }

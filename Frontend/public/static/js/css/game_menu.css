@@ -770,7 +770,7 @@
 
 
 /* Initialement cacher les vues */
-.view1, .view2 , .view3, .view4, .view5 , .back-home, .view6, .view7, .view8, .power_selector, .back, .tournament_view {
+.view1, .view2 , .view3, .view4, .view5 , .back-home, .view6, .view7, .view8, .power_selector, .back, .tournament_view, .parametres_jeu, .parrametres_profile {
     opacity: 0;
     pointer-events: none;
 }
@@ -1220,4 +1220,234 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
     object-fit: contain;
     position: absolute;
     left: 10px;
+}
+
+
+/****************************************************************/
+/********************paramettre**********************************/
+/****************************************************************/
+
+.select_parametres
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 30px;
+    background-image: none;
+    padding: 0;
+}
+
+
+.select_parametres .btn {
+    padding: 20px 40px;
+    font-size: 0.9vw;
+    font-weight: bold;
+    transform: translateY(-50%);
+    background-color: transparent;
+    color: white;
+    border: 2px solid #44444400;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    background-image: url("../../../srcs/game/assets/image/boutton.svg");
+    background-size: 100% auto;
+    background-position: center;
+    background-repeat: no-repeat;
+    line-height: 3vh;
+    width: 130px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.parametres_jeu .parrametres_profile {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.parametres_jeu_content .parametres_profile_content{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    justify-content: flex-start; /* Changé de center à flex-start pour commencer depuis le haut */
+    padding-top: 100px; /* Ajouter un padding en haut pour décaler le contenu */
+    overflow-y: auto;
+}
+
+.parametres_jeu_content h1 {
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgb(0, 0, 0);
+    text-align: center;
+    font-size: 1.2vw;
+    position: relative;
+    font-family: 'Black Ops One', sans-serif;
+}
+
+
+.parametres_jeu.active, .parrametres_profile.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+
+.parametres_profile_content h1 {
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgb(0, 0, 0);
+    text-align: center;
+    font-size: 1.2vw;
+    position: relative;
+    font-family: 'Black Ops One', sans-serif;
+}
+
+
+.parametres_jeu_content h1 {
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgb(0, 0, 0);
+    text-align: center;
+    font-size: 1.2vw;
+    position: relative;
+    font-family: 'Black Ops One', sans-serif;
+}
+
+.parametres_jeu_content h2 {
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgb(0, 0, 0);
+    /* text-align: center; */
+    font-size: 1vw;
+    position: relative;
+    font-family: 'Black Ops One', sans-serif;
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+
+}
+
+.mode_de_jeu_solo_parametre h3 {
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgb(0, 0, 0);
+    /* text-align: center; */
+    font-size: 0.8vw;
+    position: relative;
+    font-family: 'Black Ops One', sans-serif;
+    position: absolute;
+    top: 50%;
+    left: 1%;
+}
+
+.mode_de_jeu_solo_parametre p {
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgb(0, 0, 0);
+    text-align: center;
+    font-size: 0.6vw;
+    position: relative;
+    font-family: 'Black Ops One', sans-serif;
+}
+
+.container_menu.active {
+    overflow-y: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* IE et Edge */
+}
+
+.container_menu.active::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+.mode_de_jeu_solo_parametre .joueur_touch {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+    margin: 20px 0;
+    position: absolute;
+    top: 66%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.mode_de_jeu_solo_parametre .joueur {
+    text-align: center;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: transparent;
+    width: 120px;
+    height: 100px;
+}
+
+.mode_de_jeu_solo_parametre .controls p{
+    font-size: 0.5vw;
+}
+
+
+.mode_de_jeu_multi_parametre h3 {
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgb(0, 0, 0);
+    /* text-align: center; */
+    font-size: 0.8vw;
+    position: relative;
+    font-family: 'Black Ops One', sans-serif;
+    position: absolute;
+    top: 125%;
+    left: 3%;
+}
+
+.mode_de_jeu_multi_parametre p {
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgb(0, 0, 0);
+    text-align: center;
+    font-size: 0.6vw;
+    position: relative;
+    font-family: 'Black Ops One', sans-serif;
+}
+
+.mode_de_jeu_multi_parametre .joueur_touch {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 20px 0;
+    column-gap: 40px;
+    position: absolute;
+    top: 140%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 600px;
+}
+
+.mode_de_jeu_multi_parametre .joueur {
+    text-align: center;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: transparent;
+    width: 120px;
+    height: 100px;
+    margin-bottom: 20px;
+}
+
+/* Pour créer deux lignes distinctes */
+.mode_de_jeu_multi_parametre .joueur_touch {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, auto);
+}
+
+.mode_de_jeu_multi_parametre .controls p{
+    font-size: 0.5vw;
 }

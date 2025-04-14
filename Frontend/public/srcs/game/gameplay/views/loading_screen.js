@@ -4,7 +4,10 @@ let loadingOverlay;
 let isLoading = false;
 let targetView = null;
 
-export function createLoadingOverlay() {
+export function createLoadingOverlay()
+{
+	if (document.getElementById('loadingOverlay')) return;
+
 	loadingOverlay = document.createElement('div');
 	loadingOverlay.id = 'loadingOverlay';
 	loadingOverlay.innerHTML = `
@@ -17,18 +20,24 @@ export function createLoadingOverlay() {
 	document.body.appendChild(loadingOverlay);
 }
 
-export function removeLoadingOverlay() {
-	if (loadingOverlay) {
+export function removeLoadingOverlay()
+{
+	if (loadingOverlay)
+	{
 		console.log("Suppression de l'overlay...");
 		loadingOverlay.style.opacity = '0';
-		setTimeout(() => {
-			if (loadingOverlay && loadingOverlay.parentNode) {
+		setTimeout(() =>
+		{
+			if (loadingOverlay && loadingOverlay.parentNode)
+			{
 				document.body.removeChild(loadingOverlay);
+				loadingOverlay = null;
 				console.log("Overlay supprimé");
 			}
 			isLoading = false;
 			console.log("isLoading:", isLoading);
-			if (targetView) {
+			if (targetView)
+			{
 				changeView(targetView);
 				targetView = null;
 			}

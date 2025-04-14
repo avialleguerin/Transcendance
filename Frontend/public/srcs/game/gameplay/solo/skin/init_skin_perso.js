@@ -47,7 +47,6 @@ function loadSkinsForPlayer(skinPaths, scene, playerSkins, offsetX)
             {
                 mesh.position.x += offsetX;
                 playerSkins.push(mesh);
-                console.log(`Skin ${skinPaths[index].name} chargé avec succès pour l'index ${index}`);
             });
         })
         .catch((error) =>
