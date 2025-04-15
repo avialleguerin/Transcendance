@@ -1,6 +1,10 @@
 import { player1Skins_multi, player2Skins_multi, player3Skins_multi, player4Skins_multi } from "../../multiplayer/init_skin_perso_multi.js";
 import { player1_podium_multi, player2_podium_multi, player3_podium_multi, player4_podium_multi } from "../../multiplayer/init_teamPlayer_podium.js";
 import { player1Skins_podium, player2Skins_podium } from "./init_skin_player_podium.js";
+import { init_skins_perso_player1_multi_podium, init_skins_perso_player2_multi_podium, init_skins_perso_player3_multi_podium, init_skins_perso_player4_multi_podium } from "../../multiplayer/init_teamPlayer_podium.js";
+import { init_skins_perso_first, init_skins_perso_seconde } from "./init_skin_player_podium.js";
+import { init_skins_perso_player1_multi, init_skins_perso_player2_multi, init_skins_perso_player3_multi, init_skins_perso_player4_multi } from "../../multiplayer/init_skin_perso_multi.js";
+
 // import { getScene } from "../../babylon.js";
 // const scene = getScene();
 let currentSkinPlayer1 = 0;
@@ -191,6 +195,24 @@ export function destroy_all_by_metadata_skin(scene, metadataKey) {
             .filter(mesh => mesh.metadata && mesh.metadata[metadataKey])
             .forEach(mesh => mesh.dispose());
     }
+}
+
+export function init_all_skin(scene)
+{
+    init_skins_perso_player1(scene);
+    init_skins_perso_player2(scene);
+    init_skins_perso_player1_multi(scene);
+    init_skins_perso_player2_multi(scene);
+    init_skins_perso_player3_multi(scene);
+    init_skins_perso_player4_multi(scene);
+
+    init_skins_perso_player1_multi_podium(scene);
+    init_skins_perso_player2_multi_podium(scene);
+    init_skins_perso_player3_multi_podium(scene);
+    init_skins_perso_player4_multi_podium(scene);
+
+    init_skins_perso_first(scene);
+    init_skins_perso_seconde(scene);
 }
 
 

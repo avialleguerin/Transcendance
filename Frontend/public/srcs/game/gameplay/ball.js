@@ -264,6 +264,12 @@ export function destroy_ball(ball)
 	if (!ball)
 		return;
 	if (ball)
-		ball.dispose();
+		ball.setEnabled(false);
 	ball = null;
+}
+
+export function init_ball(ball)
+{
+	if (ball)
+		ball.setEnabled(true);
 }

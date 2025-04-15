@@ -1,5 +1,5 @@
 
-import { create_environment_view1 } from "./init_game.js";
+import { create_environment_view1, create_environment_view3 } from "./init_game.js";
 import { UpdatePlayerPose } from "./player.js";
 import { MoveBall, MoveBall2v2 } from "./ball.js";
 import { init_game_solo, start_game_solo, destroy_game_solo } from "./solo/1v1_player/init_game_Solo.js";
@@ -10,6 +10,7 @@ import { UpdatePlayerAndAI_Pose } from "./solo/1v1_ai/init_player_and_ai.js";
 import { gameIsFinished, SetIsGameFinished } from "./score.js";
 import { init_game_tournament, destroy_game_solo_tournament } from "./tournament/tournament.js";
 import { move_player_tournament } from "./tournament/init_player_tournament.js";
+import { init_all_skin } from "./solo/skin/init_skin_perso.js";
 
 
 /**************************************************************/
@@ -233,6 +234,8 @@ let fpsHistory = [];
 
 
 create_environment_view1(scene);
+create_environment_view3(scene);
+init_all_skin(scene);
 const skybox = createOptimizedSkybox(scene);
 
 qualityLevel = detectPerformanceLevel();

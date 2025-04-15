@@ -181,7 +181,7 @@
     object-fit: contain;
 }
 
-.lower_bracket {
+.loserBracket {
     color: white;
     font-family: 'Black Ops One', sans-serif;
     font-size: 0.8vw;
@@ -190,7 +190,7 @@
     left: 21%;
 }
 
-.upper_bracket {
+.winnerBracket {
     color: white;
     font-family: 'Black Ops One', sans-serif;
     font-size: 0.8vw;
@@ -204,8 +204,8 @@
     font-family: 'Black Ops One', sans-serif;
     font-size: 0.8vw;
     position: absolute;
-    top: 10%;
-    left: 25%;
+    top: 8%;
+    left: 24%;
 }
 
 .joueur2 {
@@ -213,8 +213,8 @@
     font-family: 'Black Ops One', sans-serif;
     font-size: 0.8vw;
     position: absolute;
-    top: 23%;
-    left: 25%;
+    top: 17%;
+    left: 24%;
 }
 
 .joueur3 {
@@ -222,8 +222,8 @@
     font-family: 'Black Ops One', sans-serif;
     font-size: 0.8vw;
     position: absolute;
-    top: 39%;
-    left: 25%;
+    top: 28%;
+    left: 24%;
 }
 
 .joueur4 {
@@ -231,8 +231,8 @@
     font-family: 'Black Ops One', sans-serif;
     font-size: 0.8vw;
     position: absolute;
-    top: 52%;
-    left: 25%;
+    top: 37%;
+    left: 24%;
 }
 
 .btn_incremente_place {

@@ -347,6 +347,11 @@ export function getPlayerRef() {
 	return { player_1, player_2 };
 }
 
+export function reset_player_position(player_1, player_2) {
+	player_1.position = new BABYLON.Vector3(-7, 301, -120);
+	player_2.position = new BABYLON.Vector3(-7, 301, -24);
+}
+
 
 
 const paddleSpeed = 1.1;

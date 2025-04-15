@@ -45,7 +45,17 @@ export function destroy_game(scene)
 	scene.meshes.forEach(m => {
 		if (m.name === "border")
 		{
-			m.dispose();
+			m.setEnabled(false);
+		}
+	});
+}
+
+export function init_game(scene)
+{
+	scene.meshes.forEach(m => {
+		if (m.name === "border")
+		{
+			m.setEnabled(true);
 		}
 	});
 }
@@ -57,7 +67,7 @@ let view3Meshes = [];
 // ========================= VIEW 1 =========================
 
 export function create_environment_view1(scene) {
-	destroy_environement_view1();
+	// destroy_environement_view1();
 
 	const grassTexture = new BABYLON.Texture("/srcs/game/assets/image/perfect-green-grass.jpg", scene);
 	grassTexture.anisotropicFilteringLevel = 8;
@@ -120,15 +130,10 @@ export function create_environment_view1(scene) {
 	});
 }
 
-export function destroy_environement_view1() {
-	view1Meshes.forEach(mesh => mesh.dispose());
-	view1Meshes = [];
-}
-
 // ========================= VIEW 2 =========================
 
 export function create_environment_view2(scene) {
-	destroy_environement_view2();
+	// destroy_environement_view2();
 
 	BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/3d_object/", "versionFinalV2.glb", scene, function (meshes) {
 		const container = new BABYLON.TransformNode("container", scene);
@@ -143,7 +148,6 @@ export function create_environment_view2(scene) {
 	const lights = [
 		{ name: "spotLight", pos: [-6, 101, -14], dir: [2.5, 4, -2] },
 		{ name: "spotLight2", pos: [-7.69, 101, -27], dir: [-7, 4, -2] },
-        // { name: "spotLight3", pos: [-19.5, 100, -30], dir: [0, 1, 0] },
 	];
 
 	lights.forEach(({ name, pos, dir }) => {
@@ -155,41 +159,10 @@ export function create_environment_view2(scene) {
 	});
 }
 
-export function destroy_environement_view2() {
-	view2Meshes.forEach(mesh => mesh.dispose());
-	view2Meshes = [];
-}
-
-// export function destroy_environement_view2() {
-//     // Détruire les meshes
-//     view2Meshes.forEach(mesh => mesh.dispose());
-//     view2Meshes = [];
-
-//     // Vider les matériaux et textures associés
-//     scene.materials.forEach(material => {
-//         if (material.diffuseTexture) {
-//             material.diffuseTexture.dispose();  // Libérer les textures
-//         }
-//         material.dispose();  // Libérer le matériau lui-même
-//     });
-
-//     // Vider les lumières (si tu as des lumières personnalisées)
-//     scene.lights.forEach(light => light.dispose());
-
-//     // Vider les transform nodes ou autres objets
-//     scene.transformNodes.forEach(node => {
-//         node.dispose();
-//     });
-
-//     // Vider les systèmes de particules (si tu en as)
-//     scene.particles.forEach(particleSystem => particleSystem.dispose());
-// }
 
 // ========================= VIEW 3 =========================
 
 export function create_environment_view3(scene) {
-	destroy_environement_view3();
-
 	view3Meshes = [];
 
 	const grassMaterial = new BABYLON.StandardMaterial("grassMaterial", scene);
@@ -233,42 +206,6 @@ export function create_environment_view3(scene) {
 		create_spot_particule(scene, x, 299.5, z);
 	});
 }
-
-export function destroy_environement_view3() {
-	view3Meshes.forEach(mesh => mesh.dispose());
-	view3Meshes = [];
-}
-
-// export function destroy_environement_view3() {
-//     // Détruire les meshes
-//     view3Meshes.forEach(mesh => mesh.dispose());
-//     view3Meshes = [];
-
-//     // Vider les matériaux et textures
-//     scene.materials.forEach(material => {
-//         if (material.diffuseTexture) {
-//             material.diffuseTexture.dispose();
-//         }
-//         material.dispose();
-//     });
-
-//     // Vider les autres ressources si nécessaire
-//     scene.meshes.forEach(mesh => {
-//         if (mesh.material) {
-//             mesh.material.dispose();
-//         }
-//         mesh.dispose();
-//     });
-
-//     // Vider les nodes (comme TransformNodes)
-//     scene.transformNodes.forEach(node => {
-//         node.dispose();
-//     });
-
-//     // Facultatif : vider les ressources supplémentaires comme les particules ou les lumières
-//     scene.lights.forEach(light => light.dispose());
-//     scene.particles.forEach(particleSystem => particleSystem.dispose());
-// }
 
 function create_podium(scene, sx, sy, sz) {
 	BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/3d_object/", "podium.glb", scene, function (meshes) {

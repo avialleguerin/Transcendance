@@ -1,4 +1,4 @@
-import { create_environment_view3, create_game , destroy_environement_view3, destroy_game} from "../../init_game.js";
+import { create_environment_view3, create_game , destroy_game} from "../../init_game.js";
 import { init_players_and_ai } from "./init_player_and_ai.js";
 import { loadScoreModel, destroy_score } from "../../score.js";
 import { createBall, destroy_ball } from "../../ball.js";

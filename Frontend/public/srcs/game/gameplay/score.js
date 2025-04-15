@@ -111,7 +111,7 @@ export function updateScore(side)
 	}
 	if (soloGameStart)
 	{
-		if (scoreLeft === 3 || scoreRight === 3) {
+		if (scoreLeft === 1 || scoreRight === 1) {
 			SetIsGameFinished(true);
 			if (scoreLeft === 3)
 			{
@@ -129,7 +129,7 @@ export function updateScore(side)
 	}
 	else if (multi_player_game)
 	{
-		if (scoreLeft === 3 || scoreRight === 3) {
+		if (scoreLeft === 1 || scoreRight === 1) {
 			SetIsGameFinished(true);
 			if (scoreLeft === 3)
 			{
