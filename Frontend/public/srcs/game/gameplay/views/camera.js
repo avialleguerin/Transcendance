@@ -132,11 +132,7 @@ if (viewName === 'vue1' && previousView === 'default')
 	{
 		window.currentView = 'vue1';
 		createLoadingOverlay();
-		// setTimeout(() =>
-		// {
-		// 	destroy_environement_view1(scene);
-		// }, 500); 
-	}, 1000);
+	}, 1200);
 	setTimeout(() =>
 	{
 		create_environment_view2(scene);
@@ -162,7 +158,7 @@ if (viewName === 'vue1' && previousView === 'default')
 		{
 			removeLoadingOverlay();
 			changeView('vue4', true);
-		}, 10500);
+		}, 10000);
 	}
 	if (viewName === 'vue2' && (previousView === 'vue4' || previousView === 'winner')) {
 		isLoading = true;
@@ -179,7 +175,7 @@ if (viewName === 'vue1' && previousView === 'default')
 		setTimeout(() => {
 			removeLoadingOverlay();
 			isLoading = false;
-		}, 15000);
+		}, 10000);
 	}
 	if (viewName === 'vue1' && previousView === 'vue2')
 	{
@@ -195,7 +191,7 @@ if (viewName === 'vue1' && previousView === 'default')
 			removeLoadingOverlay();
 			changeView('default', true);
 			isLoading = false;
-		}, 3500);
+		}, 10000);
 	}
 	if (viewName === 'winner')
 	{
@@ -221,7 +217,7 @@ if (viewName === 'vue1' && previousView === 'default')
 		{
 			removeLoadingOverlay();
 			changeView('vue4', true);
-		}, 8500);
+		}, 10000);
 	}
 	if (viewName === 'tournament' && previousView === 'vue4')
 	{
@@ -239,6 +235,6 @@ if (viewName === 'vue1' && previousView === 'default')
 		setTimeout(() => {
 			removeLoadingOverlay();
 			isLoading = false;
-		}, 5000);
+		}, 10000);
 	}
 }

@@ -1,23 +1,26 @@
 
 .container-EndGame {
     position: absolute;
-    top: 64%;
-    left: 57%;
+    top: 68%;
+    left: 50%;
     transform: translate(-50%, -50%);
-    width: 40%;
-    height: 72%;
-    display: flex;
+    width: 31%;
+    height: 30%;
+    display: flex
+;
     align-items: center;
     justify-content: center;
     z-index: 1;
-    /* background-color: red; */
+    background-color: #545454;
     visibility: hidden;
+    border: 2px solid #000000;
 }
 
 .winner {
     position: absolute;
-    top: 61%;
-    left: 37%;
+    top: 14%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     font-size: 2vw;
     font-family: 'Black Ops One', sans-serif;
     color: rgb(255, 255, 255);
@@ -39,6 +42,7 @@
     font-family: 'Black Ops One', sans-serif;
     color: rgb(255, 255, 255);
     text-shadow: 2px 2px 2px #000000;
+
 }
 
 .container-EndGame.active {
@@ -79,9 +83,9 @@
 .leave_game_2
 {
     position: absolute;
-    top: 66%;
-    left: 35%;
-    /* padding: 20px 30px; */
+    top: 75%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     font-weight: bold;
     background-color: transparent;
     color: rgb(255, 255, 255);
@@ -97,7 +101,8 @@
     /* line-height: 3vh; */
     width: 170px;
     height: 112px;
-    display: flex;
+    display: flex
+;
     justify-content: center;
     align-items: center;
     bottom: -4%;

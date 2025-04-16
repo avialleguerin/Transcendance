@@ -4,43 +4,68 @@ import { startTournamentGame } from "../../../srcs/game/gameplay/babylon.js";
 import { getPlayer_1_win, getPlayer_2_win } from "../../../srcs/game/gameplay/score.js";
 
 let count = 0;
+let tournamentStarted = false;
 
 export default class extends AbstractView {
-	constructor() {
-		super();
-		this.setTitle("Tournament");
+    constructor() {
+        super();
+        this.setTitle("Tournament");
 
-		
-	}
+		if (window.location.pathname === "/tournament") {
+			this.gameLoop = setInterval(() => { this.checktournamentstart(); 1000 });
+		}
+    }
 
 	async getHtml() {
 		return `
 		<link rel="stylesheet" href="./static/js/css/tournament.css">
 		<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 		<div class="tournament_view" id="tournament_view">
-		<div class="tournament_view-content">
-			<h1>TOURNOI</h1>
-			<div class="tournament_graphic" id="tournament_graphic_id">
-				<p class="winnerBracket" id="winnerBracket_id">Winner Bracket</p>
-				<p class="loserBracket" id="loserBracket_id">Loser Bracket</p>
-				<p class="joueur1" id="joueur1_id">joueur 1</p>
-				<p class="joueur2" id="joueur2_id">joueur 2</p>
-				<p class="joueur3" id="joueur3_id">joueur 3</p>
-				<p class="joueur4" id="joueur4_id">joueur 4</p>
-
-				<img src="../../../srcs/game/assets/image/tournament_with_bracket.svg" alt="tournament">
-			</div>
-			<button id="start_tournament" class="btn_start_tournament">Lancer le tournoi</button>
-			<button id="back_to_menu_view_tournament" class="btn_back_tournament">
-				<a href="/Game_menu" class="nav-link" data-link>BACK</a>
-			</button>
-			<button id="incremente_place" class="btn_incremente_place">+</button>
-			<button id="start_game" class="btn_start_game">
-				<a href="/tournament_game" class="nav-link" data-link>JOUER</a>
-			</button>
-			<button id="finiched_game" class="btn_finished_game">FINISHED</button>
+			<div class="tournament_view-content">
+				<h1>TOURNOI</h1>
+				<button id="start_tournament" class="btn_start_tournament">START</button>
+				<button id="back_to_menu_view_tournament" class="btn_back_tournament">BACK</button>
+				<div class="container_name_player" id="container_name_player">
+					<h1>Personnalise ton nom</h1>
+					<div class="input-container">
+						<label for="player1">Joueur 1</label>
+						<input type="text" id="player1" class="input_name_player" placeholder="Nom du joueur 1">
+					</div>
+					<div class="input-container">
+						<label for="player2">Joueur 2</label>
+						<input type="text" id="player2" class="input_name_player" placeholder="Nom du joueur 2">
+					</div>
+					<div class="input-container">
+						<label for="player3">Joueur 3</label>
+						<input type="text" id="player3" class="input_name_player" placeholder="Nom du joueur 3">
+					</div>
+					<div class="input-container">
+						<label for="player4">Joueur 4</label>
+						<input type="text" id="player4" class="input_name_player" placeholder="Nom du joueur 4">
+					</div>
+					<button id="continue" class="continue_btn">OK</button>
+				</div>
+				<div class="tournament_graphic" id="tournament_graphic_id">
+					<p class="winnerBracket" id="winnerBracket_id">Winner Bracket</p>
+					<p class="loserBracket" id="loserBracket_id">Loser Bracket</p>
+					<p class="joueur1" id="joueur1_id">joueur 1</p>
+					<p class="joueur2" id="joueur2_id">joueur 2</p>
+					<p class="joueur3" id="joueur3_id">joueur 3</p>
+					<p class="joueur4" id="joueur4_id">joueur 4</p>
+					<img src="../../../srcs/game/assets/image/tournament_with_bracket.svg" alt="tournament">
+					<button id="start_game" class="btn_start_game">
+						<a href="/tournament_game" class="nav-link" data-link>JOUER</a>
+					</button>
+					<button id="finiched_game" class="btn_finished_game">FINISHED</button>
+					<button id="leave_tournament" class="btn_leave_tournament">X</button>
+				</div>
+				<div class="message" id="message_id">
+					<p>ATTENTION : Si vous quittez le tournoi, vous ne pourrez pas revenir en arrière.</p>
+					<button class="close_message" id="close_message_id">X</button>
+					<button class="comfirm_leave_tournament" id="confirm_leave_tournament">Quitter le tournoi</button>
+				</div>
+			</div>	
 		</div>
-	</div>
 	`;
 	}
 
@@ -48,6 +73,7 @@ export default class extends AbstractView {
 	{
 		document.getElementById('back_to_menu_view_tournament').addEventListener('click', () => {
 			handleViewTransitions('vue2', 'tournament');
+			window.history.back();
 		});
 	}
 
@@ -72,21 +98,12 @@ export default class extends AbstractView {
 
 	init_tournament()
 	{
-		const incremente_place = document.getElementById('incremente_place');
-		const reset_tournament = document.getElementById('reset_tournament');
 		const joueur1_id = document.getElementById('joueur1_id');
 		const joueur2_id = document.getElementById('joueur2_id');
 		const joueur3_id = document.getElementById('joueur3_id');
 		const joueur4_id = document.getElementById('joueur4_id');
 
 		updateTournamentState(count, joueur1_id, joueur2_id, joueur3_id, joueur4_id);
-
-		incremente_place.addEventListener('click', () => {
-			console.log('Incremente place clicked');
-			count = 0;
-			localStorage.setItem('tournamentCount', count);
-			resetTournamentState(joueur1_id, joueur2_id, joueur3_id, joueur4_id);
-		});
 
 		const countFromStorage = parseInt(localStorage.getItem('tournamentCount')) || 0;
 		console.log('Count from storage:', countFromStorage);
@@ -99,6 +116,83 @@ export default class extends AbstractView {
 		} else {
 			const finishGameBtn = document.getElementById('finiched_game');
 			if (finishGameBtn) finishGameBtn.style.display = 'none';
+		}
+	}
+
+
+    tournament_event() {
+        const start_tournament = document.getElementById('start_tournament');
+        const container_name_player = document.getElementById('container_name_player');
+        const tournament_graphic_id = document.getElementById('tournament_graphic_id');
+		const back_to_menu_view_tournament = document.getElementById('back_to_menu_view_tournament');
+
+        start_tournament.addEventListener('click', () => {
+			tournamentStarted = true;
+			localStorage.setItem('tournamentStarted', tournamentStarted);
+            container_name_player.classList.add('hidden');
+            tournament_graphic_id.classList.add('active');
+			start_tournament.style.display = 'none';
+			back_to_menu_view_tournament.style.display = 'none';
+        });
+
+		const leave_tournament = document.getElementById('leave_tournament');
+		const message_id = document.getElementById('message_id');
+
+		leave_tournament.addEventListener('click', () => {
+			message_id.classList.add('active');
+			tournament_graphic_id.style.filter = "blur(5px)";
+			tournament_graphic_id.style.pointerEvents = "none";
+		});
+
+		const close_message = document.getElementById('close_message_id');
+
+		close_message.addEventListener('click', () => {
+			message_id.classList.remove('active');
+			tournament_graphic_id.style.filter = "none";
+			tournament_graphic_id.style.pointerEvents = "auto";
+		});
+
+		const confirm_leave_tournament = document.getElementById('confirm_leave_tournament');
+
+		confirm_leave_tournament.addEventListener('click', () => {
+			message_id.classList.remove('active');
+			tournament_graphic_id.style.filter = "none";
+			tournament_graphic_id.style.pointerEvents = "auto";
+			tournament_graphic_id.classList.remove('active');
+			container_name_player.classList.remove('hidden');
+			tournamentStarted = false;
+			resetTournamentState(joueur1_id, joueur2_id, joueur3_id, joueur4_id);
+			back_to_menu_view_tournament.style.display = 'block';
+			start_tournament.style.display = 'block';
+		});
+    }
+
+	checktournamentstart()
+	{
+		if (tournamentStarted == true)
+		{
+			const container_name_player = document.getElementById('container_name_player');
+			const tournament_graphic_id = document.getElementById('tournament_graphic_id');
+			const start_tournament = document.getElementById('start_tournament');
+			const back_to_menu_view_tournament = document.getElementById('back_to_menu_view_tournament');
+
+            container_name_player.classList.add('hidden');
+            tournament_graphic_id.classList.add('active');
+			start_tournament.style.display = 'none';
+			back_to_menu_view_tournament.style.display = 'none';
+		}
+		else
+		{
+			const container_name_player = document.getElementById('container_name_player');
+			const tournament_graphic_id = document.getElementById('tournament_graphic_id');
+			const start_tournament = document.getElementById('start_tournament');
+			const back_to_menu_view_tournament = document.getElementById('back_to_menu_view_tournament');
+
+			container_name_player.classList.remove('hidden');
+			tournament_graphic_id.classList.remove('active');
+
+			start_tournament.style.display = 'block';
+			back_to_menu_view_tournament.style.display = 'block';
 		}
 	}
 }
@@ -135,6 +229,8 @@ const POSITIONS =
 
 function resetTournamentState(joueur1_id, joueur2_id, joueur3_id, joueur4_id)
 {
+	count = 0;
+	localStorage.setItem('tournamentCount', count);
 	const joueurs = [joueur1_id, joueur2_id, joueur3_id, joueur4_id];
 
 	joueurs.forEach(joueur => {

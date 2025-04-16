@@ -77,6 +77,7 @@ const router = async () => {
         if (typeof view.start_tournament_game === "function") view.start_tournament_game();
         if (typeof view.checkGameOver_tournament === "function") view.checkGameOver_tournament();
         if (typeof view.event_tournament_game === "function") view.event_tournament_game();
+        if (typeof view.tournament_event === "function") view.tournament_event();
     }, 1500); // Attente de 1,5 seconde avant le changement de page
 };
 
