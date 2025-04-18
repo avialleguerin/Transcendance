@@ -20,7 +20,8 @@ export function SpawnParticules_endGame(scene, x, y, z) {
     particleSystem.maxEmitBox = new BABYLON.Vector3(0.1, 0.2, 0.1);
 
     // Couleurs des étincelles (jaune/blanc/orange)
-	if (player1_win) {
+	if (player1_win)
+	{
 		if (_currentSkinPlayer1 == 2)
 		{
 			particleSystem.color1 = new BABYLON.Color4(1.0, 0.0, 0.0, 1.0); // Rouge vif
@@ -46,7 +47,6 @@ export function SpawnParticules_endGame(scene, x, y, z) {
 			particleSystem.color2 = new BABYLON.Color4(0.0, 0.8, 0.0, 1.0); // Vert plus foncé
 			particleSystem.colorDead = new BABYLON.Color4(0.0, 0.4, 0.0, 0.0); // Disparition en vert foncé
 		}
-
 	}
 	else if (player2_win)
 	{

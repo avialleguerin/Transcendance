@@ -135,7 +135,6 @@ if (viewName === 'vue1' && previousView === 'default')
 	}, 1200);
 	setTimeout(() =>
 	{
-		create_environment_view2(scene);
 			changeView('vue2', true);
 		}, 3500);
 		setTimeout(() => removeLoadingOverlay(), 10000);
@@ -182,7 +181,6 @@ if (viewName === 'vue1' && previousView === 'default')
 		console.log('je suis la ');
 		isLoading = true;
 		createLoadingOverlay();
-		create_environment_view1(scene);
 		
 		setTimeout(() => {
 			changeView('vue1', true);

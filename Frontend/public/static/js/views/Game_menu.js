@@ -42,11 +42,11 @@ export default class extends AbstractView {
 				</button>
 				<div class="view2" id="view2">
 					<div class="view2-content">
-						<h1>CHOISIS TON MODE DE JEUX</h1>
+						<h1>CHOISIS TON MODE DE JEU</h1>
 						<div id="game_mode_btn" class="game_mode_btn">
 							<button id="solo" class="btn">SOLO</button>
 							<button id="multiplayer" class="btn">MULTIJOUEUR</button>
-							<button id="tournament_view" class="btn">
+							<button id="tournament_view" class="btn_tournament">
 								<a href="/tournament" class="nav-link" data-link>TOURNOI</a>
 							</button>
 						</div>
@@ -84,6 +84,7 @@ export default class extends AbstractView {
 						</div>
 					</div>
 				</div>
+
 
 				<div class="parametres_jeu" id="parametres_jeu">
 					<div class="parametres_jeu_content" id="parametre_jeux_content">
@@ -151,6 +152,36 @@ export default class extends AbstractView {
 				<div class="parrametres_profile" id="parametres_profile">
 					<div class="parametres_profile_content">
 						<h1>PARAMETRES DU PROFIL</h1>
+						<div class="modif_profile" id="modif_profil">
+							<label for="mdp">Mot de passe</label>
+							<input type="text" id="Mot_de_pass" name="Mot_de_pass" placeholder="Mot de passe">
+							<button id="valid_mdp" class="btn_valider_mdp">Valider</button>
+						</div>
+						<div class="profile_param_unlocked" id="profile_param_unlocked_id">
+							<div class="photo_profile">
+								<div class="profile_photo_container">
+									<div class="profile_photo_circle" id="profile_photo_circle">
+										<input type="file" id="profile_photo_input" accept="image/*" style="display: none;">
+										<label for="profile_photo_input" class="photo_upload_icon">
+											<i class="fa fa-camera"></i>
+										</label>
+									</div>
+								</div>
+							</div>
+							<div class="input_container">
+								<label for="email">Email</label>
+								<input type="text" id="email" name="email" placeholder="Email">
+							</div>
+							<div class="input_container">
+								<label for="mdp">Mot de passe</label>
+								<input type="text" id="Mot_de_pass" name="Mot_de_pass" placeholder="Mot de passe">
+							</div>
+							<div class="input_container">
+								<label for="confirm_mdp">Confirmer le mot de passe</label>
+								<input type="text" id="confirm_mdp" name="confirm_mdp" placeholder="Confirmer le mot de passe">
+							</div>
+							<button id="valid_profile_info" class="valid_profile_info_btn">Valider</button>
+						</div>
 					</div>
 				</div>
 
@@ -1056,7 +1087,6 @@ export default class extends AbstractView {
 			view5.classList.remove('active');
 			btn_back_home.classList.remove('active');
 			view1.classList.remove('active');
-			container_menu.classList.add('active');
 			btn_back_home.classList.add('active');
 		});
 
@@ -1067,6 +1097,7 @@ export default class extends AbstractView {
 				view5.classList.add('active');
 				// btn_back_home.classList.remove('active');
 				view1.classList.add('active');
+				container_menu.classList.remove('active');
 			}
 			if (parametre_profile_view.classList.contains('active')) {
 				parametre_profile_view.classList.remove('active');
@@ -1075,6 +1106,31 @@ export default class extends AbstractView {
 				view1.classList.add('active');
 			}
 		});
+
+		/***********************************************************************/
+		/*************************Parametre_profil******************************/
+		/***********************************************************************/
+
+		const valid_mdp = document.getElementById('valid_mdp');
+		const modif_profil = document.getElementById('modif_profil');
+		const profile_param_unlocked_id = document.getElementById('profile_param_unlocked_id');
+		const valid_profile_info = document.getElementById('valid_profile_info');
+
+
+		valid_mdp.addEventListener('click', () => {
+			console.log('Valide mdp clicked');
+			modif_profil.classList.add('hidden');
+			btn_back_home.classList.remove('active');
+			profile_param_unlocked_id.classList.add('active');
+		});
+
+		valid_profile_info.addEventListener('click', () => {
+			console.log('Valide profile info clicked');
+			profile_param_unlocked_id.classList.remove('active');
+			modif_profil.classList.remove('hidden');
+			btn_back_home.classList.add('active');
+		});
+
 	}
 }
 
@@ -1086,24 +1142,3 @@ export function getPowerUP_value() {
 export function getPowerUP_value_multi() {
 	return powerUP_nb_multi;
 }
-
-
-					// <div class="container_name_player" id="container_namePlayer_id">
-					// 	<h2>ENTREZ LES NOMS DES JOUEURS</h2>
-					// 	<div class="input-container">
-					// 		<label for="name_player1">joueur 1 :</label>
-					// 		<input type="text" id="name_player1" name="name_player1" placeholder="Nom du joueur 1" required>
-					// 	</div>
-					// 	<div class="input-container">
-					// 		<label for="name_player2">joueur 2 :</label>
-					// 		<input type="text" id="name_player2" name="name_player2" placeholder="Nom du joueur 2" required>
-					// 	</div>
-					// 	<div class="input-container">
-					// 		<label for="name_player3">joueur 3 :</label>
-					// 		<input type="text" id="name_player3" name="name_player3" placeholder="Nom du joueur 3" required>
-					// 	</div>
-					// 	<div class="input-container">
-					// 		<label for="name_player4">joueur 4 :</label>
-					// 		<input type="text" id="name_player4" name="name_player4" placeholder="Nom du joueur 4" required>
-					// 	</div>
-					// </div>

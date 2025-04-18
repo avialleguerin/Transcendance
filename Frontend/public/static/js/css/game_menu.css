@@ -1266,8 +1266,11 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
 
 .parametres_jeu .parrametres_profile {
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
     width: 100%;
     height: 100%;
     display: flex;
@@ -1310,10 +1313,108 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
     color: #ffffff;
     text-shadow: 2px 2px 4px rgb(0, 0, 0);
     text-align: center;
-    font-size: 1.2vw;
-    position: relative;
+    font-size: 1vw;
+    /* position: relative; */
     font-family: 'Black Ops One', sans-serif;
+    position: absolute;
+    top: 0%;
+    left: 50%;
+    transform: translateX(-50%);
 }
+
+
+.modif_profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    height: 10%;
+    background-color: #00000082;
+}
+
+.modif_profile label {
+    color: #fff;
+    font-size: 14px;
+    font-family: "Black Ops One", sans-serif;
+    width: 30%; /* Largeur fixe pour aligner les labels */
+    text-align: right; /* Alignement du texte à droite */
+}
+
+.modif_profile input {
+    width: 40%; /* Laisse de la place pour le label */
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.modif_profile input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.modif_profile input:focus {
+    border: 1px solid #ffffff;
+    box-shadow: 0 0 8px #ffffff;
+}
+
+.profile_param_unlocked {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    height: 100%;
+    background-color: #000000ba;
+    flex-direction: column;
+    border: 2px solid white;
+    border-radius: 3%;
+    transform: translateY(-10%);
+
+}
+
+.input_container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 64%;
+    height: 10%;
+    background-color: #00000082;
+    transform: translate(22%, -60%);
+    padding-right: 10px;
+}
+
+.input_container label {
+    color: #fff;
+    font-size: 0.5vw;
+    font-family: "Black Ops One", sans-serif;
+    width: 30%;
+    text-align: right;
+}
+
+.input_container input {
+    width: 60%;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.5vw;
+    outline: none;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.input_container input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.input_container input:focus {
+    border: 1px solid #ffffff;
+    box-shadow: 0 0 8px #ffffff;
+}
+
+
+
 
 
 .parametres_jeu_content h1 {
@@ -1450,4 +1551,139 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
 
 .mode_de_jeu_multi_parametre .controls p{
     font-size: 0.5vw;
+}
+
+
+
+.btn_valider_mdp {
+    padding: 15px 0px;
+    font-size: 0.7vw;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+    border: 2px solid #44444400;
+    background-color: transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    background-image: url("../../../srcs/game/assets/image/boutton.svg");
+    background-size: 100% auto;
+    background-position: center;
+    background-repeat: no-repeat;
+    line-height: 4vh;
+    
+    /* Ajout de dimensions fixes */
+    width: 100px;  /* Largeur fixe */
+    height: 60px;  /* Hauteur fixe */
+    display: flex; /* Pour aider au centrage du texte */
+    justify-content: center; /* Centre horizontalement */
+    align-items: center; /* Centre verticalement */
+}
+
+
+.profile_photo_container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.profile_photo_circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 2px dashed #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 35%;
+    left: 4%;
+    transform: translateY(-50%);
+}
+
+.photo_upload_icon {
+    color: #999;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.profile_photo_circle:hover {
+    border-color: #888;
+}
+
+.profile_photo_circle:hover .photo_upload_icon {
+    color: #666;
+}
+
+.modif_profile.hidden {
+    display: none;
+}
+
+.modif_profile.active, .profile_param_unlocked.active {
+    display: flex;
+}
+
+
+
+.valid_profile_info_btn {
+    padding: 15px 0px;
+    font-size: 0.7vw;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+    border: 2px solid #44444400;
+    background-color: transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    background-image: url("../../../srcs/game/assets/image/boutton.svg");
+    background-size: 100% auto;
+    background-position: center;
+    background-repeat: no-repeat;
+    line-height: 4vh;
+    width: 87px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    /* bottom: -7%; */
+    /* left: 50%; */
+    transform: translate(0%, -30%);
+}
+
+
+.btn_tournament {
+    padding: 20px 40px;
+    font-size: 0.9vw;
+    font-weight: bold;
+    transform: translateY(-50%);
+    background-color: transparent;
+    color: white;
+    border: 2px solid #44444400;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    background-image: url("../../../srcs/game/assets/image/boutton.svg");
+    background-size: 100% auto;
+    background-position: center;
+    background-repeat: no-repeat;
+    line-height: 3vh;
+    
+    width: 130px;  /* Largeur fixe */
+    height: 100px;  /* Hauteur fixe */
+    display: flex; /* Pour aider au centrage du texte */
+    justify-content: center; /* Centre horizontalement */
+    align-items: center; /* Centre verticalement */
+}
+
+.btn_tournament a {
+    text-decoration: none;
+    color: white;
+    font-size: 0.9vw;
+    font-weight: bold;
+    transform: translate(-14px, 14px);
 }

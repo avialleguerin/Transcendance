@@ -4,6 +4,7 @@ import { startTournamentGame } from "../../../srcs/game/gameplay/babylon.js";
 import { getPlayer_1_win, getPlayer_2_win } from "../../../srcs/game/gameplay/score.js";
 
 let count = 0;
+
 let tournamentStarted = false;
 
 export default class extends AbstractView {
@@ -12,8 +13,9 @@ export default class extends AbstractView {
         this.setTitle("Tournament");
 
 		if (window.location.pathname === "/tournament") {
-			this.gameLoop = setInterval(() => { this.checktournamentstart(); 1000 });
+			this.gameLoop = setInterval(() => this.checktournamentstart(), 1000);
 		}
+		tournamentStarted = localStorage.getItem('tournamentStarted') === 'true';
     }
 
 	async getHtml() {
@@ -106,7 +108,10 @@ export default class extends AbstractView {
 		updateTournamentState(count, joueur1_id, joueur2_id, joueur3_id, joueur4_id);
 
 		const countFromStorage = parseInt(localStorage.getItem('tournamentCount')) || 0;
-		console.log('Count from storage:', countFromStorage);
+		console.log('Tournament count:', count);
+		console.log('Tournament started:', tournamentStarted);
+		console.log('Tournament count from storage:', countFromStorage);
+
 		if (countFromStorage >= 6) {
 			const startGameBtn = document.getElementById('start_game');
 			const finishGameBtn = document.getElementById('finiched_game');
@@ -167,32 +172,33 @@ export default class extends AbstractView {
 		});
     }
 
-	checktournamentstart()
-	{
-		if (tournamentStarted == true)
+	checktournamentstart() {
+		if (window.location.pathname === "/tournament")
 		{
+			// Récupérer tous les éléments nécessaires
 			const container_name_player = document.getElementById('container_name_player');
 			const tournament_graphic_id = document.getElementById('tournament_graphic_id');
 			const start_tournament = document.getElementById('start_tournament');
 			const back_to_menu_view_tournament = document.getElementById('back_to_menu_view_tournament');
-
-            container_name_player.classList.add('hidden');
-            tournament_graphic_id.classList.add('active');
-			start_tournament.style.display = 'none';
-			back_to_menu_view_tournament.style.display = 'none';
-		}
-		else
-		{
-			const container_name_player = document.getElementById('container_name_player');
-			const tournament_graphic_id = document.getElementById('tournament_graphic_id');
-			const start_tournament = document.getElementById('start_tournament');
-			const back_to_menu_view_tournament = document.getElementById('back_to_menu_view_tournament');
-
-			container_name_player.classList.remove('hidden');
-			tournament_graphic_id.classList.remove('active');
-
-			start_tournament.style.display = 'block';
-			back_to_menu_view_tournament.style.display = 'block';
+			
+			// Vérifier que tous les éléments existent avant de les manipuler
+			if (!container_name_player || !tournament_graphic_id || !start_tournament || !back_to_menu_view_tournament) {
+				return; // Sortir de la fonction si un élément est manquant
+			}
+			
+			if (tournamentStarted == true) {
+				container_name_player.classList.add('hidden');
+				tournament_graphic_id.classList.add('active');
+				start_tournament.style.display = 'none';
+				back_to_menu_view_tournament.style.display = 'none';
+			} else {
+				if (container_name_player.classList.contains('hidden')) {
+					container_name_player.classList.remove('hidden');
+					tournament_graphic_id.classList.remove('active');
+					start_tournament.style.display = 'block';
+					back_to_menu_view_tournament.style.display = 'block';
+				}
+			}
 		}
 	}
 }
@@ -229,7 +235,7 @@ const POSITIONS =
 
 function resetTournamentState(joueur1_id, joueur2_id, joueur3_id, joueur4_id)
 {
-	count = 0;
+	// count = 0;
 	localStorage.setItem('tournamentCount', count);
 	const joueurs = [joueur1_id, joueur2_id, joueur3_id, joueur4_id];
 
@@ -243,6 +249,7 @@ function resetTournamentState(joueur1_id, joueur2_id, joueur3_id, joueur4_id)
 function updateTournamentState(count, joueur1_id, joueur2_id, joueur3_id, joueur4_id)
 {
 	resetTournamentState(joueur1_id, joueur2_id, joueur3_id, joueur4_id);
+	console.log('Count:', count);
 
 	let match1_winner, match1_loser, match2_winner, match2_loser, match3_winner, match3_loser, 
 	match4_winner, match4_loser, match5_winner, match5_loser, match6_winner, match6_loser;
@@ -255,11 +262,15 @@ function updateTournamentState(count, joueur1_id, joueur2_id, joueur3_id, joueur
 		joueur.style.top = positions[index].top;
 		joueur.style.left = positions[index].left;
 		joueur.style.color = 'white';
+
+		highlightNextPlayers(joueur1_id, joueur2_id);
+
 		});
 	}
 
 	if (count >= 1)
 	{
+		resetHighlight([joueur1_id, joueur2_id]);
 		console.log('Match 1');
 		console.log("round1");
 		const player1_wins = getPlayer_1_win();
@@ -279,10 +290,13 @@ function updateTournamentState(count, joueur1_id, joueur2_id, joueur3_id, joueur
 		match1_winner.style.left = POSITIONS.quart_winner.winner1_2.left;
 		match1_loser.style.top = POSITIONS.quart_winner.loser1_2.top;
 		match1_loser.style.left = POSITIONS.quart_winner.loser1_2.left;
+
+		highlightNextPlayers(joueur3_id, joueur4_id);
 	}
 
 	if (count >= 2)
 	{
+		resetHighlight([joueur3_id, joueur4_id]);
 		console.log('Match 2');
 		console.log("round2");
 		const player1_wins = getPlayer_1_win();
@@ -303,11 +317,13 @@ function updateTournamentState(count, joueur1_id, joueur2_id, joueur3_id, joueur
 
 		match2_loser.style.top = POSITIONS.quart_winner.loser3_4.top;
 		match2_loser.style.left = POSITIONS.quart_winner.loser3_4.left;
+		highlightNextPlayers(match1_loser, match2_loser);
 
 	}
 
 	if (count >= 3 && match1_loser && match2_loser)
 	{
+		resetHighlight([match1_loser, match2_loser]);
 		const quart_loser_bracket = getPlayer_1_win();
 
 		if (quart_loser_bracket)
@@ -324,10 +340,13 @@ function updateTournamentState(count, joueur1_id, joueur2_id, joueur3_id, joueur
 		match3_winner.style.left = POSITIONS.quart_loser.winner.left;
 
 		match3_loser.style.color = 'red';
+
+		highlightNextPlayers(match1_winner, match2_winner);
 	}
 
 	if (count >= 4 && match1_winner && match2_winner)
 	{
+		resetHighlight([match1_winner, match2_winner]);
 		const demi_winner_bracket = getPlayer_1_win();
 
 		if (demi_winner_bracket)
@@ -346,10 +365,13 @@ function updateTournamentState(count, joueur1_id, joueur2_id, joueur3_id, joueur
 
 		match4_loser.style.top = POSITIONS.demi_winer.loser.top;
 		match4_loser.style.left = POSITIONS.demi_winer.loser.left;
+
+		highlightNextPlayers(match3_winner, match4_loser);
 	}
 
 	if (count >= 5 && match3_loser && match4_loser)
 	{
+		resetHighlight([match3_loser, match4_loser]);
 		const demi_loser_bracket = getPlayer_1_win();
 
 		if (demi_loser_bracket)
@@ -367,10 +389,13 @@ function updateTournamentState(count, joueur1_id, joueur2_id, joueur3_id, joueur
 		match5_winner.style.left = POSITIONS.demi_loser.winner.left;
 
 		match5_loser.style.color = 'red';
+
+		highlightNextPlayers(match4_winner, match5_winner);
 	}
 
 	if (count >= 6 && match5_winner && match4_winner)
 	{
+		resetHighlight([match5_winner, match4_winner]);
 		const grande_final_bracket = getPlayer_1_win();
 
 		if (grande_final_bracket)
@@ -390,4 +415,32 @@ function updateTournamentState(count, joueur1_id, joueur2_id, joueur3_id, joueur
 		match6_loser.style.color = 'red';
 	}
 
+}
+
+// Fonction pour mettre en évidence les joueurs
+function highlightNextPlayers(...players) {
+    players.forEach(player => {
+        if (player) {
+            // Augmenter la luminosité
+            player.style.filter = "brightness(1.5)";
+			// Changer la couleur du texte
+			player.style.color = "yellow";
+			// Ajouter une bordure
+			player.style.border = "2px solid yellow";
+        }
+    });
+}
+
+// Fonction pour réinitialiser la mise en évidence des joueurs
+function resetHighlight(players) {
+	players.forEach(player => {
+		if (player) {
+			// Réinitialiser la luminosité
+			player.style.filter = "none";
+			// Réinitialiser la couleur du texte
+			player.style.color = "white";
+			// Réinitialiser la bordure
+			player.style.border = "none";
+		}
+	});
 }

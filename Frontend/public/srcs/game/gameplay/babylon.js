@@ -1,5 +1,5 @@
 
-import { create_environment_view1, create_environment_view3 } from "./init_game.js";
+import { create_environment_view1, create_environment_view3, create_environment_view2 } from "./init_game.js";
 import { UpdatePlayerPose } from "./player.js";
 import { MoveBall, MoveBall2v2 } from "./ball.js";
 import { init_game_solo, start_game_solo, destroy_game_solo } from "./solo/1v1_player/init_game_Solo.js";
@@ -235,6 +235,7 @@ let fpsHistory = [];
 
 create_environment_view1(scene);
 create_environment_view3(scene);
+create_environment_view2(scene);
 // init_all_skin(scene);
 const skybox = createOptimizedSkybox(scene);
 
