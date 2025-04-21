@@ -18,8 +18,8 @@ const navigateTo = (url) => {
 
 const router = async () => {
     const routes = [
-        // { path: "/", view: Home },
-        { path: "/", view: platformer },
+        { path: "/", view: Home },
+        // { path: "/", view: platformer },
         { path: "/settings", view: settings },
         { path: "/Game_menu", view: Game_menu },
         { path: "/solo_game_1v1", view: solo_game_1v1 },
