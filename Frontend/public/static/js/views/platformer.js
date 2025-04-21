@@ -426,7 +426,7 @@ export default class PlatformerView extends AbstractView {
 						height: tileSize,
 						image: new Sprite({
 							position: { x: x * tileSize, y: y * tileSize },
-							Image_src: '/srcs/game/assets/City/sol.png',
+							Image_src: '/srcs/game/assets/City/platform_nobg.png',
 							scaleX: 1,
 							scaleY: 1,
 						})
