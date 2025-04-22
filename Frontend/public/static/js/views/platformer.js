@@ -370,7 +370,7 @@ export default class PlatformerView extends AbstractView {
 				this.draw();
 				this.drawHitbox();
 				this.updateCameraBox();
-				this.drawCameraBox();
+				// this.drawCameraBox();
 			}
 			
 			handleJump() {
@@ -583,6 +583,46 @@ export default class PlatformerView extends AbstractView {
 			Image_src: '/srcs/game/assets/City/bg.png',
 		})
 
+		const background3 = new Sprite ({
+			position: {
+				x: 0,
+				y: 780,
+			},
+			scaleX: 1.5,
+			scaleY: 3,
+			Image_src: '/srcs/game/assets/City/background3.png',
+		})
+
+		const background3_bis = new Sprite ({
+			position: {
+				x: 0,
+				y: 780,
+			},
+			scaleX: 1.5,
+			scaleY: 3,
+			Image_src: '/srcs/game/assets/City/background1.png',
+		})
+
+		const background4 = new Sprite ({
+			position: {
+				x: 1420,
+				y: 780,
+			},
+			scaleX: 1.5,
+			scaleY: 3,
+			Image_src: '/srcs/game/assets/City/background3.png',
+		})
+
+		const background4_bis = new Sprite ({
+			position: {
+				x: 1420,
+				y: 780,
+			},
+			scaleX: 1.5,
+			scaleY: 3,
+			Image_src: '/srcs/game/assets/City/background1.png',
+		})
+
 
 
 		function createLevelFromMap(levelMap, tileSize = 32) {
@@ -604,7 +644,7 @@ export default class PlatformerView extends AbstractView {
 						height: tileSize,
 						image: new Sprite({
 							position: { x: x * tileSize, y: y * tileSize },
-							Image_src: '/srcs/game/assets/City/sol.png',
+							Image_src: '/srcs/game/assets/City/wall.png',
 							scaleX: 1,
 							scaleY: 1,
 						}),
@@ -619,7 +659,7 @@ export default class PlatformerView extends AbstractView {
 						height: tileSize,
 						image: new Sprite({
 							position: { x: x * tileSize, y: y * tileSize },
-							Image_src: '/srcs/game/assets/City/sol2.png',
+							Image_src: '/srcs/game/assets/City/wall.png',
 							scaleX: 1,
 							scaleY: 1,
 						}),
@@ -649,7 +689,7 @@ export default class PlatformerView extends AbstractView {
 							height: tileSize,
 							image: new Sprite({
 								position: { x: x * tileSize, y: y * tileSize },
-								Image_src: '/srcs/game/assets/City/sol3.png',
+								Image_src: '/srcs/game/assets/City/trap.png',
 								scaleX: 1,
 								scaleY: 1,
 							}),
@@ -699,7 +739,7 @@ const levelMap = `
 ....2..............................2.................2##......................2................2
 ....2..............................2.................2........................2................2
 ....23333333333333333333333333333332.................###################2.....2................2
-..........................2......................................2......2.....2................2
+....################################.............................2......2.....2................2
 ..........................2......................................2......2.....2................2
 ..........................2......................................2......2.....2................2
 ..........................2......................................2......2#####2................2
@@ -713,14 +753,15 @@ const levelMap = `
 ..............................................####...............2.............................2
 .................................................................2.............................2
 .....................................##..........................2.............................2
-.......................................................33##......2.............................2
-..........................3......................................2.............................2
+.......................................................33........2.............................2
+..........................3............................####......2.............................2
 ..........................2......................................2.............................2
 ......................#...2..#.................................................................2
 ...............###........2....................................................................2
 ..........................2......................................2.............................2
 ..........................2......................................2.............................2
-#333###########33333333333233333333333333333333333333333333333333###############################`
+.333...........33333333333233333333333333333333333333333333333333###############################
+#################################################################...............................`
 
 
 		const platformss = createLevelFromMap(levelMap);
@@ -919,6 +960,10 @@ const levelMap = `
 					c.translate(-camera.position.x, -camera.position.y);
 					background.update();
 					background2.update();
+					background3_bis.update();
+					background3.update();
+					background4_bis.update();
+					background4.update();
 					
 					// === Platforms ===
 					platformss.forEach(platform => platform.draw());
@@ -927,11 +972,11 @@ const levelMap = `
 					collisionBox.draw();
 					collisionBox2.draw();
 					collisionBox3.draw();
-					trap1.draw();
-					trap2.draw();
-					trap3.draw();
-					trap4.draw();
-					trap5.draw();
+					// trap1.draw();
+					// trap2.draw();
+					// trap3.draw();
+					// trap4.draw();
+					// trap5.draw();
 					
 					// === Update Players ===
 					player.update();
