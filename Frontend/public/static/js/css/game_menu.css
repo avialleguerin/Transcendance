@@ -311,6 +311,22 @@
     transform: translateY(-63%);
 }
 
+.fa_selector {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    position: absolute;
+    transform: translate(150%, 150%);
+}
+
+.fa_selector p {
+    color: white;
+    font-family: 'Black Ops One', sans-serif;
+    font-size: 0.8vw;
+    margin-right: 10px;
+}
+
 .powerUP p:first-child {
     color: white;
     font-family: 'Black Ops One', sans-serif;
@@ -349,6 +365,7 @@
 
 .number_powerUP.checked::after,
 .active_powerUP.checked::after,
+.active_fa.checked::after,
 .skin_perso.checked::after {
     content: '✓';
     color: rgb(255, 255, 255);
@@ -359,7 +376,7 @@
     font-weight: bold;
 }
 
-.active_powerUP, .skin_perso {
+.active_powerUP, .skin_perso, .active_fa {
     width: 20px;
     height: 20px;
     border: 2px solid #333;
@@ -1686,4 +1703,8 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
     font-size: 0.9vw;
     font-weight: bold;
     transform: translate(-14px, 14px);
+}
+
+.active_fa {
+
 }

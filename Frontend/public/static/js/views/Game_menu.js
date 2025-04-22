@@ -183,6 +183,9 @@ export default class extends AbstractView {
 								<label for="confirm_mdp">Confirmer le mot de passe</label>
 								<input type="text" id="confirm_mdp" name="confirm_mdp" placeholder="Confirmer le mot de passe">
 							</div>
+							<div id="fa_selector" class="fa_selector">
+								<p>2FA :<span id="active_fa" class="active_fa"></span></p>
+							</div>
 							<button id="valid_profile_info" class="valid_profile_info_btn">Valider</button>
 						</div>
 					</div>
@@ -1118,6 +1121,8 @@ export default class extends AbstractView {
 		const modif_profil = document.getElementById('modif_profil');
 		const profile_param_unlocked_id = document.getElementById('profile_param_unlocked_id');
 		const valid_profile_info = document.getElementById('valid_profile_info');
+		const fa_selector = document.getElementById('fa_selector');
+		const active_fa = document.getElementById('active_fa');
 
 
 		valid_mdp.addEventListener('click', () => {
@@ -1134,6 +1139,17 @@ export default class extends AbstractView {
 			btn_back_home.classList.add('active');
 		});
 
+		active_fa.addEventListener('click', () => {
+			active_fa.classList.toggle('checked');
+			if (active_fa.classList.contains('checked')) {
+				console.log('FA is active');
+				fa_selector.classList.add('active');
+			}
+			else {
+				console.log('FA is inactive');
+				fa_selector.classList.remove('active');
+			}
+		});
 	}
 }
 

@@ -363,11 +363,6 @@ export default class PlatformerView extends AbstractView {
 							this.velocity.x = 0;
 							this.position.x = px + pw - hitboxOffsetX; // <- bon placement
 						}
-						// // Collision from right
-						// else if (prevRight <= px && this.velocity.x > 0) {
-						// 	this.velocity.x = 0;
-						// 	this.position.x = px - (this.width - hitboxOffsetX); // <-- correction ici
-						// }
 					}
 
 				}
@@ -377,7 +372,6 @@ export default class PlatformerView extends AbstractView {
 				}
 			}
 			
-
 			drawHitbox() {
 				const hitboxOffsetX = 60;
 				const hitboxOffsetY = 90;
@@ -391,20 +385,6 @@ export default class PlatformerView extends AbstractView {
 				this.height - hitboxOffsetY - hitboxOffsetBottom
 				);
 			}
-
-			// drawHitbox() {
-			// 	const hitboxOffsetX = 25;
-			// 	const hitboxOffsetY = 10;
-			// 	const hitboxOffsetBottom = 10;
-				
-			// 	context.strokeStyle = 'red';
-			// 	context.strokeRect(
-			// 	  this.position.x + hitboxOffsetX, 
-			// 	  this.position.y + hitboxOffsetY,
-			// 	  this.width - (hitboxOffsetX * 2),
-			// 	  this.height - hitboxOffsetY - hitboxOffsetBottom
-			// 	);
-			//   }
 		}
 
 		class CollisionBox {
