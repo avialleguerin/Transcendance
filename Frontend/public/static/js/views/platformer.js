@@ -14,6 +14,7 @@ export default class PlatformerView extends AbstractView {
 
 	async getHtml() {
 		return `
+			<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 			<style>
 				canvas {
 					z-index: 100;
@@ -46,8 +47,7 @@ export default class PlatformerView extends AbstractView {
 			height: canvas.height / 4,
 		};
 
-
-		c.fillStyle = "white";
+		c.fillStyle = "black";
 		c.fillRect(0, 0, canvas.width, canvas.height);
 		const gravity = 0.5;
 
@@ -66,7 +66,6 @@ export default class PlatformerView extends AbstractView {
 					this.loaded = true
 					this.width = this.image.width * this.scaleX  // Calcul de la largeur
 					this.height = this.image.height * this.scaleY // Calcul de la hauteur
-					console.log("Image loaded:", Image_src)
 				}
 				
 				this.image.onerror = () => {
@@ -76,7 +75,7 @@ export default class PlatformerView extends AbstractView {
 				// Définir la source après avoir configuré les gestionnaires d'événements
 				this.image.src = Image_src
 			}
-		
+
 			draw() {
 				if (!this.loaded) return;
 				
@@ -137,7 +136,7 @@ export default class PlatformerView extends AbstractView {
 				);
 				} else {
 				// Dessiner un rectangle si pas d'image ou si l'image n'est pas chargée
-				c.fillStyle = "brown";
+				c.fillStyle = "black";
 				c.fillRect(this.position.x, this.position.y, this.width, this.height);
 				}
 			}
@@ -168,6 +167,14 @@ export default class PlatformerView extends AbstractView {
 				this.cantraverse = false;
 				this.isGrounded = false;
 				this.cantraverseDown = false;
+				this.cameraBox = {
+					position: {
+						x: this.position.x,
+						y: this.position.y,
+					},
+					width: 200,
+					height: 80,
+				};
 			}
 
 			changeState(newState) {
@@ -214,7 +221,7 @@ export default class PlatformerView extends AbstractView {
 						}
 						else if (this.state === "jumpEnd")
 						{
-							if (keysPlayer1.d.pressed || keysPlayer1.q.pressed || keysPlayer1.a.pressed || keysPlayer2.ArrowRight.pressed || keysPlayer2.ArrowLeft.pressed)
+							if (keysPlayer1.d.pressed || keysPlayer1.q.pressed || keysPlayer1.a.pressed || keysPlayer2.j.pressed || keysPlayer2.l.pressed)
 							{
 								this.changeState("walk");
 							}
@@ -238,9 +245,81 @@ export default class PlatformerView extends AbstractView {
 					this.scaleX = Math.abs(this.scaleX); // vers la droite (normal)
 				} else if (this.velocity.x < 0) {
 					this.scaleX = -Math.abs(this.scaleX); // vers la gauche (miroir)
-					console.log("je regarde à gauche");
+					// console.log("je regarde à gauche");
 				}
 			}
+
+			drawCameraBox() {
+			
+				c.fillStyle = 'rgba(0, 255, 0, 0.5)'; // Couleur de la hitbox
+				c.fillRect(
+					this.cameraBox.position.x,
+					this.cameraBox.position.y,
+					this.cameraBox.width,
+					this.cameraBox.height
+				);
+			}
+
+			updateCameraBox() {
+				this.cameraBox = {
+					position: {
+						x: this.position.x - 250,
+						y: this.position.y - 100,
+					},
+					width: 800,
+					height: 400,
+				};
+			}
+
+			shouldPanCameraToRight({canvas, camera}) {
+				const cameraBoxRightSide = this.cameraBox.position.x + this.cameraBox.width;
+
+				if (cameraBoxRightSide >= canvas.width + Math.abs(camera.position.x)) {
+					camera.position.x += this.velocity.x
+				}
+			}
+
+			shouldPanCameraToLeft({canvas, camera}) {
+				if (this.cameraBox.position.x <= 0) {
+					return;
+				}
+			
+				if (this.cameraBox.position.x <= Math.abs(camera.position.x)) {
+					camera.position.x += this.velocity.x
+				}
+			}
+
+			forceCameraToFollow({ canvas, camera }) {
+				camera.position.x = this.position.x - canvas.width / 2 + this.width / 2;
+				camera.position.y = this.position.y - canvas.height / 2 + this.height / 2;
+			}
+
+			// shouldPanCameraToDown({canvas, camera}) {
+			// 	if (this.cameraBox.position.y <= 0) {
+			// 		return;
+			// 	}
+			
+			// 	if (this.cameraBox.position.y <= Math.abs(camera.position.y)) {
+			// 		camera.position.y += this.velocity.y
+			// 	}
+			// }
+
+			shouldPanCameraToDown({canvas, camera}) {
+				if (this.cameraBox.position.y <= 0) {
+					return;
+				}
+				if (this.cameraBox.position.y <= Math.abs(camera.position.y)) {
+					camera.position.y += this.velocity.y;
+				}
+			}
+
+			shouldPanCameraToUP({canvas, camera}) {
+				// Vérifier si on atteint le bas de l'écran
+				if (this.cameraBox.position.y + this.cameraBox.height >= canvas.height + Math.abs(camera.position.y)) {
+					camera.position.y += this.velocity.y;
+				}
+			}
+
 
 			
 			update() {
@@ -256,7 +335,7 @@ export default class PlatformerView extends AbstractView {
 
 				if (this.isGrounded)
 				{
-					console.log("je suis au sol");
+					// console.log("je suis au sol");
 					this.velocity.y = 0;
 					this.doubleJump = false;
 					// this.isGrounded = true;
@@ -265,7 +344,7 @@ export default class PlatformerView extends AbstractView {
 					{
 						this.changeState("jumpEnd");
 						setTimeout(() => {
-							if (keysPlayer1.d.pressed || keysPlayer1.q.pressed || keysPlayer1.a.pressed || keysPlayer2.ArrowRight.pressed || keysPlayer2.ArrowLeft.pressed)
+							if (keysPlayer1.d.pressed || keysPlayer1.q.pressed || keysPlayer1.a.pressed || keysPlayer2.j.pressed || keysPlayer2.l.pressed)
 							{
 								this.changeState("walk");
 							}
@@ -290,6 +369,8 @@ export default class PlatformerView extends AbstractView {
 				this.rotate_sprite();
 				this.draw();
 				this.drawHitbox();
+				this.updateCameraBox();
+				this.drawCameraBox();
 			}
 			
 			handleJump() {
@@ -417,21 +498,52 @@ export default class PlatformerView extends AbstractView {
 			
 				return collision;
 			}
+		}
 
+		class trap {
+			constructor({position, width, height}) {
+				this.position = position;
+				this.width = width;
+				this.height = height;
+			}
+
+			draw() {
+				c.fillStyle = 'red';
+				c.fillRect(this.position.x, this.position.y, this.width, this.height);
+			}
+
+			checkCollision(player) {
+				const hitboxOffsetX = 60;
+				const hitboxOffsetY = 90;
+				const hitboxOffsetBottom = 25;
+			
+				const hitboxX = player.position.x + hitboxOffsetX;
+				const hitboxY = player.position.y + hitboxOffsetY;
+				const hitboxWidth = player.width - hitboxOffsetX * 2;
+				const hitboxHeight = player.height - hitboxOffsetY - hitboxOffsetBottom;
+			
+				// Vérifie l'intersection entre la hitbox du joueur et la boîte
+				const collision = hitboxX < this.position.x + this.width &&
+								hitboxX + hitboxWidth > this.position.x &&
+								hitboxY < this.position.y + this.height &&
+								hitboxY + hitboxHeight > this.position.y;
+			
+				return collision;
+			}
 		}
 
 		const player = new Player({
 			position: {
-				x: 100,
-				y: 100,
+				x: 232,
+				y: 10,
 			},
 			Image_src_prefix: '/srcs/game/assets/player_sprite/Char_1/with_hands/',
 		});
 
 		const player2 = new Player({
 			position: {
-				x: 200,
-				y: 100,
+				x: 6,
+				y: 10,
 			},
 			Image_src_prefix: '/srcs/game/assets/player_sprite/Char_2/with_hands/',
 		});
@@ -441,19 +553,20 @@ export default class PlatformerView extends AbstractView {
 			q: { pressed: false },
 			a: { pressed: false },
 			s: { pressed: false },
+			w: { pressed: false },
 		};
 		
 		const keysPlayer2 = {
-			ArrowRight: { pressed: false },
-			ArrowLeft: { pressed: false },
-			ArrowUp: { pressed: false },
-			ArrowDown: { pressed: false },
+			l: { pressed: false },
+			j: { pressed: false },
+			i: { pressed: false },
+			k: { pressed: false },
 		};
 
 		const background = new Sprite ({
 			position: {
 				x: 0,
-				y: -210,
+				y: 2,
 			},
 			scaleX: 1.5,
 			scaleY: 1,
@@ -462,8 +575,8 @@ export default class PlatformerView extends AbstractView {
 
 		const background2 = new Sprite ({
 			position: {
-				x: 440,
-				y: -210,
+				x: 1390,
+				y: 0,
 			},
 			scaleX: 1.5,
 			scaleY: 1,
@@ -497,6 +610,21 @@ export default class PlatformerView extends AbstractView {
 						}),
 						}));
 					}
+					if (char === '2')
+					{
+					platforms.push(
+						new PlatForm({
+						position: { x: x * tileSize, y: y * tileSize },
+						width: tileSize,
+						height: tileSize,
+						image: new Sprite({
+							position: { x: x * tileSize, y: y * tileSize },
+							Image_src: '/srcs/game/assets/City/sol2.png',
+							scaleX: 1,
+							scaleY: 1,
+						}),
+						}));
+					}
 					if (char === '1')
 					{
 						platforms.push(
@@ -512,89 +640,406 @@ export default class PlatformerView extends AbstractView {
 							}),
 							}));
 					}
+					if (char === '3')
+					{
+						platforms.push(
+							new PlatForm({
+							position: { x: x * tileSize, y: y * tileSize },
+							width: tileSize,
+							height: tileSize,
+							image: new Sprite({
+								position: { x: x * tileSize, y: y * tileSize },
+								Image_src: '/srcs/game/assets/City/sol3.png',
+								scaleX: 1,
+								scaleY: 1,
+							}),
+							}));
+					}
 				}
 			}
 			return platforms;
 		}
 
 const levelMap = `
-................................
-................................
-................................
-..........###...................
-...................###..........
-................................
-................................
-................................
-####################11111#######
-................................
-................................
-................................
-..............###########.......
-................................
-........................########
-.......####.....................
-................................
-################################`
-		
+222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
+.......2.......................................................................................2
+.......2.......................................................................................2
+.......2.......................................................................................2
+.......2.......................................................................................2
+.......2.......................................................................................2
+.......2.......................................................................................2
+.......2.......................................................................................2
+.......2.......................................................................................2
+.......2..................................................##....##.............................2
+.......2...........###.........................................................................2
+.......2...........................................##..................##......................2
+.......2.......................................................................................2
+.......2.......................................................................................2
+.......2...#########11111#######################.........######................................2
+.......2.......................................................................................2
+.......2..........................................................######.......................2
+.......2......................................######...........................................2
+.......2......############.....................................................................2
+.......2.................................................######................................2
+.......2................########...............................................................2
+.......2###....................................................................................2
+...............................................................................................2
+...............................................................................................2
+#########################################################################.....##################
+...................................2....................................2.....2................2
+...................................2....................................2.....2................2
+...................................#########111111#############.........2.....2................2
+......................#..............................2........2......###2.....2................2
+................##...................................2..................2.....2................2
+...........................####....##################2..................2.....2................2
+...........#.......................2.................2........2###......2.....2................2
+#1112..............................2.................2........2.........2.....2................2
+....2..............................2.................2........2.........2.....2................2
+....2..............................2.................2......###...............2................2
+....2..............................2.................2##......................2................2
+....2..............................2.................2........................2................2
+....23333333333333333333333333333332.................###################2.....2................2
+..........................2......................................2......2.....2................2
+..........................2......................................2......2.....2................2
+..........................2......................................2......2.....2................2
+..........................2......................................2......2#####2................2
+..........................2......................................2.............................2
+..........................2......................................2.............................2
+..........................2......................................2.............................2
+..........................2......................................2.............................2
+..........................2......................................2.............................2
+..........................2......................................2.............................2
+.................................................................2.............................2
+..............................................####...............2.............................2
+.................................................................2.............................2
+.....................................##..........................2.............................2
+.......................................................33##......2.............................2
+..........................3......................................2.............................2
+..........................2......................................2.............................2
+......................#...2..#.................................................................2
+...............###........2....................................................................2
+..........................2......................................2.............................2
+..........................2......................................2.............................2
+#333###########33333333333233333333333333333333333333333333333333###############################`
+
+
 		const platformss = createLevelFromMap(levelMap);
 
 		const collisionBox = new CollisionBox({
 			position: {
 				x: 665,
-				y: 220,
+				y: 420,
 			},
 			width: 120,
 			height: 100,
 		});
+
+		const collisionBox2 = new CollisionBox({
+			position: {
+				x: 1450,
+				y: 830,
+			},
+			width: 120,
+			height: 100,
+		});
+
+		const collisionBox3 = new CollisionBox({
+			position: {
+				x: 50,
+				y: 1000,
+			},
+			width: 50,
+			height: 50,
+		});
+
+		const trap1 = new trap({
+			position: {
+				x: 150,
+				y: 1150,
+			},
+			width: 970,
+			height: 50,
+		});
+
+		const trap2 = new trap({
+			position: {
+				x: 480,
+				y: 1870,
+			},
+			width: 1600,
+			height: 50,
+		});
+
+		const trap3 = new trap({
+			position: {
+				x: 35,
+				y: 1870,
+			},
+			width: 80,
+			height: 50,
+		});
+
+		const trap4 = new trap({
+			position: {
+				x: 834,
+				y: 1680,
+			},
+			width: 30,
+			height: 40,
+		});
+
+		const trap5 = new trap({
+			position: {
+				x: 1760,
+				y: 1650,
+			},
+			width: 63,
+			height: 40,
+		});
+
 		
+		const camera = {
+			position: {
+				x: 0,
+				y: 0,
+			},
+		};
+
+	
+		class GameState {
+			static Menu = "Menu";
+			static Play = "Play";
+			static Pause = "pause";
+		}
+
+		const gameState = {
+			current: GameState.Menu,
+			previous: null,
+		};
+
+		class Menu {
+			constructor() {
+				this.title = "⏱️ Chrono Clash";
+				this.options = ["▶ Start", "⚙ Options", "✖ Quit"];
+				this.selectedOption = 0;
+				this.optionSpacing = 60;
+				this.titleFont = "bold 60px 'Press Start 2P', Black Ops One";
+				this.optionFont = "30px 'Press Start 2P', Black Ops One";
+		
+				window.addEventListener("keydown", this.handleInput.bind(this));
+			}
+		
+			draw() {
+				// Fond semi-transparent
+				c.fillStyle = "rgba(0, 0, 0, 0.75)";
+				c.fillRect(0, 0, canvas.width, canvas.height);
+		
+				// Titre avec ombre
+				c.font = this.titleFont;
+				c.textAlign = "center";
+				c.fillStyle = "#FFD700"; // doré
+				c.shadowColor = "#000";
+				c.shadowBlur = 10;
+				c.fillText(this.title, canvas.width / 2, canvas.height / 4);
+				c.shadowBlur = 0; // reset
+		
+				// Options
+				c.font = this.optionFont;
+				this.options.forEach((option, index) => {
+					if (index === this.selectedOption) {
+						c.fillStyle = "#00FFFF"; // cyan lumineux
+					} else {
+						c.fillStyle = "white";
+					}
+					c.fillText(option, canvas.width / 2, canvas.height / 2 + index * this.optionSpacing);
+				});
+			}
+		
+			handleInput(event) {
+				switch (event.key) {
+					case "ArrowUp":
+					case "w":
+						this.selectedOption = (this.selectedOption - 1 + this.options.length) % this.options.length;
+						break;
+					case "ArrowDown":
+					case "s":
+						this.selectedOption = (this.selectedOption + 1) % this.options.length;
+						break;
+					case "Enter":
+						if (this.options[this.selectedOption] === "▶ Start") {
+							console.log("Start game");
+							// GameState.current = GameState.Play;
+							gameState.previous = gameState.current;
+							gameState.current = GameState.Play;
+						} else if (this.options[this.selectedOption] === "⚙ Options") {
+							// TODO: options menu
+						} else if (this.options[this.selectedOption] === "✖ Quit") {
+							window.close(); // ou un retour à l'accueil
+						}
+						break;
+				}
+			}
+
+			update_selectedOption() {
+				if (this.selectedOption === 0) {
+					this.selectedOption = 1;
+				} else {
+					this.selectedOption = 0;
+				}
+			}
+		}
+		
+		const menu = new Menu();
 		animate();
 
+
 		function animate() {
+
 			window.requestAnimationFrame(animate);
 		
 			// === Clear Canvas ===
-			c.fillStyle = "white";
+			c.fillStyle = 'rgba(rgb(12, 17, 33))'; // Couleur de fond
 			c.fillRect(0, 0, canvas.width, canvas.height);
 		
+			
 			// === Backgrounds ===
-			c.save();
-			c.scale(1, 1);
-			background.update();
-			background2.update();
-			c.restore();
-		
-			// === Platforms ===
-			platformss.forEach(platform => platform.draw());
-		
-			// === Collision Box ===
-			collisionBox.draw();
-		
-			handleCollision(player, collisionBox);
-			handleCollision(player2, collisionBox);
-		
-			// === Update Players ===
-			player.update();
-			player2.update();
-		
-			// === Movement Logic ===
-			handlePlayerMovement(player, keysPlayer1.a, keysPlayer1.d);
-			handlePlayerMovement(player2, keysPlayer2.ArrowLeft, keysPlayer2.ArrowRight);
-		
-			// === Platform Collision Check ===
-			player.checkCollision(platformss);
-			player2.checkCollision(platformss);
-
-			if (player.velocity.y > 1)
+			console.log(gameState.current);
+			switch (gameState.current)
 			{
-				player.isGrounded = false;
-			}
-			if (player2.velocity.y > 1)
-			{
-				player2.isGrounded = false;
-			}
+				case GameState.Menu:
+					menu.draw();
+					break;
+				case GameState.Play:
+				{
+					console.log("je suis dans le jeu");
+					c.fillStyle = 'rgba(rgb(12, 17, 33))'; // Couleur de fond
+					c.fillRect(0, 0, canvas.width, canvas.height);
+					c.save();
+					c.scale(1, 1);
+					c.translate(-camera.position.x, -camera.position.y);
+					background.update();
+					background2.update();
+					
+					// === Platforms ===
+					platformss.forEach(platform => platform.draw());
+					
+					// === Collision Box ===
+					collisionBox.draw();
+					collisionBox2.draw();
+					collisionBox3.draw();
+					trap1.draw();
+					trap2.draw();
+					trap3.draw();
+					trap4.draw();
+					trap5.draw();
+					
+					// === Update Players ===
+					player.update();
+					player2.update();
 
-			console.log(player.velocity.y);
+					// === Camera Logic ===
+					c.restore();
+
+					// === Movement Logic ===
+					if (keysPlayer1.d.pressed)
+					{
+						// console.log("je suis à droite");
+						player.shouldPanCameraToRight({canvas, camera});
+					}
+					else if (keysPlayer1.a.pressed)
+					{
+						// console.log("je suis à gauche");
+						player.shouldPanCameraToLeft({canvas, camera});
+					}
+					else if (keysPlayer1.w.pressed)
+					{
+						console.log("je suis en bas");
+						player.shouldPanCameraToDown({canvas, camera});
+					}
+					handlePlayerMovement(player, keysPlayer1.a, keysPlayer1.d);
+					handlePlayerMovement(player2, keysPlayer2.j, keysPlayer2.l);
+					
+					// === Platform Collision Check ===
+					player.checkCollision(platformss);
+					player2.checkCollision(platformss);
+
+					if (player.velocity.y < 0) { // Quand le joueur saute
+						player.shouldPanCameraToDown({canvas, camera});
+					} else if (player.velocity.y > 0) { // Quand le joueur tombe
+						player.shouldPanCameraToUP({canvas, camera});
+					}
+					
+					if (player.velocity.y > 1)
+					{
+						player.isGrounded = false;
+					}
+					if (player2.velocity.y > 1)
+					{
+						player2.isGrounded = false;
+					}
+					
+					handleCollision(player, collisionBox);
+					handleCollision(player2, collisionBox);
+					handleCollision(player, collisionBox2);
+					handleCollision(player2, collisionBox2);
+					handleCollision(player, collisionBox3);
+					handleCollision(player2, collisionBox3);
+
+					if (trap1.checkCollision(player))
+					{
+						console.log("collision avec le piège");
+						player.position.x = 1057;
+						player.position.y = 821.16;
+						player.velocity.x = 0;
+						player.velocity.y = 0;
+						player.forceCameraToFollow({ canvas, camera }); // <- nouvelle ligne
+						
+					}
+					// === Debugging ===
+					
+					if (trap2.checkCollision(player))
+					{
+						console.log("collision avec le piège");
+						player.position.x = 463;
+						player.position.y = 1653.16;
+						player.velocity.x = 0;
+						player.velocity.y = 0;
+						player.forceCameraToFollow({ canvas, camera }); // <- nouvelle ligne
+						
+					}
+
+					if (trap3.checkCollision(player))
+					{
+						console.log("collision avec le piège");
+						player.position.x = 1057;
+						player.position.y = 821.16;
+						player.velocity.x = 0;
+						player.velocity.y = 0;
+						player.forceCameraToFollow({ canvas, camera }); // <- nouvelle ligne
+					}
+
+					if (trap4.checkCollision(player))
+					{
+						console.log("collision avec le piège");
+						player.position.x = 463;
+						player.position.y = 1653.16;
+						player.velocity.x = 0;
+						player.velocity.y = 0;
+						player.forceCameraToFollow({ canvas, camera }); // <- nouvelle ligne
+					}
+
+					if (trap5.checkCollision(player))
+					{
+						console.log("collision avec le piège");
+						player.position.x = 463;
+						player.position.y = 1653.16;
+						player.velocity.x = 0;
+						player.velocity.y = 0;
+						player.forceCameraToFollow({ canvas, camera }); // <- nouvelle ligne
+					}
+				}
+				break;
+			}
 		}
 		
 		// === Helper Functions ===
@@ -606,7 +1051,7 @@ const levelMap = `
 				console.log("collision");
 			}
 		}
-		
+
 		function handlePlayerMovement(player, keyLeft, keyRight) {
 			player.velocity.x = 0;
 		
@@ -629,55 +1074,56 @@ const levelMap = `
 
 
 		window.addEventListener('keydown', (event) => {
-			switch (event.key) {
-			// Player 1
-			case 'd':
-				keysPlayer1.d.pressed = true;
-				break;
-			case 'a':
-				keysPlayer1.a.pressed = true;
-				break;
-			case 'w':
-				// jump
-				if (player.jumps === 0 || (player.jumps === 1 && !player.doubleJump)) {
-					player.handleJump();  // Appeler la méthode qui gère les sauts
+			switch (event.key)
+			{
+				// Player 1
+				case 'd':
+					keysPlayer1.d.pressed = true;
+					break;
+				case 'a':
+					keysPlayer1.a.pressed = true;
+					break;
+				case 'w':
+					keysPlayer1.w.pressed = true;
+					if (player.jumps === 0 || (player.jumps === 1 && !player.doubleJump)) {
+						player.handleJump();  // Appeler la méthode qui gère les sauts
+					}
+					break;
+				case 's':
+					if (collisionBox.checkCollision(player) || collisionBox2.checkCollision(player) || collisionBox3.checkCollision(player))
+					{
+						player.cantraverseDown = true;
+						setTimeout(() => {
+							player.cantraverseDown = false;
+						}, 50);
+						console.log("collision");
+					}
+					break;
+				// Player 2
+				case 'j':
+					keysPlayer2.j.pressed = true;
+					break;
+				case 'l':
+					keysPlayer2.l.pressed = true;
+					break;
+				case 'i':
+					console.log("japui sur arrow up");
+					if (player2.jumps === 0 || (player2.jumps === 1 && !player2.doubleJump)) {
+						player2.handleJump();  // Appeler la méthode qui gère les sauts
+					}
+					break;
+				case 'k':
+					if (collisionBox.checkCollision(player2) || collisionBox2.checkCollision(player2) || collisionBox3.checkCollision(player2))
+					{
+						player2.cantraverseDown = true;
+						setTimeout(() => {
+							player2.cantraverseDown = false;
+						}, 50);
+						console.log("collision");
+					}
+					break;
 				}
-				break;
-			case 's':
-				if (collisionBox.checkCollision(player))
-				{
-					player.cantraverseDown = true;
-					setTimeout(() => {
-						player.cantraverseDown = false;
-					}, 50);
-					console.log("collision");
-				}
-				break;
-		
-			// Player 2
-			case 'ArrowRight':
-				keysPlayer2.ArrowRight.pressed = true;
-				break;
-			case 'ArrowLeft':
-				keysPlayer2.ArrowLeft.pressed = true;
-				break;
-			case 'ArrowUp':
-				if (player2.jumps === 0 || (player2.jumps === 1 && !player2.doubleJump)) {
-					player2.handleJump();  // Appeler la méthode qui gère les sauts
-				}
-				break;
-			case 'ArrowDown':
-				if (collisionBox.checkCollision(player2))
-				{
-					player2.cantraverseDown = true;
-					setTimeout(() => {
-						player2.cantraverseDown = false;
-					}, 50);
-					console.log("collision");
-				}
-				break;
-			}
-		});
+			});
 		
 		window.addEventListener('keyup', (event) => {
 			switch (event.key) {
@@ -687,17 +1133,21 @@ const levelMap = `
 			case 'a':
 				keysPlayer1.a.pressed = false;
 				break;
-			case 'ArrowRight':
-				keysPlayer2.ArrowRight.pressed = false;
+			case 'j':
+				keysPlayer2.j.pressed = false;
 				break;
-			case 'ArrowLeft':
-				keysPlayer2.ArrowLeft.pressed = false;
+			case 'l':
+				keysPlayer2.l.pressed = false;
 				break;
 			case 's':
 				player.cantraverseDown = false;
 				break;
-			case 'ArrowDown':
+			case 'k':
 				player2.cantraverseDown = false;
+				break;
+			case 'w':
+				keysPlayer1.w.pressed = false;
+				break;
 			}
 		});
 		
