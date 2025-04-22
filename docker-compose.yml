@@ -48,6 +48,7 @@ services:
       - ./Frontend/public:/usr/share/nginx/html:ro
       - ./Frontend/utils:/usr/share/nginx/utils:ro
       - ./Frontend3d/public:/usr/share/nginx/3d:ro
+      - /etc/localtime:/etc/localtime:ro
 
   # Devops (Grafana + Prometheus + ELK) - À activer plus tard
   # grafana:

@@ -8,8 +8,9 @@ export const CREATE_USERS_TABLE = `
 		email TEXT UNIQUE NOT NULL,
 		password TEXT NOT NULL,
 		role TEXT CHECK(role IN ('user', 'admin')) DEFAULT 'user',
-		doubleAuth_enabled INTEGER DEFAULT 0,
+		doubleAuth_enabled INTEGER DEFAULT 0 CHECK(doubleAuth_enabled IN (0, 1)),
 		doubleAuth_secret TEXT,
+		connection_status TEXT CHECK(connection_status IN ('disconnected', 'partially_connected', 'connected')) DEFAULT 'disconnected',
 		created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 		);
 `;
@@ -25,6 +26,7 @@ const userModel = {
 	updateDoubleAuth: (userId, doubleAuth_enabled) => { return db.prepare("UPDATE users SET doubleAuth_enabled = ? WHERE userId = ?").run(doubleAuth_enabled === 0 ? 1 : 0, userId) },
 	updateDoubleAuth_secret: (userId, doubleAuth_secret) => { return db.prepare("UPDATE users SET doubleAuth_secret = ? WHERE userId = ?").run(doubleAuth_secret, userId) },
 	updateRole: (userId, role) => { return db.prepare("UPDATE users SET role = ? WHERE userId = ?").run(role === 'user' ? 'admin' : 'user', userId) },
+	updateConnection: (userId, connection_status) => { return db.prepare("UPDATE users SET connection_status = ? WHERE userId = ?").run(connection_status, userId) },
 	unregister: (userId) => { return db.prepare("DELETE FROM users WHERE userId = ?").run(userId) }
 }
 

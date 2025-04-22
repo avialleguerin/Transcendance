@@ -2,13 +2,13 @@ let accessToken = sessionStorage.getItem("accessToken")
 
 async function apiRequest(endpoint, method = "GET", body = null, params = {}) {
 	const headers = { "Content-Type": "application/json" };
-
+	
 	if (accessToken)
 		headers["Authorization"] = `Bearer ${accessToken}`;
 	Object.keys(params).forEach(key => {
 		endpoint = endpoint.replace(`:${key}`, encodeURIComponent(params[key]));
 	});
-
+	
 	const response = await fetch(`/api/${endpoint}`, {
 		method,
 		headers: headers,
@@ -23,19 +23,89 @@ async function apiRequest(endpoint, method = "GET", body = null, params = {}) {
 	} else if (response.status === 500) {
 		console.error("Error: Server");
 	}
-
+	
 	return response.json();
 }
 
+async function validate2FA(event) {
+
+	event.preventDefault();
+	const userId = sessionStorage.getItem("userId");
+	sessionStorage.removeItem("userId")
+	if (!userId) {
+		console.error("❌ User ID not found in session storage!");
+		return;
+	}
+	const code = document.getElementById("2fa-code").value;
+	try {
+		const response = await fetch(`/api/users/verify-2fa`, {
+			method: "PUT",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ userId, code })
+		});
+
+		const data = await response.json();
+		if (data.success) {
+			sessionStorage.setItem("accessToken", accessToken);
+			accessToken = sessionStorage.getItem("accessToken");
+			console.log("✅ 2FA code valid!");
+			document.getElementById("login-resultMessage").textContent = "2FA validated successfully!";
+			document.getElementById("login-resultMessage").classList.add("text-green-500");
+
+			// setTimeout(() => {
+			// 	location.reload();
+			// }, 300);
+		} else {
+			console.error("❌ Invalid 2FA code:", data.error);
+			document.getElementById("login-resultMessage").textContent = "Invalid 2FA code!";
+			document.getElementById("login-resultMessage").classList.add("text-red-500");
+		}
+	} catch (err) {
+		console.error("Erreur lors de la validation du code 2FA :", err);
+	}
+}
+
+async function login(event) {
+	event.preventDefault();
+
+	const email = document.getElementById("login-email").value;
+	const password = document.getElementById("login-password").value;
+	const data = await apiRequest("users/login", "PUT", { email, password }, {})
+	sessionStorage.setItem("accessToken", data.accessToken)
+	accessToken = sessionStorage.getItem("accessToken")
+	console.log("data: ", data);
+	if (!accessToken && !data.success) {
+		const resultMessage = document.getElementById("login-resultMessage");
+		resultMessage.textContent = "Error : " + data.error;
+		resultMessage.classList.add("text-red-500");
+		console.error("❌ Aucun accessToken reçue !");
+	}
+	else if (data.success && data.connection_status == "partially_connected" && data.user.doubleAuth_enabled)
+	{
+		console.log("✅ Valid credentials !", data);
+		console.log("DoubleAuth enabled:", data.user.doubleAuth_enabled);
+		sessionStorage.setItem("userId", data.user.userId)
+		document.getElementById("doubleAuthForm").classList.remove("hidden");
+	}
+	else if (data.success && data.connection_status == "connected")
+	{
+		const resultMessage = document.getElementById("login-resultMessage");
+		resultMessage.textContent = "Login success !";
+		resultMessage.classList.add("text-green-500");
+		console.log("✅ Connected, Token :", accessToken)
+		setTimeout(() => {
+			location.reload();
+		}, 300);
+	} else
+		console.log("Error :", data.error)
+}
+
 async function logout(userId) {
-	if (!accessToken)
-		return console.log("✅ Vous etes deja deconnecte !");
 	const response = await fetch(`/api/users/logout/:${ userId }`, {
 		method: 'POST',
-		body: JSON.stringify({}),
+		body: JSON.stringify({ userId, accessToken }),
 		headers: { 
 			'Content-Type': 'application/json',
-			'Authorization': `Bearer ${accessToken}`
 		},
 		credentials: 'include',
 	});
@@ -82,28 +152,6 @@ async function register(event) {
 	}
 };
 
-async function login(event) {
-	event.preventDefault();
-
-	const email = document.getElementById("login-email").value;
-	const password = document.getElementById("login-password").value;
-	const data = await apiRequest("users/login", "PUT", { email, password }, {})
-	sessionStorage.setItem("accessToken", data.accessToken)
-	accessToken = sessionStorage.getItem("accessToken")
-	if (!accessToken) {
-		console.error("❌ Aucun accessToken reçue !");
-	}
-	if (data.success) {
-		console.log("✅ Connected, Token :", accessToken)
-		setTimeout(() => {
-			location.reload();
-		}, 300);
-	} else
-		console.log("Error :", data.error)
-}
-
-
-
 async function refreshToken() {
 	const response = await fetch("/api/refresh-token", {
 		method: "POST",
@@ -147,8 +195,13 @@ async function fetchProfile() {
 	}
 }
 
+
+
 window.addEventListener('DOMContentLoaded', () => {
 	console.log("accessToken: ", accessToken)
+	// if (!accessToken)
+		// logout(userId);
+	// if (accessToken)
+	// 	fetchProfile();
 	fetchUsers();
-	fetchProfile();
 });

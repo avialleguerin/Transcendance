@@ -77,19 +77,20 @@ export async function login(request, reply) {
 			console.error("❌ Identifiants invalides");
 			return reply.code(401).send({ error: 'Invalid credentials' });
 		}
-
+		if (user.doubleAuth_enabled) {
+			userModel.updateConnection(user.userId, "partially_connected");
+			return reply.code(200).send({success:true, connection_status: "partially_connected", message: 'Double authentication required', user: user});
+		}
 		const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, {expiresIn: '1m' });
 		const refreshToken = fastify.jwt.sign({ userId: user.userId }, {expiresIn: '7d' });
 		console.log("🔑 Access Token created :", accessToken);
 		console.log("🔑 Refresh Token created :", refreshToken);
-
 		if (!accessToken || !refreshToken) {
 			console.error("❌ Erreur lors de la création des tokens JWT");
 			return reply.code(500).send({ error: 'Internal Server Error' });
 		}
-		if (user.doubleAuth_enabled)
-			generate_doubleAuth(user.userId)
 
+		userModel.updateConnection(user.userId, "connected");
 		reply
 		.setCookie('refreshToken', refreshToken, {
 			httpOnly: true,
@@ -97,16 +98,21 @@ export async function login(request, reply) {
 			sameSite: 'strict',
 			path: '/',
 		})
-		.send({ success:true, message: 'Logged in', accessToken });
+		.send({ success:true, message: 'Logged in', connection_status: "connected", doubleAuth_enabled: user.doubleAuth_enabled, accessToken: accessToken });
 	} catch (err) {
 		return reply.code(500).send({ error: err.message });
 	}
 }
 
 export async function logout(request, reply) {
-	const accessToken = request.headers.authorization?.split(" ")[1];
+	// const accessToken = request.headers.authorization?.split(" ")[1];
+	const { userId, accessToken } = request.body;
 	const { refreshToken } = request.cookies;
-
+	if (!accessToken)
+	{
+		userModel.updateConnection(userId, "disconnected");
+		return reply.send({ success: true, message: 'Already Logged out' });
+	}
 	console.log("🔄 AccessToken :", accessToken);
 	console.log("🔄 RefreshToken :", refreshToken);
 	if (accessToken) {
@@ -123,25 +129,36 @@ export async function logout(request, reply) {
 			redisModel.addToBlacklist(refreshToken, expiresIn);
 		}
 	}
+	userModel.updateConnection(userId, "disconnected");
 	reply.clearCookie('refreshToken', { path: '/' }).send({ success: true, message: 'Logged out' });
 }
 
 export async function changeDoubleAuth(request, reply) {
 	const { userId } = request.body;
 	try {
-		const user = userModel.getUserById(userId);
+		const user = userModel.getUserById(userId)
 		if (user){
 			userModel.updateDoubleAuth(userId, user.doubleAuth_enabled)
-			const updateUser = userModel.getUserById(userId);
+			const updateUser = userModel.getUserById(userId)
 			if (!updateUser.doubleAuth_enabled)
+			{
 				userModel.updateDoubleAuth_secret(userId, null)
-			reply.code(200);
-			
-			return reply.send({
+				console.log("Double Auth disabled")
+				return reply.code(200).send({message: "Double Auth disabled"})
+			}
+			const doubleAuthData = generateDoubleAuth(userId)
+			console.log("Double Auth qrCode", (await doubleAuthData).qrCode)
+			console.log("Double Auth secret", (await doubleAuthData).secret)
+
+			return reply.code(200).send({
 				userId: updateUser.userId,
 				username: updateUser.username,
 				email: updateUser.email,
 				role: updateUser.doubleAuth_enabled,
+				message: 'Double authentication enabled',
+				enable_doubleAuth: true,
+				secret: (await doubleAuthData).secret,
+				qrCode: (await doubleAuthData).qrCode,
 				success: true
 			})
 		}
@@ -214,11 +231,92 @@ export async function refreshAccessToken(request, reply) {
 	}
 }
 
-export async function generate_doubleAuth(userId) {
+  
+  // Appelez cette fonction juste avant de vérifier isValid
+
+export async function verifyDoubleAuth(request, reply) {
+	const { userId, code } = request.body;
+
+	try {
+		const user = userModel.getUserById(userId);
+		if (!user || !user.doubleAuth_secret) {
+			return reply.code(400).send({ success: false, error: '2FA not enabled or user not found' });
+		}
+
+		const isValid = speakeasy.totp.verify({ secret: user.doubleAuth_secret, encoding: 'base32', token: code, window: 1 });
+		console.log("🔑 2fa valide :", isValid);
+		console.log("🔑 code 2FA :", code);
+		console.log("🔑 Secret récupéré :", user.doubleAuth_secret);
+		console.log("🕒 Heure du serveur Node.js:", new Date().toISOString());
+		const testCode = speakeasy.totp({
+			secret: user.doubleAuth_secret,
+			encoding: 'base32',
+		});
+		
+		console.log("🔑 Code TOTP généré :", testCode);
+
+	function debugTOTP(secret) {
+		console.log("🔍 DEBUG TOTP");
+		const now = Math.floor(Date.now() / 1000);
+
+		// Génère les codes pour différentes périodes autour de l'heure actuelle
+		for (let i = -5; i <= 5; i++) {
+			const time = now + (i * 30); // 30 secondes par période
+			const debugCode = speakeasy.totp({
+			secret: secret,
+			encoding: 'base32',
+			time: time
+			});
+			console.log(`Code pour t${i > 0 ? '+' : ''}${i*30}s: ${debugCode}`);
+			
+			// Vérifie si ce code correspond au code entré
+			if (debugCode === code) {
+			console.log(`✅ Match found at offset: ${i*30} seconds`);
+			}
+		}
+	}
+		debugTOTP(user.doubleAuth_secret);
+
+		if (isValid) {
+			const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, { expiresIn: '1m' });
+			const refreshToken = fastify.jwt.sign({ userId: user.userId }, { expiresIn: '7d' });
+			console.log("🔑 Access Token created :", accessToken);
+			console.log("🔑 Refresh Token created :", refreshToken);
+			userModel.updateConnection(user.userId, "connected");
+			reply
+			.setCookie('refreshToken', refreshToken, {
+				httpOnly: true,
+				secure: true,
+				sameSite: 'strict',
+				path: '/',
+			})
+			.send({ success:true, message: '2FA code is valid', connection_status: "connected", accessToken: accessToken });
+		} else
+			return reply.code(401).send({ success: false, error: 'Invalid 2FA code' });
+	} catch (err) {
+		console.error(err);
+		return reply.code(500).send({ success: false, error: 'Internal server error' });
+	}
+}
+
+export async function generateDoubleAuth(userId) {
 	// const { userId } = request.params
 	const user = userModel.getUserById(userId)
 
 	user.doubleAuth_secret = speakeasy.generateSecret({ length: SECRET_LENGHT })
-
-	
+	console.log("🔑 Secret généré :", user.doubleAuth_secret);
+	const secret = user.doubleAuth_secret.base32
+	console.log("🔑 Secret généré 2:", secret);
+	userModel.updateDoubleAuth_secret(userId, secret)
+	const otpauth = speakeasy.otpauthURL({
+		secret,
+		label: `Transcendance (${user.username})`,
+		issuer: 'Transcendance',
+	})
+	const qrCode = await qrcode.toDataURL(otpauth, { errorCorrectionLevel: 'H' })
+	const data = {
+		secret: secret,
+		qrCode: qrCode,
+	}
+	return data
 }

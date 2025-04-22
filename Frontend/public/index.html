@@ -29,6 +29,7 @@
 					<th class="py-2 border">Role</th>
 					<th class="py-2 border">2FA</th>
 					<th class="py-2 border">2FA Secret</th>
+					<th class="py-2 border">Connection Status</th>
 					<th class="py-2 border">Actions</th>
 				</tr>
 			</thead>
@@ -64,22 +65,33 @@
 			<p id="add-resultMessage" class="mt-4 text-center text-sm font-semibold text-gray-700"></p>
 		</form>
 
-		<form id="loginForm" class="flex-1 max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg"
-			onsubmit="login(event)">
-			<h2 class="text-2xl font-semibold text-center mb-4">Log In</h2>
-			<div class="mb-4">
-				<label for="email" class="block text-gray-700 font-medium">Email :</label>
-				<input type="email" id="login-email" name="email" placeholder="Email" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-			</div>
-			<div class="mb-4">
-				<label for="password" class="block text-gray-700 font-medium">Password :</label>
-				<input type="password" id="login-password" name="password" placeholder="Password" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-			</div>
-			<button type="submit" class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition">
-					Log In
-			</button>
+		<div class="flex-1 max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg">
+			<form id="loginForm" class=""
+				onsubmit="login(event)">
+				<h2 class="text-2xl font-semibold text-center mb-4">Log In</h2>
+				<div class="mb-4">
+					<label for="email" class="block text-gray-700 font-medium">Email :</label>
+					<input type="email" id="login-email" name="email" placeholder="Email" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+				</div>
+				<div class="mb-4">
+					<label for="password" class="block text-gray-700 font-medium">Password :</label>
+					<input type="password" id="login-password" name="password" placeholder="Password" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+				</div>
+				<button type="submit" class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition">
+						Log In
+				</button>
+				
+			</form>
+			<form id="doubleAuthForm" class="hidden mt-4" onsubmit="validate2FA(event)">
+				<h2 class="text-2xl font-semibold text-center mb-4">2FA</h2>
+				<div class="mb-4">
+					<label for="2fa" class="block text-gray-700 font-medium">2FA Code :</label>
+					<input type="text" id="2fa-code" name="2fa" placeholder="2FA Code" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+				</div>
+				<button type="submit" class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition">Validate</button>
+			</form>
 			<p id="login-resultMessage" class="mt-4 text-center text-sm font-semibold text-gray-700"></p>
-		</form>
+		</div>
 
 	</div>
 	<div class="mt-6 mx-auto max-w-md bg-white">
@@ -98,6 +110,7 @@
 			<tbody id="user-table">
 			</tbody>
 		</table>
+		<img id="qrCode" alt="QR Code" />
 	</div>
 
 	<script src="../utils/auth.js"></script>

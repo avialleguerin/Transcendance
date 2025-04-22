@@ -1,4 +1,4 @@
-import { register, selectUsers, unregister, login, logout, changeDoubleAuth, changeRole, refreshAccessToken, getUserProfile, generate_doubleAuth } from '../controllers/authController.js';
+import { register, selectUsers, unregister, login, logout, changeDoubleAuth, changeRole, refreshAccessToken, getUserProfile, generateDoubleAuth, verifyDoubleAuth } from '../controllers/authController.js';
 
 /**
  * Encapsulates the routes
@@ -11,12 +11,13 @@ export default async function routes (fastify) {
 	});
 	//authController
 	fastify.get('/profile', { preHandler: fastify.authenticate}, getUserProfile);
-	fastify.get("/generate-2fa/:userId", generate_doubleAuth)
+	// fastify.get("/generate-2fa/:userId", { preHandler: fastify.authenticate}, generateDoubleAuth);
 	fastify.get('/users', selectUsers);
 	fastify.post('/users/add', register);
 	fastify.put('/users/login', login);
 	fastify.post('/users/logout/:userId', logout);
 	fastify.put('/users/doubleAuth/:userId', changeDoubleAuth);
+	fastify.put('/users/verify-2fa', verifyDoubleAuth);
 	fastify.put('/users/role/:userId', changeRole);
 	fastify.delete('/users/delete/:userId', unregister);
 
