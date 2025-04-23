@@ -105,7 +105,6 @@ export async function login(request, reply) {
 }
 
 export async function logout(request, reply) {
-	// const accessToken = request.headers.authorization?.split(" ")[1];
 	const { userId, accessToken } = request.body;
 	const { refreshToken } = request.cookies;
 	if (!accessToken)
@@ -138,7 +137,14 @@ export async function changeDoubleAuth(request, reply) {
 	try {
 		const user = userModel.getUserById(userId)
 		if (user){
-			userModel.updateDoubleAuth(userId, user.doubleAuth_enabled)
+			if (user.doubleAuth_enabled)
+			{
+				userModel.updateDoubleAuth(userId, 0)
+				userModel.updateDoubleAuth_secret(userId, null)
+				console.log("Double Auth disabled")
+				return reply.code(200).send({message: "Double Auth disabled"})
+			}
+			userModel.updateDoubleAuth(userId, 1)
 			const updateUser = userModel.getUserById(userId)
 			if (!updateUser.doubleAuth_enabled)
 			{
@@ -231,51 +237,28 @@ export async function refreshAccessToken(request, reply) {
 	}
 }
 
-  
-  // Appelez cette fonction juste avant de vérifier isValid
-
 export async function verifyDoubleAuth(request, reply) {
 	const { userId, code } = request.body;
-
 	try {
 		const user = userModel.getUserById(userId);
 		if (!user || !user.doubleAuth_secret) {
 			return reply.code(400).send({ success: false, error: '2FA not enabled or user not found' });
 		}
 
-		const isValid = speakeasy.totp.verify({ secret: user.doubleAuth_secret, encoding: 'base32', token: code, window: 1 });
-		console.log("🔑 2fa valide :", isValid);
-		console.log("🔑 code 2FA :", code);
-		console.log("🔑 Secret récupéré :", user.doubleAuth_secret);
-		console.log("🕒 Heure du serveur Node.js:", new Date().toISOString());
-		const testCode = speakeasy.totp({
+		const isValid = speakeasy.totp.verify({
 			secret: user.doubleAuth_secret,
 			encoding: 'base32',
+			token: code,
+			window: 20,
+			time: Math.floor(Date.now() / 1000),
+			step: 30,
+			digits: 6,
+			algorithm: 'sha1'
 		});
-		
-		console.log("🔑 Code TOTP généré :", testCode);
 
-	function debugTOTP(secret) {
-		console.log("🔍 DEBUG TOTP");
-		const now = Math.floor(Date.now() / 1000);
+		console.log("🔑 code 2FA :", code);
+		console.log("🔑 Secret récupéré :", user.doubleAuth_secret);
 
-		// Génère les codes pour différentes périodes autour de l'heure actuelle
-		for (let i = -5; i <= 5; i++) {
-			const time = now + (i * 30); // 30 secondes par période
-			const debugCode = speakeasy.totp({
-			secret: secret,
-			encoding: 'base32',
-			time: time
-			});
-			console.log(`Code pour t${i > 0 ? '+' : ''}${i*30}s: ${debugCode}`);
-			
-			// Vérifie si ce code correspond au code entré
-			if (debugCode === code) {
-			console.log(`✅ Match found at offset: ${i*30} seconds`);
-			}
-		}
-	}
-		debugTOTP(user.doubleAuth_secret);
 
 		if (isValid) {
 			const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, { expiresIn: '1m' });
@@ -299,19 +282,48 @@ export async function verifyDoubleAuth(request, reply) {
 	}
 }
 
-export async function generateDoubleAuth(userId) {
-	// const { userId } = request.params
-	const user = userModel.getUserById(userId)
+export async function activateDoubleAuth(request, reply) {
+	const { userId, code } = request.body;
+	const user = userModel.getUserById(userId);
 
-	user.doubleAuth_secret = speakeasy.generateSecret({ length: SECRET_LENGHT })
-	console.log("🔑 Secret généré :", user.doubleAuth_secret);
-	const secret = user.doubleAuth_secret.base32
-	console.log("🔑 Secret généré 2:", secret);
+	console.log("🔑 Secret :", user.doubleAuth_secret);
+	const isValid = speakeasy.totp.verify({
+		secret: user.doubleAuth_secret,
+		encoding: 'base32',
+		token: code,
+		window: 1
+	});
+	console.log("🔑 isValid :", isValid);
+	console.log("État initial 2FA:", user.doubleAuth_enabled);
+	if (isValid) {
+		userModel.updateDoubleAuth(userId, 1);
+		return reply.send({ success: true, message: "2FA successfully activated" });
+	} else {
+		userModel.updateDoubleAuth_secret(userId, null);
+		return reply.code(400).send({ 
+			success: false, 
+			error: "Verification failed. Please try scanning the QR code again."
+		});
+	}
+}
+
+export async function generateDoubleAuth(userId) {
+	const user = userModel.getUserById(userId)
+	if (!user) {
+		throw new Error(`User with ID ${userId} not found`);
+	}
+	const secretObj = speakeasy.generateSecret({ length: SECRET_LENGHT })
+	const secret = secretObj.base32
+	console.log("🔑 Secret généré:", secret);
 	userModel.updateDoubleAuth_secret(userId, secret)
+
 	const otpauth = speakeasy.otpauthURL({
-		secret,
+		secret: secret,
 		label: `Transcendance (${user.username})`,
 		issuer: 'Transcendance',
+		encoding: 'base32',
+		algorithm: 'sha1',
+		period: 30
 	})
 	const qrCode = await qrcode.toDataURL(otpauth, { errorCorrectionLevel: 'H' })
 	const data = {

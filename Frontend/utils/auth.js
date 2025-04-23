@@ -31,7 +31,6 @@ async function validate2FA(event) {
 
 	event.preventDefault();
 	const userId = sessionStorage.getItem("userId");
-	sessionStorage.removeItem("userId")
 	if (!userId) {
 		console.error("❌ User ID not found in session storage!");
 		return;
@@ -39,26 +38,65 @@ async function validate2FA(event) {
 	const code = document.getElementById("2fa-code").value;
 	try {
 		const response = await fetch(`/api/users/verify-2fa`, {
-			method: "PUT",
+			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ userId, code })
 		});
-
+		
 		const data = await response.json();
 		if (data.success) {
-			sessionStorage.setItem("accessToken", accessToken);
+			sessionStorage.setItem("accessToken", data.accessToken);
 			accessToken = sessionStorage.getItem("accessToken");
+			sessionStorage.removeItem("userId")
 			console.log("✅ 2FA code valid!");
 			document.getElementById("login-resultMessage").textContent = "2FA validated successfully!";
 			document.getElementById("login-resultMessage").classList.add("text-green-500");
 
-			// setTimeout(() => {
-			// 	location.reload();
-			// }, 300);
+			setTimeout(() => {
+				location.reload();
+			}, 300);
 		} else {
 			console.error("❌ Invalid 2FA code:", data.error);
 			document.getElementById("login-resultMessage").textContent = "Invalid 2FA code!";
 			document.getElementById("login-resultMessage").classList.add("text-red-500");
+		}
+	} catch (err) {
+		console.error("Erreur lors de la validation du code 2FA :", err);
+	}
+}
+
+async function activate2FA(event) {
+
+	event.preventDefault();
+	const userId = sessionStorage.getItem("userId");
+	if (!userId) {
+		console.error("❌ User ID not found in session storage!");
+		return;
+	}
+	const code = document.getElementById("activate-2fa-code").value;
+	try {
+		const response = await fetch(`/api/users/activate-2fa`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ userId, code })
+		});
+		
+		const data = await response.json();
+		if (data.success) {
+			sessionStorage.setItem("accessToken", data.accessToken);
+			accessToken = sessionStorage.getItem("accessToken");
+			sessionStorage.removeItem("userId")
+			console.log("✅ 2FA code valid!");
+			document.getElementById("activate-2fa-resultMessage").textContent = "2FA validated successfully!";
+			document.getElementById("activate-2fa-resultMessage").classList.add("text-green-500");
+
+			setTimeout(() => {
+				location.reload();
+			}, 300);
+		} else {
+			console.error("❌ Invalid 2FA code:", data.error);
+			document.getElementById("activate-2fa-resultMessage").textContent = "Invalid 2FA code!";
+			document.getElementById("activate-2fa-resultMessage").classList.add("text-red-500");
 		}
 	} catch (err) {
 		console.error("Erreur lors de la validation du code 2FA :", err);
@@ -82,6 +120,7 @@ async function login(event) {
 	}
 	else if (data.success && data.connection_status == "partially_connected" && data.user.doubleAuth_enabled)
 	{
+		fetchUsers();
 		console.log("✅ Valid credentials !", data);
 		console.log("DoubleAuth enabled:", data.user.doubleAuth_enabled);
 		sessionStorage.setItem("userId", data.user.userId)
@@ -201,7 +240,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	console.log("accessToken: ", accessToken)
 	// if (!accessToken)
 		// logout(userId);
-	// if (accessToken)
-	// 	fetchProfile();
+	if (accessToken != undefined && accessToken != null)
+		fetchProfile();
 	fetchUsers();
 });

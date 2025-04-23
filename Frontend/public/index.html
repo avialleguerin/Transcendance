@@ -111,6 +111,15 @@
 			</tbody>
 		</table>
 		<img id="qrCode" alt="QR Code" />
+		<form id="activateDoubleAuthForm" class="hidden mt-4" onsubmit="activate2FA(event)">
+			<h2 class="text-2xl font-semibold text-center mb-4">2FA</h2>
+			<div class="mb-4">
+				<label for="2fa" class="block text-gray-700 font-medium">2FA Code :</label>
+				<input type="text" id="activate-2fa-code" name="2fa" placeholder="2FA Code" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+			</div>
+			<button type="submit" class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition">Validate</button>
+		</form>
+		<p id="activate-2fa-resultMessage" class="mt-4 text-center text-sm font-semibold text-gray-700"></p>
 	</div>
 
 	<script src="../utils/auth.js"></script>

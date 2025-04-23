@@ -41,7 +41,11 @@ async function enable_doubleAuth(userId) {
 		if (response.ok) {
 			fetchUsers()
 			if (data.enable_doubleAuth)
+			{
+				sessionStorage.setItem("userId", userId);
 				document.getElementById('qrCode').src = data.qrCode;
+				document.getElementById("activateDoubleAuthForm").classList.remove("hidden");
+			}
 		} else
 			alert('Error : ' + data.message);
 	} catch (err) {

@@ -23,7 +23,7 @@ const userModel = {
 	getAllUsers: () => db.prepare("SELECT * FROM users").all(),
 	getUserById: (userId) => { return db.prepare("SELECT * FROM users WHERE userId = ?").get(userId) },
 	getUserByEmail: (email) => { return db.prepare("SELECT * FROM users WHERE email = ?").get(email) },
-	updateDoubleAuth: (userId, doubleAuth_enabled) => { return db.prepare("UPDATE users SET doubleAuth_enabled = ? WHERE userId = ?").run(doubleAuth_enabled === 0 ? 1 : 0, userId) },
+	updateDoubleAuth: (userId, doubleAuth_enabled) => { return db.prepare("UPDATE users SET doubleAuth_enabled = ? WHERE userId = ?").run(doubleAuth_enabled, userId) },
 	updateDoubleAuth_secret: (userId, doubleAuth_secret) => { return db.prepare("UPDATE users SET doubleAuth_secret = ? WHERE userId = ?").run(doubleAuth_secret, userId) },
 	updateRole: (userId, role) => { return db.prepare("UPDATE users SET role = ? WHERE userId = ?").run(role === 'user' ? 'admin' : 'user', userId) },
 	updateConnection: (userId, connection_status) => { return db.prepare("UPDATE users SET connection_status = ? WHERE userId = ?").run(connection_status, userId) },
