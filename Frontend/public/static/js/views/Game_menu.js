@@ -46,7 +46,7 @@ export default class extends AbstractView {
 						<div id="game_mode_btn" class="game_mode_btn">
 							<button id="solo" class="btn">SOLO</button>
 							<button id="platformer_view" class="btn_tournament">
-								<a href="/platformer" class="nav-link" data-link>PLATEFORMER</a>
+								<a href="/PlatformView" class="nav-link" data-link>PLATEFORMER</a>
 							</button>
 							<button id="multiplayer" class="btn">MULTIJOUEUR</button>
 							<button id="tournament_view" class="btn_tournament">

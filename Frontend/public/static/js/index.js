@@ -7,7 +7,8 @@ import duo_game from "./views/duo_game.js";
 import multi_player_game from "./views/multi_player_game.js";
 import tournament from "./views/tournament.js";
 import tournament_game from "./views/tournament_game.js";
-import platformer from "./views/platformer.js";
+import  PlatformView  from "./views/platformer/PlatformView.js";
+// import platformer from "./views/platformer/platformer.js";
 
 let leave_game_var = false;
 
@@ -27,7 +28,8 @@ const router = async () => {
         { path: "/multi_player_game", view: multi_player_game },
         { path: "/tournament", view: tournament },
         { path: "/tournament_game", view: tournament_game },
-		{ path: "/platformer", view: platformer },
+        { path: "/PlatformView", view: PlatformView },
+        // { path: "/PlatformView", view: platformer },
     ];
 
     const potentialMatches = routes.map((route) => {
@@ -81,6 +83,7 @@ const router = async () => {
         if (typeof view.event_tournament_game === "function") view.event_tournament_game();
         if (typeof view.tournament_event === "function") view.tournament_event();
 		if (typeof view.init_platformer_game === "function") view.init_platformer_game();
+        if (typeof view.init_game_platformer === "function") view.init_game_platformer();
     }, 1500); // Attente de 1,5 seconde avant le changement de page
 };
 
