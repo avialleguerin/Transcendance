@@ -9,18 +9,20 @@ import { createLevelFromMap } from './level_map_utils.js';
 import MapMenu_c from './Map_menu.js';
 import  Coin  from './Coin.js';
 import GameCanvas from './Game_canvas.js';
+import EndGameFirstGame from './EndGameFirstGame.js';
+import EndGameSecondeGame from './EndGameSecondeGame.js';
+import GameHistory from './GameHistory.js';
 
 
 
-export function initGame() {
-	// Player objects
+export function initGame()
+{
 
 	const keysPlayer1 = {
 		left:  { key: 'a', pressed: false },
 		right: { key: 'd', pressed: false },
 		down:  { key: 's', pressed: false },
 		jump:  { key: 'w', pressed: false },
-		action: { key: 'q', pressed: false }, // facultatif selon ton jeu
 	};
 	
 	const keysPlayer2 = {
@@ -28,7 +30,6 @@ export function initGame() {
 		right: { key: 'l', pressed: false },
 		down:  { key: 'k', pressed: false },
 		jump:  { key: 'i', pressed: false },
-		action: { key: null, pressed: false }, // si besoin
 	};
 	
 	const player = new Player({
@@ -225,8 +226,42 @@ export function initGame() {
 		}),
 	];
 
-	const menu = new Menu();
+	const game_canvas = new GameCanvas({
+		position: { x: 8, y: 8 },
+		Image_src_prefix: '/srcs/game/assets/City/',
+	});
+
+	const end_game = new EndGameFirstGame({
+		position: { x: 400, y: 300 },
+		width: 150,
+		height: 150,
+		gameCanvas: game_canvas,
+		player: player,
+		coins: Coins,
+	});
+
+	
+	const end_game2 = new EndGameSecondeGame({
+		gameCanvas: game_canvas,
+		player: player,
+		coins: Coins,
+		EndGame_FirstGame: end_game,
+
+	});
+	
+	
 	const mapMenu = new MapMenu_c();
+
+	const gameHistory = new GameHistory({
+		EndGame_SecondeGame : end_game2,
+		MapMenu : mapMenu,
+	});
+
+	const menu = new Menu({
+		Game_History : gameHistory,
+	});
+	
+
 
 	// === Helper Functions ===
 	function handleCollision(player, box) {
@@ -278,18 +313,22 @@ export function initGame() {
 				keysPlayer1.left.pressed = true;
 				break;
 			case 'w':
-				keysPlayer1.jump.pressed = true;
-				if (player.jumps === 0 || (player.jumps === 1 && !player.doubleJump)) {
-					player.handleJump();  // Appeler la méthode qui gère les sauts
-				}
-				if (collisionBoxes.some(box => box.checkCollision(player))) {
-					player.cantraverse = true;
-					setTimeout(() => {
-						player.cantraverse = false;
-					}, 500);
-					console.log("collision");
-				}
-				break;
+				case 'w':
+					// Ne déclencher le saut que si la touche n'était pas déjà enfoncée
+					if (!keysPlayer1.jump.pressed) {
+						keysPlayer1.jump.pressed = true;
+						if (player.jumps === 0 || (player.jumps === 1 && !player.doubleJump)) {
+							player.handleJump();  // Appeler la méthode qui gère les sauts
+						}
+						if (collisionBoxes.some(box => box.checkCollision(player))) {
+							player.cantraverse = true;
+							setTimeout(() => {
+								player.cantraverse = false;
+							}, 500);
+							console.log("collision");
+						}
+					}
+					break;
 			case 's':
 				if (collisionBoxes.some(box => box.checkCollision(player))) {
 					player.cantraverseDown = true;
@@ -368,6 +407,7 @@ export function initGame() {
 		// Draw collision boxes
 		collisionBoxes.forEach(box => box.draw());
 
+
 		// Draw coin
 		// traps.forEach(trap => trap.draw());
 
@@ -439,13 +479,24 @@ export function initGame() {
 			}
 		});
 
+		if (end_game.checkCollision(player)) {
+			console.log("collision avec la fin du jeu");
+			if (end_game.first_game_finished === false)
+			{
+				console.log("first game finished");
+				gameState.current = GameState.EndGameFirstGame;
+			}
+			if (end_game.first_game_finished === true)
+			{
+				console.log("second game finished");
+				gameState.current = GameState.EndGameSecondGame;
+			}
+		}
+
 		// console.log(player.position.x, player.position.y);
 	}
 	
-	const game_canvas = new GameCanvas({
-		position: { x: 8, y: 8 },
-		Image_src_prefix: '/srcs/game/assets/City/',
-	});
+
 
 	// Animation loop
 	function animate() {
@@ -467,6 +518,15 @@ export function initGame() {
 			case GameState.Play:
 				handle_gameplay();
 				game_canvas.update();
+				break;
+			case GameState.EndGameFirstGame:
+				end_game.draw();
+				break;
+			case GameState.EndGameSecondGame:
+				end_game2.draw();
+				break;
+			case GameState.GameHistory:
+				gameHistory.draw();
 				break;
 			case GameState.Pause:
 				break;

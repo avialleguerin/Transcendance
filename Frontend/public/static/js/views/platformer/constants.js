@@ -6,6 +6,9 @@ export const GameState = {
 	Menu: "Menu",
 	MapMenu: "MapMenu",
 	Play: "Play",
+	EndGameFirstGame: "EndGameFirstGame",
+	EndGameSecondGame: "EndGameSecondGame",
+	GameHistory: "GameHistory",
 	Pause: "pause",
 };
 

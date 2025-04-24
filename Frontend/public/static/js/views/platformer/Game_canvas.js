@@ -118,4 +118,13 @@ export default class GameCanvas extends Sprite {
 		c.font = "20px 'Press Start 2P', Black Ops One";
 		c.fillText(this.timer_text, 70, 75);
 	}
+
+	resetGame() {
+		this.nb_coin = 0;
+		this.nb_coin_text = this.nb_coin + " / 3";
+		this.timer = 0;
+		this.timer_text = this.timer;
+		this.lastTime = Date.now(); // ⏱️ init du timer
+		this.end_come = false; // ⏱️ fin du timer
+	}
 }

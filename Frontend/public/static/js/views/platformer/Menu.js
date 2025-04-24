@@ -1,9 +1,9 @@
 import { c, canvas, gameState, GameState } from './constants.js';
 
 export default class Menu {
-	constructor() {
+	constructor(Game_History) {
 		this.title = "⏱️ Chrono Clash";
-		this.options = ["▶ Start", "⚙ Options", "✖ Quit"];
+		this.options = ["▶ Start", "⚙ Options", "✖ Quit", "History"];
 		this.selectedOption = 0;
 		this.optionSpacing = 60;
 		this.titleFont = "bold 60px 'Press Start 2P', Black Ops One";
@@ -15,7 +15,7 @@ export default class Menu {
 		this.bgImage.onload = () => {
 			this.bgImageLoaded = true;
 		}
-
+		this.Game_History = Game_History;
 
 		this.keyPressed = {};
 		this.boundKeyDown = this.handleKeyDown.bind(this);
@@ -103,6 +103,19 @@ export default class Menu {
 		else if (selected === "✖ Quit") {
 			this.disableControls();
 			window.close();
+		}
+
+		else if (selected === "History") {
+			this.disableControls();
+			console.log("History selected");
+			console.log("this.Game_History = ", this.Game_History);
+			if (typeof this.Game_History.Game_History.saveGameIfNeeded === "function")
+			{
+				console.log("this.Game_History.Game_History.saveGameIfNeeded()");
+				this.Game_History.Game_History.saveGameIfNeeded();
+			}
+			gameState.previous = gameState.current;
+			gameState.current = GameState.GameHistory;
 		}
 	}
 }

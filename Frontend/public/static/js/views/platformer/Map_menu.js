@@ -23,6 +23,8 @@ export default class MapMenu_c {
 			this.bgImageLoaded = true;
 		}
 
+		this.nb_game_started = 0;
+
 
 		this.keyPressed = {};
 		this.boundKeyDown = this.handleKeyDown.bind(this);
@@ -114,6 +116,7 @@ export default class MapMenu_c {
 		if (selected === "Carte 1")
 		{
 			this.disableControls();
+			this.nb_game_started++;
 			gameState.previous = gameState.current;
 			gameState.current = GameState.Play;
 		}
