@@ -1,4 +1,5 @@
 let accessToken = sessionStorage.getItem("accessToken")
+let userId = getUserIdFromToken(accessToken);
 
 async function apiRequest(endpoint, method = "GET", body = null, params = {}) {
 	const headers = { "Content-Type": "application/json" };
@@ -154,11 +155,11 @@ async function logout(userId) {
 		accessToken = null
 		fetchUsers();
 		console.log("✅ Déconnecté avec succès !");
-		setTimeout(() => {
-			location.reload();
-		}, 300);
 	} else
-		console.log(data.error)
+	console.log(data.error)
+	setTimeout(() => {
+		location.reload();
+	}, 300);
 }
 
 async function register(event) {
@@ -209,16 +210,38 @@ async function refreshToken() {
 }
 
 
+function getUserIdFromToken(token) {
+	if (!token) return null;
 
+	try {
+		const payload = JSON.parse(atob(token.split('.')[1]));
+		return payload.userId;
+	} catch (error) {
+		console.error("Erreur lors du décodage du token :", error);
+		return null;
+	}
+}
+
+async function refreshInfos() {
+	const response = await fetch(`/api/users/refresh-infos/:${ userId }`, {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify({ userId, accessToken }),
+		credentials: "include"
+	});
+	const data = await response.json();
+	if (data.success) {
+		if (data.connection_status == "connected")
+			fetchProfile();
+		console.log("Infos refreshed successfully");
+	} else {
+		console.error("Error refreshing infos:", data.error);
+	}
+}
 
 
 window.addEventListener('DOMContentLoaded', () => {
 	console.log("accessToken: ", accessToken)
-	// if (!accessToken)
-	if (accessToken != undefined && accessToken != null)
-	{
-		// logout(sessionStorage.getItem("userId"));
-		fetchProfile();
-	}
+	refreshInfos();
 	fetchUsers();
 });

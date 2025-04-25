@@ -14,7 +14,6 @@ async function fetchUsers() {
 				<td class="border px-4 py-2">${user.doubleAuth_secret}</td>
 				<td class="border px-4 py-2">${user.connection_status}</td>
 				<td>
-				<button class="bg-gray-700 hover:bg-sky-500 m-2 text-white px-2 py-1 rounded" onclick="enable_doubleAuth(${user.userId})">2FA</button>
 				<button class="bg-gray-700 hover:bg-orange-500 m-2 text-white px-2 py-1 rounded" onclick="changeRole(${user.userId})">Change Role</button>
 				<button class="bg-gray-700 hover:bg-sky-500 m-2 text-white px-2 py-1 rounded" onclick="logout(${user.userId})">Disconnect</button>
 					<button class="bg-gray-700 hover:bg-red-500 m-2 text-white px-2 py-1 rounded" onclick="unregister(${user.userId})">Delete</button>

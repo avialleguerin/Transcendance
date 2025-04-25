@@ -107,29 +107,32 @@ export async function login(request, reply) {
 export async function logout(request, reply) {
 	const { userId, accessToken } = request.body;
 	const { refreshToken } = request.cookies;
-	if (accessToken == undefined || !accessToken)
-	{
-		userModel.updateConnection(userId, "disconnected");
-		return reply.send({ success: true, message: 'Already Logged out' });
-	}
+	console.log("🔄 AccessToken avant vérification :", accessToken);
+	userModel.updateConnection(userId, "disconnected");
+	// if (!accessToken || typeof accessToken !== 'string' || accessToken.trim() === '')
+	// {
+	// 	console.log("❌ AccessToken invalide :", accessToken);
+	// 	return reply.send({ success: true, message: 'Already Logged out' });
+	// }
 	console.log("🔄 AccessToken :", accessToken);
 	console.log("🔄 RefreshToken :", refreshToken);
-	if (accessToken) {
+	if (accessToken && accessToken !== undefined) {
 		const decoded = fastify.jwt.decode(accessToken);
 		const expiresIn = decoded.exp - Math.floor(Date.now() / 1000);
 		if (expiresIn > 0) {
 			redisModel.addToBlacklist(accessToken, expiresIn);
 		}
 	}
-	if (refreshToken) {
+	if (refreshToken && refreshToken !== undefined) {
 		const decoded = fastify.jwt.decode(refreshToken);
 		const expiresIn = decoded.exp - Math.floor(Date.now() / 1000);
 		if (expiresIn > 0) {
 			redisModel.addToBlacklist(refreshToken, expiresIn);
 		}
+		reply.clearCookie('refreshToken', { path: '/' })
 	}
 	userModel.updateConnection(userId, "disconnected");
-	reply.clearCookie('refreshToken', { path: '/' }).send({ success: true, message: 'Logged out' });
+	reply.send({ success: true, message: 'Logged out' });
 }
 
 export async function changeDoubleAuth(request, reply) {
@@ -137,31 +140,30 @@ export async function changeDoubleAuth(request, reply) {
 	try {
 		const user = userModel.getUserById(userId)
 		if (user){
-			if (user.doubleAuth_enabled)
+			if (user.doubleAuth_enabled || user.doubleAuth_secret !== null)
 			{
 				userModel.updateDoubleAuth(userId, 0)
 				userModel.updateDoubleAuth_secret(userId, null)
 				console.log("Double Auth disabled")
 				return reply.code(200).send({message: "Double Auth disabled"})
 			}
-			userModel.updateDoubleAuth(userId, 1)
-			const updateUser = userModel.getUserById(userId)
-			if (!updateUser.doubleAuth_enabled)
-			{
-				userModel.updateDoubleAuth_secret(userId, null)
-				console.log("Double Auth disabled")
-				return reply.code(200).send({message: "Double Auth disabled"})
-			}
+			// userModel.updateDoubleAuth(userId, 1)
+			// const updateUser = userModel.getUserById(userId)
+			// if (!updateUser.doubleAuth_enabled)
+			// {
+			// 	userModel.updateDoubleAuth_secret(userId, null)
+			// 	console.log("Double Auth disabled")
+			// 	return reply.code(200).send({message: "Double Auth disabled"})
+			// }
 			const doubleAuthData = generateDoubleAuth(userId)
 			console.log("Double Auth qrCode", (await doubleAuthData).qrCode)
 			console.log("Double Auth secret", (await doubleAuthData).secret)
 
 			return reply.code(200).send({
-				userId: updateUser.userId,
-				username: updateUser.username,
-				email: updateUser.email,
-				role: updateUser.doubleAuth_enabled,
-				message: 'Double authentication enabled',
+				userId: user.userId,
+				username: user.username,
+				email: user.email,
+				message: 'Double authentication waiting for activation',
 				enable_doubleAuth: true,
 				secret: (await doubleAuthData).secret,
 				qrCode: (await doubleAuthData).qrCode,
@@ -273,11 +275,7 @@ export async function verifyDoubleAuth(request, reply) {
 			secret: user.doubleAuth_secret,
 			encoding: 'base32',
 			token: code,
-			window: 20,
-			time: Math.floor(Date.now() / 1000),
-			step: 30,
-			digits: 6,
-			algorithm: 'sha1'
+			window: 1
 		});
 
 		console.log("🔑 code 2FA :", code);
@@ -290,6 +288,7 @@ export async function verifyDoubleAuth(request, reply) {
 			console.log("🔑 Access Token created :", accessToken);
 			console.log("🔑 Refresh Token created :", refreshToken);
 			userModel.updateConnection(user.userId, "connected");
+			userModel.updateDoubleAuth(user.userId, 1);
 			reply
 			.setCookie('refreshToken', refreshToken, {
 				httpOnly: true,
@@ -298,8 +297,12 @@ export async function verifyDoubleAuth(request, reply) {
 				path: '/',
 			})
 			.send({ success:true, message: '2FA code is valid', connection_status: "connected", accessToken: accessToken });
-		} else
+		} else {
+			userModel.updateDoubleAuth_secret(userId, null);
+			userModel.updateConnection(user.userId, "disconnected");
+			console.error("❌ Invalid 2FA code");
 			return reply.code(401).send({ success: false, error: 'Invalid 2FA code' });
+		}
 	} catch (err) {
 		console.error(err);
 		return reply.code(500).send({ success: false, error: 'Internal server error' });
@@ -323,7 +326,7 @@ export async function activateDoubleAuth(request, reply) {
 		userModel.updateDoubleAuth(userId, 1);
 		return reply.send({ success: true, message: "2FA successfully activated" });
 	} else {
-		userModel.updateDoubleAuth_secret(userId, null);
+		// userModel.updateDoubleAuth_secret(userId, null);
 		return reply.code(400).send({ 
 			success: false, 
 			error: "Verification failed. Please try scanning the QR code again."
@@ -355,4 +358,31 @@ export async function generateDoubleAuth(userId) {
 		qrCode: qrCode,
 	}
 	return data
+}
+
+export async function refreshInfos(request, reply) {
+	const { userId, accessToken } = request.body;
+	try {
+		console.log("userId :", userId);
+		const user = userModel.getUserById(userId);
+		if (!user)
+			return reply.code(401).send({ success: false , error: 'User not found' });
+		if (user.connection_status === "partially_connected" || accessToken == undefined || !accessToken)
+		{
+			userModel.updateConnection(userId, "disconnected");
+			if (accessToken) {
+				const decoded = fastify.jwt.decode(accessToken);
+				const expiresIn = decoded.exp - Math.floor(Date.now() / 1000);
+				if (expiresIn > 0) {
+					redisModel.addToBlacklist(accessToken, expiresIn);
+				}
+			}
+		}
+		if (!user.doubleAuth_enabled && user.doubleAuth_secret)
+			userModel.updateDoubleAuth_secret(userId, null);
+		const updateUser = userModel.getUserById(userId);
+		return reply.code(200).send({ success: true, connection_status: updateUser.connection_status, message: 'User infos refreshed' });
+	} catch (err) {
+		return reply.code(500).send({ error: err.message });
+	}
 }

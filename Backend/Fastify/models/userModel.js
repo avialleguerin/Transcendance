@@ -4,7 +4,7 @@ import db from "../utils/db.js";
 export const CREATE_USERS_TABLE = `
 	CREATE TABLE IF NOT EXISTS users (
 		userId INTEGER PRIMARY KEY AUTOINCREMENT,
-		profile_picture TEXT DEFAULT 'https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Image-Transparent-Background.png',
+		profile_picture TEXT DEFAULT '/uploads/default-profile-picture.png',
 		username TEXT NOT NULL,
 		email TEXT UNIQUE NOT NULL,
 		password TEXT NOT NULL,
