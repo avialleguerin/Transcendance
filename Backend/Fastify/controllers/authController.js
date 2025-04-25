@@ -107,7 +107,7 @@ export async function login(request, reply) {
 export async function logout(request, reply) {
 	const { userId, accessToken } = request.body;
 	const { refreshToken } = request.cookies;
-	if (!accessToken)
+	if (accessToken == undefined || !accessToken)
 	{
 		userModel.updateConnection(userId, "disconnected");
 		return reply.send({ success: true, message: 'Already Logged out' });
@@ -189,6 +189,30 @@ export async function changeRole(request, reply) {
 				username: updateUser.username,
 				email: updateUser.email,
 				role: updateUser.role,
+				success: true
+			})
+		}
+		else
+		return reply.code(404).send({ success: false, error: 'User not found' });
+} catch (err) {
+		return reply.code(500).send({ error: err.message });
+	}
+}
+
+export async function changeProfilePicture(request, reply) {
+	const { userId, profilePicture } = request.body;
+	try {
+		const user = userModel.getUserById(userId);
+		if (user){
+			userModel.updateProfilePicture(userId, profilePicture)
+			const updateUser = userModel.getUserById(userId);
+			reply.code(200);
+			
+			return reply.send({
+				userId: updateUser.userId,
+				username: updateUser.username,
+				email: updateUser.email,
+				role: updateUser.profile_picture,
 				success: true
 			})
 		}

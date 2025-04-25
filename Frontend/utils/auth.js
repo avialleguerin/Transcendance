@@ -208,39 +208,17 @@ async function refreshToken() {
 	console.log("Error:", data.error)
 }
 
-async function fetchProfile() {
-	if (accessToken) {
-		const profileData = await apiRequest("profile", "GET", null, {})
-		if (!profileData.user) {
-			console.error("Aucun utilisateur dans la réponse !");
-			return;
-		}
-	
-		const user = profileData.user;
-	
-		document.getElementById('user-table').innerHTML = `
-			<tr>
-				<td class="border px-4 py-2">${user.userId}</td>
-				<td class="border px-4 py-2">${user.username}</td>
-				<td class="border px-4 py-2">${user.email}</td>
-				<td class="border px-4 py-2">********</td> <!-- Masquer le mot de passe -->
-				<td class="border px-4 py-2">${user.role}</td>
-				<td class="border px-4 py-2">${user.doubleAuth_enabled === 0 ? "disabled" : "enabled"}</td>
-				<td class="border px-4 py-2">${user.doubleAuth_secret}</td>
-			</tr>
-		`;
-	} else {
-		console.log("❌ Aucun accessToken reçu !");
-	}
-}
+
 
 
 
 window.addEventListener('DOMContentLoaded', () => {
 	console.log("accessToken: ", accessToken)
 	// if (!accessToken)
-		// logout(userId);
 	if (accessToken != undefined && accessToken != null)
+	{
+		// logout(sessionStorage.getItem("userId"));
 		fetchProfile();
+	}
 	fetchUsers();
 });
