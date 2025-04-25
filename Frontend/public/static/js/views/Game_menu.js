@@ -1150,6 +1150,18 @@ export default class extends AbstractView {
 				fa_selector.classList.remove('active');
 			}
 		});
+
+
+		/***********************************************************************/
+		/*************************platformer************************************/
+		/***********************************************************************/
+
+		const platformer = document.getElementById('platformer_view');
+
+		platformer.addEventListener('click', () => {
+			console.log('Platformer button clicked');
+			handleViewTransitions("platformer", "vue2");
+		});
 	}
 }
 

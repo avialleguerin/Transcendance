@@ -157,6 +157,19 @@ export function create_environment_view2(scene) {
 		light.range = 30;
 		view2Meshes.push(light);
 	});
+
+	BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/3d_object/", "arcade_machineV2.glb", scene, function (meshes) {
+		const container = new BABYLON.TransformNode("arcade_machineV2", scene);
+		meshes.forEach(m => {
+			m.setParent(container);
+			view2Meshes.push(m);
+		});
+		container.position = new BABYLON.Vector3(-4, 104, -3);
+		container.rotation = new BABYLON.Vector3(0, Math.PI, 0);
+		container.scaling = new BABYLON.Vector3(-4, 4, -4.7);
+		view2Meshes.push(container);
+	});
+
 }
 
 

@@ -61,7 +61,7 @@
     width: 0%; /* Commence à 0% */
     background: linear-gradient(to right, #4286f4, #42f4a1);
     /* border-radius: 15px; */
-    animation: progress-animation 9s linear forwards; /* Animation de 10 secondes */
+    animation: progress-animation 4s linear forwards; /* Animation de 10 secondes */
 }
 
 

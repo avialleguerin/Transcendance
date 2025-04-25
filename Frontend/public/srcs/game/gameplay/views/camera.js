@@ -48,6 +48,11 @@ const views = {
 	{
 		position: new BABYLON.Vector3(-18.428470385182532, 107.62138152604801, -14.139896745255728),
 		rotation: new BABYLON.Vector3(-0.03079079706537804, -3.1248471752812232, 0)
+	},
+	platformer:
+	{
+		position: new BABYLON.Vector3(-6.5182094677032865, 105.9949400814292, -3.0295165949940666),
+		rotation: new BABYLON.Vector3(0.30031205500253655, -4.721353872946304, 0)
 	}
 };
 
@@ -137,27 +142,21 @@ if (viewName === 'vue1' && previousView === 'default')
 	{
 			changeView('vue2', true);
 		}, 3500);
-		setTimeout(() => removeLoadingOverlay(), 10000);
+		setTimeout(() => removeLoadingOverlay(), 5000);
 	}
 	if (viewName === 'vue3' && previousView === 'vue2')
 	{
-		let soloGameStart = getSoloGameStart();
-		let aiGameStart = getAIGameStart();
-		let multiGameStart = getMultiGameStart();
-		console.log("soloGameStart: ", soloGameStart);
-		console.log("aiGameStart: ", aiGameStart);
-		console.log("multiGameStart: ", multiGameStart);
 		createLoadingOverlay();
 		setTimeout(() =>
 		{
 			changeView('vue3', true);
 			window.currentView = 'vue3';
-		}, 8500);
+		}, 1500);
 		setTimeout(() => 
 		{
 			removeLoadingOverlay();
 			changeView('vue4', true);
-		}, 10000);
+		}, 5000);
 	}
 	if (viewName === 'vue2' && (previousView === 'vue4' || previousView === 'winner')) {
 		isLoading = true;
@@ -169,12 +168,12 @@ if (viewName === 'vue1' && previousView === 'default')
 			changeView('vue2', true);
 			window.currentView = 'vue2'; 
 
-		}, 3500);
+		}, 2000);
 		
 		setTimeout(() => {
 			removeLoadingOverlay();
 			isLoading = false;
-		}, 10000);
+		}, 5000);
 	}
 	if (viewName === 'vue1' && previousView === 'vue2')
 	{
@@ -189,7 +188,7 @@ if (viewName === 'vue1' && previousView === 'default')
 			removeLoadingOverlay();
 			changeView('default', true);
 			isLoading = false;
-		}, 10000);
+		}, 5000);
 	}
 	if (viewName === 'winner')
 	{
@@ -210,12 +209,12 @@ if (viewName === 'vue1' && previousView === 'default')
 		{
 			changeView('vue3', true);
 			window.currentView = 'vue3';
-		}, 5500);
+		}, 1500);
 		setTimeout(() => 
 		{
 			removeLoadingOverlay();
 			changeView('vue4', true);
-		}, 10000);
+		}, 5000);
 	}
 	if (viewName === 'tournament' && previousView === 'vue4')
 	{
@@ -233,6 +232,14 @@ if (viewName === 'vue1' && previousView === 'default')
 		setTimeout(() => {
 			removeLoadingOverlay();
 			isLoading = false;
-		}, 10000);
+		}, 5000);
+	}
+	if (viewName === 'platformer' && previousView === 'vue2')
+	{
+		changeView('platformer', true);
+	}
+	if (viewName === 'vue2' && previousView === 'platformer')
+	{
+		changeView('vue2', true);
 	}
 }

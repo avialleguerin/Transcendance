@@ -1,9 +1,10 @@
 import { c, canvas, gameState, GameState } from './constants.js';
+import { Setgame_started } from './PlatformView.js';
 
 export default class Menu {
 	constructor(Game_History) {
 		this.title = "⏱️ Chrono Clash";
-		this.options = ["▶ Start", "⚙ Options", "✖ Quit", "History"];
+		this.options = ["▶ Start", "⚙ Options", "☷ History", "✖ Quit" ];
 		this.selectedOption = 0;
 		this.optionSpacing = 60;
 		this.titleFont = "bold 60px 'Press Start 2P', Black Ops One";
@@ -20,9 +21,12 @@ export default class Menu {
 		this.keyPressed = {};
 		this.boundKeyDown = this.handleKeyDown.bind(this);
 		this.boundKeyUp = this.handleKeyUp.bind(this);
+
+		
 	}
 
 	enableControls() {
+
 		window.addEventListener("keydown", this.boundKeyDown);
 		window.addEventListener("keyup", this.boundKeyUp);
 	}
@@ -91,21 +95,29 @@ export default class Menu {
 
 	handleSelect() {
 		const selected = this.options[this.selectedOption];
+		console.log("Selected option:", selected);
 		if (selected === "▶ Start") {
+			this.selectedOption = 0; // Remettre toujours "▶ Start" en sélection
 			this.disableControls();
 			gameState.previous = gameState.current;
 			gameState.current = GameState.MapMenu;
 		}
 		else if (selected === "⚙ Options") {
+			this.selectedOption = 0; // Remettre toujours "▶ Start" en sélection
 			this.disableControls();
 			console.log("Open options");
+			gameState.previous = gameState.current;
+			gameState.current = GameState.Options;
 		}
 		else if (selected === "✖ Quit") {
+			this.selectedOption = 0; // Remettre toujours "▶ Start" en sélection
 			this.disableControls();
-			window.close();
+			Setgame_started(false);
+			// window.close();
 		}
 
-		else if (selected === "History") {
+		else if (selected === "☷ History") {
+			this.selectedOption = 0; // Remettre toujours "▶ Start" en sélection
 			this.disableControls();
 			console.log("History selected");
 			console.log("this.Game_History = ", this.Game_History);
