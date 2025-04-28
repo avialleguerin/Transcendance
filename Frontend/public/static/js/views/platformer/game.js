@@ -73,6 +73,12 @@ export function initGame()
 			scaleY: 3,
 			Image_src: '/srcs/game/assets/City/background1.png',
 		}),
+		new Sprite({
+			position: { x: 2650, y: 1750 },
+			scaleX: 0.7,
+			scaleY: 0.7,
+			Image_src: '/srcs/game/assets/City/finishline.png',
+		}),
 	];
 
 	// Platforms from map
@@ -219,11 +225,12 @@ export function initGame()
 	const game_canvas = new GameCanvas({
 		position: { x: 8, y: 8 },
 		Image_src_prefix: '/srcs/game/assets/City/',
+		player: player,
 	});
 
 	const end_game = new EndGameFirstGame({
-		position: { x: 400, y: 300 },
-		width: 150,
+		position: { x: 2680, y: 1800 },
+		width: 250,
 		height: 150,
 		gameCanvas: game_canvas,
 		player: player,
@@ -297,6 +304,8 @@ export function initGame()
 		}
 	}
 
+	let pause = false;
+
 	// Set up event listeners
 	window.addEventListener('keydown', (event) => {
 		switch (event.key) {
@@ -310,17 +319,20 @@ export function initGame()
 			case 'w':
 				case 'w':
 					// Ne déclencher le saut que si la touche n'était pas déjà enfoncée
-					if (!keysPlayer1.jump.pressed) {
-						keysPlayer1.jump.pressed = true;
-						if (player.jumps === 0 || (player.jumps === 1 && !player.doubleJump)) {
-							player.handleJump();  // Appeler la méthode qui gère les sauts
-						}
-						if (collisionBoxes.some(box => box.checkCollision(player))) {
-							player.cantraverse = true;
-							setTimeout(() => {
-								player.cantraverse = false;
-							}, 500);
-							console.log("collision");
+					if (!game_canvas.GameIsPaused)
+					{
+						if (!keysPlayer1.jump.pressed) {
+							keysPlayer1.jump.pressed = true;
+							if (player.jumps === 0 || (player.jumps === 1 && !player.doubleJump)) {
+								player.handleJump();  // Appeler la méthode qui gère les sauts
+							}
+							if (collisionBoxes.some(box => box.checkCollision(player))) {
+								player.cantraverse = true;
+								setTimeout(() => {
+									player.cantraverse = false;
+								}, 500);
+								console.log("collision");
+							}
 						}
 					}
 					break;
@@ -333,6 +345,18 @@ export function initGame()
 					console.log("collision");
 				}
 				break;
+			case "Escape":
+				console.log("Escape pressed");
+				if (gameState.current === GameState.Play && !pause) {
+					console.log("Game pauseddddddddddddddddddd");
+					pause = true;
+				}
+				else if (gameState.current === GameState.Play && pause) {
+					console.log("Game resumedddddddddddddddddddd");
+					pause = false;
+				}
+				break;
+			
 		}
 	});
 
@@ -453,11 +477,17 @@ export function initGame()
 
 	// Animation loop
 	function animate() {
+
 		window.requestAnimationFrame(animate);
 	
 		// === Clear Canvas ===
 		c.fillStyle = 'rgba(rgb(12, 17, 33))';
 		c.fillRect(0, 0, canvas.width, canvas.height);
+
+		if (game_canvas.GameIsPaused) {
+			player.velocity.x = 0;
+			player.velocity.y = 0;
+		}
 
 		// === Game State Logic ===
 		switch (gameState.current) {
