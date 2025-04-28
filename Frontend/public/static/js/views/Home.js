@@ -36,7 +36,7 @@ export default class extends AbstractView {
 					<h1>CRÉER UN COMPTE</h1>
 					<form class="form-group" id="addForm">
 						<div class="input-container">
-							<label for="username">Nom :</label>
+							<label for="username">Username :</label>
 							<input type="text" id="add-username" name="username" placeholder="Votre nom" required>
 						</div>
 

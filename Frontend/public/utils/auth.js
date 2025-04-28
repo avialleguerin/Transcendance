@@ -209,7 +209,6 @@ async function refreshToken() {
 	console.log("Error:", data.error)
 }
 
-
 function getUserIdFromToken(token) {
 	if (!token) return null;
 
@@ -238,7 +237,6 @@ async function refreshInfos() {
 		console.error("Error refreshing infos:", data.error);
 	}
 }
-
 
 window.addEventListener('DOMContentLoaded', () => {
 	console.log("accessToken: ", accessToken)
