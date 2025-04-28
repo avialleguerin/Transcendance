@@ -1,9 +1,48 @@
 import { fastify } from '../server.js'
-import { redisClient } from '../utils/redis.js';
 import userModel from '../models/userModel.js';
 import { hashPassword, verifyPassword } from '../utils/hashUtils.js';
-import { randomUUID } from 'crypto';
 import { redisModel } from '../models/redisModel.js';
+import speakeasy from 'speakeasy'
+import qrcode from 'qrcode'
+
+const SECRET_LENGHT = 30
+
+export async function selectUsers(request, reply) {
+	try {
+		const users = userModel.getAllUsers()
+		return users;
+	} catch (err) {
+		return reply.code(500).send({ error: err.message });
+	}
+}
+
+export async function getUserProfile(request, reply) {
+	console.log("🔹 Requête reçue sur /api/profile");
+	const userId = request.user?.userId;
+
+	if (!userId)
+	{
+		console.error("❌ User not found in JWT token !");
+		return reply.code(400).send({ error: 'Invalid token' });
+	}
+	console.log(`✅ userId extrait du JWT : ${userId}`);
+
+	try {
+		const user = userModel.getUserById(userId);
+
+		if (!user)
+		{
+			console.error("❌ User not found");
+			return reply.code(404).send({ error: "❌ User not found !" });
+		}
+
+		console.log("✅ Utilisateur récupéré :", user);
+		return reply.send({ user });
+	} catch (error) {
+		console.error('\x1b[31m%s\x1b[0m', "Erreur dans getUserProfile:", error);
+		reply.code(500).send({ error: 'Internal Server Error' });
+	}
+}
 
 export async function register(request, reply) {
 	const { username, email, password } = request.body;
@@ -29,42 +68,29 @@ export async function register(request, reply) {
 
 export async function login(request, reply) {
 	const { email, password } = request.body;
-	// const { email, password, userId, sessionId } = request.body;
-	// const accessToken = redisModel.getRedisAccessToken(userId, sessionId)
-	// if (accessToken)
-	// {
-	// 	console.error("❌ User is already connected");
-	// 	return reply.code(401).send({ error: 'User already connected' });
-	// }
 	console.log("📧 Email reçu :", email);
 	console.log("🔑 Mot de passe reçu :", password);
 	const user = userModel.getUserByEmail(email);
-	const userId = user.userId;
 	console.log("👤 Utilisateur trouvé :", user);
 	try {
 		if (!user || !await verifyPassword(user.password, password)) {
 			console.error("❌ Identifiants invalides");
 			return reply.code(401).send({ error: 'Invalid credentials' });
 		}
-
-		const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, {expiresIn: '15m' });
+		if (user.doubleAuth_enabled) {
+			userModel.updateConnection(user.userId, "partially_connected");
+			return reply.code(200).send({success:true, connection_status: "partially_connected", message: 'Double authentication required', user: user});
+		}
+		const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, {expiresIn: '1m' });
 		const refreshToken = fastify.jwt.sign({ userId: user.userId }, {expiresIn: '7d' });
 		console.log("🔑 Access Token created :", accessToken);
 		console.log("🔑 Refresh Token created :", refreshToken);
-
 		if (!accessToken || !refreshToken) {
 			console.error("❌ Erreur lors de la création des tokens JWT");
 			return reply.code(500).send({ error: 'Internal Server Error' });
 		}
-		const sessionId = randomUUID();
-		console.log("🆔 Session ID created :", sessionId);
 
-		await redisModel.storeAccessToken(user.userId, sessionId, accessToken, 15 * 60);
-		console.log("🔑 Access Token stocké dans Redis :", `access:${user.userId}:${sessionId}`);
-
-		await redisModel.storeRefreshToken(user.userId, sessionId, refreshToken, 7 * 24 * 60 * 60);
-		console.log("🔑 Refresh Token stocké dans Redis :", `refresh:${user.userId}:${sessionId}`);
-
+		userModel.updateConnection(user.userId, "connected");
 		reply
 		.setCookie('refreshToken', refreshToken, {
 			httpOnly: true,
@@ -72,100 +98,83 @@ export async function login(request, reply) {
 			sameSite: 'strict',
 			path: '/',
 		})
-		.send({ success:true, message: 'Logged in', userId, sessionId, accessToken });
+		.send({ success:true, message: 'Logged in', connection_status: "connected", doubleAuth_enabled: user.doubleAuth_enabled, accessToken: accessToken });
 	} catch (err) {
 		return reply.code(500).send({ error: err.message });
-	}
-}
-
-export async function selectUsers(request, reply) {
-	try {
-		const users = userModel.getAllUsers()
-		return users;
-	} catch (err) {
-		return reply.code(500).send({ error: err.message });
-	}
-}
-
-export async function getUserProfile(request, reply) {
-	console.log("🔹 Requête reçue sur /api/profile");
-	const userId = request.user?.userId;
-
-	if (!userId)
-	{
-		console.error("❌ Aucun userId trouvé dans le token JWT !");
-		return reply.code(400).send({ error: 'Invalid token' });
-	}
-	console.log(`✅ userId extrait du JWT : ${userId}`);
-
-	try {
-		const user = userModel.getUserById(userId);
-
-		if (!user)
-		{
-			console.error("❌ Aucun utilisateur trouvé dans la base pour cet ID !");
-			return reply.code(404).send({ error: "User not found" });
-		}
-
-		console.log("✅ Utilisateur récupéré :", user);
-		return reply.send({ user });
-	} catch (error) {
-		console.error('\x1b[31m%s\x1b[0m', "Erreur dans getUserProfile:", error);
-		reply.code(500).send({ error: 'Internal Server Error' });
 	}
 }
 
 export async function logout(request, reply) {
-	const { userId, sessionId } = request.body;
-
-	const accessToken = await redisClient.get(`access:${userId}:${sessionId}`);
-	const refreshToken = request.cookies.refreshToken;
-	console.log("👤 User ID :", userId);
-	console.log("🆔 Session ID :", sessionId);
-	console.log("🔑 Access Token :", accessToken);
-	console.log("🔄 Refresh Token :", refreshToken);
-	if (!sessionId) {
-		console.error("❌ Aucun sessionId reçu !");
-		return reply.code(401).send({ error: 'Session ID manquant' });
-	}
-	if (accessToken) {
+	const { userId, accessToken } = request.body;
+	const { refreshToken } = request.cookies;
+	console.log("🔄 AccessToken avant vérification :", accessToken);
+	userModel.updateConnection(userId, "disconnected");
+	// if (!accessToken || typeof accessToken !== 'string' || accessToken.trim() === '')
+	// {
+	// 	console.log("❌ AccessToken invalide :", accessToken);
+	// 	return reply.send({ success: true, message: 'Already Logged out' });
+	// }
+	console.log("🔄 AccessToken :", accessToken);
+	console.log("🔄 RefreshToken :", refreshToken);
+	if (accessToken && accessToken !== undefined) {
 		const decoded = fastify.jwt.decode(accessToken);
 		const expiresIn = decoded.exp - Math.floor(Date.now() / 1000);
 		if (expiresIn > 0) {
 			redisModel.addToBlacklist(accessToken, expiresIn);
 		}
-		redisModel.deleteAccessToken(userId, sessionId);
 	}
-	if (refreshToken) {
+	if (refreshToken && refreshToken !== undefined) {
 		const decoded = fastify.jwt.decode(refreshToken);
 		const expiresIn = decoded.exp - Math.floor(Date.now() / 1000);
 		if (expiresIn > 0) {
 			redisModel.addToBlacklist(refreshToken, expiresIn);
 		}
-		redisModel.deleteRefreshToken(userId, sessionId);
+		reply.clearCookie('refreshToken', { path: '/' })
 	}
-	reply.clearCookie('sessionId', { path: '/' }).clearCookie('refreshToken', { path: '/' }).clearCookie('userId', { path: '/' }).send({ success: true, message: 'Logged out' });
+	userModel.updateConnection(userId, "disconnected");
+	reply.send({ success: true, message: 'Logged out' });
+}
 
+export async function changeDoubleAuth(request, reply) {
+	const { userId } = request.body;
+	try {
+		const user = userModel.getUserById(userId)
+		if (user){
+			if (user.doubleAuth_enabled || user.doubleAuth_secret !== null)
+			{
+				userModel.updateDoubleAuth(userId, 0)
+				userModel.updateDoubleAuth_secret(userId, null)
+				console.log("Double Auth disabled")
+				return reply.code(200).send({message: "Double Auth disabled"})
+			}
+			// userModel.updateDoubleAuth(userId, 1)
+			// const updateUser = userModel.getUserById(userId)
+			// if (!updateUser.doubleAuth_enabled)
+			// {
+			// 	userModel.updateDoubleAuth_secret(userId, null)
+			// 	console.log("Double Auth disabled")
+			// 	return reply.code(200).send({message: "Double Auth disabled"})
+			// }
+			const doubleAuthData = generateDoubleAuth(userId)
+			console.log("Double Auth qrCode", (await doubleAuthData).qrCode)
+			console.log("Double Auth secret", (await doubleAuthData).secret)
 
-
-	// const { userId } = request.body;
-
-	// const user = userModel.getUserById(userId)
-	
-	// if (user.connected === 0)
-	// 	return reply.send({ success: false, error: 'User already disconnected' });
-	// console.log("je passe la")
-	// if (user)
-	// 	userModel.updateConnected(userId, 0)
-	// const accessToken = request.headers.authorization?.split(" ")[1];
-	// if (accessToken) {
-	// 	const decoded = fastify.jwt.decode(accessToken);
-	// 	const expiresIn = decoded.exp - Math.floor(Date.now() / 1000);
-	// 	if (expiresIn > 0) {
-	// 		await redisClient.set(`blacklist:${accessToken}`, 'true', { EX: expiresIn });
-	// 	}
-	// }
-	// reply.clearCookie('refreshToken', { path: '/refresh-token' }).send({ message: 'Logged out' });
+			return reply.code(200).send({
+				userId: user.userId,
+				username: user.username,
+				email: user.email,
+				message: 'Double authentication waiting for activation',
+				enable_doubleAuth: true,
+				secret: (await doubleAuthData).secret,
+				qrCode: (await doubleAuthData).qrCode,
+				success: true
+			})
+		}
+		else
+			return reply.code(404).send({ success: false, error: 'User not found' });
+} catch (err) {
+		return reply.code(500).send({ error: err.message });
+	}
 }
 
 export async function changeRole(request, reply) {
@@ -192,55 +201,26 @@ export async function changeRole(request, reply) {
 	}
 }
 
-export async function refreshAccessToken(request, reply) {
-	const { refreshToken } = request.cookies;
-	
-	if (!refreshToken)
-		return reply.code(401).send({ error: 'Refresh token is missing'});
-	
+export async function changeProfilePicture(request, reply) {
+	const { userId, profilePicture } = request.body;
 	try {
-		const userId = request.user?.userId;
-		const sessionId = request.cookies.sessionId;
-		if (!userId || !sessionId)
-			return reply.code(401).send({ error: 'Invalid session' });
-
-		if (await redisModel.isTokenBlacklisted(refreshToken))
-			return reply.code(401).send({ error: 'Refresh token is blacklisted' });
-		
-		const payload = fastify.jwt.verify(refreshToken);
-		console.log("payload :", payload);
-
-		const newAccessToken = fastify.jwt.sign({ userId: payload.userId }, { expiresIn: '15m' });
-		await redisModel.storeAccessToken(userId, sessionId, newAccessToken, 15 * 60);
-
-		console.log("newAccessToken :", newAccessToken);
-		
-		return reply.send({ accessToken: newAccessToken });
-	} catch (err) {
-		return reply.code(403).send({ error: 'Invalid refresh token' });
-	}
-}
-
-export async function getAccessToken(request, reply) {
-	if (!request.body || !request.body.userId || !request.body.sessionId) {
-		console.error("❌ Données manquantes dans request.body !");
-		return reply.code(400).send({ error: 'Données manquantes' });
-	}
-	const { userId, sessionId } = request.body;
-	console.log("Session ID récupéré :", sessionId);
-	console.log("ID de l'utilisateur récupéré :", userId);
-	if (!sessionId)
-		return reply.status(401).send({ error: 'No session' });
-	if (!userId)
-		return reply.status(400).send({ error: 'User ID is required' });
-	try {
-		const accessToken = await redisClient.get(`access:${userId}:${sessionId}`);
-		console.log("Access token récupéré :", accessToken);
-		if (!accessToken)
-			return reply.status(403).send({ error: 'Token expired or invalid' });
-
-		return reply.send({ success: true, accessToken });
-	} catch (err) {
+		const user = userModel.getUserById(userId);
+		if (user){
+			userModel.updateProfilePicture(userId, profilePicture)
+			const updateUser = userModel.getUserById(userId);
+			reply.code(200);
+			
+			return reply.send({
+				userId: updateUser.userId,
+				username: updateUser.username,
+				email: updateUser.email,
+				role: updateUser.profile_picture,
+				success: true
+			})
+		}
+		else
+		return reply.code(404).send({ success: false, error: 'User not found' });
+} catch (err) {
 		return reply.code(500).send({ error: err.message });
 	}
 }
@@ -260,5 +240,149 @@ export async function unregister(request, reply) {
 	} catch (err) {
 		fastify.log.error(err)
 		return reply.code(500).send({ error: err.message })
+	}
+}
+
+export async function refreshAccessToken(request, reply) {
+	const { refreshToken } = request.cookies;
+
+	if (!refreshToken)
+		return reply.code(401).send({ error: 'Refresh token is missing'});
+	try {
+		if (await redisModel.isTokenBlacklisted(refreshToken))
+			return reply.code(401).send({ error: 'Refresh token is blacklisted' });
+
+		const payload = fastify.jwt.verify(refreshToken);
+		console.log("payload :", payload);
+
+		const newAccessToken = fastify.jwt.sign({ userId: payload.userId }, { expiresIn: '1m' });
+		console.log("newAccessToken :", newAccessToken);
+		return reply.send({ success: true, accessToken: newAccessToken });
+	} catch (err) {
+		return reply.code(403).send({ success: false, error: 'Invalid refresh token' });
+	}
+}
+
+export async function verifyDoubleAuth(request, reply) {
+	const { userId, code } = request.body;
+	try {
+		const user = userModel.getUserById(userId);
+		if (!user || !user.doubleAuth_secret) {
+			return reply.code(400).send({ success: false, error: '2FA not enabled or user not found' });
+		}
+
+		const isValid = speakeasy.totp.verify({
+			secret: user.doubleAuth_secret,
+			encoding: 'base32',
+			token: code,
+			window: 1
+		});
+
+		console.log("🔑 code 2FA :", code);
+		console.log("🔑 Secret récupéré :", user.doubleAuth_secret);
+
+
+		if (isValid) {
+			const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, { expiresIn: '1m' });
+			const refreshToken = fastify.jwt.sign({ userId: user.userId }, { expiresIn: '7d' });
+			console.log("🔑 Access Token created :", accessToken);
+			console.log("🔑 Refresh Token created :", refreshToken);
+			userModel.updateConnection(user.userId, "connected");
+			userModel.updateDoubleAuth(user.userId, 1);
+			reply
+			.setCookie('refreshToken', refreshToken, {
+				httpOnly: true,
+				secure: true,
+				sameSite: 'strict',
+				path: '/',
+			})
+			.send({ success:true, message: '2FA code is valid', connection_status: "connected", accessToken: accessToken });
+		} else {
+			userModel.updateDoubleAuth_secret(userId, null);
+			userModel.updateConnection(user.userId, "disconnected");
+			console.error("❌ Invalid 2FA code");
+			return reply.code(401).send({ success: false, error: 'Invalid 2FA code' });
+		}
+	} catch (err) {
+		console.error(err);
+		return reply.code(500).send({ success: false, error: 'Internal server error' });
+	}
+}
+
+export async function activateDoubleAuth(request, reply) {
+	const { userId, code } = request.body;
+	const user = userModel.getUserById(userId);
+
+	console.log("🔑 Secret :", user.doubleAuth_secret);
+	const isValid = speakeasy.totp.verify({
+		secret: user.doubleAuth_secret,
+		encoding: 'base32',
+		token: code,
+		window: 1
+	});
+	console.log("🔑 isValid :", isValid);
+	console.log("État initial 2FA:", user.doubleAuth_enabled);
+	if (isValid) {
+		userModel.updateDoubleAuth(userId, 1);
+		return reply.send({ success: true, message: "2FA successfully activated" });
+	} else {
+		// userModel.updateDoubleAuth_secret(userId, null);
+		return reply.code(400).send({ 
+			success: false, 
+			error: "Verification failed. Please try scanning the QR code again."
+		});
+	}
+}
+
+export async function generateDoubleAuth(userId) {
+	const user = userModel.getUserById(userId)
+	if (!user) {
+		throw new Error(`User with ID ${userId} not found`);
+	}
+	const secretObj = speakeasy.generateSecret({ length: SECRET_LENGHT })
+	const secret = secretObj.base32
+	console.log("🔑 Secret généré:", secret);
+	userModel.updateDoubleAuth_secret(userId, secret)
+
+	const otpauth = speakeasy.otpauthURL({
+		secret: secret,
+		label: `Transcendance (${user.username})`,
+		issuer: 'Transcendance',
+		encoding: 'base32',
+		algorithm: 'sha1',
+		period: 30
+	})
+	const qrCode = await qrcode.toDataURL(otpauth, { errorCorrectionLevel: 'H' })
+	const data = {
+		secret: secret,
+		qrCode: qrCode,
+	}
+	return data
+}
+
+export async function refreshInfos(request, reply) {
+	const { userId, accessToken } = request.body;
+	try {
+		console.log("userId :", userId);
+		const user = userModel.getUserById(userId);
+		if (!user)
+			return reply.code(401).send({ success: false , error: 'User not found' });
+		if (user.connection_status === "partially_connected" || accessToken == undefined || !accessToken)
+		{
+			userModel.updateConnection(userId, "disconnected");
+			if (accessToken) {
+				const decoded = fastify.jwt.decode(accessToken);
+				const expiresIn = decoded.exp - Math.floor(Date.now() / 1000);
+				if (expiresIn > 0) {
+					redisModel.addToBlacklist(accessToken, expiresIn);
+				}
+			}
+		}
+		if (!user.doubleAuth_enabled && user.doubleAuth_secret)
+			userModel.updateDoubleAuth_secret(userId, null);
+		const updateUser = userModel.getUserById(userId);
+		return reply.code(200).send({ success: true, connection_status: updateUser.connection_status, message: 'User infos refreshed' });
+	} catch (err) {
+		return reply.code(500).send({ error: err.message });
 	}
 }
