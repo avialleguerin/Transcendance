@@ -38,13 +38,13 @@ function openProfilePictureModal(userId) {
 
 	// Show preview of selected image
 	document.getElementById('profile-picture-input').addEventListener('change', function(event) {
-	const file = event.target.files[0];
-	if (file) {
-		const reader = new FileReader();
-		reader.onload = function(e) {
-		document.getElementById('profile-preview').src = e.target.result;
-		}
-		reader.readAsDataURL(file);
+		const file = event.target.files[0];
+		if (file) {
+			const reader = new FileReader();
+			reader.onload = function(e) {
+			document.getElementById('profile-preview').src = e.target.result;
+			}
+			reader.readAsDataURL(file);
 	}
 });
 
@@ -116,7 +116,7 @@ async function enable_doubleAuth(userId) {
 		});
 		const data = await response.json();
 		if (response.ok) {
-			fetchUsers()
+			// fetchUsers()
 			if (data.enable_doubleAuth)
 			{
 				sessionStorage.setItem("userId", userId);
@@ -134,12 +134,11 @@ async function unregister(userId) {
 	if (confirm('Do you really want to delete this user ?')) {
 		try {
 			const response = await fetch(`/api/users/delete/${userId}`, { method: 'DELETE' });
-			if (response.ok)
-				fetchUsers();
-			else {
+			if (!response.ok) {
 				const error = await response.json();
 				alert('Erreur : ' + error.error);
 			}
+			// else fetchUsers();
 		} catch (err) {
 			console.error('Erreur lors de la suppression :', err);
 		}

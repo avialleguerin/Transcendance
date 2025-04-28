@@ -1,3 +1,6 @@
+import { handleViewTransitions } from "../srcs/game/gameplay/views/camera.js";
+
+
 let accessToken = sessionStorage.getItem("accessToken")
 let userId = getUserIdFromToken(accessToken);
 
@@ -230,8 +233,13 @@ async function refreshInfos() {
 	});
 	const data = await response.json();
 	if (data.success) {
-		if (data.connection_status == "connected")
-			fetchProfile();
+		// handleViewTransitions("vue2", "vue1");
+
+
+
+
+		// if (data.connection_status == "connected") // TODO - Remplacer par une redirection sur la page de jeu
+		// 	fetchProfile();
 		console.log("Infos refreshed successfully");
 	} else {
 		console.error("Error refreshing infos:", data.error);
@@ -241,5 +249,5 @@ async function refreshInfos() {
 window.addEventListener('DOMContentLoaded', () => {
 	console.log("accessToken: ", accessToken)
 	refreshInfos();
-	fetchUsers();
+	// fetchUsers();
 });
