@@ -104,7 +104,7 @@ export default class EndGameSecondeGame{
 			{
 				this.WinnerScore = this.EndGame_FirstGame.Score;
 			}
-
+			this.MapMenu.nb_game_started++;
 			this.historyGame.saveGameIfNeeded(this.MapMenu.nb_game_started, this.winner, this.WinnerScore, this.gameCanvas.timer);
 			if (this.player && typeof this.player.reset_Game === "function") {
 				this.player.reset_Game();

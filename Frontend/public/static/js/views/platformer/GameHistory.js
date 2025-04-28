@@ -6,19 +6,33 @@ export default class GameHistory {
 		this.title = "Game History";
 		this.tileFont = "bold 40px Black Ops One";
 		this.EndGame_SecondeGame = EndGame_SecondeGame;
-		this.gameHistory = [];
+		this.historyDB = historyDB;
+		this.lastGame = null;
+        
+		// Chargement immédiat de l'historique depuis la base de données
+		this.gameHistory = this.historyDB.getHistory() || [];
+        
+		// Vérification si nous avons des données à sauvegarder d'une partie précédente
+		if (EndGame_SecondeGame && EndGame_SecondeGame.nb_game > 0) {
+			this.saveGameIfNeeded(
+				EndGame_SecondeGame.nb_game,
+				EndGame_SecondeGame.winner,
+				EndGame_SecondeGame.score,
+				EndGame_SecondeGame.time_endGame
+			);
+		}
+
 		this.options = ["Retour"];
 		this.selectedOption = 0;
 		this.optionSpacing = 60;
 		this.optionFont = "20px 'Press Start 2P', Black Ops One";
-		this.historyDB = historyDB;
-		this.lastGame = null;
-
-		this.saveGameIfNeeded();
 
 		this.keyPressed = {};
 		this.boundKeyDown = this.handleKeyDown.bind(this);
 		this.boundKeyUp = this.handleKeyUp.bind(this);
+        
+		// Debug
+		console.log("GameHistory initialisé, nombre d'entrées:", this.gameHistory.length);
 	}
 
 	enableControls() {
@@ -31,26 +45,17 @@ export default class GameHistory {
 		window.removeEventListener("keyup", this.boundKeyUp);
 	}
 	
-
-	saveGameIfNeeded(nb_game, winner, score, time_endGame)
-	{
-		console.log ("saveGameIfNeeded", nb_game, winner, score, time_endGame);
-		if (nb_game > 0 && winner !== "" && score > 0 && time_endGame > 0) {
-			this.gameHistory = this.historyDB.addGame(nb_game, winner, score, time_endGame);
+	saveGameIfNeeded(nb_game, winner, score, time_endGame) {
+		console.log("saveGameIfNeeded", nb_game, winner, score, time_endGame);
+		if (nb_game > 0 && winner !== "" && score > 0) {
+			this.historyDB.addGame(nb_game, winner, score, time_endGame);
 			this.gameHistory = this.historyDB.getHistory();
 			this.historyDB.saveToLocalStorage();
-
-			// this.lastGame = {
-			// 	game: nb_game,
-			// 	winner: winner,
-			// 	score: score,
-			// 	time: Date.now(),
-			// };
+			console.log("Jeu sauvegardé, nombre d'entrées maintenant:", this.gameHistory.length);
 		}
 	}
 
-	draw()
-	{
+	draw() {
 		this.enableControls();
 		c.fillStyle = "rgba(0, 0, 0, 0.75)";
 		c.fillRect(0, 0, canvas.width, canvas.height);
@@ -71,17 +76,21 @@ export default class GameHistory {
 		c.fillText("Game History :", 200, 200);
 
 
+		// Affichage de l'historique des jeux
+
 		if (this.gameHistory.length > 0) {
+			// console.log("Historique des jeux :", this.historyDB.getHistory());
 			this.gameHistory.forEach((game, index) => {
-				const yPosition = 200 + index * 40; // commence à 240px, et espace de 40px entre chaque
-				c.fillText(`${game.game}: Winner : ${game.winner}, Score - ${game.score}`, 400 , yPosition);
+
+				const yPosition = 240 + index * 40; // commence à 240px, et espace de 40px entre chaque
+				c.fillText(`${game.game}: Winner: ${game.winner}, Score: ${game.score}`, 400, yPosition);
 			});
 		} else {
-			c.fillText("No game history available", 400 , 200);
+			c.fillText("No game history available", 400, 240);
 		}
 
 		const optionPositions = [
-			{ x: 900, y: 550 }, // position de "Retour"
+			{ x: 900, y: 550 } // position de "Retour"
 		];
 	
 		c.font = this.optionFont;
@@ -91,8 +100,7 @@ export default class GameHistory {
 			if (option === "Retour" && index === this.selectedOption) {
 				c.fillStyle = "red"; // Rouge si "Retour" est sélectionné
 			}
-			else
-			{
+			else {
 				c.fillStyle = "white"; // Sinon blanc
 			}
 			c.fillText(option, pos.x, pos.y);
@@ -124,11 +132,9 @@ export default class GameHistory {
 		this.keyPressed[event.key] = false;
 	}
 
-	handleSelect()
-	{
+	handleSelect() {
 		const selected = this.options[this.selectedOption];
-		if (selected === "Retour")
-		{
+		if (selected === "Retour") {
 			this.disableControls();
 			gameState.previous = gameState.current;
 			gameState.current = GameState.Menu;
