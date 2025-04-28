@@ -143,7 +143,7 @@
 
 .game_mode_btn .btn {
     padding: 20px 40px;
-    font-size: 0.9vw;
+    font-size: 0.8vw;
     font-weight: bold;
     transform: translateY(-50%);
     background-color: transparent;
@@ -1675,7 +1675,7 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
 
 .btn_tournament {
     padding: 20px 40px;
-    font-size: 0.9vw;
+    font-size: 0.8vw;
     font-weight: bold;
     transform: translateY(-50%);
     background-color: transparent;
@@ -1700,11 +1700,70 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
 .btn_tournament a {
     text-decoration: none;
     color: white;
-    font-size: 0.9vw;
+    font-size: 0.8vw;
     font-weight: bold;
     transform: translate(-14px, 14px);
 }
 
-.active_fa {
+.btn_platformer {
+    padding: 20px 40px;
+    font-size: 0.8vw;
+    font-weight: bold;
+    transform: translateY(-50%);
+    background-color: transparent;
+    color: white;
+    border: 2px solid #44444400;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    background-image: url("../../../srcs/game/assets/image/boutton.svg");
+    background-size: 100% auto;
+    background-position: center;
+    background-repeat: no-repeat;
+    line-height: 3vh;
+    width: 130px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 30%);
+}
 
+.btn_platformer a {
+    text-decoration: none;
+    color: white;
+    font-size: 0.8vw;
+    font-weight: bold;
+    transform: translate(-30px, 14px);
+}
+
+.btn_deconnect_btn {
+    padding: 20px 40px;
+    font-size: 0.5vw;
+    font-weight: bold;
+    transform: translateY(-50%);
+    background-color: transparent;
+    color: white;
+    border: 2px solid #44444400;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    background-image: url("../../../srcs/game/assets/image/boutton.svg");
+    background-size: 100% auto;
+    background-position: center;
+    background-repeat: no-repeat;
+    line-height: 3vh;
+    width: 88px;
+    height: 54px;
+    display: flex
+;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-193%, 90%);
 }

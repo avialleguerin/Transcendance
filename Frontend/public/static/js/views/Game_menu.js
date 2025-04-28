@@ -45,12 +45,12 @@ export default class extends AbstractView {
 						<h1>CHOISIS TON MODE DE JEU</h1>
 						<div id="game_mode_btn" class="game_mode_btn">
 							<button id="solo" class="btn">SOLO</button>
-							<button id="platformer_view" class="btn_tournament">
-								<a href="/PlatformView" class="nav-link" data-link>PLATEFORMER</a>
-							</button>
 							<button id="multiplayer" class="btn">MULTIJOUEUR</button>
 							<button id="tournament_view" class="btn_tournament">
-								<a href="/tournament" class="nav-link" data-link>TOURNOI</a>
+							<a href="/tournament" class="nav-link" data-link>TOURNOI</a>
+							</button>
+							<button id="platformer_view" class="btn_platformer">
+								<a href="/PlatformView" class="nav-link" data-link>PLATFORMER</a>
 							</button>
 						</div>
 					</div>
@@ -182,6 +182,9 @@ export default class extends AbstractView {
 							<div class="input_container">
 								<label for="confirm_mdp">Confirmer le mot de passe</label>
 								<input type="text" id="confirm_mdp" name="confirm_mdp" placeholder="Confirmer le mot de passe">
+							</div>
+							<div class="btn_deconnect">
+								<button id="deconnect_btn" class="btn_deconnect_btn">Deconnexion</button>
 							</div>
 							<div id="fa_selector" class="fa_selector">
 								<p>2FA :<span id="active_fa" class="active_fa"></span></p>
@@ -418,6 +421,18 @@ export default class extends AbstractView {
 		document.getElementById("tournament_view").addEventListener("click", () => {
 			console.log("Tournament view started");
 			handleViewTransitions("tournament");
+		});
+	}
+
+	handleDeconnection()
+	{
+		const deconnect_btn = document.getElementById("deconnect_btn");
+
+
+		deconnect_btn.addEventListener("click", () => {
+			handleViewTransitions("vue1", "vue2");
+			console.log("Back to home page");
+			window.history.back();
 		});
 	}
 
