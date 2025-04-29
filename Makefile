@@ -14,12 +14,15 @@ YELLOW		:=	\e[33m
 MAGENTA		:=	\e[35m
 CYAN		:=	\e[36m
 
+# Docker Compose
+NO_LOGS 	:= --no-attach vault --no-attach redis
+
 all:
 	@make build
 	@make -j4 up
 
 up:
-	@docker compose up
+	@docker compose up ${NO_LOGS}
 	@rm -rf ./Backend/Fastify/node_modules
 	@rm -rf ./Backend/Fastify/Data
 	@rm -rf ./Backend/Fastify/vault
