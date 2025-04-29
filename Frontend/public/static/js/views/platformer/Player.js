@@ -236,6 +236,7 @@ export default class Player extends Sprite {
 		this.rotate_sprite();
 		this.draw();
 		this.updateCameraBox();
+		// this.drawCameraBox();
 	}
 	
 	

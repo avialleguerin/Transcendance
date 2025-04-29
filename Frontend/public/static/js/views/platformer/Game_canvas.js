@@ -52,9 +52,7 @@ export default class GameCanvas extends Sprite {
 		this.keyPressed = {};
 		this.boundKeyDown = this.handleKeyDown.bind(this);
 		this.boundKeyUp = this.handleKeyUp.bind(this);
-
 		this.player = player;
-
 	}
 
 	enableControls() {
@@ -103,7 +101,6 @@ export default class GameCanvas extends Sprite {
 		this.changeSprite();
 		this.draw();
 		this.draw_canvas();
-		console.log("game state:", gameState.current);
 		if (this.GameIsPaused) {
 			this.draw_menu_pause();
 		}
@@ -186,7 +183,9 @@ export default class GameCanvas extends Sprite {
 				this.selectedOption = (this.selectedOption + 1) % this.options.length;
 				break;
 			case "Enter":
-				this.handleSelect();
+				if (this.GameIsPaused) {
+					this.handleSelect();
+				}
 				break;
 			case "Escape":
 				if (gameState.current === GameState.Play) {

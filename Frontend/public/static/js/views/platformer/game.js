@@ -21,10 +21,10 @@ export function initGame()
 {
 
 	const keysPlayer1 = {
-		left:  { key: 'a', pressed: false },
-		right: { key: 'd', pressed: false },
-		down:  { key: 's', pressed: false },
-		jump:  { key: 'w', pressed: false },
+		left:  { key: 'ArrowLeft', pressed: false },
+		right: { key: 'ArrowRight', pressed: false },
+		down:  { key: 'ArrowDown', pressed: false },
+		jump:  { key: 'ArrowUp', pressed: false },
 	};
 	
 	const player = new Player({
@@ -89,7 +89,7 @@ export function initGame()
 		new CollisionBox({
 			position: { x: 665, y: 420 },
 			width: 120,
-			height: 150,
+			height: 110,
 		}),
 		new CollisionBox({
 			position: { x: 1450, y: 830 },
@@ -220,6 +220,27 @@ export function initGame()
 			},
 			Image_src_prefix: '/srcs/game/assets/City/',
 		}),
+		new Coin({
+			position: {
+				x: 1950,
+				y: 1050,
+			},
+			Image_src_prefix: '/srcs/game/assets/City/',
+		}),
+		new Coin({
+			position: {
+				x: 635,
+				y: 1000,
+			},
+			Image_src_prefix: '/srcs/game/assets/City/',
+		}),
+		new Coin({
+			position: {
+				x: 635,
+				y: 1000,
+			},
+			Image_src_prefix: '/srcs/game/assets/City/',
+		}),
 	];
 
 	const game_canvas = new GameCanvas({
@@ -310,33 +331,32 @@ export function initGame()
 	window.addEventListener('keydown', (event) => {
 		switch (event.key) {
 			// Player 1
-			case 'd':
+			case 'ArrowRight':
 				keysPlayer1.right.pressed = true;
 				break;
-			case 'a':
+			case 'ArrowLeft':
 				keysPlayer1.left.pressed = true;
 				break;
-			case 'w':
-				case 'w':
-					// Ne déclencher le saut que si la touche n'était pas déjà enfoncée
-					if (!game_canvas.GameIsPaused)
-					{
-						if (!keysPlayer1.jump.pressed) {
-							keysPlayer1.jump.pressed = true;
-							if (player.jumps === 0 || (player.jumps === 1 && !player.doubleJump)) {
-								player.handleJump();  // Appeler la méthode qui gère les sauts
-							}
-							if (collisionBoxes.some(box => box.checkCollision(player))) {
-								player.cantraverse = true;
-								setTimeout(() => {
-									player.cantraverse = false;
-								}, 500);
-								console.log("collision");
-							}
+			case 'ArrowUp':
+				console.log("UP pressed");
+				if (!game_canvas.GameIsPaused)
+				{
+					if (!keysPlayer1.jump.pressed) {
+						keysPlayer1.jump.pressed = true;
+						if (player.jumps === 0 || (player.jumps === 1 && !player.doubleJump)) {
+							player.handleJump();  // Appeler la méthode qui gère les sauts
+						}
+						if (collisionBoxes.some(box => box.checkCollision(player))) {
+							player.cantraverse = true;
+							setTimeout(() => {
+								player.cantraverse = false;
+							}, 500);
+							console.log("collision");
 						}
 					}
-					break;
-			case 's':
+				}
+				break;
+			case 'ArrowDown':
 				if (collisionBoxes.some(box => box.checkCollision(player))) {
 					player.cantraverseDown = true;
 					setTimeout(() => {
@@ -362,16 +382,16 @@ export function initGame()
 
 	window.addEventListener('keyup', (event) => {
 		switch (event.key) {
-			case 'd':
+			case 'ArrowRight':
 				keysPlayer1.right.pressed = false;
 				break;
-			case 'a':
+			case 'ArrowLeft':
 				keysPlayer1.left.pressed = false;
 				break;
-			case 's':
+			case 'ArrowDown':
 				player.cantraverseDown = false;
 				break;
-			case 'w':
+			case 'ArrowUp':
 				keysPlayer1.jump.pressed = false;
 				break;
 		}
@@ -389,11 +409,12 @@ export function initGame()
 		
 		platforms.forEach(platform => platform.draw());
 		
-		collisionBoxes.forEach(box => box.draw());
+		// collisionBoxes.forEach(box => box.draw());
 
 
 		// Draw coin
 		// traps.forEach(trap => trap.draw());
+
 
 		// Update players
 		player.update();
@@ -470,7 +491,7 @@ export function initGame()
 			}
 		}
 
-		// console.log(player.position.x, player.position.y);
+		console.log(player.position.x, player.position.y);
 	}
 	
 	const options = new Option();
@@ -484,6 +505,7 @@ export function initGame()
 		c.fillStyle = 'rgba(rgb(12, 17, 33))';
 		c.fillRect(0, 0, canvas.width, canvas.height);
 
+		// console.log("Game State:", gameState.current);
 		if (game_canvas.GameIsPaused) {
 			player.velocity.x = 0;
 			player.velocity.y = 0;
