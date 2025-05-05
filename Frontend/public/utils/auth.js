@@ -1,4 +1,4 @@
-import { handleViewTransitions } from "../srcs/game/gameplay/views/camera.js";
+// import { handleViewTransitions } from "../srcs/game/gameplay/views/camera.js";
 
 
 let accessToken = sessionStorage.getItem("accessToken")
