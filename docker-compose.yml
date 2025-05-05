@@ -52,12 +52,14 @@ services:
       dockerfile: Nginx/Dockerfile
     ports:
       - "8080:80"           #80:80 necessite des privilege
+      - "8443:443"          # HTTPS
     depends_on:
       - fastify
+    environment:
+      - NGINX_ENVSUBST_TEMPLATE_DIR=off
     volumes:
-      # - ./Security/Nginx/conf.d:/etc/nginx/conf.d # ro mean read-only
-      # - ./Security/Nginx/nginx.conf:/etc/nginx/nginx.conf # ro mean read-only
-      - ./Security/Nginx/modsecurity:/etc/nginx/modsecurity
+      - ./Security/Nginx/conf.d:/etc/nginx/conf.d
+      - ./Security/Nginx/modsecurity:/etc/modsecurity.d
       - ./Frontend/public:/usr/share/nginx/html:ro
       - ./Frontend/utils:/usr/share/nginx/utils:ro
       - ./Frontend3d/public:/usr/share/nginx/3d:ro
