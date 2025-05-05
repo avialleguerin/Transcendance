@@ -156,40 +156,48 @@ export default class extends AbstractView {
 					<div class="parametres_profile_content">
 						<h1>PARAMETRES DU PROFIL</h1>
 						<div class="modif_profile" id="modif_profil">
-							<label for="mdp">Mot de passe</label>
-							<input type="text" id="Mot_de_pass" name="Mot_de_pass" placeholder="Mot de passe">
-							<button id="valid_mdp" class="btn_valider_mdp">Valider</button>
+							<form id="access_to_profile_info" class="form_mdp" onsubmit="accessProfileInfo(event)">
+								<label for="mdp">Mot de passe</label>
+								<input type="password" id="password" name="password" placeholder="Password" required>
+								<button class="btn_valider_mdp">Valider</button>
+							</form>
 						</div>
 						<div class="profile_param_unlocked" id="profile_param_unlocked_id">
 							<div class="photo_profile">
 								<div class="profile_photo_container">
 									<div class="profile_photo_circle" id="profile_photo_circle">
-										<input type="file" id="profile_photo_input" accept="image/*" style="display: none;">
+										
 										<label for="profile_photo_input" class="photo_upload_icon">
 											<i class="fa fa-camera"></i>
 										</label>
 									</div>
 								</div>
 							</div>
-							<div class="input_container">
-								<label for="email">Email</label>
-								<input type="text" id="email" name="email" placeholder="Email">
-							</div>
-							<div class="input_container">
-								<label for="mdp">Mot de passe</label>
-								<input type="text" id="Mot_de_pass" name="Mot_de_pass" placeholder="Mot de passe">
-							</div>
-							<div class="input_container">
-								<label for="confirm_mdp">Confirmer le mot de passe</label>
-								<input type="text" id="confirm_mdp" name="confirm_mdp" placeholder="Confirmer le mot de passe">
-							</div>
-							<div class="btn_deconnect">
-								<button id="deconnect_btn" class="btn_deconnect_btn">Deconnexion</button>
-							</div>
-							<div id="fa_selector" class="fa_selector">
-								<p>2FA :<span id="active_fa" class="active_fa"></span></p>
-							</div>
-							<button id="valid_profile_info" class="valid_profile_info_btn">Valider</button>
+							<form onsubmit="updateProfileInfo(event)">
+								<div class="input_container">
+									<label for="username">Change username</label>
+									<input type="text" id="change_username" name="username">
+								</div>
+								<div class="input_container">
+									<label for="email">Change email</label>
+									<input type="email" id="change_email" name="email">
+								</div>
+								<div class="input_container">
+									<label for="password">Change password</label>
+									<input type="password" id="change_password" name="password" placeholder="******">
+								</div>
+								<div class="input_container">
+									<label for="confirm_password">Confirm new password</label>
+									<input type="password" id="confirm_change_password" name="confirm_password" placeholder="******">
+								</div>
+								<div class="btn_deconnect">
+									<button id="deconnect_btn" class="btn_deconnect_btn" onclick="logout()">Deconnexion</button>
+								</div>
+								<div id="fa_selector" class="fa_selector">
+									<p>2FA :<span id="active_fa" class="active_fa"></span></p>
+								</div>
+								<button id="valid_profile_info" class="valid_profile_info_btn">Valider</button>
+							</form>
 						</div>
 					</div>
 				</div>
@@ -1099,12 +1107,12 @@ export default class extends AbstractView {
 			view1.classList.remove('active');
 			container_menu.classList.add('active');
 			btn_back_home.classList.add('active');
-
 		});
-
+		
 		parametre_profile.addEventListener('click', () => {
 			console.log('Parrametre profile clicked');
 			parametre_profile_view.classList.add('active');
+			fetchProfile();
 			view5.classList.remove('active');
 			btn_back_home.classList.remove('active');
 			view1.classList.remove('active');
@@ -1140,12 +1148,12 @@ export default class extends AbstractView {
 		const active_fa = document.getElementById('active_fa');
 
 
-		valid_mdp.addEventListener('click', () => {
-			console.log('Valide mdp clicked');
-			modif_profil.classList.add('hidden');
-			btn_back_home.classList.remove('active');
-			profile_param_unlocked_id.classList.add('active');
-		});
+		// valid_mdp.addEventListener('click', () => {
+		// 	console.log('Valide mdp clicked');
+		// 	modif_profil.classList.add('hidden');
+		// 	btn_back_home.classList.remove('active');
+		// 	profile_param_unlocked_id.classList.add('active');
+		// });
 
 		valid_profile_info.addEventListener('click', () => {
 			console.log('Valide profile info clicked');

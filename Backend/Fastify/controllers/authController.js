@@ -172,7 +172,22 @@ export async function changeDoubleAuth(request, reply) {
 		}
 		else
 			return reply.code(404).send({ success: false, error: 'User not found' });
-} catch (err) {
+	} catch (err) {
+		return reply.code(500).send({ error: err.message });
+	}
+}
+
+export async function accessProfileInfo(request, reply) {
+	const { userId, password } = request.body;
+	try {
+		const user = userModel.getUserById(userId)
+		if (user){
+			if (verifyPassword(user.password, password))
+				return reply.code(200).send({success:true, message: 'access to profile infos accepted ', user: user});
+		}
+		else
+			return reply.code(404).send({ success: false, error: 'User not found' });
+	} catch (err) {
 		return reply.code(500).send({ error: err.message });
 	}
 }
@@ -193,6 +208,29 @@ export async function changeRole(request, reply) {
 				role: updateUser.role,
 				success: true
 			})
+		}
+		else
+		return reply.code(404).send({ success: false, error: 'User not found' });
+} catch (err) {
+		return reply.code(500).send({ error: err.message });
+	}
+}
+
+export async function changeProfile(request, reply) {
+	const { userId, newUsername, newEmail, newPassword } = request.body;
+	try {
+		const user = userModel.getUserById(userId);
+		if (user){
+			if (newUsername)
+				userModel.updateUsername(userId, newUsername);
+			if (newEmail)
+				userModel.updateEmail(userId, newEmail);
+			if (newPassword)
+				userModel.updatePassword(userId, newPassword);
+			const updateUser = userModel.getUserById(userId);
+			reply.code(200);
+
+			return reply.code(200).send({ user: updateUser, success: true })
 		}
 		else
 		return reply.code(404).send({ success: false, error: 'User not found' });
