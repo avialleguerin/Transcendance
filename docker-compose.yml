@@ -44,6 +44,16 @@ services:
       - ./Data/vault_data:/app/vault/data
       - ./Data/sqlite_data:/app/Data/db
 
+  # Devops (Grafana + Prometheus + ELK)
+  # grafana:
+  #   extends:
+  #     file: Devops/docker-compose.yml
+  #     service: grafana
+  #   networks:
+  #     - transcendence-network
+
+
+  # Sécurité (Vault + SonarQube + Modsecurity)
   nginx:
     container_name: nginx
     # image: nginx:latest     # pour ne pas a avoir besoin de Dockerfile
@@ -59,23 +69,11 @@ services:
       - NGINX_ENVSUBST_TEMPLATE_DIR=off
     volumes:
       - ./Security/Nginx/conf.d:/etc/nginx/conf.d
-      - ./Security/Nginx/modsecurity:/etc/modsecurity.d
+      - ./Security/ModSecurity:/etc/modsecurity.d
       - ./Frontend/public:/usr/share/nginx/html:ro
       - ./Frontend/utils:/usr/share/nginx/utils:ro
       - ./Frontend3d/public:/usr/share/nginx/3d:ro
 
-
-
-  # Devops (Grafana + Prometheus + ELK)
-  # grafana:
-  #   extends:
-  #     file: Devops/docker-compose.yml
-  #     service: grafana
-  #   networks:
-  #     - transcendence-network
-
-
-  # Sécurité (Vault + SonarQube + Modsecurity)
   vault:
     image: custom-vault
     container_name: vault
