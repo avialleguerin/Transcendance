@@ -37,4 +37,11 @@ re:
 	@make down
 	@make all
 
+#NGINX
+reload-nginx:
+	@echo "\n${BLUE}Reloading Nginx inside the container...${RESET}"
+	@docker exec nginx nginx -t && docker exec nginx nginx -s reload
+	@echo "${GREEN}✓ Nginx reloaded successfully with updated ModSecurity rules.${RESET}"
+
+
 .PHONY: up all down re

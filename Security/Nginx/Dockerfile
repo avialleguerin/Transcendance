@@ -38,5 +38,5 @@ COPY Nginx/nginx.conf											/etc/nginx/nginx.conf
 
 # 7) On laisse optionnellement envsubst actif ou non
 ENV NGINX_ENVSUBST_TEMPLATE_DIR=off
-
+	
 CMD ["nginx", "-g", "daemon off;"]
