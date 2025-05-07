@@ -15,7 +15,7 @@ export default async function routes (fastify) {
 	fastify.post('/users/add', register);
 	fastify.put('/users/login', login);
 	fastify.post('/users/logout/:userId', logout);
-	fastify.get('/users/access-profile-infos/:userId', accessProfileInfo);
+	fastify.put('/users/access-profile-infos/:userId', accessProfileInfo);
 	fastify.put('/users/update-2fa/:userId', changeDoubleAuth);
 	fastify.post('/users/verify-2fa', verifyDoubleAuth);
 	fastify.post('/users/activate-2fa', activateDoubleAuth);
