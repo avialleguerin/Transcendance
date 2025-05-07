@@ -234,10 +234,10 @@ let frameCounter = 0;
 let fpsHistory = [];
 
 
-// create_environment_view1(scene);
-// create_environment_view3(scene);
+create_environment_view1(scene);
+create_environment_view3(scene);
 create_environment_view2(scene);
-// init_all_skin(scene);
+init_all_skin(scene);
 const skybox = createOptimizedSkybox(scene);
 
 qualityLevel = detectPerformanceLevel();

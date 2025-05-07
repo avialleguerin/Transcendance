@@ -108,7 +108,7 @@ async function accessProfileInfo(event) {
 	// const userId = getUserIdFromToken();
 
 	try {
-		const response = await fetch(`/api/users/accessProfileInfo/:${userId}`, {
+		const response = await fetch(`/api/users/access-profile-infos/:${userId}`, {
 			method: "PUT",
 			headers: {
 				"Content-Type": "application/json",
@@ -133,7 +133,7 @@ async function enable_doubleAuth(userId) {
 	try {
 		const accessToken = sessionStorage.getItem("accessToken");
 
-		const response = await fetch(`/api/users/doubleAuth/${userId}`, {
+		const response = await fetch(`/api/users/update-2fa/${userId}`, {
 			method: "PUT",
 			headers: {
 				"Content-Type": "application/json",
@@ -173,32 +173,33 @@ async function unregister(userId) {
 }
 
 async function fetchProfile() {
-	if (accessToken) {
-		const data = await apiRequest("profile", "GET", null, {})
-		if (!data.user) {
-			console.error("Aucun utilisateur dans la réponse !");
-			return;
+	try {
+		if (accessToken) {
+			const data = await apiRequest("profile", "GET", null, {})
+			if (!data.user) {
+				console.log("Error:", data.error);
+				return;
+			}
+		
+			const user = data.user;
+			document.getElementById("profile_photo_circle").innerHTML = `
+				<img src="./uploads/${user.profile_picture}" alt="Profile Photo" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+			`;
+			const username = document.getElementById("change_username");
+			username.placeholder = user.username;
+			const email = document.getElementById("change_email");
+			email.placeholder = user.email;
+			const doubleAuth = document.getElementById("fa_selector");
+			if (user.enable_doubleAuth)
+				doubleAuth.classList.add("checked");
+			else
+				if (doubleAuth.classList.contains("checked"))
+					doubleAuth.classList.remove("checked");
 		}
-	
-		const user = data.user;
-		document.getElementById("profile_photo_circle").innerHTML = `
-			<img src="./uploads/${user.profile_picture}" alt="Profile Photo" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
-		`;
-		const username = document.getElementById("change_username");
-		username.placeholder = user.username;
-		const email = document.getElementById("change_email");
-		email.placeholder = user.email;
-		if (user.enable_doubleAuth)
-		{
-			const doubleAuth = document.getElementById("doubleAuth");
-			doubleAuth.classList.add("checked");
-		}
-		else
-			if (doubleAuth.classList.contains("checked"))
-				doubleAuth.classList.remove("checked");
-	} else {
+	} catch (err) {
 		console.log("❌ Aucun accessToken reçu !");
 	}
+	
 }
 
 async function updateProfileInfo() {
@@ -208,32 +209,37 @@ async function updateProfileInfo() {
 	const newPassword = document.getElementById("change_password").value;
 	const confirmPassword = document.getElementById("confirm_change_password").value;
 
-	if (newPassword !== confirmPassword) {
-		alert("Les mots de passe ne correspondent pas !");
+	console.log("newUsername", newUsername);
+	console.log("newEmail", newEmail);
+	console.log("newPassword", newPassword);
+	console.log("confirmPassword", confirmPassword);
+
+	if (newUsername === "" && newEmail === "" && newPassword === "") {
+		console.log("Veuillez remplir au moins un champ !");
 		return;
 	}
 
-	if (newUsername === "" && newEmail === "" && newPassword === "") {
-		alert("Veuillez remplir au moins un champ !");
+	if (newPassword && (!confirmPassword || newPassword !== confirmPassword)) {
+		console.log("Les mots de passe ne correspondent pas !");
 		return;
 	}
-	if (newUsername)
-	{
-		const response = await fetch(`/api/users/update-profile/:${userId}`, {
-			method: "PUT",
-			headers: {
-				"Content-Type": "application/json",
-				"Authorization": `Bearer ${accessToken}`
-			},
-			body: JSON.stringify({ userId, newUsername, newEmail, newPassword })
-		});
-		const data = await response.json();
-		if (data.success) {
-			alert("Nom d'utilisateur mis à jour avec succès !");
-			fetchProfile();
-		} else {
-			alert('Error : ' + data.error);
-		}
+
+	const response = await fetch(`/api/users/update-profile/:${userId}`, {
+		method: "PUT",
+		headers: {
+			"Content-Type": "application/json",
+			"Authorization": `Bearer ${accessToken}`
+		},
+		body: JSON.stringify({ userId, newUsername, newEmail, newPassword })
+	});
+	const data = await response.json();
+	console.log("data", data);
+	if (data.success) {
+		console.log(data.message);
+		sessionStorage.removeItem("accessToken")
+		accessToken = null
+	} else {
+		console.log('Error : ' + data.error);
 	}
 }
 

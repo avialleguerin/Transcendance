@@ -30,7 +30,7 @@ async function changeRole(userId) {
 		const accessToken = sessionStorage.getItem("accessToken");
 		console.log("🔑 Access Token envoyé :", accessToken);
 
-		const response = await fetch(`/api/users/role/${userId}`, {
+		const response = await fetch(`/api/users/update-role/${userId}`, {
 			method: "PUT",
 			headers: {
 				"Content-Type": "application/json",

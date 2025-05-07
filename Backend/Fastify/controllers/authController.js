@@ -75,11 +75,11 @@ export async function login(request, reply) {
 	try {
 		if (!user || !await verifyPassword(user.password, password)) {
 			console.error("❌ Identifiants invalides");
-			return reply.code(401).send({ error: 'Invalid credentials' });
+			return reply.code(401).send({ success: false, error: 'Invalid credentials' });
 		}
 		if (user.doubleAuth_enabled) {
 			userModel.updateConnection(user.userId, "partially_connected");
-			return reply.code(200).send({success:true, connection_status: "partially_connected", message: 'Double authentication required', user: user});
+			return reply.code(200).send({success: true, connection_status: "partially_connected", message: 'Double authentication required', user: user});
 		}
 		const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, {expiresIn: '1m' });
 		const refreshToken = fastify.jwt.sign({ userId: user.userId }, {expiresIn: '7d' });
@@ -184,6 +184,8 @@ export async function accessProfileInfo(request, reply) {
 		if (user){
 			if (verifyPassword(user.password, password))
 				return reply.code(200).send({success:true, message: 'access to profile infos accepted ', user: user});
+			else
+				return reply.code(401).send({ success: false, error: 'Invalid password' });
 		}
 		else
 			return reply.code(404).send({ success: false, error: 'User not found' });
@@ -218,22 +220,43 @@ export async function changeRole(request, reply) {
 
 export async function changeProfile(request, reply) {
 	const { userId, newUsername, newEmail, newPassword } = request.body;
+	const { refreshToken } = request.cookies;
+	const accessToken = request.headers['authorization']?.split(' ')[1];
 	try {
 		const user = userModel.getUserById(userId);
+		console.log("user :", user);
 		if (user){
 			if (newUsername)
 				userModel.updateUsername(userId, newUsername);
 			if (newEmail)
 				userModel.updateEmail(userId, newEmail);
 			if (newPassword)
-				userModel.updatePassword(userId, newPassword);
-			const updateUser = userModel.getUserById(userId);
-			reply.code(200);
-
-			return reply.code(200).send({ user: updateUser, success: true })
+			{
+				const hashedPassword = await hashPassword(newPassword)
+				userModel.updatePassword(userId, hashedPassword)
+			}
+			if (accessToken && accessToken !== undefined) {
+				const decoded = fastify.jwt.decode(accessToken);
+				const expiresIn = decoded.exp - Math.floor(Date.now() / 1000);
+				if (expiresIn > 0) {
+					redisModel.addToBlacklist(accessToken, expiresIn);
+				}
+			}
+			if (refreshToken) {
+				const decoded = fastify.jwt.decode(refreshToken);
+				const expiresIn = decoded.exp - Math.floor(Date.now() / 1000);
+				if (expiresIn > 0) {
+					redisModel.addToBlacklist(refreshToken, expiresIn);
+					reply.clearCookie('refreshToken', { path: '/' })
+				}
+			}
+			userModel.updateConnection(userId, "disconnected");
+			const updateUser = userModel.getUserById(userId)
+			console.log("updateUser :", updateUser);
+			return reply.code(200).send({ user: updateUser, success: true, message: 'Profile updated successfully, please reconnect' });
 		}
 		else
-		return reply.code(404).send({ success: false, error: 'User not found' });
+			return reply.code(404).send({ success: false, error: 'User not found' });
 } catch (err) {
 		return reply.code(500).send({ error: err.message });
 	}
@@ -295,7 +318,7 @@ export async function refreshAccessToken(request, reply) {
 
 		const newAccessToken = fastify.jwt.sign({ userId: payload.userId }, { expiresIn: '1m' });
 		console.log("newAccessToken :", newAccessToken);
-		return reply.send({ success: true, accessToken: newAccessToken });
+		return newAccessToken;
 	} catch (err) {
 		return reply.code(403).send({ success: false, error: 'Invalid refresh token' });
 	}
@@ -400,26 +423,36 @@ export async function generateDoubleAuth(userId) {
 
 export async function refreshInfos(request, reply) {
 	const { userId, accessToken } = request.body;
+	const { refreshToken } = request.cookies;
+	let newAccessToken = accessToken;
+	console.log("🔄 AccessToken avant vérification :", accessToken);
 	try {
 		console.log("userId :", userId);
 		const user = userModel.getUserById(userId);
 		if (!user)
 			return reply.code(401).send({ success: false , error: 'User not found' });
 		if (user.connection_status === "partially_connected" || accessToken == undefined || !accessToken)
-		{
 			userModel.updateConnection(userId, "disconnected");
-			if (accessToken) {
-				const decoded = fastify.jwt.decode(accessToken);
-				const expiresIn = decoded.exp - Math.floor(Date.now() / 1000);
-				if (expiresIn > 0) {
-					redisModel.addToBlacklist(accessToken, expiresIn);
+		if (accessToken) {
+			const decodedAccess = fastify.jwt.decode(accessToken);
+			const expiresInAccess = decodedAccess.exp - Math.floor(Date.now() / 1000);
+			if (expiresInAccess <= 0 && refreshToken) {
+				console.log("accessToken :", accessToken);
+				console.log("refreshToken :", refreshToken);
+				const decodedRefresh = fastify.jwt.decode(refreshToken);
+				const expiresInRefresh = decodedRefresh.exp - Math.floor(Date.now() / 1000);
+				if (expiresInRefresh > 0)
+					newAccessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, { expiresIn: '1m' });
+				else {
+					newAccessToken = null;
 				}
 			}
+			
 		}
 		if (!user.doubleAuth_enabled && user.doubleAuth_secret)
 			userModel.updateDoubleAuth_secret(userId, null);
 		const updateUser = userModel.getUserById(userId);
-		return reply.code(200).send({ success: true, connection_status: updateUser.connection_status, message: 'User infos refreshed' });
+		return reply.code(200).send({ success: true, connection_status: updateUser.connection_status, accessToken: newAccessToken, message: 'User infos refreshed' });
 	} catch (err) {
 		return reply.code(500).send({ error: err.message });
 	}

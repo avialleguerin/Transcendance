@@ -19,7 +19,10 @@ async function apiRequest(endpoint, method = "GET", body = null, params = {}) {
 		credentials: "include",
 		body: body ? JSON.stringify(body) : null
 	});
+	const data = await response.json();
 	if (response.status === 401) {
+		if (data.error === "Invalid credentials")
+			return data;
 		await refreshToken();
 		return apiRequest(endpoint, method, body, params);
 	} else if (response.status === 403) {
@@ -28,7 +31,7 @@ async function apiRequest(endpoint, method = "GET", body = null, params = {}) {
 		console.error("Error: Server");
 	}
 	
-	return response.json();
+	return data;
 }
 
 async function validate2FA(event) {
@@ -56,9 +59,9 @@ async function validate2FA(event) {
 			document.getElementById("login-resultMessage").textContent = "2FA validated successfully!";
 			document.getElementById("login-resultMessage").classList.add("text-green-500");
 
-			setTimeout(() => {
-				location.reload();
-			}, 300);
+			// setTimeout(() => {
+			// 	location.reload();
+			// }, 300);
 		} else {
 			console.error("❌ Invalid 2FA code:", data.error);
 			document.getElementById("login-resultMessage").textContent = "Invalid 2FA code!";
@@ -94,9 +97,9 @@ async function activate2FA(event) {
 			document.getElementById("activate-2fa-resultMessage").textContent = "2FA validated successfully!";
 			document.getElementById("activate-2fa-resultMessage").classList.add("text-green-500");
 
-			setTimeout(() => {
-				location.reload();
-			}, 300);
+			// setTimeout(() => {
+			// 	location.reload();
+			// }, 300);
 		} else {
 			console.error("❌ Invalid 2FA code:", data.error);
 			document.getElementById("activate-2fa-resultMessage").textContent = "Invalid 2FA code!";
@@ -115,6 +118,7 @@ async function login(event) {
 	const data = await apiRequest("users/login", "PUT", { email, password }, {})
 	sessionStorage.setItem("accessToken", data.accessToken)
 	accessToken = sessionStorage.getItem("accessToken")
+	console.log("hola accessToken: ", accessToken)
 	console.log("data: ", data);
 	if (!accessToken && !data.success) {
 		const resultMessage = document.getElementById("login-resultMessage");
@@ -124,7 +128,6 @@ async function login(event) {
 	}
 	else if (data.success && data.connection_status == "partially_connected" && data.user.doubleAuth_enabled)
 	{
-		fetchUsers();
 		console.log("✅ Valid credentials !", data);
 		console.log("DoubleAuth enabled:", data.user.doubleAuth_enabled);
 		sessionStorage.setItem("userId", data.user.userId)
@@ -136,11 +139,16 @@ async function login(event) {
 		resultMessage.textContent = "Login success !";
 		resultMessage.classList.add("text-green-500");
 		console.log("✅ Connected, Token :", accessToken)
+		history.pushState({}, '', '/Game_menu');
 		setTimeout(() => {
 			location.reload();
 		}, 300);
-	} else
+	} else {
+		const resultMessage = document.getElementById("login-resultMessage");
+		resultMessage.textContent = data.error;
+		resultMessage.classList.add("text-green-500");
 		console.log("Error :", data.error)
+	}
 }
 
 async function logout(userId) {
@@ -208,8 +216,11 @@ async function refreshToken() {
 		accessToken = data.accessToken
 		sessionStorage.setItem("accessToken", accessToken)
 		console.log("🔄 Token rafraîchi :", accessToken);
+		return true;
+	} else {
+		console.log("Error:", data.error)
+		return false;
 	}
-	console.log("Error:", data.error)
 }
 
 function getUserIdFromToken(token) {
@@ -232,12 +243,15 @@ async function refreshInfos() {
 		credentials: "include"
 	});
 	const data = await response.json();
+	if (!data.accessToken) {
+		sessionStorage.removeItem("accessToken");
+		accessToken = null;
+	} else {
+		sessionStorage.setItem("accessToken", data.accessToken);
+		accessToken = sessionStorage.getItem("accessToken");
+	}
 	if (data.success) {
 		// handleViewTransitions("vue2", "vue1");
-
-
-
-
 		// if (data.connection_status == "connected") // TODO - Remplacer par une redirection sur la page de jeu
 		// 	fetchProfile();
 		console.log("Infos refreshed successfully");
@@ -249,5 +263,13 @@ async function refreshInfos() {
 window.addEventListener('DOMContentLoaded', () => {
 	console.log("accessToken: ", accessToken)
 	refreshInfos();
+	if (!accessToken) {
+		console.log("No access token found, redirecting to login view without reloading...");
+		// Met à jour l'URL sans recharger la page
+		history.pushState({}, '', '/');
+		// Charge dynamiquement la vue de connexion (à implémenter, par exemple via AJAX ou via une fonction de routage)
+		// showLoginPage();
+		return;
+	}
 	// fetchUsers();
 });
