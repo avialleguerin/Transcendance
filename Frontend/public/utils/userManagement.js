@@ -13,6 +13,39 @@
 // 	}
 // });
 
+async function changeProfilePicture() {
+	document.getElementById("profile_photo_input").addEventListener("change", (e) => {
+		const file = e.target.files[0];
+		if (file) {
+			console.log("Nom original :", file.name);
+	
+			// Exemple : créer un nouveau File avec un nouveau nom
+			const newName = "nouveau_nom_" + file.name;
+			const newFile = new File([file], newName, { type: file.type });
+	
+			// Tu peux ensuite envoyer newFile via FormData ou l'utiliser comme besoin
+			const formData = new FormData();
+			formData.append("profilePicture", newFile);
+	
+			// Exemple d'upload :
+			fetch("/api/users/profile_picture", {
+				method: "PUT",
+				body: formData
+			})
+			.then(response => response.json())
+			.then(data => console.log("Upload réussi :", data))
+			.catch(err => console.error("Erreur d'upload :", err));
+	
+			// Pour afficher l'image dans le conteneur :
+			const reader = new FileReader();
+			reader.onload = (event) => {
+				document.getElementById("profile_photo_circle").style.backgroundImage = `url(${event.target.result})`;
+			};
+			reader.readAsDataURL(newFile);
+		}
+	});
+}
+
 // async function changeProfilePicture(userId) {
 // 	try {
 // 		const accessToken = sessionStorage.getItem("accessToken");
@@ -36,7 +69,6 @@
 // 		console.error('Error :', err);
 // 	}
 // }
-
 
 // function openProfilePictureModal(userId) {
 // document.getElementById('profile-picture-modal').classList.remove('hidden');

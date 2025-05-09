@@ -1158,6 +1158,7 @@ export default class extends AbstractView {
 
 		const valid_mdp = document.getElementById('valid_mdp');
 		const modif_profil = document.getElementById('modif_profil');
+		const modif_profil_photo = document.getElementById('profile_photo_circle');
 		const profile_param_unlocked_id = document.getElementById('profile_param_unlocked_id');
 		const valid_profile_info = document.getElementById('valid_profile_info');
 		const fa_selector = document.getElementById('fa_selector');
@@ -1170,6 +1171,12 @@ export default class extends AbstractView {
 		// 	btn_back_home.classList.remove('active');
 		// 	profile_param_unlocked_id.classList.add('active');
 		// });
+
+		modif_profil_photo.addEventListener('click', () => {
+			console.log('modif profile photo clicked');
+			document.getElementById("profile_photo_input").click();
+			changeProfilePicture();
+		});
 
 		valid_profile_info.addEventListener('click', () => {
 			console.log('Valide profile info clicked');
