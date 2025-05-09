@@ -29,10 +29,10 @@ fastify.register(routes, { prefix: '/api' })
 fastify.decorate('authenticate', async function (request, reply) {
 	try {
 		const accessToken = request.headers.authorization?.split(" ")[1];
-		const refreshToken = request.cookies.refreshToken;
+		const { refreshToken } = request.cookies;
 		console.log("🔑 Access Token reçu :", accessToken);
 		console.log("🔑 Refresh Token reçu :", refreshToken);
-		if (!refreshToken)
+		if (!refreshToken || refreshToken === undefined)
 			return reply.code(401).send({ error: 'Token de rafraîchissement manquant' });
 		if (!accessToken)
 			return reply.code(401).send({ error: 'Token d\'accès manquant' });
