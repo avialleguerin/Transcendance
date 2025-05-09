@@ -187,6 +187,7 @@ export default class extends AbstractView {
 											<i class="fa fa-camera"></i>
 										</label>
 									</div>
+									<input type="file" id="profile_photo_input" accept="image/*" style="display: none;">
 								</div>
 							</div>
 							<form onsubmit="updateProfileInfo(event)">
