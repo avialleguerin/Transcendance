@@ -72,11 +72,12 @@ services:
       - ./Security/Nginx/conf.d:/etc/nginx/conf.d
       - ./Security/ModSecurity:/etc/modsecurity.d
       #The Main Website
-      - ./Frontend3d/public:/usr/share/nginx/html:ro
+      - ./Frontend/public:/usr/share/nginx/html:ro
       #The Admin Website
-      - ./Frontend/public:/usr/share/nginx/admin:ro
+      - ./Frontend/admin:/usr/share/nginx/admin:ro
       #The API Scripts
       - ./Frontend/utils:/usr/share/nginx/utils:ro
+      #old structure
       # - ./Frontend/public:/usr/share/nginx/html:ro
       # - ./Frontend/utils:/usr/share/nginx/utils:ro
       # - ./Frontend3d/public:/usr/share/nginx/3d:ro

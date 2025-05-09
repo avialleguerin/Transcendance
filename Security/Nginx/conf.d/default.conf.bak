@@ -28,9 +28,9 @@ server {
 	# -----------------------
 	# FICHIERS UTILES : accès direct via /utils/
 	# -----------------------
-	location /utils/ {
-		alias /usr/share/nginx/utils/;                  # Dossier de fichiers utilitaires
-	}
+	# location /utils/ {
+	# 	alias /usr/share/nginx/utils/;                  # Dossier de fichiers utilitaires
+	# }
 
 	# -----------------------
 	# BACKEND API : proxy vers le serveur Fastify + ModSecurity activé
