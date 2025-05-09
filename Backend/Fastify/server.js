@@ -1,6 +1,7 @@
 // Moduls
 import Fastify from "fastify";
 import { initDb } from "./utils/db.js";
+// import { authenticate } from "./utils/vault.js";
 import jwt from "@fastify/jwt";
 import cookie from "@fastify/cookie";
 // Pages
@@ -14,6 +15,8 @@ export const fastify = Fastify({ logger: true })
 fastify.decorate('redis', redisClient);
 routes(fastify);
 initDb();
+// await authenticate(); // S'authentifier au démarrage
+
 
 await fastify.register(jwt, {
 	secret: 'supersecretkey', // a changer
@@ -50,7 +53,6 @@ fastify.decorate('authenticate', async function (request, reply) {
 	}
 });
 
-  
 
 /**
  * Main function for run the server

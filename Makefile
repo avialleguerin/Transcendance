@@ -14,14 +14,41 @@ YELLOW		:=	\e[33m
 MAGENTA		:=	\e[35m
 CYAN		:=	\e[36m
 
+# Docker Compose
+NO_LOGS 	:= --no-attach vault --no-attach redis
+
 all:
+	@make build
 	@make -j4 up
 
 up:
-	@docker compose up --build
+	@docker compose up ${NO_LOGS}
 	@rm -rf ./Backend/Fastify/node_modules
+	@rm -rf ./Backend/Fastify/Data
+	@rm -rf ./Backend/Fastify/vault
+	@make fixer -s 
+
+build:
+	@docker compose build
 
 down:
 	@docker compose down
 
-.PHONY: up all down
+re:
+	@make down
+	@make all
+
+#FIXER
+fixer:
+	@echo "\n${BLUE}Resinstall node packages...${RESET}"
+	@docker exec -it fastify npm install
+	@echo "\n${GREEN}✓ Fixer completed successfully.${RESET}"
+
+#NGINX
+reload-nginx:
+	@echo "\n${BLUE}Reloading Nginx inside the container...${RESET}"
+	@docker exec nginx nginx -t && docker exec nginx nginx -s reload
+	@echo "${GREEN}✓ Nginx reloaded successfully with updated ModSecurity rules.${RESET}"
+
+
+.PHONY: up all down re
