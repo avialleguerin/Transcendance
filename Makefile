@@ -26,6 +26,7 @@ up:
 	@rm -rf ./Backend/Fastify/node_modules
 	@rm -rf ./Backend/Fastify/Data
 	@rm -rf ./Backend/Fastify/vault
+	@make fixer -s 
 
 build:
 	@docker compose build
@@ -36,6 +37,12 @@ down:
 re:
 	@make down
 	@make all
+
+#FIXER
+fixer:
+	@echo "\n${BLUE}Resinstall node packages...${RESET}"
+	@docker exec -it fastify npm install
+	@echo "\n${GREEN}✓ Fixer completed successfully.${RESET}"
 
 #NGINX
 reload-nginx:
