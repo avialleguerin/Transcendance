@@ -69,6 +69,21 @@ export function createLevelFromMap(levelMap, tileSize = 32) {
 					})
 				);
 			}
+			if (char === '4') {
+				platforms.push(
+					new Platform({
+						position: { x: x * tileSize, y: y * tileSize },
+						width: tileSize,
+						height: tileSize,
+						image: new Sprite({
+							position: { x: x * tileSize, y: y * tileSize },
+							Image_src: '/srcs/game/assets/City/sol5.png',
+							scaleX: 1,
+							scaleY: 1,
+						}),
+					})
+				);
+			}
 		}
 	}
 	return platforms;

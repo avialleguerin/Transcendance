@@ -1,9 +1,10 @@
 import { c, canvas, gameState, GameState } from './constants.js';
+import { Setgame_started } from './PlatformView.js';
 
 export default class Menu {
 	constructor(Game_History) {
 		this.title = "⏱️ Chrono Clash";
-		this.options = ["▶ Start", "⚙ Options", "✖ Quit", "History"];
+		this.options = ["▶ Start", "⚙ Options", "☷ History", "✖ Quit" ];
 		this.selectedOption = 0;
 		this.optionSpacing = 60;
 		this.titleFont = "bold 60px 'Press Start 2P', Black Ops One";
@@ -20,9 +21,16 @@ export default class Menu {
 		this.keyPressed = {};
 		this.boundKeyDown = this.handleKeyDown.bind(this);
 		this.boundKeyUp = this.handleKeyUp.bind(this);
+		this.optionStart = 0;
+		this.optionOptions = 1;
+		this.optionHistory = 2;
+		this.optionQuit = 3;
+
+		
 	}
 
 	enableControls() {
+
 		window.addEventListener("keydown", this.boundKeyDown);
 		window.addEventListener("keyup", this.boundKeyUp);
 	}
@@ -69,6 +77,9 @@ export default class Menu {
 		this.keyPressed[key] = true;
 
 		if (gameState.current !== GameState.Menu) return;
+		console.log("selectedOption = ", this.selectedOption);
+		console.log("options = ", this.options);
+		console.log("option.index = ", this.options.indexOf(this.options[this.selectedOption]));
 
 		switch (key) {
 			case "ArrowUp":
@@ -91,7 +102,8 @@ export default class Menu {
 
 	handleSelect() {
 		const selected = this.options[this.selectedOption];
-		if (selected === "▶ Start") {
+		console.log("Selected option:", selected);
+		if (selected === "▶ Start" ) {
 			this.disableControls();
 			gameState.previous = gameState.current;
 			gameState.current = GameState.MapMenu;
@@ -99,13 +111,19 @@ export default class Menu {
 		else if (selected === "⚙ Options") {
 			this.disableControls();
 			console.log("Open options");
+			gameState.previous = gameState.current;
+			gameState.current = GameState.Options;
 		}
 		else if (selected === "✖ Quit") {
+			this.selectedOption = 0;
 			this.disableControls();
-			window.close();
+			gameState.previous = GameState.Menu;
+			gameState.current = GameState.Menu;
+			Setgame_started(false);
+			// window.close();
 		}
 
-		else if (selected === "History") {
+		else if (selected === "☷ History") {
 			this.disableControls();
 			console.log("History selected");
 			console.log("this.Game_History = ", this.Game_History);

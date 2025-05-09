@@ -10,7 +10,7 @@ import { redisModel } from './models/redisModel.js';
 
 await redisClient.connect();
 
-export const fastify = Fastify({ logger: false })
+export const fastify = Fastify({ logger: true })
 fastify.decorate('redis', redisClient);
 routes(fastify);
 initDb();
@@ -22,6 +22,7 @@ await fastify.register(jwt, {
 		signed: false
 	}
 });
+
 await fastify.register(cookie);
 fastify.register(routes, { prefix: '/api' })
 
@@ -31,10 +32,10 @@ fastify.decorate('authenticate', async function (request, reply) {
 		const refreshToken = request.cookies.refreshToken;
 		console.log("🔑 Access Token reçu :", accessToken);
 		console.log("🔑 Refresh Token reçu :", refreshToken);
-		if (!accessToken)
-			return reply.code(401).send({ error: 'Token d\'accès manquant' });
 		if (!refreshToken)
 			return reply.code(401).send({ error: 'Token de rafraîchissement manquant' });
+		if (!accessToken)
+			return reply.code(401).send({ error: 'Token d\'accès manquant' });
 		if (await redisModel.isTokenBlacklisted(accessToken))
 			return reply.code(401).send({ error: 'Token d\'accès invalide (blacklisté)' });
 		if (await redisModel.isTokenBlacklisted(refreshToken))

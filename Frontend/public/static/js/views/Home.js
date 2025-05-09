@@ -36,7 +36,7 @@ export default class extends AbstractView {
 					<form class="form-group" id="addForm">
 						<div class="input-container">
 							<label for="username">Username :</label>
-							<input type="text" id="add-username" name="username" placeholder="Votre nom d'utilisateur" required>
+							<input type="text" id="add-username" name="username" placeholder="Votre nom" required>
 						</div>
 
 						<div class="input-container">

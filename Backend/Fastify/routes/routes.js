@@ -1,4 +1,4 @@
-import { register, selectUsers, unregister, login, logout, changeRole, refreshAccessToken, getUserProfile, getAccessToken} from '../controllers/authController.js';
+import { register, selectUsers, unregister, login, logout, changeDoubleAuth, changeRole, changeProfilePicture, refreshAccessToken, getUserProfile, verifyDoubleAuth, activateDoubleAuth, refreshInfos } from '../controllers/authController.js';
 
 /**
  * Encapsulates the routes
@@ -7,21 +7,22 @@ import { register, selectUsers, unregister, login, logout, changeRole, refreshAc
 export default async function routes (fastify) {
 
 	fastify.addHook("onRequest", async (request, reply) => {
-		console.log(`📡 Requête reçue : [${request.method}] ${request.url}`);
+		console.log(`\n📡 Requête reçue : [${request.method}] ${request.url}\n`);
 	});
-	//userController
-	fastify.get('/users', selectUsers);
-
+	//authController
 	fastify.get('/profile', { preHandler: fastify.authenticate}, getUserProfile);
-	// fastify.get("/users/connected", { preHandler: fastify.authenticate }, getConnectedUsers); //test
-
-
+	fastify.get('/users', selectUsers);
 	fastify.post('/users/add', register);
 	fastify.put('/users/login', login);
 	fastify.post('/users/logout/:userId', logout);
+	fastify.put('/users/doubleAuth/:userId', changeDoubleAuth);
+	fastify.post('/users/verify-2fa', verifyDoubleAuth);
+	fastify.post('/users/activate-2fa', activateDoubleAuth);
 	fastify.put('/users/role/:userId', changeRole);
+	fastify.put('/users/update-profile-picture/:userId', changeProfilePicture);
 	fastify.delete('/users/delete/:userId', unregister);
+	fastify.post('/users/refresh-infos/:userId', refreshInfos);
+
 	// Tokens
 	fastify.post('/refresh-token', refreshAccessToken);
-	fastify.post('/users/get-access-token', getAccessToken);
 }

@@ -1,8 +1,8 @@
-import { c } from './constants.js';
+import { c, canvas, gameState, GameState } from './constants.js';
 import Sprite from './Sprite.js';
 
 export default class GameCanvas extends Sprite {
-	constructor({position,  Image_src_prefix}) {
+	constructor({position,  Image_src_prefix, player}) {
 		super({ position, Image_src: Image_src_prefix + "coin_0.png", scaleX: 0.6, scaleY: 0.6 });
 		this.coin_icon = new Image();
 		this.coin_icon.src = "/srcs/game/assets/City/coin_0.png";
@@ -42,9 +42,27 @@ export default class GameCanvas extends Sprite {
 		this.timer = 0;
 		this.timer_text = this.timer;
 		this.timer_text = "0 s";
-		this.lastTime = Date.now(); // ⏱️ init du timer
-		this.end_come = false; // ⏱️ fin du timer
+		this.lastTime = Date.now();
+		this.end_come = false;
+		this.GameIsPaused = false;
 
+		this.selectedOption = 0;
+		this.options = ["Menu"];
+
+		this.keyPressed = {};
+		this.boundKeyDown = this.handleKeyDown.bind(this);
+		this.boundKeyUp = this.handleKeyUp.bind(this);
+		this.player = player;
+	}
+
+	enableControls() {
+		window.addEventListener("keydown", this.boundKeyDown);
+		window.addEventListener("keyup", this.boundKeyUp);
+	}
+
+	disableControls() {
+		window.removeEventListener("keydown", this.boundKeyDown);
+		window.removeEventListener("keyup", this.boundKeyUp);
 	}
 
 	changeSprite()
@@ -64,7 +82,7 @@ export default class GameCanvas extends Sprite {
 
 	update() {
 		const now = Date.now();
-		if (now - this.lastTime >= 1000 && this.timer < 300) { // ⏱️ une seconde est passée, et max 5 min (300 s)
+		if (now - this.lastTime >= 1000 && this.timer < 300 && !this.GameIsPaused) { // ⏱️ une seconde est passée, et max 5 min (300 s)
 			this.timer++;
 			this.lastTime = now;
 			console.log("Timer:", this.timer);
@@ -79,10 +97,13 @@ export default class GameCanvas extends Sprite {
 				this.timer = 0;
 			}
 		}
-	
+
 		this.changeSprite();
 		this.draw();
 		this.draw_canvas();
+		if (this.GameIsPaused) {
+			this.draw_menu_pause();
+		}
 	}
 
 	draw_canvas() {
@@ -93,7 +114,7 @@ export default class GameCanvas extends Sprite {
 		// }
 		// console.log("Coin icon loaded:", this.coin_icon_loaded);
 		// console.log("nb_coin:", this.nb_coin);
-
+		this.enableControls();
 		if (this.timer_icon_loaded && !this.timer_icon_error) {
 			c.drawImage(this.timer_icon, 3, 50, 40, 40);
 		}
@@ -119,6 +140,24 @@ export default class GameCanvas extends Sprite {
 		c.fillText(this.timer_text, 70, 75);
 	}
 
+	draw_menu_pause() {
+		c.save(); // 🔥 Sauvegarde l'état actuel du canvas
+		c.fillStyle = "rgba(0, 0, 0, 0.5)";
+		c.fillRect(0, 0, canvas.width, canvas.height);
+		c.font = "20px 'Press Start 2P', Black Ops One";
+		c.textAlign = "left";
+		c.fillStyle = "#FFD700";
+		c.shadowColor = "#000";
+		c.shadowBlur = 10;
+		c.fillText("Pause", 480, 50);
+
+		c.fillStyle = "red";
+		c.font = "20px 'Press Start 2P', Black Ops One";
+		c.fillText("Menu", 900, 550);
+		c.fillStyle = "white";
+		c.restore(); // 🔥 Restaure l'état du canvas
+	}
+
 	resetGame() {
 		this.nb_coin = 0;
 		this.nb_coin_text = this.nb_coin + " / 3";
@@ -126,5 +165,58 @@ export default class GameCanvas extends Sprite {
 		this.timer_text = this.timer;
 		this.lastTime = Date.now(); // ⏱️ init du timer
 		this.end_come = false; // ⏱️ fin du timer
+	}
+
+
+	handleKeyDown(event) {
+		const key = event.key;
+		if (this.keyPressed[key]) return;
+		this.keyPressed[key] = true;
+
+		switch (key) {
+			case "ArrowUp":
+			case "w":
+				this.selectedOption = (this.selectedOption - 1 + this.options.length) % this.options.length;
+				break;
+			case "ArrowDown":
+			case "s":
+				this.selectedOption = (this.selectedOption + 1) % this.options.length;
+				break;
+			case "Enter":
+				if (this.GameIsPaused) {
+					this.handleSelect();
+				}
+				break;
+			case "Escape":
+				if (gameState.current === GameState.Play) {
+					this.GameIsPaused = !this.GameIsPaused;
+					if (this.GameIsPaused) {
+						console.log("Game paused");
+						this.disableControls();
+					} else {
+						console.log("Game resumed");
+						this.enableControls();
+					}
+				}
+				break;
+		}
+	}
+
+	handleKeyUp(event) {
+		this.keyPressed[event.key] = false;
+	}
+
+	handleSelect()
+	{
+		const selected = this.options[this.selectedOption];
+		if (selected === "Menu")
+		{
+			this.disableControls();
+			this.resetGame();
+			this.player.reset_Game();
+			this.GameIsPaused = false;
+			gameState.previous = gameState.current;
+			gameState.current = GameState.Menu;
+		}
 	}
 }

@@ -2,15 +2,9 @@ import { c, canvas } from "./constants.js";
 import { gameState, GameState } from "./constants.js";
 
 export default class EndGameSecondeGame{
-	constructor ({gameCanvas, player, coins, EndGame_FirstGame}) {
+	constructor ({gameCanvas, player, coins, EndGame_FirstGame, historyGame, MapMenu}) {
 		this.nb_player_play_game = 0;
 		this.seconde_game_finished = false;
-		// this.image = new Image();
-		// this.image.src = "/static/img/platformer/gameover.png";
-		// this.loaded = false;
-		// this.image.onload = () => {
-		// 	this.loaded = true;
-		// };
 		this.gameCanvas = gameCanvas;
 		this.player = player;
 		this.coins = coins;
@@ -20,8 +14,10 @@ export default class EndGameSecondeGame{
 		this.options = ["Menu", "Restart"];
 		this.selectedOption = 0;
 		this.optionSpacing = 60;
+		this.historyGame = historyGame;
 
 		this.EndGame_FirstGame = EndGame_FirstGame;
+		this.MapMenu = MapMenu;
 
 		this.title = "Game Finished";
 		this.titleFont = "bold 40px Black Ops One";
@@ -38,7 +34,7 @@ export default class EndGameSecondeGame{
 		this.option7 = "";
 		this.option8 = "Winner : ";
 		this.winner = "";
-
+		this.WinnerScore = 0;
 
 		this.option5font = "15px 'Press Start 2P', Black Ops One";
 		this.option6font = "20px 'Press Start 2P', Black Ops One";
@@ -90,29 +86,46 @@ export default class EndGameSecondeGame{
 		console.log("Game Finished");
 		const selected = this.options[this.selectedOption];
 		console.log("selected =", selected);
-		if (selected === "Menu") {
+		if (selected === "Menu")
+		{
 			// 🔁 Reset le joueur
-			// this.EndGame_FirstGame.first_game_finished = false;
-			// if (this.player && typeof this.player.reset_Game === "function") {
-			// 	this.player.reset_Game();
-			// }
+			this.EndGame_FirstGame.first_game_finished = false;
+			console.log("Resetting player...");
+			console.log("this.winner =", this.winner);
+			console.log("this.Score =", this.Score);
+			console.log("this.gameCanvas.timer =", this.gameCanvas.timer);
+			console.log("this.nbGame =", this.MapMenu.nb_game_started);
+
+			if (this.Score > this.EndGame_FirstGame.Score)
+			{
+				this.WinnerScore = this.Score;
+			}
+			else
+			{
+				this.WinnerScore = this.EndGame_FirstGame.Score;
+			}
+			this.MapMenu.nb_game_started++;
+			this.historyGame.saveGameIfNeeded(this.MapMenu.nb_game_started, this.winner, this.WinnerScore, this.gameCanvas.timer);
+			if (this.player && typeof this.player.reset_Game === "function") {
+				this.player.reset_Game();
+			}
 			
-			// // 🔁 Reset la GameCanvas (à adapter selon ta classe GameCanvas)
-			// if (this.gameCanvas) {
-			// 	this.gameCanvas.nb_coin = 0;
-			// 	this.gameCanvas.timer = 0;
-			// 	// ajoute d'autres resets si t’en as (plateformes, objets, etc.)
-			// }
+			// 🔁 Reset la GameCanvas (à adapter selon ta classe GameCanvas)
+			if (this.gameCanvas) {
+				this.gameCanvas.nb_coin = 0;
+				this.gameCanvas.timer = 0;
+				// ajoute d'autres resets si t’en as (plateformes, objets, etc.)
+			}
 			
-			// if (this.coins && Array.isArray(this.coins)) {
-			// 	console.log("this.coins =", this.coins);
-			// 	console.log("Resetting coins...");
-			// 	this.coins.forEach(coins => {
-			// 		if (typeof coins.Reset_coin === "function") {
-			// 			coins.Reset_coin();
-			// 		}
-			// 	});
-			// }
+			if (this.coins && Array.isArray(this.coins)) {
+				console.log("this.coins =", this.coins);
+				console.log("Resetting coins...");
+				this.coins.forEach(coins => {
+					if (typeof coins.Reset_coin === "function") {
+						coins.Reset_coin();
+					}
+				});
+			}
 			
 			// 🔁 Change l’état du jeu
 			this.disableControls();

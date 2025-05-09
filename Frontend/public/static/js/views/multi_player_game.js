@@ -50,9 +50,7 @@ export default class extends AbstractView {
 					<button class="option-in-panel" id="option_btn-remove">
 						<img src="../../../srcs/game/assets/image/menu.svg" alt="leave">
 					</button>
-					<button class="leave_game" id="leave_game_id">
-						<a href="/Game_menu" class="nav-link" data-link>Leave Game</a>
-					</button>
+					<button class="leave_game" id="leave_game_id">Leave Game</button>
 				</div>
 				<div class="container-Player1" id="container-player1-id">
 					<h1>Player 1 - Player 2</h1>
@@ -95,9 +93,7 @@ export default class extends AbstractView {
 					<div class="looser">
 						<h1 id="looser_id"></h1>
 					</div>
-					<button class="leave_game_2" id="leave_game_2_id">
-						<a href="/Game_menu" class="nav-link" data-link>Quitter la partie</a>
-					</button>
+					<button class="leave_game_2" id="leave_game_2_id">Quitter la partie</button>
 				</div>
 			</div>
 		`;
@@ -117,6 +113,7 @@ export default class extends AbstractView {
 			space_pressed = false;
 			handleViewTransitions("vue2", "vue4");
 			setTimeout(() => {
+				window.history.back();
 				leave_Multiplayer_Game();
 			}, 1500);
 		});
@@ -132,6 +129,7 @@ export default class extends AbstractView {
 			space_pressed = false;
 			handleViewTransitions("vue2", "vue4");
 			setTimeout(() => {
+				window.history.back();
 				leave_Multiplayer_Game();
 			}, 1500);
 		});

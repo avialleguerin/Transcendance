@@ -84,6 +84,7 @@ const router = async () => {
         if (typeof view.tournament_event === "function") view.tournament_event();
 		if (typeof view.init_platformer_game === "function") view.init_platformer_game();
         if (typeof view.init_game_platformer === "function") view.init_game_platformer();
+        if (typeof view.handleDeconnection === "function") view.handleDeconnection();
     }, 1500); // Attente de 1,5 seconde avant le changement de page
 };
 

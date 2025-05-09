@@ -12,6 +12,8 @@ import GameCanvas from './Game_canvas.js';
 import EndGameFirstGame from './EndGameFirstGame.js';
 import EndGameSecondeGame from './EndGameSecondeGame.js';
 import GameHistory from './GameHistory.js';
+import HistoryDatabase from './HistoryDatabase.js';
+import Option from './option.js';
 
 
 
@@ -19,32 +21,20 @@ export function initGame()
 {
 
 	const keysPlayer1 = {
-		left:  { key: 'a', pressed: false },
-		right: { key: 'd', pressed: false },
-		down:  { key: 's', pressed: false },
-		jump:  { key: 'w', pressed: false },
-	};
-	
-	const keysPlayer2 = {
-		left:  { key: 'j', pressed: false },
-		right: { key: 'l', pressed: false },
-		down:  { key: 'k', pressed: false },
-		jump:  { key: 'i', pressed: false },
+		left:  { key: 'ArrowLeft', pressed: false },
+		right: { key: 'ArrowRight', pressed: false },
+		down:  { key: 'ArrowDown', pressed: false },
+		jump:  { key: 'ArrowUp', pressed: false },
 	};
 	
 	const player = new Player({
-		position: { x: 232, y: 10 },
+		position: { x: 931, y: 629.16 },
 		Image_src_prefix: '/srcs/game/assets/player_sprite/Char_1/with_hands/',
 		keys: keysPlayer1
 	});
+
+
 	
-	const player2 = new Player({
-		position: { x: 6, y: 10 },
-		Image_src_prefix: '/srcs/game/assets/player_sprite/Char_2/with_hands/',
-		keys: keysPlayer2
-	});
-
-
 	// Background elements
 	const backgrounds = [
 		new Sprite({
@@ -83,6 +73,12 @@ export function initGame()
 			scaleY: 3,
 			Image_src: '/srcs/game/assets/City/background1.png',
 		}),
+		new Sprite({
+			position: { x: 2650, y: 1750 },
+			scaleX: 0.7,
+			scaleY: 0.7,
+			Image_src: '/srcs/game/assets/City/finishline.png',
+		}),
 	];
 
 	// Platforms from map
@@ -93,7 +89,7 @@ export function initGame()
 		new CollisionBox({
 			position: { x: 665, y: 420 },
 			width: 120,
-			height: 150,
+			height: 110,
 		}),
 		new CollisionBox({
 			position: { x: 1450, y: 830 },
@@ -224,38 +220,63 @@ export function initGame()
 			},
 			Image_src_prefix: '/srcs/game/assets/City/',
 		}),
+		new Coin({
+			position: {
+				x: 1950,
+				y: 1050,
+			},
+			Image_src_prefix: '/srcs/game/assets/City/',
+		}),
+		new Coin({
+			position: {
+				x: 635,
+				y: 1000,
+			},
+			Image_src_prefix: '/srcs/game/assets/City/',
+		}),
+		new Coin({
+			position: {
+				x: 635,
+				y: 1000,
+			},
+			Image_src_prefix: '/srcs/game/assets/City/',
+		}),
 	];
 
 	const game_canvas = new GameCanvas({
 		position: { x: 8, y: 8 },
 		Image_src_prefix: '/srcs/game/assets/City/',
+		player: player,
 	});
 
 	const end_game = new EndGameFirstGame({
-		position: { x: 400, y: 300 },
-		width: 150,
+		position: { x: 2680, y: 1800 },
+		width: 250,
 		height: 150,
 		gameCanvas: game_canvas,
 		player: player,
 		coins: Coins,
 	});
 
+	const historyDBInstance = new HistoryDatabase()
+
+	const gameHistory = new GameHistory({
+		historyDB: historyDBInstance,
+	});
 	
+	const mapMenu = new MapMenu_c();
+
 	const end_game2 = new EndGameSecondeGame({
 		gameCanvas: game_canvas,
 		player: player,
 		coins: Coins,
 		EndGame_FirstGame: end_game,
-
+		historyGame: gameHistory,
+		MapMenu: mapMenu,
 	});
 	
 	
-	const mapMenu = new MapMenu_c();
 
-	const gameHistory = new GameHistory({
-		EndGame_SecondeGame : end_game2,
-		MapMenu : mapMenu,
-	});
 
 	const menu = new Menu({
 		Game_History : gameHistory,
@@ -271,6 +292,8 @@ export function initGame()
 			console.log("collision");
 		}
 	}
+
+	player.forceCameraToFollow({ canvas, camera });
 
 	function handlePlayerMovement(player, keyLeft, keyRight) {
 		player.velocity.x = 0;
@@ -302,19 +325,22 @@ export function initGame()
 		}
 	}
 
+	let pause = false;
+
 	// Set up event listeners
 	window.addEventListener('keydown', (event) => {
 		switch (event.key) {
 			// Player 1
-			case 'd':
+			case 'ArrowRight':
 				keysPlayer1.right.pressed = true;
 				break;
-			case 'a':
+			case 'ArrowLeft':
 				keysPlayer1.left.pressed = true;
 				break;
-			case 'w':
-				case 'w':
-					// Ne déclencher le saut que si la touche n'était pas déjà enfoncée
+			case 'ArrowUp':
+				console.log("UP pressed");
+				if (!game_canvas.GameIsPaused)
+				{
 					if (!keysPlayer1.jump.pressed) {
 						keysPlayer1.jump.pressed = true;
 						if (player.jumps === 0 || (player.jumps === 1 && !player.doubleJump)) {
@@ -328,8 +354,9 @@ export function initGame()
 							console.log("collision");
 						}
 					}
-					break;
-			case 's':
+				}
+				break;
+			case 'ArrowDown':
 				if (collisionBoxes.some(box => box.checkCollision(player))) {
 					player.cantraverseDown = true;
 					setTimeout(() => {
@@ -338,52 +365,33 @@ export function initGame()
 					console.log("collision");
 				}
 				break;
-			// Player 2
-			case 'j':
-				keysPlayer2.left.pressed = true;
-				break;
-			case 'l':
-				keysPlayer2.right.pressed = true;
-				break;
-			case 'i':
-				console.log("japui sur arrow up");
-				if (player2.jumps === 0 || (player2.jumps === 1 && !player2.doubleJump)) {
-					player2.handleJump();  // Appeler la méthode qui gère les sauts
+			case "Escape":
+				console.log("Escape pressed");
+				if (gameState.current === GameState.Play && !pause) {
+					console.log("Game pauseddddddddddddddddddd");
+					pause = true;
+				}
+				else if (gameState.current === GameState.Play && pause) {
+					console.log("Game resumedddddddddddddddddddd");
+					pause = false;
 				}
 				break;
-			case 'k':
-				if (collisionBoxes.some(box => box.checkCollision(player2))) {
-					player2.cantraverseDown = true;
-					setTimeout(() => {
-						player2.cantraverseDown = false;
-					}, 50);
-					console.log("collision");
-				}
-				break;
+			
 		}
 	});
 
 	window.addEventListener('keyup', (event) => {
 		switch (event.key) {
-			case 'd':
+			case 'ArrowRight':
 				keysPlayer1.right.pressed = false;
 				break;
-			case 'a':
+			case 'ArrowLeft':
 				keysPlayer1.left.pressed = false;
 				break;
-			case 'j':
-				keysPlayer2.left.pressed = false;
-				break;
-			case 'l':
-				keysPlayer2.right.pressed = false;
-				break;
-			case 's':
+			case 'ArrowDown':
 				player.cantraverseDown = false;
 				break;
-			case 'k':
-				player2.cantraverseDown = false;
-				break;
-			case 'w':
+			case 'ArrowUp':
 				keysPlayer1.jump.pressed = false;
 				break;
 		}
@@ -393,27 +401,23 @@ export function initGame()
 		c.fillStyle = 'rgba(rgb(12, 17, 33))';
 		c.fillRect(0, 0, canvas.width, canvas.height);
 		
-		// Save context state for camera transformation
 		c.save();
 		c.scale(1, 1);
 		c.translate(-camera.position.x, -camera.position.y);
 		
-		// Draw backgrounds
 		backgrounds.forEach(bg => bg.update());
 		
-		// Draw platforms
 		platforms.forEach(platform => platform.draw());
 		
-		// Draw collision boxes
-		collisionBoxes.forEach(box => box.draw());
+		// collisionBoxes.forEach(box => box.draw());
 
 
 		// Draw coin
 		// traps.forEach(trap => trap.draw());
 
+
 		// Update players
 		player.update();
-		player2.update();
 		Coins.forEach(coin => coin.update());
 		
 		// Restore context state
@@ -431,11 +435,9 @@ export function initGame()
 		}
 		
 		handlePlayerMovement(player, keysPlayer1.left, keysPlayer1.right);
-		handlePlayerMovement(player2, keysPlayer2.left, keysPlayer2.right);
 		
 		// === Platform Collision Check ===
 		player.checkCollision(platforms);
-		player2.checkCollision(platforms);
 		
 		// Camera follow logic for jumps and falls
 		if (player.velocity.y < 0) {
@@ -448,14 +450,10 @@ export function initGame()
 		if (player.velocity.y > 1) {
 			player.isGrounded = false;
 		}
-		if (player2.velocity.y > 1) {
-			player2.isGrounded = false;
-		}
-		
+
 		// Handle collisions with pass-through platforms
 		collisionBoxes.forEach(box => {
 			handleCollision(player, box);
-			handleCollision(player2, box);
 		});
 		
 		// Handle trap collisions
@@ -493,18 +491,25 @@ export function initGame()
 			}
 		}
 
-		// console.log(player.position.x, player.position.y);
+		console.log(player.position.x, player.position.y);
 	}
 	
-
+	const options = new Option();
 
 	// Animation loop
 	function animate() {
+
 		window.requestAnimationFrame(animate);
 	
 		// === Clear Canvas ===
 		c.fillStyle = 'rgba(rgb(12, 17, 33))';
 		c.fillRect(0, 0, canvas.width, canvas.height);
+
+		// console.log("Game State:", gameState.current);
+		if (game_canvas.GameIsPaused) {
+			player.velocity.x = 0;
+			player.velocity.y = 0;
+		}
 
 		// === Game State Logic ===
 		switch (gameState.current) {
@@ -528,11 +533,12 @@ export function initGame()
 			case GameState.GameHistory:
 				gameHistory.draw();
 				break;
-			case GameState.Pause:
+			case GameState.Options:
+				options.draw();
 				break;
 		}
 	}
 	
 	// Start the game
-	animate(keysPlayer1, keysPlayer2);
+	animate(keysPlayer1);
 }

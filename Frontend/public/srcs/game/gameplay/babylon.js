@@ -14,9 +14,10 @@ import { init_all_skin } from "./solo/skin/init_skin_perso.js";
 
 
 /**************************************************************/
-/*****************CREATION DU MOTEUR***************************/
+/*****************CREATION DU MOTEUR***************************/ 
 /**************************************************************/
 
+// history.pushState({}, '', '/');
 let qualityLevel = 'medium';
 const canvas = document.getElementById('renderCanvas');
 const engine = new BABYLON.Engine(canvas, true, {
@@ -172,7 +173,7 @@ camera.rotation = new BABYLON.Vector3(-0.029665280069011667, -2.566387085794712,
 camera.minZ = 0.1;
 camera.maxZ = 5000;
 camera.attachControl(canvas, true);
-camera.speed = 0.75;
+camera.speed = 0.15;
 
 const pipeline = new BABYLON.DefaultRenderingPipeline("defaultPipeline", true, scene, [camera]);
 
@@ -233,10 +234,10 @@ let frameCounter = 0;
 let fpsHistory = [];
 
 
-// create_environment_view1(scene);
-// create_environment_view3(scene);
-// create_environment_view2(scene);
-// init_all_skin(scene);
+create_environment_view1(scene);
+create_environment_view3(scene);
+create_environment_view2(scene);
+init_all_skin(scene);
 const skybox = createOptimizedSkybox(scene);
 
 qualityLevel = detectPerformanceLevel();
