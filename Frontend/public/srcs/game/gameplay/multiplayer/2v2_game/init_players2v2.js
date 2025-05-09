@@ -258,6 +258,62 @@ const keys = {};
 addEventListener("keydown", (event) => keys[event.key] = true);
 addEventListener("keyup", (event) => keys[event.key] = false);
 
+export function reset_player_pos_multi(player_1, player_2, player_3, player_4)
+{
+	try {
+        // Réinitialiser player_1
+        if (player_1 && player_1.leftPaddle && player_1.rightPaddle) {
+            player_1.leftPaddle.position.x = -18;
+            player_1.rightPaddle.position.x = 7;
+            player_1.leftPaddle.position.z = -120;
+            player_1.rightPaddle.position.z = -120;
+            player_1.leftPaddle.position.y = 301;
+            player_1.rightPaddle.position.y = 301;
+        }
+
+        // Réinitialiser player_2
+        if (player_2 && player_2.leftPaddle && player_2.rightPaddle) {
+            player_2.leftPaddle.position.x = -30;
+            player_2.rightPaddle.position.x = -5;
+            player_2.leftPaddle.position.z = -108;
+            player_2.rightPaddle.position.z = -108;
+            player_2.leftPaddle.position.y = 301;
+            player_2.rightPaddle.position.y = 301;
+        }
+
+        // Réinitialiser player_3
+        if (player_3 && player_3.leftPaddle && player_3.rightPaddle) {
+            player_3.leftPaddle.position.x = -30;
+            player_3.rightPaddle.position.x = -5;
+            player_3.leftPaddle.position.z = -36;
+            player_3.rightPaddle.position.z = -36;
+            player_3.leftPaddle.position.y = 301;
+            player_3.rightPaddle.position.y = 301;
+        }
+
+        // Réinitialiser player_4
+        if (player_4 && player_4.leftPaddle && player_4.rightPaddle) {
+            player_4.leftPaddle.position.x = -18;
+            player_4.rightPaddle.position.x = 7;
+            player_4.leftPaddle.position.z = -24;
+            player_4.rightPaddle.position.z = -24;
+            player_4.leftPaddle.position.y = 301;
+            player_4.rightPaddle.position.y = 301;
+        }
+
+        // Réinitialiser également les positions des parents si nécessaire
+        if (player_1) player_1.position = new BABYLON.Vector3(0, 0, 0);
+        if (player_2) player_2.position = new BABYLON.Vector3(0, 0, 0);
+        if (player_3) player_3.position = new BABYLON.Vector3(0, 0, 0);
+        if (player_4) player_4.position = new BABYLON.Vector3(0, 0, 0);
+
+        console.log("Player positions reset successfully");
+    } catch (error) {
+        console.error("Error resetting player positions:", error);
+    }
+
+}
+
 
 export function UpdatePLayerPoseMulti(player_1, player_2, player_3, player_4) {
 	

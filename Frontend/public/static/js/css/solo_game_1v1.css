@@ -1,7 +1,7 @@
 .container-Player1 {
     position: absolute;
-    left : 5%;
-    bottom: 0%;
+    left : 10%;
+    bottom: 1%;
     width: 15%;
     height: 10%;
     background: transparent;
@@ -10,8 +10,8 @@
 
 .container-Player2 {
     position: absolute;
-    right : 5%;
-    bottom: 0%;
+    right : 10%;
+    bottom: 1%;
     width: 15%;
     height: 10%;
     background: transparent;
@@ -55,14 +55,15 @@
     display: flex;
     gap: 20px;
     left: 50%;
-    top: 60%;
+    top: 65%;
     transform: translate(-50%, -50%);
     flex-direction: row;
     background-color: #000000ad;
     border-radius: 10px;
     border: 2px solid #777;
-    padding: 0px 15px;
-    align-items: center;
+    padding: 5px 15px;
+    align-items: self-start;
+    height: 50%;
 }
 
 .container-item_player1 > div,
@@ -195,6 +196,7 @@ p {
     font-size: 0.8vw;
     color: rgb(255, 255, 255);
     text-shadow: 2px 2px 2px #000000;
+    margin-top: 8px;
 }
 
 @keyframes panel_spawn {
@@ -282,4 +284,166 @@ p {
 
 .option.active {
     visibility: hidden;
+}
+
+
+/******************************************/
+/******************END_GAME****************/
+/******************************************/
+
+
+.container-EndGame {
+    position: absolute;
+    top: 64%;
+    left: 57%;
+    transform: translate(-50%, -50%);
+    width: 40%;
+    height: 72%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    /* background-color: red; */
+    visibility: hidden;
+}
+
+.winner {
+    position: absolute;
+    top: 2%;
+    left: 25%;
+    font-size: 2vw;
+    font-family: 'Black Ops One', sans-serif;
+    color: rgb(255, 255, 255);
+    text-shadow: 2px 2px 2px #000000;
+}
+
+.looser {
+    position: absolute;
+    top: 11%;
+    right: 31%;
+    font-size: 2vw;
+    font-family: 'Black Ops One', sans-serif;
+    color: rgb(255, 255, 255);
+    text-shadow: 2px 2px 2px #000000;
+}
+
+.container-EndGame h1 {
+    font-size: 1vw;
+    font-family: 'Black Ops One', sans-serif;
+    color: rgb(255, 255, 255);
+    text-shadow: 2px 2px 2px #000000;
+}
+
+.container-EndGame.active {
+    visibility: visible;
+}
+
+@keyframes press_space {
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+
+.press_space h1 {
+    position: absolute;
+    top: 58%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.5vw;
+    font-family: 'Black Ops One', sans-serif;
+    color: rgb(0, 0, 0);
+    text-shadow: 2px 2px 2px #ffffff;
+    animation: press_space 2s infinite;
+    visibility: visible;
+}
+
+.press_space.active {
+	visibility: hidden;
+	animation: none;
+}
+
+.leave_game_2
+{
+    position: absolute;
+    /* top: 50%; */
+    left: 35%;
+    transform: translate(-50%, -50%);
+    /* padding: 20px 30px; */
+    font-weight: bold;
+    background-color: transparent;
+    color: rgb(255, 255, 255);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3sease;
+    background-image: url("../../../srcs/game/assets/image/boutton.svg");
+    background-size: 100% auto;
+    background-position: center;
+    background-repeat: no-repeat;
+    /* line-height: 3vh; */
+    width: 170px;
+    height: 112px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    bottom: -4%;
+
+}
+
+.nav-link {
+    color: #000000;
+    font-size: 0.8vw;
+    font-family: 'Black Ops One', sans-serif;
+    text-shadow: 2px 2px 2px #ffffff;
+    text-decoration: none;
+}
+
+
+.touch_player2 , .touch_player1 {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    font-size: 0.6vw;
+}
+
+.touch_player2:nth-child(2) {
+    left: 38px; /* Décalage à gauche */
+    top: 44%;
+}
+
+.touch_player2:nth-child(5) {
+    right: 42%; /* Décalage à droite */
+    top: 44%;
+}
+
+.touch_player2:nth-child(8) {
+    right: 10%; /* Encore plus à droite */
+    top: 44%;
+}
+
+.touch_player1:nth-child(2) {
+    left: 38px; /* Décalage à gauche */
+    top: 44%;
+}
+
+.touch_player1:nth-child(5) {
+    right: 42%; /* Décalage à droite */
+    top: 44%;
+}
+
+.touch_player1:nth-child(8) {
+    right: 10%; /* Encore plus à droite */
+    top: 44%;
 }

@@ -5,6 +5,10 @@ import Game_menu from "./views/Game_menu.js";
 import solo_game_1v1 from "./views/solo_game_1v1.js";
 import duo_game from "./views/duo_game.js";
 import multi_player_game from "./views/multi_player_game.js";
+import tournament from "./views/tournament.js";
+import tournament_game from "./views/tournament_game.js";
+import  PlatformView  from "./views/platformer/PlatformView.js";
+// import platformer from "./views/platformer/platformer.js";
 
 let leave_game_var = false;
 
@@ -16,12 +20,16 @@ const navigateTo = (url) => {
 const router = async () => {
     const routes = [
         { path: "/", view: Home },
-        { path: "/jouer", view: jouer },
+        // { path: "/", view: platformer },
         { path: "/settings", view: settings },
         { path: "/Game_menu", view: Game_menu },
         { path: "/solo_game_1v1", view: solo_game_1v1 },
         { path: "/duo_game", view: duo_game },
         { path: "/multi_player_game", view: multi_player_game },
+        { path: "/tournament", view: tournament },
+        { path: "/tournament_game", view: tournament_game },
+        { path: "/PlatformView", view: PlatformView },
+        // { path: "/PlatformView", view: platformer },
     ];
 
     const potentialMatches = routes.map((route) => {
@@ -63,8 +71,19 @@ const router = async () => {
         if (typeof view.init_powerUP_player_multi === "function") view.init_powerUP_player_multi();
         if (typeof view.event_solo_game === "function") view.event_solo_game();
         if (typeof view.leave_game === "function") view.leave_game();
+        if (typeof view.leave_game_2 === "function") view.leave_game_2();
         if (typeof view.leave_game_multi === "function") view.leave_game_multi();
         if (typeof view.event_multiPlayer_game === "function") view.event_multiPlayer_game();
+        if (typeof view.leave_game_2_multi === "function") view.leave_game_2_multi();
+        if (typeof view.init_tournament === "function") view.init_tournament();
+        if (typeof view.tournament_view === "function") view.tournament_view();
+        if (typeof view.exit_tournament === "function") view.exit_tournament();
+        if (typeof view.start_tournament_game === "function") view.start_tournament_game();
+        if (typeof view.checkGameOver_tournament === "function") view.checkGameOver_tournament();
+        if (typeof view.event_tournament_game === "function") view.event_tournament_game();
+        if (typeof view.tournament_event === "function") view.tournament_event();
+		if (typeof view.init_platformer_game === "function") view.init_platformer_game();
+        if (typeof view.init_game_platformer === "function") view.init_game_platformer();
     }, 1500); // Attente de 1,5 seconde avant le changement de page
 };
 

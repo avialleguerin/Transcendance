@@ -46,7 +46,7 @@ export function createBall(scene) {
 			} else {
 				reject("Impossible de trouver le root mesh de la balle.");
 			}
-		}, null, function (scene, message) {
+		}, null, function (message) {
 			reject(`Erreur lors du chargement du modèle: ${message}`);
 		});
 	});
@@ -54,21 +54,27 @@ export function createBall(scene) {
 
 function resetBall(ball) { 
 	ball.position = new BABYLON.Vector3(-7, 300.8, -72.5);
-	ballSpeed = 0.35;
-	ballDirection = {
-		x: 1,
-		z: 1
-	};
+	ballSpeed = 0.7;
+	ballDirection = getRandomDirection();
 }
 
-let ballSpeed = 0.35;
+let ballSpeed = 0.7;
 
-let ballDirection =
+function getRandomDirection()
 {
-	x: 1,
-	z: 1
-};
+	let x = Math.random() * 2 - 1;
+	let z = Math.random() * 2 - 1;
+	
+	const length = Math.sqrt(x * x + z * z);
+	x /= length;
+	z /= length;
 
+	if (Math.abs(x) < 0.3) x = x > 0 ? 0.3 : -0.3;
+	if (Math.abs(z) < 0.3) z = z > 0 ? 0.3 : -0.3;
+	return { x, z };
+}
+
+let ballDirection = getRandomDirection();
 
 
 
@@ -76,12 +82,10 @@ export function MoveBall(player_1, player_2, ball, player_1_bonus, player_2_bonu
 
 	if (!ball)
 	{
-		console.error('Ball is not created yet');
 		return;
 	}
 
 	if (!player_1 || !player_2) {
-		console.error('Players are not created yet');
 		return;
 	}
 
@@ -119,18 +123,31 @@ export function MoveBall(player_1, player_2, ball, player_1_bonus, player_2_bonu
 		ball.position.x - BALL_RADIUS <= player_1.position.x + PADDLE_WIDTH / 2 &&
 		ball.position.z + BALL_RADIUS >= player_1.position.z - PADDLE_HEIGHT / 2 &&
 		ball.position.z - BALL_RADIUS <= player_1.position.z + PADDLE_HEIGHT / 2) {
+
+		ballDirection.x *= -1; 
 		const relativeImpact = (ball.position.z - player_1.position.z) / (PADDLE_HEIGHT / 2);
-		ballDirection.z = relativeImpact * 1;
+		const MAX_ANGLE_FACTOR = 0.8;
+		ballDirection.z = relativeImpact * MAX_ANGLE_FACTOR;
+		const length = Math.sqrt(ballDirection.x * ballDirection.x + ballDirection.z * ballDirection.z);
+		ballDirection.x /= length;
+		ballDirection.z /= length;
 		ballSpeed += 0.05;
+		ball.position.x += ballDirection.x * 0.1;
 	}
 
 	if (ball.position.x + BALL_RADIUS >= player_2.position.x - PADDLE_WIDTH / 2 &&
 		ball.position.x - BALL_RADIUS <= player_2.position.x + PADDLE_WIDTH / 2 &&
 		ball.position.z + BALL_RADIUS >= player_2.position.z - PADDLE_HEIGHT / 2 &&
 		ball.position.z - BALL_RADIUS <= player_2.position.z + PADDLE_HEIGHT / 2) {
+		ballDirection.x *= -1;
 		const relativeImpact = (ball.position.z - player_2.position.z) / (PADDLE_HEIGHT / 2);
-		ballDirection.z = relativeImpact * 1;
+		const MAX_ANGLE_FACTOR = 0.8;
+		ballDirection.z = relativeImpact * MAX_ANGLE_FACTOR;
+		const length = Math.sqrt(ballDirection.x * ballDirection.x + ballDirection.z * ballDirection.z);
+		ballDirection.x /= length;
+		ballDirection.z /= length;
 		ballSpeed += 0.05;
+		ball.position.x += ballDirection.x * 0.1;
 	}
 
 	if (player_1_bonus)
@@ -141,7 +158,7 @@ export function MoveBall(player_1, player_2, ball, player_1_bonus, player_2_bonu
 			ball.position.z - BALL_RADIUS <= player_1_bonus.position.z + PADDLE_HEIGHT / 2) {
 			const relativeImpact = (ball.position.z - player_1_bonus.position.z) / (PADDLE_HEIGHT / 2);
 			ballDirection.z = relativeImpact * 1;
-			ballSpeed += 0.05;
+			ballSpeed += 0.01;
 		}
 	}
 
@@ -153,36 +170,30 @@ export function MoveBall(player_1, player_2, ball, player_1_bonus, player_2_bonu
 			ball.position.z - BALL_RADIUS <= player_2_bonus.position.z + PADDLE_HEIGHT / 2) {
 			const relativeImpact = (ball.position.z - player_2_bonus.position.z) / (PADDLE_HEIGHT / 2);
 			ballDirection.z = relativeImpact * 1;
-			ballSpeed += 0.05;
+			ballSpeed += 0.01;
 		}
 	}
 }
 
-export function MoveBall2v2(player_1, player_2, player_3, player_4, ball) {
-	if (!ball) {
-		console.error('Ball is not created yet');
+export function MoveBall2v2(player_1, player_2, player_3, player_4, ball)
+{
+	if (!ball)
 		return;
-	}
 
-	if (!player_1 || !player_2 || !player_3 || !player_4) {
-		console.error('Players are not created yet');
+	if (!player_1 || !player_2 || !player_3 || !player_4)
 		return;
-	}
 
 	const BALL_RADIUS = 1.5;
 	const PADDLE_WIDTH = 10;
 	const PADDLE_HEIGHT = 1.5;
 	const PADDLE_DEPTH = 1.5;
 
-	// Mise à jour de la position de la balle
 	ball.position.x += ballDirection.x * ballSpeed;
 	ball.position.z += ballDirection.z * ballSpeed;
 
-	// Rotation de la balle pour l'effet visuel
 	ball.rotate(BABYLON.Axis.X, 0.1 * ballSpeed);
 	ball.rotate(BABYLON.Axis.Z, 0.1 * ballDirection.x * ballSpeed);
 
-	// Vérifier les collisions avec les bords du terrain
 	if (ball.position.z <= FIELD_BOTTOM + BALL_RADIUS) {
 		ball.position.z = FIELD_BOTTOM + BALL_RADIUS;
 		resetBall(ball);
@@ -205,48 +216,60 @@ export function MoveBall2v2(player_1, player_2, player_3, player_4, ball) {
 		ballDirection.x *= -1;
 	}
 
-	// Vérifier les collisions avec tous les paddles de chaque joueur
-	checkPaddleCollision(player_1.leftPaddle, ball, BALL_RADIUS, PADDLE_WIDTH, PADDLE_HEIGHT);
-	checkPaddleCollision(player_1.rightPaddle, ball, BALL_RADIUS, PADDLE_WIDTH, PADDLE_HEIGHT);
+	checkPaddleCollision(player_1.leftPaddle, ball, BALL_RADIUS, PADDLE_WIDTH);
+	checkPaddleCollision(player_1.rightPaddle, ball, BALL_RADIUS, PADDLE_WIDTH);
 	
-	checkPaddleCollision(player_2.leftPaddle, ball, BALL_RADIUS, PADDLE_WIDTH, PADDLE_HEIGHT);
-	checkPaddleCollision(player_2.rightPaddle, ball, BALL_RADIUS, PADDLE_WIDTH, PADDLE_HEIGHT);
+	checkPaddleCollision(player_2.leftPaddle, ball, BALL_RADIUS, PADDLE_WIDTH);
+	checkPaddleCollision(player_2.rightPaddle, ball, BALL_RADIUS, PADDLE_WIDTH);
 	
-	checkPaddleCollision(player_3.leftPaddle, ball, BALL_RADIUS, PADDLE_WIDTH, PADDLE_HEIGHT);
-	checkPaddleCollision(player_3.rightPaddle, ball, BALL_RADIUS, PADDLE_WIDTH, PADDLE_HEIGHT);
+	checkPaddleCollision(player_3.leftPaddle, ball, BALL_RADIUS, PADDLE_WIDTH);
+	checkPaddleCollision(player_3.rightPaddle, ball, BALL_RADIUS, PADDLE_WIDTH);
 	
-	checkPaddleCollision(player_4.leftPaddle, ball, BALL_RADIUS, PADDLE_WIDTH, PADDLE_HEIGHT);
-	checkPaddleCollision(player_4.rightPaddle, ball, BALL_RADIUS, PADDLE_WIDTH, PADDLE_HEIGHT);
+	checkPaddleCollision(player_4.leftPaddle, ball, BALL_RADIUS, PADDLE_WIDTH);
+	checkPaddleCollision(player_4.rightPaddle, ball, BALL_RADIUS, PADDLE_WIDTH);
 }
 
-// Fonction pour vérifier la collision avec un paddle
-function checkPaddleCollision(paddle, ball, BALL_RADIUS, PADDLE_WIDTH, PADDLE_HEIGHT) {
-	if (!paddle) return;
-	
-	// Obtenir la position mondiale du paddle
+function checkPaddleCollision(paddle, ball, BALL_RADIUS, PADDLE_WIDTH)
+{
+	if (!paddle)
+		return;
+
 	const paddleWorldPosition = paddle.getAbsolutePosition();
 	
 	if (ball.position.x + BALL_RADIUS >= paddleWorldPosition.x - PADDLE_WIDTH / 2 &&
 		ball.position.x - BALL_RADIUS <= paddleWorldPosition.x + PADDLE_WIDTH / 2 &&
 		ball.position.z + BALL_RADIUS >= paddleWorldPosition.z - PADDLE_DEPTH / 2 &&
-		ball.position.z - BALL_RADIUS <= paddleWorldPosition.z + PADDLE_DEPTH / 2) {
-		
-		// Calculer l'impact relatif pour déterminer l'angle de rebond
-		const relativeImpact = (ball.position.z - paddleWorldPosition.z) / (PADDLE_DEPTH / 2);
-		
-		// Inverser la direction de la balle en x et ajuster la direction en z
+		ball.position.z - BALL_RADIUS <= paddleWorldPosition.z + PADDLE_DEPTH / 2)
+	{
+		// const relativeImpact = (ball.position.z - paddleWorldPosition.z) / (PADDLE_DEPTH / 2);
+
+		// ballDirection.x *= -1;
+		// ballDirection.z = relativeImpact * 1;
+
+		// ballSpeed += 0.01;
 		ballDirection.x *= -1;
-		ballDirection.z = relativeImpact * 1;
-		
-		// Augmenter la vitesse de la balle
+		const relativeImpact = (ball.position.z - paddleWorldPosition.z) / (PADDLE_DEPTH / 2);
+		const MAX_ANGLE_FACTOR = 0.8;
+		ballDirection.z = relativeImpact * MAX_ANGLE_FACTOR;
+		const length = Math.sqrt(ballDirection.x * ballDirection.x + ballDirection.z * ballDirection.z);
+		ballDirection.x /= length;
+		ballDirection.z /= length;
 		ballSpeed += 0.05;
+		ball.position.x += ballDirection.x * 0.1;
 	}
 }
 
-export function destroy_ball(ball) {
-	if (ball) {
-		ball.dispose();
-	}
-
+export function destroy_ball(ball)
+{
+	if (!ball)
+		return;
+	if (ball)
+		ball.setEnabled(false);
 	ball = null;
+}
+
+export function init_ball(ball)
+{
+	if (ball)
+		ball.setEnabled(true);
 }

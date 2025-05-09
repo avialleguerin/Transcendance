@@ -34,7 +34,7 @@ export default class extends AbstractView {
 			</div>
 		</div>
 		<div class="back-home" id="back-home">
-			<button id="btn_back_home" class="btn">ACCUEIL</button>
+			<button id="btn_back_home" class="btn">BACK</button>
 		</div>
 			<div id="container" class="container_menu">
 				<button id="btn_jouer">
@@ -42,10 +42,16 @@ export default class extends AbstractView {
 				</button>
 				<div class="view2" id="view2">
 					<div class="view2-content">
-						<h1>CHOISIS TON MODE DE JEUX</h1>
+						<h1>CHOISIS TON MODE DE JEU</h1>
 						<div id="game_mode_btn" class="game_mode_btn">
 							<button id="solo" class="btn">SOLO</button>
-							<button id="multiplayer" class="btn">MULTIPLAYER</button>
+							<button id="platformer_view" class="btn_tournament">
+								<a href="/PlatformView" class="nav-link" data-link>PLATEFORMER</a>
+							</button>
+							<button id="multiplayer" class="btn">MULTIJOUEUR</button>
+							<button id="tournament_view" class="btn_tournament">
+								<a href="/tournament" class="nav-link" data-link>TOURNOI</a>
+							</button>
 						</div>
 					</div>
 				</div>
@@ -68,16 +74,131 @@ export default class extends AbstractView {
 						<button id="back_to_menu_view4" class="btn">BACK TO MENU</button>
 					</div>
 				</div>
+
+
+
+
 				<div class="view5" id="view5">
 					<div class="view5-content">
 						<h1>PARAMETRES</h1>
+						<div id="select_parametres" class="select_parametres">
+							<button id="profile_parrametre_btn" class="btn">PROFILE</button>
+							<button id="parrametre_jeux_btn" class="btn">JEU</button>
+						</div>
 					</div>
 				</div>
+
+
+				<div class="parametres_jeu" id="parametres_jeu">
+					<div class="parametres_jeu_content" id="parametre_jeux_content">
+						<h1>PARAMETRES DE JEU</h1>
+						<h2>PONG</h2>
+						<div class="parametre_mode_jeu">
+							<div class="mode_de_jeu_solo_parametre">
+								<h3>Mode de jeu en solo</h3>
+							
+								<div class="joueur_touch">
+									<div class="joueur" id="joueur1">
+										<p>Joueur 1</p>
+										<div class="controls">
+											<p>Deplacement : W / S</p>
+											<p>PowerUP : Z / X / C</p>
+										</div>
+									</div>
+									<div class="joueur" id="joueur2">
+										<p>Joueur 2</p>
+										<div class="controls">
+											<p>Deplacement : ⬆  / ⬇</p>
+											<p>PowerUP : 1 / 2 / 3</p>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="mode_de_jeu_multi_parametre">
+								<h3>Mode de jeu en multijoueur</h3>
+								<div class="joueur_touch">
+									<div class="joueur" id="joueur1">
+										<p>Joueur 1</p>
+										<div class="controls">
+											<p>Deplacement : W / S</p>
+											<p>PowerUP : Z / X / C</p>
+										</div>
+									</div>
+									<div class="joueur" id="joueur2">
+										<p>Joueur 2</p>
+										<div class="controls">
+											<p>Deplacement : E  / D</p>
+											<p>PowerUP : Z / X / C</p>
+										</div>
+									</div>
+									<div class="joueur" id="joueur3">
+										<p>Joueur 3</p>
+										<div class="controls">
+											<p>Deplacement : O  / L</p>
+											<p>PowerUP : 1 / 2 / 3</p>
+										</div>
+									</div>
+									<div class="joueur" id="joueur4">
+									<p>Joueur 4</p>
+									<div class="controls">
+										<p>Deplacement : ⬆  / ⬇</p>
+										<p>PowerUP : 1 / 2 / 3</p>
+									</div>
+								</div>
+								</div>
+							</div>
+						</div>
+					</div>
+			  </div>
+
+				<div class="parrametres_profile" id="parametres_profile">
+					<div class="parametres_profile_content">
+						<h1>PARAMETRES DU PROFIL</h1>
+						<div class="modif_profile" id="modif_profil">
+							<label for="mdp">Mot de passe</label>
+							<input type="text" id="Mot_de_pass" name="Mot_de_pass" placeholder="Mot de passe">
+							<button id="valid_mdp" class="btn_valider_mdp">Valider</button>
+						</div>
+						<div class="profile_param_unlocked" id="profile_param_unlocked_id">
+							<div class="photo_profile">
+								<div class="profile_photo_container">
+									<div class="profile_photo_circle" id="profile_photo_circle">
+										<input type="file" id="profile_photo_input" accept="image/*" style="display: none;">
+										<label for="profile_photo_input" class="photo_upload_icon">
+											<i class="fa fa-camera"></i>
+										</label>
+									</div>
+								</div>
+							</div>
+							<div class="input_container">
+								<label for="email">Email</label>
+								<input type="text" id="email" name="email" placeholder="Email">
+							</div>
+							<div class="input_container">
+								<label for="mdp">Mot de passe</label>
+								<input type="text" id="Mot_de_pass" name="Mot_de_pass" placeholder="Mot de passe">
+							</div>
+							<div class="input_container">
+								<label for="confirm_mdp">Confirmer le mot de passe</label>
+								<input type="text" id="confirm_mdp" name="confirm_mdp" placeholder="Confirmer le mot de passe">
+							</div>
+							<div id="fa_selector" class="fa_selector">
+								<p>2FA :<span id="active_fa" class="active_fa"></span></p>
+							</div>
+							<button id="valid_profile_info" class="valid_profile_info_btn">Valider</button>
+						</div>
+					</div>
+				</div>
+
+
+
+
 				<div class="view6" id="view6">
 					<div class="view6-content">
 						<h1 id="custom_ta_game">CUSTOMISE TA GAME</h1>
 						<div class="powerUP">
-							<p>PowerUP :<span id="powerUP" class="active_powerUP"></span></p>
+							<p>PowerUP :<span id="power_up_info_id" class="power_up_info"></span><span id="powerUP" class="active_powerUP"></span></p>
 							<div id="power_selector" class="power_selector">
 								<div class="powerUP_number">
 									<p>1</p>
@@ -133,7 +254,7 @@ export default class extends AbstractView {
 					<div class="view8-content">
 						<h1 id="custom_ta_game_multi">CUSTOMISE TA GAME EN MULTI</h1>
 						<div class="powerUP">
-							<p>PowerUP :<span id="powerUP_multi" class="active_powerUP"></span></p>
+							<p>PowerUP :<span id="power_up_info_id_multi" class="power_up_info"></span><span id="powerUP_multi" class="active_powerUP"></span></p>
 							<div id="power_selector_game_multi" class="power_selector">
 								<div class="powerUP_number">
 									<p>1</p>
@@ -167,7 +288,6 @@ export default class extends AbstractView {
 			<div class="back" id="back_to_select_mode_view8">
 				<button id="back_to_menu_view8" class="btn_back">BACK</button>
 			</div>
-
 			<div class="choose_your_skin" id="choose_your_skin">
 				<h1>PERSONNALISE TON SKIN</h1>
 				<div class="player1">
@@ -207,34 +327,97 @@ export default class extends AbstractView {
 				</div>
 				<button id="valide_ton_skin_game_multi" class="btn">Valider</button>
 			</div>
+			<div id="container_info_power_up" class="container_info_power_up">
+				<div class="text_powerUP">
+					<h1>Power-UP</h1>
+					<p class="explication_general">Le Power-Up est un bonus qui te donne un avantage sur ton adversaire. En activant cette option, tu commenceras la partie avec au moins un Power-Up de chaque type. Tu peux également personnaliser ce nombre et en obtenir trois ou cinq de chaque.</p>
+					<p class="explication_powerUP_grenade">Le Power-Up Grenade Flash te permet de lancer une grenade qui aveuglera ton adversaire. Mais attention ! Son fonctionnement est simple : elle obscurcit entièrement l’écran de jeu, ce qui signifie que même celui qui la lance est ébloui.</p>
+					<p class="explication_powerUP_teammate">Le Power-Up Coéquipier te permet d'appeler un nouveau joueur dans la partie pour une courte durée. Tu peux le déplacer avec E/D pour le joueur 1 et O/L pour le joueur 2.</p>
+					<p class="explication_powerUP_inverse">Le Power-Up Inverse te permet d'inverser les contrôles de ton adversaire pendant une courte durée.</p>
+					<div class="delay_powerUP_1">
+						<img src="../../../srcs/game/assets/image/timer-reset.svg" alt="delay">
+						<p>DELAIS DE RECUPERATION                  : 10s</p>
+					</div>
+					<div class="delay_powerUP_2">
+						<img src="../../../srcs/game/assets/image/timer-reset.svg" alt="delay">
+						<p>DELAIS DE RECUPERATION : 15s</p>
+					</div>
+					<div class="delay_powerUP_3">
+						<img src="../../../srcs/game/assets/image/timer-reset.svg" alt="delay">
+						<p>DELAIS DE RECUPERATION : 10s</p>
+					</div>
+				</div>
+				<div class="container_image_powerUP">
+					<img src="../../../srcs/game/assets/image/grenade_no_bg.png" alt="grenade" class="grenade">
+					<img src="../../../srcs/game/assets/image/teammate_no_bg.png" alt="teammate" class="teammate">
+					<img src="../../../srcs/game/assets/image/reverse_no_bg.png" alt="inverse_player" class="inverse_player">
+				</div>
+				<div id="exit_powerUP_info" class="exit_powerUP_info">
+					<button id="exit_powerUP_info_btn" class="btn">
+						X
+					</button>
+				</div>
+			</div>
+
+
+			<div id="container_info_power_up_multi" class="container_info_power_up">
+				<div class="text_powerUP">
+					<h1>Power-UP</h1>
+					<p class="explication_general">Le Power-Up est un bonus qui te donne un avantage sur ton adversaire. En activant cette option, tu commenceras la partie avec au moins un Power-Up de chaque type. Tu peux également personnaliser ce nombre et en obtenir trois ou cinq de chaque.</p>
+					<p class="explication_powerUP_grenade_multi">Le Power-Up Grenade Flash te permet de lancer une grenade qui aveuglera ton adversaire. Mais attention ! Son fonctionnement est simple : elle obscurcit entièrement l’écran de jeu, ce qui signifie que même celui qui la lance est ébloui.</p>
+					<p class="explication_powerUP_freeze">Le Power-Up Freeze permet de rendre immobile l'equipe adverse pendant un cour instant.</p>
+					<div class="delay_powerUP_1_multi">
+						<img src="../../../srcs/game/assets/image/timer-reset.svg" alt="delay">
+						<p>DELAIS DE RECUPERATION : 10s</p>
+					</div>
+					<div class="delay_powerUP_2_multi">
+						<img src="../../../srcs/game/assets/image/timer-reset.svg" alt="delay">
+						<p>DELAIS DE RECUPERATION : 10s</p>
+					</div>
+				</div>
+				<div class="container_image_powerUP_multi">
+					<img src="../../../srcs/game/assets/image/grenade_no_bg.png" alt="grenade" class="grenade">
+					<img src="../../../srcs/game/assets/image/freeze_no_bg.png" alt="freeze" class="freeze">
+				</div>
+				<div id="exit_powerUP_info_multi" class="exit_powerUP_info">
+					<button id="exit_powerUP_info_btn_multi" class="btn">
+						X
+					</button>
+				</div>
+			</div>
 		</div>
-
-
-
 		`;
 	}
 
 	init_solo_game() {
 		document.getElementById("solo_1v1_btn").addEventListener("click", () => {
 			console.log("Solo 1v1 game started");
-			handleViewTransitions("vue3", "vue2");
 			startGame();
+			handleViewTransitions("vue3", "vue2");
 		});
 	}
 
 	initEvents() {
 		document.getElementById("multiplayer_btn").addEventListener("click", () => {
 			console.log("Multiplayer 2v2 game started");
-			handleViewTransitions("vue3", "vue2");
 			startMultiGame();
+			handleViewTransitions("vue3", "vue2");
 		});
 	}
 
 	init_solo_game_ai() {
 		document.getElementById("solo_ai_btn").addEventListener("click", () => {
 			console.log("Solo AI game started");
-			handleViewTransitions("vue3", "vue2");
 			startAI_Game();
+			handleViewTransitions("vue3", "vue2");
+		});
+	}
+
+	tournament_view()
+	{
+		document.getElementById("tournament_view").addEventListener("click", () => {
+			console.log("Tournament view started");
+			handleViewTransitions("tournament");
 		});
 	}
 
@@ -271,6 +454,8 @@ export default class extends AbstractView {
 		const back_to_select_mode_view6 = document.getElementById('back_to_select_mode_view6');
 		const back_to_select_mode_view7 = document.getElementById('back_to_select_mode_view7');
 		const back_to_select_mode_view8 = document.getElementById('back_to_select_mode_view8');
+
+		// const back_to_menu_view_tournament = document.getElementById('back_to_menu_view_tournament');
 
 		btn_jouer.addEventListener('click', () => {
 			console.log('JOUER button clicked');
@@ -348,6 +533,17 @@ export default class extends AbstractView {
 			});
 		}
 
+		// back_to_menu_view_tournament.addEventListener('click', () => {
+		// 	handleViewTransitions("vue2", "tournament");
+		// 	tournament_view.classList.remove('active');
+		// 	setTimeout(() => {
+		// 		view2.classList.add('active');
+		// 		view1.classList.add('active');
+		// 		btn_back_home.classList.add('active');
+		// 	} , 1000);
+		// });
+
+
 
 		/***********************************************************************/
 		/**************************BACK_HOME************************************/
@@ -367,6 +563,7 @@ export default class extends AbstractView {
 				btn_back_home.classList.remove('active');
 				btn_jouer.style.display = 'block';
 			}
+
 		});
 
 		prepar_game_1v1.addEventListener('click', () => {
@@ -404,8 +601,6 @@ export default class extends AbstractView {
 					choose_your_skin.classList.remove('active');
 					solo_1v1_btn.style.display = 'block';
 					custom_ta_game.style.visibility = 'visible';
-					disable_skin_perso_player1();
-					disable_skin_perso_player2();
 				}
 			}
 			if (power_selector.classList.contains('active'))
@@ -511,6 +706,7 @@ export default class extends AbstractView {
 				}
 			}
 		});
+
 
 
 		/***********************************************************************/
@@ -824,6 +1020,135 @@ export default class extends AbstractView {
 		switch_skn_right_id4_game_multi.addEventListener('click', () => {
 			console.log('Switch skin right id4 clicked');
 			switch_skin_perso_player4_right_multi();
+		});
+
+
+
+		/***********************************************************************/
+		/**************************POWER_UP_INFO*******************************/
+		/***********************************************************************/
+
+
+		const power_up_info_id = document.getElementById('power_up_info_id');
+		const container_info_power_up = document.getElementById('container_info_power_up');
+		const exit_powerUP_info = document.getElementById('exit_powerUP_info');
+
+		power_up_info_id.addEventListener('click', () => {
+			container_info_power_up.classList.add('active');
+			view6.classList.remove('active');
+			back_to_select_mode_view6.classList.remove('active');
+		});
+
+		exit_powerUP_info.addEventListener('click', () => {
+			container_info_power_up.classList.remove('active');
+			view6.classList.add('active');
+			back_to_select_mode_view6.classList.add('active');
+		});
+
+
+		/***********************************************************************/
+		/**************************POWER_UP_INFO_MULTI*************************/
+		/***********************************************************************/
+
+		const power_up_info_id_multi = document.getElementById('power_up_info_id_multi');
+		const container_info_power_up_multi = document.getElementById('container_info_power_up_multi');
+		const exit_powerUP_info_multi = document.getElementById('exit_powerUP_info_multi');
+
+		power_up_info_id_multi.addEventListener('click', () => {
+			container_info_power_up_multi.classList.add('active');
+			view8.classList.remove('active');
+			back_to_select_mode_view8.classList.remove('active');
+		});
+
+		exit_powerUP_info_multi.addEventListener('click', () => {
+			container_info_power_up_multi.classList.remove('active');
+			view8.classList.add('active');
+			back_to_select_mode_view8.classList.add('active');
+		});
+
+		/***********************************************************************/
+		/*************************PARRAMETRE JEU ET PROFILE*********************/
+		/***********************************************************************/
+
+		const parametre_jeu = document.getElementById('parrametre_jeux_btn');
+		const parametre_profile = document.getElementById('profile_parrametre_btn');
+		const parametre_jeu_view = document.getElementById('parametres_jeu');
+		const parametre_profile_view = document.getElementById('parametres_profile');
+		const container_menu = document.getElementById('container');
+
+		parametre_jeu.addEventListener('click', () => {
+			console.log('Parrametre jeu clicked');
+			parametre_jeu_view.classList.add('active');
+			view5.classList.remove('active');
+			btn_back_home.classList.remove('active');
+			view1.classList.remove('active');
+			container_menu.classList.add('active');
+			btn_back_home.classList.add('active');
+
+		});
+
+		parametre_profile.addEventListener('click', () => {
+			console.log('Parrametre profile clicked');
+			parametre_profile_view.classList.add('active');
+			view5.classList.remove('active');
+			btn_back_home.classList.remove('active');
+			view1.classList.remove('active');
+			btn_back_home.classList.add('active');
+		});
+
+
+		btn_back_home.addEventListener('click', () => {
+			if (parametre_jeu_view.classList.contains('active')) {
+				parametre_jeu_view.classList.remove('active');
+				view5.classList.add('active');
+				// btn_back_home.classList.remove('active');
+				view1.classList.add('active');
+				container_menu.classList.remove('active');
+			}
+			if (parametre_profile_view.classList.contains('active')) {
+				parametre_profile_view.classList.remove('active');
+				view5.classList.add('active');
+				// btn_back_home.classList.remove('active');
+				view1.classList.add('active');
+			}
+		});
+
+		/***********************************************************************/
+		/*************************Parametre_profil******************************/
+		/***********************************************************************/
+
+		const valid_mdp = document.getElementById('valid_mdp');
+		const modif_profil = document.getElementById('modif_profil');
+		const profile_param_unlocked_id = document.getElementById('profile_param_unlocked_id');
+		const valid_profile_info = document.getElementById('valid_profile_info');
+		const fa_selector = document.getElementById('fa_selector');
+		const active_fa = document.getElementById('active_fa');
+
+
+		valid_mdp.addEventListener('click', () => {
+			console.log('Valide mdp clicked');
+			modif_profil.classList.add('hidden');
+			btn_back_home.classList.remove('active');
+			profile_param_unlocked_id.classList.add('active');
+		});
+
+		valid_profile_info.addEventListener('click', () => {
+			console.log('Valide profile info clicked');
+			profile_param_unlocked_id.classList.remove('active');
+			modif_profil.classList.remove('hidden');
+			btn_back_home.classList.add('active');
+		});
+
+		active_fa.addEventListener('click', () => {
+			active_fa.classList.toggle('checked');
+			if (active_fa.classList.contains('checked')) {
+				console.log('FA is active');
+				fa_selector.classList.add('active');
+			}
+			else {
+				console.log('FA is inactive');
+				fa_selector.classList.remove('active');
+			}
 		});
 	}
 }
