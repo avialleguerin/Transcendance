@@ -56,13 +56,13 @@ services:
   # Sécurité (Vault + SonarQube + Modsecurity)
   nginx:
     container_name: nginx
-    # image: nginx:latest     # pour ne pas a avoir besoin de Dockerfile
     build:
       context: ./Security
       dockerfile: Nginx/Dockerfile
     ports:
-      - "8080:80"           #80:80 necessite des privilege
+      - "8080:8080"           #80:80 necessite des privilege
       - "8443:443"          # HTTPS
+      - "8100:8100"
     depends_on:
       - fastify
     environment:
@@ -70,9 +70,15 @@ services:
     volumes:
       - ./Security/Nginx/conf.d:/etc/nginx/conf.d
       - ./Security/ModSecurity:/etc/modsecurity.d
-      - ./Frontend/public:/usr/share/nginx/html:ro
+      #The Main Website
+      - ./Frontend3d/public:/usr/share/nginx/html:ro
+      #The Admin Website
+      - ./Frontend/public:/usr/share/nginx/admin:ro
+      #The API Scripts
       - ./Frontend/utils:/usr/share/nginx/utils:ro
-      - ./Frontend3d/public:/usr/share/nginx/3d:ro
+      # - ./Frontend/public:/usr/share/nginx/html:ro
+      # - ./Frontend/utils:/usr/share/nginx/utils:ro
+      # - ./Frontend3d/public:/usr/share/nginx/3d:ro
 
   vault:
     image: custom-vault
