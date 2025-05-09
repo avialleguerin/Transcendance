@@ -152,7 +152,8 @@ async function login(event) {
 }
 
 async function logout(userId) {
-	const response = await fetch(`/api/users/logout/:${ userId }`, {
+	console.log("userId: ", userId)
+	const response = await fetch(`/api/users/logout`, {
 		method: 'POST',
 		body: JSON.stringify({ userId, accessToken }),
 		headers: { 
@@ -164,13 +165,12 @@ async function logout(userId) {
 	if (data.success) {
 		sessionStorage.removeItem("accessToken")
 		accessToken = null
-		fetchUsers();
 		console.log("✅ Déconnecté avec succès !");
+		setTimeout(() => {
+			location.reload();
+		}, 300);
 	} else
 	console.log(data.error)
-	setTimeout(() => {
-		location.reload();
-	}, 300);
 }
 
 async function register(event) {
@@ -228,6 +228,7 @@ function getUserIdFromToken(token) {
 
 	try {
 		const payload = JSON.parse(atob(token.split('.')[1]));
+		console.log("uesrId:", payload.userId);
 		return payload.userId;
 	} catch (error) {
 		console.error("Erreur lors du décodage du token :", error);
@@ -263,13 +264,10 @@ async function refreshInfos() {
 window.addEventListener('DOMContentLoaded', () => {
 	console.log("accessToken: ", accessToken)
 	refreshInfos();
-	if (!accessToken) {
-		console.log("No access token found, redirecting to login view without reloading...");
-		// Met à jour l'URL sans recharger la page
-		history.pushState({}, '', '/');
-		// Charge dynamiquement la vue de connexion (à implémenter, par exemple via AJAX ou via une fonction de routage)
-		// showLoginPage();
-		return;
-	}
+	// if (!accessToken) {
+	// 	console.log("No access token found, redirecting to login view without reloading...");
+	// 	history.pushState({}, '', '/');
+	// 	return;
+	// }
 	// fetchUsers();
 });

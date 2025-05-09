@@ -173,13 +173,11 @@ export default class extends AbstractView {
 				<div class="parrametres_profile" id="parametres_profile">
 					<div class="parametres_profile_content">
 						<h1>PARAMETRES DU PROFIL</h1>
-						<div class="modif_profile" id="modif_profil">
-							<form id="access_to_profile_info" class="form_mdp" onsubmit="accessProfileInfo(event)">
-								<label for="mdp">Mot de passe</label>
-								<input type="password" id="password" name="password" placeholder="Password" required>
-								<button class="btn_valider_mdp">Valider</button>
-							</form>
-						</div>
+						<form id="modif_profil" class="modif_profile" onsubmit="accessProfileInfo(event)">
+							<label for="mdp">Mot de passe</label>
+							<input type="password" id="password" name="password" placeholder="Password" required>
+							<button type="submit" class="btn_valider_mdp">Valider</button>
+						</form>
 						<div class="profile_param_unlocked" id="profile_param_unlocked_id">
 							<div class="photo_profile">
 								<div class="profile_photo_container">
@@ -453,7 +451,6 @@ export default class extends AbstractView {
 	handleDeconnection()
 	{
 		const deconnect_btn = document.getElementById("deconnect_btn");
-
 
 		deconnect_btn.addEventListener("click", () => {
 			handleViewTransitions("vue1", "vue2");
@@ -1130,7 +1127,7 @@ export default class extends AbstractView {
 		parametre_profile.addEventListener('click', () => {
 			console.log('Parrametre profile clicked');
 			parametre_profile_view.classList.add('active');
-			fetchProfile();
+			// fetchProfile();
 			view5.classList.remove('active');
 			btn_back_home.classList.remove('active');
 			view1.classList.remove('active');

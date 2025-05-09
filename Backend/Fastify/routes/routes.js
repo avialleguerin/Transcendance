@@ -10,11 +10,11 @@ export default async function routes (fastify) {
 		console.log(`\n📡 Requête reçue : [${request.method}] ${request.url}\n`);
 	});
 	//authController
-	fastify.get('/profile', { preHandler: fastify.authenticate }, getUserProfile);
+	fastify.get('/profile', getUserProfile);
 	fastify.get('/users', selectUsers);
 	fastify.post('/users/add', register);
 	fastify.put('/users/login', login);
-	fastify.post('/users/logout/:userId', logout);
+	fastify.post('/users/logout', logout);
 	fastify.put('/users/access-profile-infos/:userId', accessProfileInfo);
 	fastify.put('/users/update-2fa/:userId', changeDoubleAuth);
 	fastify.post('/users/verify-2fa', verifyDoubleAuth);
