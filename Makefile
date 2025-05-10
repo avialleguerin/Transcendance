@@ -26,7 +26,6 @@ up:
 	@rm -rf ./Backend/Fastify/node_modules
 	@rm -rf ./Backend/Fastify/Data
 	@rm -rf ./Backend/Fastify/vault
-	@make fixer -s 
 
 build:
 	@docker compose build
