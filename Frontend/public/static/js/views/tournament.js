@@ -15,7 +15,7 @@ export default class extends AbstractView {
 		if (window.location.pathname === "/tournament") {
 			this.gameLoop = setInterval(() => this.checktournamentstart(), 1000);
 		}
-		tournamentStarted = localStorage.getItem('tournamentStarted') === 'true';
+		// tournamentStarted = localStorage.getItem('tournamentStarted') === 'true';
     }
 
 	async getHtml() {
@@ -24,26 +24,26 @@ export default class extends AbstractView {
 		<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 		<div class="tournament_view" id="tournament_view">
 			<div class="tournament_view-content">
-				<h1>TOURNOI</h1>
+				<h1>TOURNAMENT</h1>
 				<button id="start_tournament" class="btn_start_tournament">START</button>
 				<button id="back_to_menu_view_tournament" class="btn_back_tournament">BACK</button>
 				<div class="container_name_player" id="container_name_player">
-					<h1>Personnalise ton nom</h1>
+					<h1>Customize your name</h1>
 					<div class="input-container">
-						<label for="player1">Joueur 1</label>
-						<input type="text" id="player1" class="input_name_player" placeholder="Nom du joueur 1">
+						<label for="player1">player 1</label>
+						<input type="text" id="player1" class="input_name_player" placeholder="Player name 1">
 					</div>
 					<div class="input-container">
-						<label for="player2">Joueur 2</label>
-						<input type="text" id="player2" class="input_name_player" placeholder="Nom du joueur 2">
+						<label for="player2">player 2</label>
+						<input type="text" id="player2" class="input_name_player" placeholder="Player namer 2">
 					</div>
 					<div class="input-container">
-						<label for="player3">Joueur 3</label>
-						<input type="text" id="player3" class="input_name_player" placeholder="Nom du joueur 3">
+						<label for="player3">player 3</label>
+						<input type="text" id="player3" class="input_name_player" placeholder="Player namer 3">
 					</div>
 					<div class="input-container">
-						<label for="player4">Joueur 4</label>
-						<input type="text" id="player4" class="input_name_player" placeholder="Nom du joueur 4">
+						<label for="player4">player 4</label>
+						<input type="text" id="player4" class="input_name_player" placeholder="Player namer 4">
 					</div>
 					<button id="continue" class="continue_btn">OK</button>
 				</div>
@@ -130,6 +130,7 @@ export default class extends AbstractView {
         const container_name_player = document.getElementById('container_name_player');
         const tournament_graphic_id = document.getElementById('tournament_graphic_id');
 		const back_to_menu_view_tournament = document.getElementById('back_to_menu_view_tournament');
+		const finish_tournament = document.getElementById('finiched_game');
 
         start_tournament.addEventListener('click', () => {
 			tournamentStarted = true;
@@ -169,6 +170,17 @@ export default class extends AbstractView {
 			resetTournamentState(joueur1_id, joueur2_id, joueur3_id, joueur4_id);
 			back_to_menu_view_tournament.style.display = 'block';
 			start_tournament.style.display = 'block';
+		});
+
+		finish_tournament.addEventListener('click', () => {
+			tournament_graphic_id.classList.remove('active');
+			container_name_player.classList.remove('hidden');
+			tournamentStarted = false;
+			resetTournamentState(joueur1_id, joueur2_id, joueur3_id, joueur4_id);
+			back_to_menu_view_tournament.style.display = 'block';
+			start_tournament.style.display = 'block';
+			count = 0;
+			localStorage.setItem('tournamentCount', count);
 		});
     }
 
@@ -417,16 +429,32 @@ function updateTournamentState(count, joueur1_id, joueur2_id, joueur3_id, joueur
 
 }
 
-// Fonction pour mettre en évidence les joueurs
 function highlightNextPlayers(...players) {
+    // D'abord réinitialiser tous les joueurs
+    const allPlayers = document.querySelectorAll('.player');
+    allPlayers.forEach(p => {
+        p.style.filter = "brightness(1)";
+        p.style.color = "";
+        p.style.transform = "";
+        p.style.textShadow = "";
+        p.style.fontWeight = "";
+    });
+    
+    // Mettre en évidence les joueurs actifs
     players.forEach(player => {
         if (player) {
-            // Augmenter la luminosité
-            player.style.filter = "brightness(1.5)";
-			// Changer la couleur du texte
-			player.style.color = "yellow";
-			// Ajouter une bordure
-			player.style.border = "2px solid yellow";
+            // Effet de lumière beaucoup plus prononcé
+            player.style.filter = "brightness(2.0) saturate(2.0)";
+            // Couleur de texte très visible
+            player.style.color = "#FFFF00"; // Jaune vif
+            // Légère mise à l'échelle pour attirer l'attention
+            player.style.transform = "scale(1.1)";
+            // Ajouter un halo de texte pour plus de luminosité
+            player.style.textShadow = "0 0 10px rgba(255, 255, 0, 0.8)";
+            // Texte en gras pour plus de visibilité
+            player.style.fontWeight = "bold";
+            // Transition douce pour les changements
+            player.style.transition = "all 0.3s ease-in-out";
         }
     });
 }
@@ -435,12 +463,12 @@ function highlightNextPlayers(...players) {
 function resetHighlight(players) {
 	players.forEach(player => {
 		if (player) {
-			// Réinitialiser la luminosité
-			player.style.filter = "none";
-			// Réinitialiser la couleur du texte
-			player.style.color = "white";
-			// Réinitialiser la bordure
-			player.style.border = "none";
+			player.style.filter = "brightness(1)";
+			player.style.color = "";
+			player.style.transform = "";
+			player.style.textShadow = "";
+			player.style.fontWeight = "";
+			player.style.transition = "all 0.3s ease-in-out";
 		}
 	});
 }

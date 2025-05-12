@@ -15,7 +15,7 @@ export default class extends AbstractView {
 					<h1> TRANSCENDENCE </h1>
 				</div>
 				<div class="login-form" id="loginform_id" onsubmit="login(event)">
-					<h1>CONNECTE-TOI</h1>
+					<h1>LOGIN</h1>
 					<form class="form-group" id="loginForm">
 						<div class="input-container">
 							<label for="email">Email :</label>
@@ -23,39 +23,39 @@ export default class extends AbstractView {
 						</div>
 
 						<div class="input-container">
-							<label for="password">Mot de passe :</label>
-							<input type="password" id="login-password" name="password" placeholder="Votre mot de passe" required>
+							<label for="password">Password :</label>
+							<input type="password" id="login-password" name="password" placeholder="Your password" required>
 						</div>
-						<button type="submit" class="connexion"> Se connecter</button>
+						<button type="submit" class="connexion"> Login</button>
 						
 						
-						<button class="creer-compte" id="create-Account">Créer un compte</button>
+						<button class="creer-compte" id="create-Account">Create an account</button>
 					</form>
 				</div>
 				<div class="register-form" id="create_account_id" onsubmit="register(event)">
-					<h1>CRÉER UN COMPTE</h1>
+					<h1>SIGN IN</h1>
 					<form class="form-group" id="addForm">
 						<div class="input-container">
 							<label for="username">Username :</label>
-							<input type="text" id="add-username" name="username" placeholder="Votre nom" required>
+							<input type="text" id="add-username" name="username" placeholder="Your name" required>
 						</div>
 
 						<div class="input-container">
 							<label for="email">Email :</label>
-							<input type="email" id="add-email" name="email" placeholder="Votre email" required>
+							<input type="email" id="add-email" name="email" placeholder="Your email" required>
 						</div>
 
 						<div class="input-container">
-							<label for="password">Mot de passe :</label>
-							<input type="password" id="add-password" name="password" placeholder="Votre mot de passe" required>
+							<label for="password">Password :</label>
+							<input type="password" id="add-password" name="password" placeholder="Your password" required>
 						</div>
 
 						<div class="input-container">
-							<label for="confirm-password">Confirmer le mot de passe :</label>
-							<input type="password" id="add-confirm-password" name="password" placeholder="Confirmer votre mot de passe" required>
+							<label for="confirm-password">Confirm password :</label>
+							<input type="password" id="add-confirm-password" name="password" placeholder="Confirm your password" required>
 						</div>
 						<button type="submit" class="connexion">Sign In</button>
-						<button class="connexion" id="alreadyHaveAccountButton_id">Déjà un compte ?</button>
+						<button class="connexion" id="alreadyHaveAccountButton_id">Already have an account?</button>
 					</form>
 				</div>
 			</div>
