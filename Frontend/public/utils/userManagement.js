@@ -24,6 +24,7 @@ async function changeProfilePicture() {
 				// Create FormData object to send the file
 				const formData = new FormData();
 				formData.append("profilePicture", file);
+				formData.append("userId", userId);
 				
 				try {
 					// Get the accessToken from sessionStorage
@@ -37,7 +38,7 @@ async function changeProfilePicture() {
 					const response = await fetch("/api/users/update-profile-picture", {
 						method: "POST",
 						body: formData,
-						body: JSON.stringify({ userId }),
+						contentType: "multipart/form-data",
 						headers: {
 							"Authorization": `Bearer ${accessToken}`
 						}

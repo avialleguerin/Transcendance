@@ -3,6 +3,7 @@ import Fastify from "fastify";
 import { initDb } from "./utils/db.js";
 import jwt from "@fastify/jwt";
 import cookie from "@fastify/cookie";
+import fastifyMultipart from 'fastify-multipart';
 // Pages
 import routes from "./routes/routes.js"
 import { redisClient } from './utils/redis.js';
@@ -10,10 +11,15 @@ import { redisModel } from './models/redisModel.js';
 
 await redisClient.connect();
 
+
 export const fastify = Fastify({ logger: true })
-fastify.decorate('redis', redisClient);
-routes(fastify);
-initDb();
+
+await fastify.register(fastifyMultipart, {
+	attachFieldsToBody: true,
+	limits: {
+		fileSize: 5 * 1024 * 1024 // 5MB limite de taille par exemple
+	}
+});
 
 await fastify.register(jwt, {
 	secret: 'supersecretkey', // a changer
@@ -24,7 +30,9 @@ await fastify.register(jwt, {
 });
 
 await fastify.register(cookie);
+fastify.decorate('redis', redisClient);
 fastify.register(routes, { prefix: '/api' })
+initDb();
 
 fastify.decorate('authenticate', async function (request, reply) {
 	try {
@@ -50,8 +58,6 @@ fastify.decorate('authenticate', async function (request, reply) {
 	}
 });
 
-  
-
 /**
  * Main function for run the server
  * @explication Pour Fastify dans docker, il faut ecouter sur toutes les IP, donc: 0.0.0.0
@@ -67,4 +73,3 @@ const start = async () => {
 }
 
 start()
-
