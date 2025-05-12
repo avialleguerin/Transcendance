@@ -22,7 +22,7 @@ export default async function routes (fastify) {
 	fastify.post('/users/verify-2fa', verifyDoubleAuth);
 	fastify.post('/users/activate-2fa', activateDoubleAuth);
 	fastify.put('/users/update-role/:userId', changeRole);
-	fastify.put('/users/update-profile-picture/:userId', changeProfilePicture);
+	fastify.post('/users/update-profile-picture', changeProfilePicture);
 	fastify.put('/users/update-profile/:userId', changeProfile);
 	fastify.delete('/users/delete/:userId', unregister);
 	fastify.post('/users/refresh-infos/:userId', refreshInfos);

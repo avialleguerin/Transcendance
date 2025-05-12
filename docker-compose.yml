@@ -78,6 +78,7 @@ services:
       #The API Scripts
       - ./Frontend/utils:/usr/share/nginx/utils:ro
       #old structure
+      - ./Data/uploads:/usr/share/nginx/uploads
       # - ./Frontend/public:/usr/share/nginx/html:ro
       # - ./Frontend/utils:/usr/share/nginx/utils:ro
       # - ./Frontend3d/public:/usr/share/nginx/3d:ro

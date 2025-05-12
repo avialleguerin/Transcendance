@@ -14,36 +14,66 @@
 // });
 
 async function changeProfilePicture() {
-	document.getElementById("profile_photo_input").addEventListener("change", (e) => {
-		const file = e.target.files[0];
-		if (file) {
-			console.log("Nom original :", file.name);
-	
-			// Exemple : créer un nouveau File avec un nouveau nom
-			const newName = "nouveau_nom_" + file.name;
-			const newFile = new File([file], newName, { type: file.type });
-	
-			// Tu peux ensuite envoyer newFile via FormData ou l'utiliser comme besoin
-			const formData = new FormData();
-			formData.append("profilePicture", newFile);
-	
-			// Exemple d'upload :
-			fetch("/api/users/profile_picture", {
-				method: "PUT",
-				body: formData
-			})
-			.then(response => response.json())
-			.then(data => console.log("Upload réussi :", data))
-			.catch(err => console.error("Erreur d'upload :", err));
-	
-			// Pour afficher l'image dans le conteneur :
-			const reader = new FileReader();
-			reader.onload = (event) => {
-				document.getElementById("profile_photo_circle").style.backgroundImage = `url(${event.target.result})`;
-			};
-			reader.readAsDataURL(newFile);
-		}
-	});
+	const profilePhotoInput = document.getElementById("profile_photo_input");
+	if (profilePhotoInput) {
+		profilePhotoInput.addEventListener("change", async (e) => {
+			const file = e.target.files[0];
+			if (file) {
+				console.log("File selected:", file.name);
+				
+				// Create FormData object to send the file
+				const formData = new FormData();
+				formData.append("profilePicture", file);
+				formData.append("userId", userId);
+				
+				try {
+					// Get the accessToken from sessionStorage
+					const accessToken = sessionStorage.getItem("accessToken");
+					if (!accessToken) {
+						console.error("No access token available");
+						return;
+					}
+					
+					// Send the file to the server
+					const response = await fetch("/api/users/update-profile-picture", {
+						method: "POST",
+						body: formData,
+						contentType: "multipart/form-data",
+						headers: {
+							"Authorization": `Bearer ${accessToken}`
+						}
+					});
+					
+					const data = await response.json();
+					
+					if (response.ok) {
+						console.log("Profile picture updated successfully:", data);
+						
+						// Update the profile picture in the UI
+						const circle = document.getElementById("profile_photo_circle");
+						
+						// Read the file and display it
+						const reader = new FileReader();
+						reader.onload = (event) => {
+							circle.style.backgroundImage = `url(${event.target.result})`;
+							circle.style.backgroundSize = "cover";
+							circle.style.backgroundPosition = "center";
+						};
+						reader.readAsDataURL(file);
+						
+						// Show success message
+						alert("Profile picture updated successfully!");
+					} else {
+						console.error("Error updating profile picture:", data.error || data.message);
+						alert("Failed to update profile picture: " + (data.error || data.message));
+					}
+				} catch (err) {
+					console.error("Error uploading profile picture:", err);
+					alert("An error occurred while uploading the profile picture");
+				}
+			}
+		});
+	}
 }
 
 // async function changeProfilePicture(userId) {

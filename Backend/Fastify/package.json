@@ -8,6 +8,7 @@
     "better-sqlite3-multiple-ciphers": "^11.9.1",
     "fastify": "^5.2.1",
     "node-vault": "^0.10.2",
+    "fastify-multipart": "^5.4.0",
     "qrcode": "^1.5.4",
     "redis": "^4.7.0",
     "speakeasy": "^2.0.0"

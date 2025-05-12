@@ -4,6 +4,10 @@ import { hashPassword, verifyPassword } from '../utils/hashUtils.js'
 import { redisModel } from '../models/redisModel.js'
 import speakeasy from 'speakeasy'
 import qrcode from 'qrcode'
+import fs from 'fs';
+import path from 'path';
+
+
 
 const SECRET_LENGHT = 30
 
@@ -36,6 +40,7 @@ export async function getUserProfile(request, reply) {
 
 	try {
 		const user = userModel.getUserById(userId)
+		const imgUrl = `uploads/${user.profile_picture}`
 		if (!user)
 		{
 			console.error("❌ User not found")
@@ -43,7 +48,7 @@ export async function getUserProfile(request, reply) {
 		}
 
 		console.log("✅ Utilisateur récupéré :", user)
-		return reply.send({ user })
+		return reply.send({ user, profile_picture: imgUrl })
 	} catch (error) {
 		console.error('\x1b[31m%s\x1b[0m', "Erreur dans getUserProfile:", error)
 		reply.code(500).send({ error: 'Internal Server Error' })
@@ -271,24 +276,32 @@ export async function changeProfile(request, reply) {
 }
 
 export async function changeProfilePicture(request, reply) {
-	const { userId, profilePicture } = request.body
+	const { formData } = request.body
 	try {
-		const user = userModel.getUserById(userId)
-		if (user){
-			userModel.updateProfilePicture(userId, profilePicture)
-			const updateUser = userModel.getUserById(userId)
-			reply.code(200)
-			
-			return reply.send({
-				userId: updateUser.userId,
-				username: updateUser.username,
-				email: updateUser.email,
-				role: updateUser.profile_picture,
-				success: true
-			})
+		const { userId } = formData
+		const file = formData.profilePicture
+		if (!userId) {
+			return reply.code(400).send({ success: false, error: 'User ID is required' })
 		}
-		else
-		return reply.code(404).send({ success: false, error: 'User not found' })
+		
+		const user = userModel.getUserById(userId)
+		if (!user) {
+			return reply.code(404).send({ success: false, error: 'User not found' })
+		}
+
+		const fileExtension = path.extname(file.filename)
+		const newFileName = `${user.username}_profile_${Date.now()}${fileExtension}`
+		const uploadsDir = path.join(process.cwd(), 'uploads')
+
+		if (!fs.existsSync(uploadsDir)) {
+			fs.mkdirSync(uploadsDir, { recursive: true })
+		}
+
+		const filePath = path.join(uploadsDir, newFileName)
+		await file.pipe(fs.createWriteStream(filePath))
+		userModel.updateProfilePicture(userId, file.name)
+
+		return reply.code(200).send({ success: true, message: 'Profile picture updated successfully' })
 } catch (err) {
 		return reply.code(500).send({ error: err.message })
 	}

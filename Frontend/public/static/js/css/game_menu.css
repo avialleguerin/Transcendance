@@ -317,7 +317,7 @@
     align-items: center;
     gap: 10px;
     position: absolute;
-    transform: translate(150%, 150%);
+    transform: translate(150%, 0%);
 }
 
 .fa_selector p {
