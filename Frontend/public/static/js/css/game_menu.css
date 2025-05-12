@@ -1280,6 +1280,120 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
     align-items: center;
 }
 
+.option {
+    right: 2%;
+    top: 13%;
+    transform: translate(-50%, -50%);
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    cursor: pointer;
+    background-color: #a5a5a5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-color: #a5a5a5;
+    visibility:  visible;
+}
+
+.option img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.option_deconnect {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: 55%;
+    display: flex
+;
+    justify-content: center;
+    /* align-items: center; */
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3sease;
+    background-color: rgb(55 55 55 / 90%);
+    border: 2px solid #767676;
+}
+
+.option_deconnect_content {
+    display: flex
+;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    /* justify-content: center; */
+    /* padding-top: 20px; */
+    overflow-y: auto;
+}
+
+.option_deconnect_content h1 {
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgb(0, 0, 0);
+    text-align: center;
+    font-size: 1.2vw;
+    position: relative;
+    font-family: 'Black Ops One', sans-serif;
+}
+
+.option_deconnect_btn {
+    font-size: 0.7vw;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+    border: 2px solid #44444400;
+    background-color: transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    background-image: url("../../../srcs/game/assets/image/boutton.svg");
+    background-size: 100% auto;
+    background-position: center;
+    background-repeat: no-repeat;
+    line-height: 4vh;
+
+    /* Ajout de dimensions fixes */
+    width: 120px;  /* Largeur fixe */
+    height: 70px;  /* Hauteur fixe */
+    display: flex; /* Pour aider au centrage du texte */
+    justify-content: center; /* Centre horizontalement */
+    align-items: center; /* Centre verticalement */
+
+    position: absolute;
+    top : 65%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+}
+
+.option_deconnected_btn_back {
+    position: absolute;
+    top: 0%;
+    /* left: 50%; */
+    right: 1%;
+    /* transform: translate(-50%, -50%); */
+    width: 12%;
+    height: 15%;
+    display: flex
+;
+    justify-content: center;
+    align-items: center;
+    color: rgb(0, 0, 0);
+    font-family: 'Black Ops One', sans-serif;
+    z-index: 100;
+    background-color: aqua;
+}
+
+.option_deconnect.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
 
 .parametres_jeu .parrametres_profile {
     position: absolute;
@@ -1702,7 +1816,12 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
     color: white;
     font-size: 0.8vw;
     font-weight: bold;
-    transform: translate(-14px, 14px);
+    transform: translate(-31px, 14px);
+}
+
+.btn_tournament a:hover {
+    color: gray;
+
 }
 
 .btn_platformer {
@@ -1740,6 +1859,11 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
     transform: translate(-30px, 14px);
 }
 
+.btn_platformer a:hover {
+    color: gray;
+
+}
+
 .btn_deconnect_btn {
     padding: 20px 40px;
     font-size: 0.5vw;
@@ -1767,3 +1891,10 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
     left: 50%;
     transform: translate(-193%, 90%);
 }
+
+.btn_deconnect_btn a:hover {
+    color: gray;
+
+}
+
+
