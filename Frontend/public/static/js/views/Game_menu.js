@@ -47,8 +47,8 @@ export default class extends AbstractView {
 		<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 		<div class="view1" id="view1">
 			<div class="view1-content">
-				<button id="view1_btn" class="btn">MODE DE JEUX</button>
-				<button id="settings_btn" class="btn">PARAMETRES</button>
+				<button id="view1_btn" class="btn">GAME MODE</button>
+				<button id="settings_btn" class="btn">SETTINGS</button>
 			</div>
 		</div>
 		<div class="back-home" id="back-home">
@@ -56,16 +56,16 @@ export default class extends AbstractView {
 		</div>
 			<div id="container" class="container_menu">
 				<button id="btn_jouer">
-					<h1>JOUER</h1>
+					<h1>PLAY</h1>
 				</button>
 				<div class="view2" id="view2">
 					<div class="view2-content">
-						<h1>CHOISIS TON MODE DE JEU</h1>
+						<h1>CHOOSE YOUR GAME MODE</h1>
 						<div id="game_mode_btn" class="game_mode_btn">
 							<button id="solo" class="btn">SOLO</button>
-							<button id="multiplayer" class="btn">MULTIJOUEUR</button>
+							<button id="multiplayer" class="btn">MULTIPLAYER</button>
 							<button id="tournament_view" class="btn_tournament">
-							<a href="/tournament" class="nav-link" data-link>TOURNOI</a>
+							<a href="/tournament" class="nav-link" data-link>TOURNAMENT</a>
 							</button>
 							<button id="platformer_view" class="btn_platformer">
 								<a href="/PlatformView" class="nav-link" data-link>PLATFORMER</a>
@@ -75,7 +75,7 @@ export default class extends AbstractView {
 				</div>
 				<div class="view3" id="view3">
 					<div class="view3-content">
-						<h1>MODE DE JEUX EN SOLO</h1>
+						<h1>SOLO GAME MODE</h1>
 						<div id="game_mode_btn" class="game_mode_btn">
 							<button id="prepar_game_1v1" class="btn">1v1</button>
 							<button id="prepar_gane_ai" class="btn">ai</button>
@@ -85,7 +85,7 @@ export default class extends AbstractView {
 				</div>
 				<div class="view4" id="view4">
 					<div class="view4-content">
-						<h1>MODE DE JEUX MULTIPLAYER</h1>
+						<h1>MULTIPLAYER GAME MODE</h1>
 						<div id="game_mode_btn" class="game_mode_btn">
 							<button id="prepar_game_multi" class="btn">2v2</button>
 						</div>
@@ -98,70 +98,81 @@ export default class extends AbstractView {
 
 				<div class="view5" id="view5">
 					<div class="view5-content">
-						<h1>PARAMETRES</h1>
+						<h1>SETTINGS</h1>
 						<div id="select_parametres" class="select_parametres">
 							<button id="profile_parrametre_btn" class="btn">PROFILE</button>
-							<button id="parrametre_jeux_btn" class="btn">JEU</button>
+							<button id="parrametre_jeux_btn" class="btn">GAME</button>
+							<button class="option" id="option_btn">
+								<img src="../../../srcs/game/assets/image/menu.svg" alt="leave">
+							</button>
 						</div>
+					</div>
+				</div>
+
+				<div class="option_deconnect" id="option_deconnect">
+					<div class="option_deconnect_content">
+						<h1>OPTIONS</h1>
+						<button id="deconnect_btn" class="option_deconnect_btn">LOG OUT</button>
+						<button id="option_deconnected_btn" class="option_deconnected_btn_back">X</button>
 					</div>
 				</div>
 
 
 				<div class="parametres_jeu" id="parametres_jeu">
 					<div class="parametres_jeu_content" id="parametre_jeux_content">
-						<h1>PARAMETRES DE JEU</h1>
+						<h1>GAME SETTINGS</h1>
 						<h2>PONG</h2>
 						<div class="parametre_mode_jeu">
 							<div class="mode_de_jeu_solo_parametre">
-								<h3>Mode de jeu en solo</h3>
-							
-								<div class="joueur_touch">
-									<div class="joueur" id="joueur1">
-										<p>Joueur 1</p>
-										<div class="controls">
-											<p>Deplacement : W / S</p>
-											<p>PowerUP : Z / X / C</p>
-										</div>
+							<h3>Solo Game Mode</h3>
+
+							<div class="joueur_touch">
+								<div class="joueur" id="joueur1">
+									<p>Player 1</p>
+									<div class="controls">
+										<p>Movement: W / S</p>
+										<p>PowerUP: Z / X / C</p>
 									</div>
-									<div class="joueur" id="joueur2">
-										<p>Joueur 2</p>
-										<div class="controls">
-											<p>Deplacement : ⬆  / ⬇</p>
-											<p>PowerUP : 1 / 2 / 3</p>
-										</div>
+								</div>
+								<div class="joueur" id="joueur2">
+									<p>Player 2</p>
+									<div class="controls">
+										<p>Movement: ⬆ / ⬇</p>
+										<p>PowerUP: 1 / 2 / 3</p>
 									</div>
 								</div>
 							</div>
 
 							<div class="mode_de_jeu_multi_parametre">
-								<h3>Mode de jeu en multijoueur</h3>
+								<h3>Multiplayer Game Mode</h3>
 								<div class="joueur_touch">
 									<div class="joueur" id="joueur1">
-										<p>Joueur 1</p>
+										<p>Player 1</p>
 										<div class="controls">
-											<p>Deplacement : W / S</p>
-											<p>PowerUP : Z / X / C</p>
+											<p>Movement: W / S</p>
+											<p>PowerUP: Z / X / C</p>
 										</div>
 									</div>
 									<div class="joueur" id="joueur2">
-										<p>Joueur 2</p>
+										<p>Player 2</p>
 										<div class="controls">
-											<p>Deplacement : E  / D</p>
-											<p>PowerUP : Z / X / C</p>
+											<p>Movement: E / D</p>
+											<p>PowerUP: Z / X / C</p>
 										</div>
 									</div>
 									<div class="joueur" id="joueur3">
-										<p>Joueur 3</p>
+										<p>Player 3</p>
 										<div class="controls">
-											<p>Deplacement : O  / L</p>
-											<p>PowerUP : 1 / 2 / 3</p>
+											<p>Movement: O / L</p>
+											<p>PowerUP: 1 / 2 / 3</p>
 										</div>
 									</div>
 									<div class="joueur" id="joueur4">
-									<p>Joueur 4</p>
-									<div class="controls">
-										<p>Deplacement : ⬆  / ⬇</p>
-										<p>PowerUP : 1 / 2 / 3</p>
+										<p>Player 4</p>
+										<div class="controls">
+											<p>Movement: ⬆ / ⬇</p>
+											<p>PowerUP: 1 / 2 / 3</p>
+										</div>
 									</div>
 								</div>
 								</div>
@@ -172,11 +183,11 @@ export default class extends AbstractView {
 
 				<div class="parrametres_profile" id="parametres_profile">
 					<div class="parametres_profile_content">
-						<h1>PARAMETRES DU PROFIL</h1>
+						<h1>PROFILE SETTINGS</h1>
 						<form id="modif_profil" class="modif_profile" onsubmit="accessProfileInfo(event)">
-							<label for="mdp">Mot de passe</label>
+							<label for="mdp">Password</label>
 							<input type="password" id="password" name="password" placeholder="Password" required>
-							<button type="submit" class="btn_valider_mdp">Valider</button>
+							<button type="submit" class="btn_valider_mdp">Validate</button>
 						</form>
 						<div class="profile_param_unlocked" id="profile_param_unlocked_id">
 							<div class="photo_profile">
@@ -208,12 +219,12 @@ export default class extends AbstractView {
 									<input type="password" id="confirm_change_password" name="confirm_password" placeholder="******">
 								</div>
 								<div class="btn_deconnect">
-									<button id="deconnect_btn" class="btn_deconnect_btn" onclick="logout()">Deconnexion</button>
+									<button id="deconnect_btn" class="btn_deconnect_btn" onclick="logout()">Logout</button>
 								</div>
 								<div id="fa_selector" class="fa_selector">
 									<p>2FA :<span id="active_fa" class="active_fa"></span></p>
 								</div>
-								<button id="valid_profile_info" class="valid_profile_info_btn">Valider</button>
+								<button id="valid_profile_info" class="valid_profile_info_btn">Validate</button>
 							</form>
 						</div>
 					</div>
@@ -222,34 +233,35 @@ export default class extends AbstractView {
 
 
 
-				<div class="view6" id="view6">
-					<div class="view6-content">
-						<h1 id="custom_ta_game">CUSTOMISE TA GAME</h1>
-						<div class="powerUP">
-							<p>PowerUP :<span id="power_up_info_id" class="power_up_info"></span><span id="powerUP" class="active_powerUP"></span></p>
-							<div id="power_selector" class="power_selector">
-								<div class="powerUP_number">
-									<p>1</p>
-									<span id="number_powerUP_1" class="number_powerUP"></span>
-								</div>
-								<div class="powerUP_number">
-									<p>3</p>
-									<span id="number_powerUP_3" class="number_powerUP"></span>
-								</div>
-								<div class="powerUP_number">
-									<p>5</p>
-									<span id="number_powerUP_5" class="number_powerUP"></span>
-								</div>
-							</div>
+			<div class="view6" id="view6">
+			<div class="view6-content">
+				<h1 id="custom_ta_game">CUSTOMIZE YOUR GAME</h1>
+				<div class="powerUP">
+					<p>PowerUP: <span id="power_up_info_id" class="power_up_info"></span><span id="powerUP" class="active_powerUP"></span></p>
+					<div id="power_selector" class="power_selector">
+						<div class="powerUP_number">
+							<p>1</p>
+							<span id="number_powerUP_1" class="number_powerUP"></span>
 						</div>
-						<div class="skin">
-							<p>Skin Personnalise :<span id="skin_perso" class="skin_perso"</span></p>
+						<div class="powerUP_number">
+							<p>3</p>
+							<span id="number_powerUP_3" class="number_powerUP"></span>
 						</div>
-						<button id="solo_1v1_btn" class="btn">
-							<a href="/solo_game_1v1" class="nav-link" data-link>Lancer la partie</a>
-						</button>
+						<div class="powerUP_number">
+							<p>5</p>
+							<span id="number_powerUP_5" class="number_powerUP"></span>
+						</div>
 					</div>
 				</div>
+				<div class="skin">
+					<p>Custom Skin: <span id="skin_perso" class="skin_perso"></span></p>
+				</div>
+				<button id="solo_1v1_btn" class="btn">
+					<a href="/solo_game_1v1" class="nav-link" data-link>Start Game</a>
+				</button>
+			</div>
+		</div>
+		
 				<div class="view7" id="view7">
 					<div class="view7-content">
 						<h1>CUSTOMISE TA GAME CONTRE L'IA</h1>
@@ -280,9 +292,9 @@ export default class extends AbstractView {
 				</div>
 				<div class="view8" id="view8">
 					<div class="view8-content">
-						<h1 id="custom_ta_game_multi">CUSTOMISE TA GAME EN MULTI</h1>
+						<h1 id="custom_ta_game_multi">CUSTOMIZE YOUR MULTIPLAYER GAME</h1>
 						<div class="powerUP">
-							<p>PowerUP :<span id="power_up_info_id_multi" class="power_up_info"></span><span id="powerUP_multi" class="active_powerUP"></span></p>
+							<p>PowerUP: <span id="power_up_info_id_multi" class="power_up_info"></span><span id="powerUP_multi" class="active_powerUP"></span></p>
 							<div id="power_selector_game_multi" class="power_selector">
 								<div class="powerUP_number">
 									<p>1</p>
@@ -299,10 +311,10 @@ export default class extends AbstractView {
 							</div>
 						</div>
 						<div class="skin">
-							<p>Skin Personnalise :<span id="skin_perso_game_multi" class="skin_perso"</span></p>
+							<p>Custom Skin: <span id="skin_perso_game_multi" class="skin_perso"></span></p>
 						</div>
 						<button id="multiplayer_btn" class="btn">
-							<a href="/multi_player_game" class="nav-link" data-link>Lancer la partie</a>
+							<a href="/multi_player_game" class="nav-link" data-link>Start Game</a>
 						</button>
 					</div>
 				</div>
@@ -317,103 +329,104 @@ export default class extends AbstractView {
 				<button id="back_to_menu_view8" class="btn_back">BACK</button>
 			</div>
 			<div class="choose_your_skin" id="choose_your_skin">
-				<h1>PERSONNALISE TON SKIN</h1>
+				<h1>CUSTOMIZE YOUR SKIN</h1>
 				<div class="player1">
 					<button class="switch_skin_left" id="switch_skn_left_id1"></button>
 					<button class="switch_skin_right" id="switch_skn_right_id1"></button>
-					<p>Joueur 1</p>
+					<p>Player 1</p>
 				</div>
 				<div class="player2">
 					<button class="switch_skin_left" id="switch_skn_left_id2"></button>
 					<button class="switch_skin_right" id="switch_skn_right_id2"></button>
-					<p>Joueur 2</p>
+					<p>Player 2</p>
 				</div>
-				<button id="valide_ton_skin" class="btn">Valider</button>
+				<button id="valide_ton_skin" class="btn">Confirm</button>
 			</div>
 
 			<div class="choose_your_skin_game_multi" id="choose_your_skin_game_multi">
-				<h1>PERSONNALISE TON SKIN</h1>
+				<h1>CUSTOMIZE YOUR SKIN</h1>
 				<div class="player1_game_multi">
 					<button class="switch_skin_left" id="switch_skn_left_id1_game_multi"></button>
 					<button class="switch_skin_right" id="switch_skn_right_id1_game_multi"></button>
-					<p>Joueur 1</p>
+					<p>Player 1</p>
 				</div>
 				<div class="player2_game_multi">
 					<button class="switch_skin_left" id="switch_skn_left_id2_game_multi"></button>
 					<button class="switch_skin_right" id="switch_skn_right_id2_game_multi"></button>
-					<p>Joueur 2</p>
+					<p>Player 2</p>
 				</div>
 				<div class="player3_game_multi">
 					<button class="switch_skin_left" id="switch_skn_left_id3_game_multi"></button>
 					<button class="switch_skin_right" id="switch_skn_right_id3_game_multi"></button>
-					<p>Joueur 3</p>
+					<p>Player 3</p>
 				</div>
 				<div class="player4_game_multi">
 					<button class="switch_skin_left" id="switch_skn_left_id4_game_multi"></button>
 					<button class="switch_skin_right" id="switch_skn_right_id4_game_multi"></button>
-					<p>Joueur 4</p>
+					<p>Player 4</p>
 				</div>
-				<button id="valide_ton_skin_game_multi" class="btn">Valider</button>
+				<button id="valide_ton_skin_game_multi" class="btn">Confirm</button>
 			</div>
 			<div id="container_info_power_up" class="container_info_power_up">
-				<div class="text_powerUP">
-					<h1>Power-UP</h1>
-					<p class="explication_general">Le Power-Up est un bonus qui te donne un avantage sur ton adversaire. En activant cette option, tu commenceras la partie avec au moins un Power-Up de chaque type. Tu peux également personnaliser ce nombre et en obtenir trois ou cinq de chaque.</p>
-					<p class="explication_powerUP_grenade">Le Power-Up Grenade Flash te permet de lancer une grenade qui aveuglera ton adversaire. Mais attention ! Son fonctionnement est simple : elle obscurcit entièrement l’écran de jeu, ce qui signifie que même celui qui la lance est ébloui.</p>
-					<p class="explication_powerUP_teammate">Le Power-Up Coéquipier te permet d'appeler un nouveau joueur dans la partie pour une courte durée. Tu peux le déplacer avec E/D pour le joueur 1 et O/L pour le joueur 2.</p>
-					<p class="explication_powerUP_inverse">Le Power-Up Inverse te permet d'inverser les contrôles de ton adversaire pendant une courte durée.</p>
-					<div class="delay_powerUP_1">
-						<img src="../../../srcs/game/assets/image/timer-reset.svg" alt="delay">
-						<p>DELAIS DE RECUPERATION                  : 10s</p>
-					</div>
-					<div class="delay_powerUP_2">
-						<img src="../../../srcs/game/assets/image/timer-reset.svg" alt="delay">
-						<p>DELAIS DE RECUPERATION : 15s</p>
-					</div>
-					<div class="delay_powerUP_3">
-						<img src="../../../srcs/game/assets/image/timer-reset.svg" alt="delay">
-						<p>DELAIS DE RECUPERATION : 10s</p>
-					</div>
+			<div class="text_powerUP">
+				<h1>Power-UP</h1>
+				<p class="explication_general">The Power-Up is a bonus that gives you an advantage over your opponent. By enabling this option, you will start the match with at least one Power-Up of each type. You can also customize this amount and start with three or five of each.</p>
+				<p class="explication_powerUP_grenade">The Flash Grenade Power-Up allows you to throw a grenade that will blind your opponent. But be careful! It works in a simple way: it completely darkens the game screen, meaning even the one who throws it gets blinded.</p>
+				<p class="explication_powerUP_teammate">The Teammate Power-Up lets you call in a new player to join the game for a short time. You can move them using E/D for player 1 and O/L for player 2.</p>
+				<p class="explication_powerUP_inverse">The Reverse Power-Up lets you invert your opponent’s controls for a short duration.</p>
+				<div class="delay_powerUP_1">
+					<img src="../../../srcs/game/assets/image/timer-reset.svg" alt="delay">
+					<p>COOLDOWN TIME: 10s</p>
 				</div>
-				<div class="container_image_powerUP">
-					<img src="../../../srcs/game/assets/image/grenade_no_bg.png" alt="grenade" class="grenade">
-					<img src="../../../srcs/game/assets/image/teammate_no_bg.png" alt="teammate" class="teammate">
-					<img src="../../../srcs/game/assets/image/reverse_no_bg.png" alt="inverse_player" class="inverse_player">
+				<div class="delay_powerUP_2">
+					<img src="../../../srcs/game/assets/image/timer-reset.svg" alt="delay">
+					<p>COOLDOWN TIME: 15s</p>
 				</div>
-				<div id="exit_powerUP_info" class="exit_powerUP_info">
-					<button id="exit_powerUP_info_btn" class="btn">
-						X
-					</button>
+				<div class="delay_powerUP_3">
+					<img src="../../../srcs/game/assets/image/timer-reset.svg" alt="delay">
+					<p>COOLDOWN TIME: 10s</p>
 				</div>
 			</div>
+			<div class="container_image_powerUP">
+				<img src="../../../srcs/game/assets/image/grenade_no_bg.png" alt="grenade" class="grenade">
+				<img src="../../../srcs/game/assets/image/teammate_no_bg.png" alt="teammate" class="teammate">
+				<img src="../../../srcs/game/assets/image/reverse_no_bg.png" alt="inverse_player" class="inverse_player">
+			</div>
+			<div id="exit_powerUP_info" class="exit_powerUP_info">
+				<button id="exit_powerUP_info_btn" class="btn">
+					X
+				</button>
+			</div>
+		</div>
+		
 
 
 			<div id="container_info_power_up_multi" class="container_info_power_up">
-				<div class="text_powerUP">
-					<h1>Power-UP</h1>
-					<p class="explication_general">Le Power-Up est un bonus qui te donne un avantage sur ton adversaire. En activant cette option, tu commenceras la partie avec au moins un Power-Up de chaque type. Tu peux également personnaliser ce nombre et en obtenir trois ou cinq de chaque.</p>
-					<p class="explication_powerUP_grenade_multi">Le Power-Up Grenade Flash te permet de lancer une grenade qui aveuglera ton adversaire. Mais attention ! Son fonctionnement est simple : elle obscurcit entièrement l’écran de jeu, ce qui signifie que même celui qui la lance est ébloui.</p>
-					<p class="explication_powerUP_freeze">Le Power-Up Freeze permet de rendre immobile l'equipe adverse pendant un cour instant.</p>
-					<div class="delay_powerUP_1_multi">
-						<img src="../../../srcs/game/assets/image/timer-reset.svg" alt="delay">
-						<p>DELAIS DE RECUPERATION : 10s</p>
-					</div>
-					<div class="delay_powerUP_2_multi">
-						<img src="../../../srcs/game/assets/image/timer-reset.svg" alt="delay">
-						<p>DELAIS DE RECUPERATION : 10s</p>
-					</div>
+			<div class="text_powerUP">
+				<h1>Power-UP</h1>
+				<p class="explication_general">The Power-Up is a bonus that gives you an advantage over your opponent. By enabling this option, you will start the match with at least one Power-Up of each type. You can also customize this amount and start with three or five of each.</p>
+				<p class="explication_powerUP_grenade_multi">The Flash Grenade Power-Up lets you throw a grenade that blinds your opponent. But be careful! It works simply: it completely darkens the game screen, meaning even the one who throws it is blinded.</p>
+				<p class="explication_powerUP_freeze">The Freeze Power-Up temporarily immobilizes the opposing team.</p>
+				<div class="delay_powerUP_1_multi">
+					<img src="../../../srcs/game/assets/image/timer-reset.svg" alt="delay">
+					<p>COOLDOWN TIME: 10s</p>
 				</div>
-				<div class="container_image_powerUP_multi">
-					<img src="../../../srcs/game/assets/image/grenade_no_bg.png" alt="grenade" class="grenade">
-					<img src="../../../srcs/game/assets/image/freeze_no_bg.png" alt="freeze" class="freeze">
-				</div>
-				<div id="exit_powerUP_info_multi" class="exit_powerUP_info">
-					<button id="exit_powerUP_info_btn_multi" class="btn">
-						X
-					</button>
+				<div class="delay_powerUP_2_multi">
+					<img src="../../../srcs/game/assets/image/timer-reset.svg" alt="delay">
+					<p>COOLDOWN TIME: 10s</p>
 				</div>
 			</div>
+			<div class="container_image_powerUP_multi">
+				<img src="../../../srcs/game/assets/image/grenade_no_bg.png" alt="grenade" class="grenade">
+				<img src="../../../srcs/game/assets/image/freeze_no_bg.png" alt="freeze" class="freeze">
+			</div>
+			<div id="exit_powerUP_info_multi" class="exit_powerUP_info">
+				<button id="exit_powerUP_info_btn_multi" class="btn">
+					X
+				</button>
+			</div>
 		</div>
+	
 		`;
 	}
 
@@ -1208,6 +1221,31 @@ export default class extends AbstractView {
 			console.log('Platformer button clicked');
 			handleViewTransitions("platformer", "vue2");
 		});
+
+		/***********************************************************************/
+		/*************************Option deconnected****************************/
+		/***********************************************************************/
+
+		const option_deconnect = document.getElementById('option_deconnect');
+		const option_btn = document.getElementById('option_btn');
+		const option_deconnected_btn = document.getElementById('option_deconnected_btn');
+
+		option_btn.addEventListener('click', () => {
+			console.log('Option deconnect clicked');
+			option_deconnect.classList.add('active');
+			view5.classList.remove('active');
+			btn_back_home.classList.remove('active');
+			view1.classList.remove('active');
+		});
+
+		option_deconnected_btn.addEventListener('click', () => {
+			console.log('Option deconnect back clicked');
+			option_deconnect.classList.remove('active');
+			view5.classList.add('active');
+			btn_back_home.classList.add('active');
+			view1.classList.add('active');
+		});
+
 	}
 }
 
