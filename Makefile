@@ -32,6 +32,7 @@ build:
 
 down:
 	@docker compose down
+	@rm -rf ./Frontend/dist
 
 re:
 	@make down

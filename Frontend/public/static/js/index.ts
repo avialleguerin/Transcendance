@@ -20,7 +20,7 @@ interface RouteMatch {
 let leave_game_var: boolean = false;
 
 const navigateTo = (url: string): void => {
-  history.pushState(null, null, url);
+  history.pushState(null, "", url);
   router();
 };
 

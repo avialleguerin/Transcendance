@@ -4,12 +4,11 @@
     "module": "ES2020",
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "sourceMap": true,
     "outDir": "./dist",
     "rootDir": "./public/static/js",
-    "strict": true,
-    "sourceRoot": "/static/js/",
-    "mapRoot": "./sourcemaps" // define where the source maps are generated
+    "inlineSourceMap": true,
+    "inlineSources": true,
+    "strict": true
   },
   "include": ["public/static/js/**/*.ts"],
   "exclude": ["node_modules"]
