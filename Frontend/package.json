@@ -1,0 +1,8 @@
+{
+  "name": "transcendance-frontend",
+  "version": "1.0.0",
+  "description": "Frontend TypeScript for Transcendance",
+  "dependencies": {
+    "typescript": "^5.3.0"
+  }
+}

@@ -15,7 +15,6 @@
 ####################################
 
 services:
-
   redis:
     image: redis:latest
     container_name: redis
@@ -41,10 +40,21 @@ services:
       - vault
     volumes:
       - ./Backend/Fastify:/app
-      - /app/node_modules    # Préserve les modules installés dans le container
+      - /app/node_modules   # Préserve les modules installés dans le container
       - ./Data/vault_data:/app/vault/data
       - ./Data/sqlite_data:/app/Data/db
+
+  # Devops (Grafana + Prometheus + ELK)
+  # grafana:
+  #   extends:
+  #     file: Devops/docker-compose.yml
+  #     service: grafana
+  #   networks:
+  #     - transcendence-network
   
+
+
+  # Sécurité (Vault + SonarQube + Modsecurity)
   nginx:
     container_name: nginx
     build:
@@ -56,43 +66,30 @@ services:
       - "8100:8100"
     depends_on:
       - fastify
-      - typescript-compiler
     environment:
       - NGINX_ENVSUBST_TEMPLATE_DIR=off
     volumes:
       - ./Security/Nginx/conf.d:/etc/nginx/conf.d
       - ./Security/ModSecurity:/etc/modsecurity.d
-      - ./Frontend/public:/usr/share/nginx/html:ro  #The Main Website
-      - ./Frontend/admin:/usr/share/nginx/admin:ro  #The Admin Website
-      - ./Frontend/utils:/usr/share/nginx/utils:ro  #The API Scripts
+      #The Main Website
+      - ./Frontend/public:/usr/share/nginx/html:ro
+      #The Admin Website
+      - ./Frontend/admin:/usr/share/nginx/admin:ro
+      #The API Scripts
+      - ./Frontend/utils:/usr/share/nginx/utils:ro
+      #old structure
       - ./Data/uploads:/usr/share/nginx/uploads
-      - ./Frontend/dist:/usr/share/nginx/html/static/js  # The compiled JS files
-      - ./Frontend/dist/sourcemaps:/usr/share/nginx/static/js/sourcemaps
-
-  typescript-compiler:
-    image: node:20-alpine
-    container_name: typescript-compiler
-    working_dir: /app
-    command: >
-      sh -c "npm i -g typescript &&
-              npm i &&
-              mkdir -p /app/dist/sourcemaps &&
-              tsc --project /app/tsconfig.json --watch"
-    volumes:
-      - ./Frontend/public:/app/public
-      - ./Frontend/dist:/app/dist
-      - ./Frontend/package.json:/app/package.json
-      - ./Frontend/tsconfig.json:/app/tsconfig.json
-      - /app/node_modules
-    restart: unless-stopped
+      # - ./Frontend/public:/usr/share/nginx/html:ro
+      # - ./Frontend/utils:/usr/share/nginx/utils:ro
+      # - ./Frontend3d/public:/usr/share/nginx/3d:ro
 
   vault:
     image: custom-vault
     container_name: vault
-    restart: always
     build:
       context: ./Security/Vault
       dockerfile: Dockerfile
+    restart: always
     ports:
       - "8200:8200"
     environment:

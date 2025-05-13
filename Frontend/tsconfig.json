@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ES2020",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "rootDir": "./public/static/js",
+    "strict": true,
+    "sourceRoot": "/static/js/",
+    "mapRoot": "./sourcemaps" // define where the source maps are generated
+  },
+  "include": ["public/static/js/**/*.ts"],
+  "exclude": ["node_modules"]
+}
