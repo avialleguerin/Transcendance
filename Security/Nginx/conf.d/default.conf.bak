@@ -10,11 +10,7 @@ server {
 	listen 8080;							# Écoute sur le port HTTP
 	server_name localhost;              # Nom du serveur
 
-
 	# return 301 https://$host$request_uri;  # Redirige toutes les requêtes HTTP vers HTTPS
-
-	
-	#### TEMPORAIRE ###
 	
 	# -----------------------
 	# FRONTEND : Application SPA (Single Page App)
@@ -81,6 +77,30 @@ server {
         proxy_set_header X-Real-IP $remote_addr; # Transmet l'IP réelle du client
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; # IPs en cascade
         proxy_set_header X-Forwarded-Proto $scheme; # Transmet le protocole (http ou https)
+    }
+}
+
+# Encore un serveur HTTP pour le typescript
+server {
+    listen 8300;
+    server_name localhost;
+
+    location / {
+        root /usr/share/nginx/dist/static/js;
+        index index.html;
+        try_files $uri $uri/ /index.html;
+    }
+
+	location /utils/ {
+		alias /usr/share/nginx/utils/;
+	}
+
+    location /api/ {
+        proxy_pass http://fastify:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
 

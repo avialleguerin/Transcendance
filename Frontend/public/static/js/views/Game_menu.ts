@@ -1,13 +1,13 @@
 import AbstractView from "./AbstractView";
-import { startGame, startAI_Game } from "../../../srcs/game/gameplay/babylon";
-import { startMultiGame } from "../../../srcs/game/gameplay/babylon";
-import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera";
-import { init_nb_powerUP_grenadeFlash, reset_powerUP_grenade } from "../../../srcs/game/gameplay/solo/1v1_player/init_powerUP_GrenadeFlash";
-import { init_nb_powerUP_teammate, reset_powerUP_teammate } from "../../../srcs/game/gameplay/solo/1v1_player/init_powerUP_teammate";
-import { init_powerUP_inverse_player, reset_powerUP_inverse_player } from "../../../srcs/game/gameplay/solo/1v1_player/init_powerUP_inverse";
-import { init_nb_powerUP_grenadeFlash_team_player } from "../../../srcs/game/gameplay/multiplayer/2v2_game/init_powerUP_GernadeFlash_multi";
-import { init_powerUP_freeze_Team_player } from "../../../srcs/game/gameplay/multiplayer/2v2_game/init_power_up_freeze";
-import { getValue_leave_game, setLeaveGameVar } from "../index";
+import { startGame, startAI_Game } from "./../../../srcs/game/gameplay/babylon.js";
+import { startMultiGame } from "../../../srcs/game/gameplay/babylon.js";
+import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.js";
+import { init_nb_powerUP_grenadeFlash, reset_powerUP_grenade } from "../../../srcs/game/gameplay/solo/1v1_player/init_powerUP_GrenadeFlash.js";
+import { init_nb_powerUP_teammate, reset_powerUP_teammate } from "../../../srcs/game/gameplay/solo/1v1_player/init_powerUP_teammate.js";
+import { init_powerUP_inverse_player, reset_powerUP_inverse_player } from "../../../srcs/game/gameplay/solo/1v1_player/init_powerUP_inverse.js";
+import { init_nb_powerUP_grenadeFlash_team_player } from "../../../srcs/game/gameplay/multiplayer/2v2_game/init_powerUP_GernadeFlash_multi.js";
+import { init_powerUP_freeze_Team_player } from "../../../srcs/game/gameplay/multiplayer/2v2_game/init_power_up_freeze.js";
+import { getValue_leave_game, setLeaveGameVar } from "../index.js";
 
 let powerUP_nb = 0;
 let powerUP_nb_multi = 0;

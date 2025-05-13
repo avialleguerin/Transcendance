@@ -1,6 +1,6 @@
 import AbstractView from "./AbstractView";
-import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera";
-import { leave_Multiplayer_Game } from "../../../srcs/game/gameplay/babylon";
+import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.js";
+import { leave_Multiplayer_Game } from "../../../srcs/game/gameplay/babylon.js";
 
 export default class Multiplayer_game extends AbstractView {
 	constructor() {

@@ -110,7 +110,8 @@ export default class extends AbstractView {
 		document.getElementById("overlay-teammate-2").classList.toggle("active", nb_powerUP_teammate_player2 === 0);
 	}
 
-	handleKeyPress(event) {
+	handleKeyPress(event: KeyboardEvent) {
+		// Vérifier si la touche est une touche de l'inventaire
 		const key = event.key;
 		
 		if (!(key in this.cooldownTimes)) return;
@@ -137,7 +138,7 @@ export default class extends AbstractView {
 		if (elem) {
 			let currentValue = parseInt(elem.innerHTML, 10);
 			if (currentValue > 0) {
-				elem.innerHTML = currentValue - 1;
+				elem.innerHTML = (currentValue - 1).toString(); //NOTE - jai changer le type pour que ca passe ici
 				
 				console.log(`${key} utilisé, cooldown activé pour ${this.cooldownTimes[key]}ms`);
 				

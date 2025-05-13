@@ -54,6 +54,7 @@ services:
       - "8080:8080"           #80:80 necessite des privilege
       - "8443:443"          # HTTPS
       - "8100:8100"
+      - "8300:8300"          # Typescript
     depends_on:
       - fastify
       - tsengine
@@ -66,15 +67,20 @@ services:
       - ./Frontend/admin:/usr/share/nginx/admin:ro  #The Admin Website
       - ./Frontend/utils:/usr/share/nginx/utils:ro  #The API Scripts
       - ./Data/uploads:/usr/share/nginx/uploads
+      #TMP for Typescript
+      - ./Frontend/public/srcs:/usr/share/nginx/dist/srcs:ro  #The Main Website Typescript
+      - ./Frontend/public/static/js/css:/usr/share/nginx/dist/static/js/css:ro 
+      - ./Frontend/public/static/js/index.css:/usr/share/nginx/dist/static/js/index.css:ro  
+      - ./Frontend/public/index.html:/usr/share/nginx/dist/index.html:ro  
       - ./Frontend/dist:/usr/share/nginx/dist  # The compiled JS files
+      #END for Typescript
 
   tsengine:
     image: node:20-alpine
     container_name: tsengine
     working_dir: /app
     command: >
-      sh -c "npm i -g typescript &&
-              npm i &&
+      sh -c "npm i -g typescript && npm i &&
               mkdir -p /app/dist &&
               tsc --project /app/tsconfig.json --watch"
     volumes:

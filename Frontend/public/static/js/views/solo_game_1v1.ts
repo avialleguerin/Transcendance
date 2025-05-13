@@ -164,7 +164,7 @@ export default class solo_game extends AbstractView {
 		document.getElementById("overlay-inverse-2").classList.toggle("active", nb_powerUP_inverse_player2 === 0);
 	}
 
-	handleKeyPress(event) {
+	handleKeyPress(event: KeyboardEvent) { //NOTE - jai ajouter le type event: KeyboardEvent
 		console.log("dddddddddddddddddddddddddddd");
 		const key = event.key;
 		
@@ -200,7 +200,7 @@ export default class solo_game extends AbstractView {
 		if (elem) {
 			let currentValue = parseInt(elem.innerHTML, 10);
 			if (currentValue > 0) {
-				elem.innerHTML = currentValue - 1;
+				elem.innerHTML = (currentValue - 1).toString(); //NOTE - jai changer le type pour que ca passe ici
 				
 				console.log(`${key} utilisé, cooldown activé pour ${this.cooldownTimes[key]}ms`);
 				
