@@ -27,8 +27,8 @@ export async function init_game_solo(scene) {
             console.log("Balle chargée avec position :", ball.position);
         }
     
-        loadScoreModel(0, "left", true);
-        loadScoreModel(0, "right", false);
+        loadScoreModel(0, true);
+        loadScoreModel(0, false);
         is_init = true;
         
         return { player_1, player_2, ball };

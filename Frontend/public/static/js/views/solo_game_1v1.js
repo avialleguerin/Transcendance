@@ -203,8 +203,8 @@ export default class extends AbstractView {
 	}
 
 	handleKeyPress(event) {
-		console.log("dddddddddddddddddddddddddddd");
-		console.log("Key pressed:", event.key);
+		// console.log("dddddddddddddddddddddddddddd");
+		// console.log("Key pressed:", event.key);
 		const key = event.key;
 
 

@@ -17,7 +17,12 @@ import { init_all_skin } from "./solo/skin/init_skin_perso.js";
 /*****************CREATION DU MOTEUR***************************/ 
 /**************************************************************/
 
-// history.pushState({}, '', '/');
+// if (accessToken && accessToken === undefined) {
+// 	console.log("je suis connecter");
+// 	console.log("je suis laaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+// 	history.pushState({}, '', '/');
+// }
+
 let qualityLevel = 'medium';
 const canvas = document.getElementById('renderCanvas');
 const engine = new BABYLON.Engine(canvas, true, {
@@ -168,12 +173,26 @@ window.scene = new BABYLON.Scene(engine);
 scene.clearColor = new BABYLON.Color4(0, 0, 0, 1);
 scene.blockMaterialDirtyMechanism = true;
 
-window.camera = new BABYLON.FreeCamera("camera", new BABYLON.Vector3(-45.79301951065982, 5.879735371044789, -31.342210947081313), scene);
-camera.rotation = new BABYLON.Vector3(-0.029665280069011667, -2.566387085794712, 0);
+
+const view_main = new BABYLON.Vector3(-45.79301951065982, 5.879735371044789, -31.342210947081313);
+const view_gameMenu = new BABYLON.Vector3(-18.362079870354155, 108.25251269427612, 25.862876364155152);
+
+if(accessToken && accessToken !== undefined) {
+	console.log("je suis connecter");
+	window.camera = new BABYLON.FreeCamera("camera", view_gameMenu, scene);
+	camera.rotation = new BABYLON.Vector3(-0.026913003031959624, -3.125639018159068, 0);
+}
+else {
+	console.log("je suis pas connecter");
+	window.camera = new BABYLON.FreeCamera("camera", view_main, scene);
+	camera.rotation = new BABYLON.Vector3(-0.029665280069011667, -2.566387085794712, 0);
+	history.pushState({}, '', '/');
+}
+
 camera.minZ = 0.1;
 camera.maxZ = 5000;
 camera.attachControl(canvas, true);
-camera.speed = 0.15;
+camera.speed = 1;
 
 const pipeline = new BABYLON.DefaultRenderingPipeline("defaultPipeline", true, scene, [camera]);
 
@@ -238,6 +257,7 @@ create_environment_view1(scene);
 create_environment_view3(scene);
 create_environment_view2(scene);
 // init_all_skin(scene);
+
 const skybox = createOptimizedSkybox(scene);
 
 qualityLevel = detectPerformanceLevel();
@@ -566,8 +586,8 @@ engine.runRenderLoop(() => {
 		}
 
 		scene.render();
-        // console.log("camera position", camera.position);
-        // console.log("camera rotation", camera.rotation);
+		// console.log("camera position", camera.position);
+		// console.log("camera rotation", camera.rotation);
 
 	} catch (error) {
 		console.error("Error in render loop:", error);

@@ -27,9 +27,15 @@ export function getPlayer_2_win() {
 export function loadScoreModel(score, isLeft)
 {
 	if (isLeft && scoreLeftMesh)
+	{
+		console.log("scoreLeftMesh", scoreLeftMesh);
 		scoreLeftMesh.dispose();
+	}
 	else if (!isLeft && scoreRightMesh)
+	{
+		console.log("scoreRightMesh", scoreRightMesh);
 		scoreRightMesh.dispose();
+	}
 
 	BABYLON.SceneLoader.ImportMesh(
 		"",
@@ -73,7 +79,7 @@ export function loadScoreModel(score, isLeft)
 					container.position = new BABYLON.Vector3(-65, 325, -80);
 					scoreLeftMesh = container;
 				} else {
-					container.position = new BABYLON.Vector3(-65, 325, -65);
+					container.position = new BABYLON.Vector3(-65, 325, -35);
 					scoreRightMesh = container;
 				}
 				
@@ -101,17 +107,19 @@ export function updateScore(side)
 		scoreLeft++;
 		if (scoreLeft > 9)
 			scoreLeft = 0;
-		loadScoreModel(scoreLeft, 'left', true);
+		loadScoreModel(scoreLeft, true);
+		console.log("scoreLeft", scoreLeft);
 	} else if (side === 'right')
 	{
 		scoreRight++;
 		if (scoreRight > 9)
 			scoreRight = 0;
-		loadScoreModel(scoreRight, 'right', false);
+		loadScoreModel(scoreRight, false);
+		console.log("scoreRight", scoreRight);
 	}
 	if (soloGameStart)
 	{
-		if (scoreLeft === 1 || scoreRight === 1) {
+		if (scoreLeft === 3 || scoreRight === 3) {
 			SetIsGameFinished(true);
 			if (scoreLeft === 3)
 			{
@@ -129,7 +137,7 @@ export function updateScore(side)
 	}
 	else if (multi_player_game)
 	{
-		if (scoreLeft === 1 || scoreRight === 1) {
+		if (scoreLeft === 3 || scoreRight === 3) {
 			SetIsGameFinished(true);
 			if (scoreLeft === 3)
 			{
