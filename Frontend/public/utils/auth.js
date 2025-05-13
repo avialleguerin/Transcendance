@@ -58,10 +58,6 @@ async function validate2FA(event) {
 			console.log("✅ 2FA code valid!");
 			document.getElementById("login-resultMessage").textContent = "2FA validated successfully!";
 			document.getElementById("login-resultMessage").classList.add("text-green-500");
-
-			// setTimeout(() => {
-			// 	location.reload();
-			// }, 300);
 		} else {
 			console.error("❌ Invalid 2FA code:", data.error);
 			document.getElementById("login-resultMessage").textContent = "Invalid 2FA code!";
@@ -96,10 +92,6 @@ async function activate2FA(event) {
 			console.log("✅ 2FA code valid!");
 			document.getElementById("activate-2fa-resultMessage").textContent = "2FA validated successfully!";
 			document.getElementById("activate-2fa-resultMessage").classList.add("text-green-500");
-
-			// setTimeout(() => {
-			// 	location.reload();
-			// }, 300);
 		} else {
 			console.error("❌ Invalid 2FA code:", data.error);
 			document.getElementById("activate-2fa-resultMessage").textContent = "Invalid 2FA code!";
@@ -118,6 +110,7 @@ async function login(event) {
 	const data = await apiRequest("users/login", "PUT", { email, password }, {})
 	sessionStorage.setItem("accessToken", data.accessToken)
 	accessToken = sessionStorage.getItem("accessToken")
+	userId = getUserIdFromToken(accessToken);
 	console.log("hola accessToken: ", accessToken)
 	console.log("data: ", data);
 	if (!accessToken && !data.success) {
@@ -126,23 +119,32 @@ async function login(event) {
 		resultMessage.classList.add("text-red-500");
 		console.error("❌ Aucun accessToken reçue !");
 	}
-	else if (data.success && data.connection_status == "partially_connected" && data.user.doubleAuth_enabled)
+	else if (data.success && data.connection_status === "partially_connected" && data.user.doubleAuth_enabled)
 	{
 		console.log("✅ Valid credentials !", data);
 		console.log("DoubleAuth enabled:", data.user.doubleAuth_enabled);
 		sessionStorage.setItem("userId", data.user.userId)
 		document.getElementById("doubleAuthForm").classList.remove("hidden");
 	}
-	else if (data.success && data.connection_status == "connected")
+	else if (data.success && data.connection_status === "connected")
 	{
 		const resultMessage = document.getElementById("login-resultMessage");
 		resultMessage.textContent = "Login success !";
 		resultMessage.classList.add("text-green-500");
 		console.log("✅ Connected, Token :", accessToken)
 		history.pushState({}, '', '/Game_menu');
-		setTimeout(() => {
-			location.reload();
-		}, 300);
+		// handleViewTransitions("vue1", "vue2");
+		import('../static/js/views/Game_menu.js').then(module => {
+			const GameMenu = module.default;
+			const gameMenuInstance = new GameMenu();
+			gameMenuInstance.getHtml().then(html => {
+				document.getElementById('app').innerHTML = html;
+				if (gameMenuInstance.game_menu) {
+					gameMenuInstance.game_menu();
+				}
+			});
+		});
+
 	} else {
 		const resultMessage = document.getElementById("login-resultMessage");
 		resultMessage.textContent = data.error;
@@ -166,9 +168,17 @@ async function logout(userId) {
 		sessionStorage.removeItem("accessToken")
 		accessToken = null
 		console.log("✅ Déconnecté avec succès !");
-		setTimeout(() => {
-			location.reload();
-		}, 300);
+		history.pushState({}, '', '/');
+		import('../static/js/views/Home.js').then(module => {
+			const Home = module.default;
+			const homeInstance = new Home();
+			homeInstance.getHtml().then(html => {
+				document.getElementById('app').innerHTML = html;
+				if (homeInstance.createAccount) {
+					homeInstance.createAccount();
+				}
+			});
+		});
 	} else
 	console.log(data.error)
 }
@@ -194,9 +204,6 @@ async function register(event) {
 		resultMessage.textContent = `User added : ${result.username} (${result.email})`;
 		resultMessage.classList.add("text-green-500");
 
-		setTimeout(() => {
-			location.reload();
-		}, 300);
 	} else {
 		resultMessage.textContent = "Error : " + result.error;
 		resultMessage.classList.add("text-red-500");
@@ -215,7 +222,6 @@ async function refreshToken() {
 	if (data.success) {
 		accessToken = data.accessToken
 		sessionStorage.setItem("accessToken", accessToken)
-		console.log("🔄 Token rafraîchi :", accessToken);
 		return true;
 	} else {
 		console.log("Error:", data.error)
@@ -228,19 +234,18 @@ function getUserIdFromToken(token) {
 
 	try {
 		const payload = JSON.parse(atob(token.split('.')[1]));
-		console.log("uesrId:", payload.userId);
 		return payload.userId;
 	} catch (error) {
-		console.error("Erreur lors du décodage du token :", error);
+		console.error("Error when decoding token :", error);
 		return null;
 	}
 }
 
 async function refreshInfos() {
-	const response = await fetch(`/api/users/refresh-infos/:${ userId }`, {
+	const response = await fetch(`/api/users/refresh-infos`, {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify({ userId, accessToken }),
+		body: JSON.stringify({ accessToken }),
 		credentials: "include"
 	});
 	const data = await response.json();
@@ -250,11 +255,20 @@ async function refreshInfos() {
 	} else {
 		sessionStorage.setItem("accessToken", data.accessToken);
 		accessToken = sessionStorage.getItem("accessToken");
+		history.pushState({}, '', '/Game_menu');
+		// handleViewTransitions("vue2", "vue1");
+		import('../static/js/views/Game_menu.js').then(module => {
+			const GameMenu = module.default;
+			const gameMenuInstance = new GameMenu();
+			gameMenuInstance.getHtml().then(html => {
+				document.getElementById('app').innerHTML = html;
+				if (gameMenuInstance.game_menu) {
+					gameMenuInstance.game_menu();
+				}
+			});
+		});
 	}
 	if (data.success) {
-		// handleViewTransitions("vue2", "vue1");
-		// if (data.connection_status == "connected") // TODO - Remplacer par une redirection sur la page de jeu
-		// 	fetchProfile();
 		console.log("Infos refreshed successfully");
 	} else {
 		console.error("Error refreshing infos:", data.error);
@@ -264,10 +278,5 @@ async function refreshInfos() {
 window.addEventListener('DOMContentLoaded', () => {
 	console.log("accessToken: ", accessToken)
 	refreshInfos();
-	// if (!accessToken) {
-	// 	console.log("No access token found, redirecting to login view without reloading...");
-	// 	history.pushState({}, '', '/');
-	// 	return;
-	// }
 	// fetchUsers();
 });

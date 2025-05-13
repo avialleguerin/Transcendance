@@ -21,24 +21,6 @@ export default class extends AbstractView {
 	constructor() {
 		super();
 		this.setTitle("Game_menu");
-		// if (!accessToken) {
-		// 	// S'il n'y a pas d'accessToken, redirige vers la page principale ("/")
-		// 	history.pushState({}, '', '/');
-		// 	// handleViewTransitions("vue1", "vue2");
-		// 	// Charge dynamiquement la vue Home (ou login)
-		// 	import('./Home.js').then(module => {
-		// 		const Home = module.default;
-		// 		const homeInstance = new Home();
-		// 		homeInstance.getHtml().then(html => {
-		// 			document.getElementById('app').innerHTML = html;
-		// 			// Si besoin, on peut initialiser des événements spécifiques à Home ici
-		// 			if (homeInstance.createAccount) {
-		// 				homeInstance.createAccount();
-		// 			}
-		// 		});
-		// 	});
-		// 	return; // On arrête l'exécution du constructeur
-		// }
 	}
 
 	async getHtml() {
