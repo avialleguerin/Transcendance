@@ -6,26 +6,21 @@ export default class extends AbstractView {
 	constructor() {
 		super();
 		this.setTitle("Home");
-		// console.log("accessToken", accessToken);
+		const accessToken = sessionStorage.getItem("accessToken");
 		if (accessToken) {
-			// Met à jour l'URL sans recharger la page
 			history.pushState({}, '', '/Game_menu');
-			// handleViewTransitions("vue2", "vue1");
-			// Charge dynamiquement la vue Game_menu
 			import('./Game_menu.js').then(module => {
 				const GameMenu = module.default;
 				const gameMenuInstance = new GameMenu();
 				gameMenuInstance.getHtml().then(html => {
 					document.getElementById('app').innerHTML = html;
-					// Optionnel : si tu as une méthode pour initialiser les events
 					if (gameMenuInstance.game_menu) {
 						gameMenuInstance.game_menu();
 					}
 				});
 			});
+			// handleViewTransitions("vue1", "vue2");
 		}
-		//  else
-		// 	window.location.href = "/";
 	}
 
 	async getHtml() {

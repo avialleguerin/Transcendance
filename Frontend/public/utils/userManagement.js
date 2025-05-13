@@ -182,16 +182,15 @@ async function changeProfilePicture() {
 async function accessProfileInfo(event) {
 	event.preventDefault();
 	const password = document.getElementById("password").value;
-	// const userId = getUserIdFromToken();
 
 	try {
-		const response = await fetch(`/api/users/access-profile-infos/:${userId}`, {
+		const response = await fetch(`/api/users/access-profile-infos`, {
 			method: "PUT",
 			headers: {
 				"Content-Type": "application/json",
 				"Authorization": `Bearer ${accessToken}`
 			},
-			body: JSON.stringify({ userId, password })
+			body: JSON.stringify({ password })
 		});
 		const data = await response.json();
 		if (data.success) {
@@ -324,11 +323,10 @@ async function updateProfileInfo(event) {
 	console.log("data", data);
 	if (data.success) {
 		console.log(data.message);
-		sessionStorage.removeItem("accessToken")
-		accessToken = null
 	} else {
 		console.log('Error : ' + data.error);
 	}
+	fetchProfile();
 }
 
 

@@ -1,4 +1,4 @@
-import { register, selectUsers, unregister, login, logout, changeDoubleAuth, accessProfileInfo, changeRole, changeProfilePicture, changeProfile, refreshAccessToken, getUserProfile, verifyDoubleAuth, activateDoubleAuth, refreshInfos } from '../controllers/authController.js';
+import { register, selectUsers, unregister, login, logout, changeDoubleAuth, accessProfileInfo, changeProfilePicture, changeProfile, refreshAccessToken, getUserProfile, verifyDoubleAuth, activateDoubleAuth, refreshInfos } from '../controllers/authController.js';
 
 /**
  * Encapsulates the routes
@@ -15,15 +15,14 @@ export default async function routes (fastify) {
 	fastify.post('/users/add', register);
 	fastify.put('/users/login', login);
 	fastify.post('/users/logout', logout);
-	fastify.put('/users/access-profile-infos/:userId', accessProfileInfo);
+	fastify.put('/users/access-profile-infos', accessProfileInfo);
 	fastify.put('/users/update-2fa/:userId', changeDoubleAuth);
 	fastify.post('/users/verify-2fa', verifyDoubleAuth);
 	fastify.post('/users/activate-2fa', activateDoubleAuth);
-	fastify.put('/users/update-role/:userId', changeRole);
 	fastify.post('/users/update-profile-picture', changeProfilePicture);
 	fastify.put('/users/update-profile/:userId', changeProfile);
 	fastify.delete('/users/delete/:userId', unregister);
-	fastify.post('/users/refresh-infos/:userId', refreshInfos);
+	fastify.post('/users/refresh-infos', refreshInfos);
 
 	// Tokens
 	fastify.post('/refresh-token', refreshAccessToken);
