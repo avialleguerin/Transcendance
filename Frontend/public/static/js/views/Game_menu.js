@@ -164,12 +164,14 @@ export default class extends AbstractView {
 							<div class="photo_profile">
 								<div class="profile_photo_container">
 									<div class="profile_photo_circle" id="profile_photo_circle">
-										
+									</div>
+									<form id="uploadForm" enctype="multipart/form-data" onsubmit="changeProfilePicture(event)">
 										<label for="profile_photo_input" class="photo_upload_icon">
 											<i class="fa fa-camera"></i>
 										</label>
-									</div>
-									<input type="file" id="profile_photo_input" accept="image/*" style="display: none;">
+										<input type="file" name="image" id="profile_photo_input" />
+										<button type="submit">Upload</button>
+									</form>
 								</div>
 							</div>
 							<form onsubmit="updateProfileInfo(event)">
@@ -198,6 +200,7 @@ export default class extends AbstractView {
 								<button id="valid_profile_info" class="valid_profile_info_btn">Valider</button>
 							</form>
 						</div>
+						<p id="resultUpdateProfile"></p>
 					</div>
 				</div>
 

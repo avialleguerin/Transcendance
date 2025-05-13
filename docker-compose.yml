@@ -23,6 +23,8 @@ services:
     restart: always
 
   fastify:
+    container_name: fastify
+    image: custom-fastify
     build:
       context: ./Backend
       dockerfile: Fastify/Dockerfile
@@ -38,6 +40,7 @@ services:
       - /app/node_modules   # Préserve les modules installés dans le container
 
   nginx:
+    container_name: nginx
     image: nginx:latest     # pour ne pas a avoir besoin de Dockerfile
     ports:
       - "8080:80"           #80:80 necessite des privilege

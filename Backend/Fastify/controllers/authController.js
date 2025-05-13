@@ -4,9 +4,8 @@ import { hashPassword, verifyPassword } from '../utils/hashUtils.js'
 import { redisModel } from '../models/redisModel.js'
 import speakeasy from 'speakeasy'
 import qrcode from 'qrcode'
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
-
 
 
 const SECRET_LENGHT = 30
@@ -186,36 +185,67 @@ export async function changeProfile(request, reply) {
 	}
 }
 
-export async function changeProfilePicture(request, reply) {
-	const { formData } = request.body
-	try {
-		const { userId } = formData
-		const file = formData.profilePicture
-		if (!userId) {
-			return reply.code(400).send({ success: false, error: 'User ID is required' })
-		}
+// export async function changeProfilePicture(request, reply) {
+// 	const { formData } = request.body
+// 	try {
+// 		const { userId } = formData
+// 		const file = formData.profilePicture
+// 		if (!userId) {
+// 			return reply.code(400).send({ success: false, error: 'User ID is required' })
+// 		}
 		
-		const user = userModel.getUserById(userId)
-		if (!user) {
-			return reply.code(404).send({ success: false, error: 'User not found' })
-		}
+// 		const user = userModel.getUserById(userId)
+// 		if (!user) {
+// 			return reply.code(404).send({ success: false, error: 'User not found' })
+// 		}
 
-		const fileExtension = path.extname(file.filename)
-		const newFileName = `${user.username}_profile_${Date.now()}${fileExtension}`
-		const uploadsDir = path.join(process.cwd(), 'uploads')
+// 		const fileExtension = path.extname(file.filename)
+// 		const newFileName = `${user.username}_profile_${Date.now()}${fileExtension}`
+// 		const uploadsDir = path.join(process.cwd(), 'uploads')
 
-		if (!fs.existsSync(uploadsDir)) {
-			fs.mkdirSync(uploadsDir, { recursive: true })
-		}
+// 		if (!fs.existsSync(uploadsDir)) {
+// 			fs.mkdirSync(uploadsDir, { recursive: true })
+// 		}
 
-		const filePath = path.join(uploadsDir, newFileName)
-		await file.pipe(fs.createWriteStream(filePath))
-		userModel.updateProfilePicture(userId, file.name)
+// 		const filePath = path.join(uploadsDir, newFileName)
+// 		await file.pipe(fs.createWriteStream(filePath))
+// 		userModel.updateProfilePicture(userId, file.name)
 
-		return reply.code(200).send({ success: true, message: 'Profile picture updated successfully' })
-} catch (err) {
-		return reply.code(500).send({ error: err.message })
+// 		return reply.code(200).send({ success: true, message: 'Profile picture updated successfully' })
+// } catch (err) {
+// 		return reply.code(500).send({ error: err.message })
+// 	}
+// }
+
+export async function changeProfilePicture(request, reply) {
+	const file = await request.file();
+	let userId = null;
+	const refreshToken = request.cookies?.refreshToken
+	console.log("📦 Fichier reçu :", file);
+	if (refreshToken && refreshToken !== undefined) {
+		const decodedRefresh = fastify.jwt.decode(refreshToken)
+		userId = decodedRefresh.userId
 	}
+	if (!userId)
+		return reply.code(400).send({ error: '❌ User ID is required' })
+	const user = userModel.getUserById(userId)
+	if (!user)
+		return reply.code(404).send({ error: '❌ User not found' })
+	if (!file)
+		return reply.code(400).send({ error: '❌ No file uploaded' })
+	const uploadDir = '/usr/share/nginx/uploads/';
+	await fs.mkdir(uploadDir, { recursive: true });
+
+	const filename = `${Date.now()}-${user.username}-${file.filename}`;
+	const filePath = path.join(uploadDir, filename);
+	const fileStream = await fs.open(filePath, 'w');
+	await pipeline(file.file, fileStream.createWriteStream());
+	userModel.updateProfilePicture(userId, filename)
+	reply.code(200).send({
+		success: true,
+		message: 'Image uploadée',
+		path: `/uploads/${filename}`
+	});
 }
 
 export async function unregister(request, reply) {

@@ -24,4 +24,9 @@ up:
 down:
 	@docker compose down
 
+fixer:
+	@echo "\n${BLUE}Resinstall node packages...${RESET}"
+	@docker exec -it fastify npm install
+	@echo "\n${GREEN}✓ Fixer completed successfully.${RESET}"
+
 .PHONY: up all down
