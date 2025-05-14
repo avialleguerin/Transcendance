@@ -5,6 +5,10 @@ import Game_menu from "./views/Game_menu";
 import solo_game_1v1 from "./views/solo_game_1v1";
 import duo_game from "./views/duo_game";
 import multi_player_game from "./views/multi_player_game";
+//news
+import tournament from "./views/tournament";
+import tournament_game from "./views/tournament_game";
+import  PlatformView  from "./views/platformer/PlatformView"
 
 // Définition d'interfaces
 interface Route {
