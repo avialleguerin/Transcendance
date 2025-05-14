@@ -421,9 +421,9 @@ export async function refreshInfos(request, reply) {
 				}
 			} else
 				reply.clearCookie('refreshToken', { path: '/' })
+			if (!user.doubleAuth_enabled && user.doubleAuth_secret)
+				userModel.updateDoubleAuth_secret(userId, null)
 		}
-		if (!user.doubleAuth_enabled && user.doubleAuth_secret)
-			userModel.updateDoubleAuth_secret(userId, null)
 		return reply.code(200).send({ success: true, accessToken: newAccessToken, message: 'User infos refreshed' })
 	} catch (err) {
 		return reply.code(500).send({ error: err.message })

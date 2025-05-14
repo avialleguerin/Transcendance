@@ -33,47 +33,51 @@ export default class extends AbstractView {
 				</div>
 				<div class="login-form" id="loginform_id">
 					<h1>LOGIN</h1>
-					<form class="form-group" id="loginForm" onsubmit="login(event)">
-						<div class="input-container">
-							<label for="email">Email :</label>
-							<input type="email" id="login-email" name="email" placeholder="Your email" required>
-						</div>
+					<div class="form-group">
+						<form id="loginForm" onsubmit="login(event)">
+							<div class="input-container">
+								<label for="email">Email :</label>
+								<input type="email" id="email" name="email" placeholder="Your email" required>
+							</div>
 
-						<div class="input-container">
-							<label for="password">Mot de passe :</label>
-							<input type="password" id="login-password" name="password" placeholder="Your password" required>
-						</div>
-						<button type="submit" class="connexion">Se connecter</button>
+							<div class="input-container">
+								<label for="password">Mot de passe :</label>
+								<input type="password" id="password" name="password" placeholder="Your password" required>
+							</div>
+							<button type="submit" class="connexion">Se connecter</button>
+						</form>
 						<button class="creer-compte" id="create-Account">Créer un compte</button>
-					</form>
-					<p id="login-resultMessage" style="color:white"></p>
+						<p id="login-resultMessage" style="color:white"></p>
+					</div>
 				</div>
 				<div class="register-form" id="create_account_id">
 					<h1>CRÉER UN COMPTE</h1>
-					<form class="form-group" id="addForm" onsubmit="register(event)">
-						<div class="input-container">
-							<label for="username">Username :</label>
-							<input type="text" id="add-username" name="username" placeholder="Your username" required>
-						</div>
+					<div class="form-group">
+						<form id="addForm" onsubmit="register(event)">
+							<div class="input-container">
+								<label for="username">Username :</label>
+								<input type="text" id="username" name="username" placeholder="Your username" required>
+							</div>
 
-						<div class="input-container">
-							<label for="email">Email :</label>
-							<input type="email" id="add-email" name="email" placeholder="Your email" required>
-						</div>
+							<div class="input-container">
+								<label for="email">Email :</label>
+								<input type="email" id="email" name="email" placeholder="Your email" required>
+							</div>
 
-						<div class="input-container">
-							<label for="password">Password :</label>
-							<input type="password" id="add-password" name="password" placeholder="Your password" required>
-						</div>
+							<div class="input-container">
+								<label for="password">Password :</label>
+								<input type="password" id="password" name="password" placeholder="Your password" required>
+							</div>
 
-						<div class="input-container">
-							<label for="confirm-password">Confirmer le mot de passe :</label>
-							<input type="password" id="add-confirm-password" name="password" placeholder="Confirmer password" required>
-						</div>
-						<button type="submit" class="connexion">Sign In</button>
+							<div class="input-container">
+								<label for="confirm-password">Confirmer le mot de passe :</label>
+								<input type="password" id="confirm-password" name="password" placeholder="Confirmer password" required>
+							</div>
+							<button type="submit" class="connexion">Sign In</button>
+						</form>
 						<button class="connexion" id="alreadyHaveAccountButton_id">Déjà un compte ?</button>
 						<p id="add-resultMessage" style="color:white"></p>
-					</form>
+					</div>
 				</div>
 			</div>
 		`;
