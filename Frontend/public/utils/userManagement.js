@@ -13,10 +13,10 @@ async function changeProfilePicture(event) {
 
 	const data = await response.json();
 	if (data.success)
-		document.getElementById("resultChangeProfile").innerHTML = `${data.message}`;
+		document.getElementById("updateProfile-resultMessage").innerHTML = `${data.message}`;
 	else
-		document.getElementById("resultChangeProfile").innerHTML = `${data.error}`;
-		
+		document.getElementById("updateProfile-resultMessage").innerHTML = `${data.error}`;
+	document.getElementById("profile_photo_input").value = "";
 	fetchProfile();
 }
 
@@ -77,12 +77,31 @@ async function enable_doubleAuth(userId) {
 }
 
 async function unregister(userId) {
-	if (confirm('Do you really want to delete this user ?')) {
+	if (confirm('Do you really want to delete your account ?')) {
 		try {
-			const response = await fetch(`/api/users/delete/${userId}`, { method: 'DELETE' });
-			if (!response.ok) {
-				const error = await response.json();
-				alert('Erreur : ' + error.error);
+			const response = await fetch(`/api/users/delete`, { 
+				method: 'DELETE',
+				headers: {
+					"Authorization": `Bearer ${accessToken}`
+				},
+			},);
+			const data = await response.json();
+			if (data.success) {
+				sessionStorage.removeItem("accessToken");
+				accessToken = null;
+				console.log('User deleted successfully');
+				document.getElementById("updateProfile-resultMessage").innerHTML = `${data.message}`;
+				history.pushState({}, '', '/');
+				import('../static/js/views/Home.js').then(module => {
+					const Home = module.default;
+					const homeInstance = new Home();
+					homeInstance.getHtml().then(html => {
+						document.getElementById('app').innerHTML = html;
+						if (homeInstance.createAccount) {
+							homeInstance.createAccount();
+						}
+					});
+				});
 			}
 		} catch (err) {
 			console.error('Erreur lors de la suppression :', err);
@@ -168,10 +187,10 @@ async function updateProfileInfo(event) {
 		document.getElementById("change_email").value = "";
 		document.getElementById("change_password").value = "";
 		document.getElementById("confirm_change_password").value = "";
-		document.getElementById("resultChangeProfile").innerHTML = `${data.message}`;
+		document.getElementById("updateProfile-resultMessage").innerHTML = `${data.message}`;
 	} else {
 		console.log('Error : ' + data.error);
-		document.getElementById("resultChangeProfile").innerHTML = `${data.error}`;
+		document.getElementById("updateProfile-resultMessage").innerHTML = `${data.error}`;
 	}
 	fetchProfile();
 }

@@ -107,7 +107,16 @@ async function login(event) {
 
 	const email = document.getElementById("login-email").value;
 	const password = document.getElementById("login-password").value;
-	const data = await apiRequest("users/login", "PUT", { email, password }, {})
+	const response = await fetch('/api/users/login', {
+		method: 'PUT',
+		body: JSON.stringify({ email, password }),
+		headers: { 
+			'Content-Type': 'application/json',
+		},
+		credentials: 'include',
+	});
+	const data = await response.json();
+	// const data = await apiRequest("users/login", "PUT", { email, password }, {})
 	sessionStorage.setItem("accessToken", data.accessToken)
 	accessToken = sessionStorage.getItem("accessToken")
 	userId = getUserIdFromToken(accessToken);

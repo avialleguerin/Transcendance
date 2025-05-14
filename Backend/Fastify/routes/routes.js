@@ -21,7 +21,7 @@ export default async function routes (fastify) {
 	fastify.post('/users/activate-2fa', activateDoubleAuth)
 	fastify.post('/users/update-profile-picture', changeProfilePicture)
 	fastify.put('/users/update-profile/:userId', changeProfile)
-	fastify.delete('/users/delete/:userId', unregister)
+	fastify.delete('/users/delete', unregister)
 	fastify.post('/users/refresh-infos', refreshInfos)
 	// Tokens
 	fastify.post('/refresh-token', refreshAccessToken)

@@ -232,7 +232,7 @@ export async function changeProfilePicture(request, reply) {
 
 		const oldProfilePicture = user.profile_picture;
 
-		if (oldProfilePicture) {
+		if (oldProfilePicture !== "default-profile-picture.png") {
 			try {
 				const oldFilePath = path.join(uploadDir, oldProfilePicture);
 				const fileExists = await fs.access(oldFilePath)
@@ -264,14 +264,27 @@ export async function changeProfilePicture(request, reply) {
 }
 
 export async function unregister(request, reply) {
-	const { userId } = request.params
+	const refreshToken = request.cookies.refreshToken
+	const accessToken = request.headers['authorization']?.split(' ')[1]
+	let userId = null
+	if (refreshToken && refreshToken !== undefined) {
+		const decodedRefresh = fastify.jwt.decode(refreshToken)
+		userId = decodedRefresh.userId
+		const expiresInRefresh = decodedRefresh.exp - Math.floor(Date.now() / 1000)
+		if (expiresInRefresh > 0)
+			redisModel.addToBlacklist(refreshToken, expiresInRefresh)
+		reply.clearCookie('refreshToken', { path: '/' })
+	}
+	if (accessToken && accessToken !== undefined) {
+		const decodedAccess = fastify.jwt.decode(accessToken)
+		const expiresInAccess = decodedAccess.exp - Math.floor(Date.now() / 1000)
+		if (expiresInAccess > 0)
+			redisModel.addToBlacklist(accessToken, expiresInAccess)
+	}
 	if (!userId)
 		return reply.code(400).send({ error: "❌ User id is required" })
-	
 	try {
-		
 		const info = userModel.unregister(userId)
-		
 		if (info.changes === 0)
 			return reply.code(404).send({ error: "❌ User not found" })
 		return reply.send({ success: true, message: "User deleted successfully"})

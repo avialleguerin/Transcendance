@@ -163,13 +163,10 @@ export default class extends AbstractView {
 						<div class="profile_param_unlocked" id="profile_param_unlocked_id">
 							<div class="photo_profile">
 								<div class="profile_photo_container">
-									<div class="profile_photo_circle" id="profile_photo_circle">
-									</div>
+									<div class="profile_photo_circle" id="profile_photo_circle"></div>
 									<form id="uploadForm" enctype="multipart/form-data" onsubmit="changeProfilePicture(event)">
-										<label for="profile_photo_input" class="photo_upload_icon">
-											<i class="fa fa-camera"></i>
-										</label>
-										<input type="file" name="image" id="profile_photo_input" />
+										<label for="profile_photo_input" class="photo_upload_icon"></label>
+										<input type="file" name="image" id="profile_photo_input" style="color:white"/>
 										<button type="submit">Upload</button>
 									</form>
 								</div>
@@ -199,7 +196,10 @@ export default class extends AbstractView {
 							<div class="btn_deconnect">
 								<button id="deconnect_btn" class="btn_deconnect_btn" onclick="logout()">Deconnexion</button>
 							</div>
-							<p id="resultChangeProfile" class="resultMessage" style="color:white"></p>
+							<div class="btn_delete">
+								<button id="delete_btn" class="btn_delete_btn" onclick="unregister()">Delete account</button>
+							</div>
+							<p id="updateProfile-resultMessage" class="resultMessage" style="color:white"></p>
 						</div>
 					</div>
 				</div>
@@ -1142,7 +1142,7 @@ export default class extends AbstractView {
 
 		const valid_mdp = document.getElementById('valid_mdp');
 		const modif_profil = document.getElementById('modif_profil');
-		const modif_profil_photo = document.getElementById('profile_photo_circle');
+		// const modif_profil_photo = document.getElementById('profile_photo_circle');
 		const profile_param_unlocked_id = document.getElementById('profile_param_unlocked_id');
 		const valid_profile_info = document.getElementById('valid_profile_info');
 		const fa_selector = document.getElementById('fa_selector');
@@ -1156,11 +1156,11 @@ export default class extends AbstractView {
 		// 	profile_param_unlocked_id.classList.add('active');
 		// });
 
-		modif_profil_photo.addEventListener('click', () => {
-			console.log('modif profile photo clicked');
-			document.getElementById("profile_photo_input").click();
-			changeProfilePicture();
-		});
+		// modif_profil_photo.addEventListener('click', () => {
+		// 	console.log('modif profile photo clicked');
+		// 	document.getElementById("profile_photo_input").click();
+		// 	changeProfilePicture();
+		// });
 
 		// valid_profile_info.addEventListener('click', () => {
 		// 	console.log('Valide profile info clicked');

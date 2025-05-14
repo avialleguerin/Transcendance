@@ -37,12 +37,12 @@ export default class extends AbstractView {
 						<form id="loginForm" onsubmit="login(event)">
 							<div class="input-container">
 								<label for="email">Email :</label>
-								<input type="email" id="email" name="email" placeholder="Your email" required>
+								<input type="email" id="login-email" name="email" placeholder="Your email" required>
 							</div>
 
 							<div class="input-container">
 								<label for="password">Mot de passe :</label>
-								<input type="password" id="password" name="password" placeholder="Your password" required>
+								<input type="password" id="login-password" name="password" placeholder="Your password" required>
 							</div>
 							<button type="submit" class="connexion">Se connecter</button>
 						</form>
@@ -56,22 +56,22 @@ export default class extends AbstractView {
 						<form id="addForm" onsubmit="register(event)">
 							<div class="input-container">
 								<label for="username">Username :</label>
-								<input type="text" id="username" name="username" placeholder="Your username" required>
+								<input type="text" id="add-username" name="username" placeholder="Your username" required>
 							</div>
 
 							<div class="input-container">
 								<label for="email">Email :</label>
-								<input type="email" id="email" name="email" placeholder="Your email" required>
+								<input type="email" id="add-email" name="email" placeholder="Your email" required>
 							</div>
 
 							<div class="input-container">
 								<label for="password">Password :</label>
-								<input type="password" id="password" name="password" placeholder="Your password" required>
+								<input type="password" id="add-password" name="password" placeholder="Your password" required>
 							</div>
 
 							<div class="input-container">
 								<label for="confirm-password">Confirmer le mot de passe :</label>
-								<input type="password" id="confirm-password" name="password" placeholder="Confirmer password" required>
+								<input type="password" id="add-confirm-password" name="password" placeholder="Confirmer password" required>
 							</div>
 							<button type="submit" class="connexion">Sign In</button>
 						</form>
