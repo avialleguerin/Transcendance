@@ -42,7 +42,7 @@ export default class extends AbstractView {
 	}
 
 	async getHtml() {
-		return `
+		return /*html*/`
 		<link rel="stylesheet" href="./static/js/css/game_menu.css">
 		<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 		<div class="view1" id="view1">
