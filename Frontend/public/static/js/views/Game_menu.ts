@@ -1,4 +1,4 @@
-import AbstractView from "./AbstractView";
+import AbstractView from "./AbstractView.js";
 import { startGame, startAI_Game } from "./../../../srcs/game/gameplay/babylon.js";
 import { startMultiGame } from "../../../srcs/game/gameplay/babylon.js";
 import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.js";

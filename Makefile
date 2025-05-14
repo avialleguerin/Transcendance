@@ -15,7 +15,7 @@ MAGENTA		:=	\e[35m
 CYAN		:=	\e[36m
 
 # Docker Compose
-NO_LOGS 	:= --no-attach vault --no-attach redis
+NO_LOGS 	:= --no-attach vault --no-attach redis #--no-attach tsengine
 
 all:
 	@make build

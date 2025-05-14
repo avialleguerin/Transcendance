@@ -1,8 +1,8 @@
-import AbstractView from "./AbstractView";
-import { getPowerUP_value } from "./Game_menu";
-import { leave_Game } from "../../../srcs/game/gameplay/babylon";
-import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera";
-import { getValue_leave_game, setLeaveGameVar } from "../index";
+import AbstractView from "./AbstractView.js";
+import { getPowerUP_value } from "./Game_menu.js";
+import { leave_Game } from "../../../srcs/game/gameplay/babylon.js";
+import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.js";
+import { getValue_leave_game, setLeaveGameVar } from "../index.js";
 
 export default class solo_game extends AbstractView {
 

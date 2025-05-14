@@ -1,14 +1,14 @@
-import Home from "./views/Home";
-import jouer from "./views/jouer";
-import settings from "./views/settings";
-import Game_menu from "./views/Game_menu";
-import solo_game_1v1 from "./views/solo_game_1v1";
-import duo_game from "./views/duo_game";
-import multi_player_game from "./views/multi_player_game";
+import Home from "./views/Home.js";
+import jouer from "./views/jouer.js";
+import settings from "./views/settings.js";
+import Game_menu from "./views/Game_menu.js";
+import solo_game_1v1 from "./views/solo_game_1v1.js";
+import duo_game from "./views/duo_game.js";
+import multi_player_game from "./views/multi_player_game.js";
 //news
-import tournament from "./views/tournament";
-import tournament_game from "./views/tournament_game";
-import  PlatformView  from "./views/platformer/PlatformView"
+// import tournament from "./views/tournament";
+// import tournament_game from "./views/tournament_game";
+// import  PlatformView  from "./views/platformer/PlatformView"
 
 // Définition d'interfaces
 interface Route {

@@ -1,7 +1,7 @@
-import AbstractView from "./AbstractView";
-import { getPowerUP_value_multi } from "./Game_menu";
-import { leave_Multiplayer_Game } from "../../../srcs/game/gameplay/babylon";
-import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera";
+import AbstractView from "./AbstractView.js";
+import { getPowerUP_value_multi } from "./Game_menu.js";
+import { leave_Multiplayer_Game } from "../../../srcs/game/gameplay/babylon.js";
+import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.js";
 
 export default class extends AbstractView {
 

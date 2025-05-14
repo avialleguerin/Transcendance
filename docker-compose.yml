@@ -72,7 +72,7 @@ services:
       - ./Frontend/public/static/js/css:/usr/share/nginx/dist/static/js/css:ro 
       - ./Frontend/public/static/js/index.css:/usr/share/nginx/dist/static/js/index.css:ro  
       - ./Frontend/public/index.html:/usr/share/nginx/dist/index.html:ro  
-      # - ./Frontend/dist:/usr/share/nginx/dist  # The compiled JS files
+      - ./Frontend/dist:/usr/share/nginx/dist  # The compiled JS files
       #END for Typescript
 
   tsengine:
