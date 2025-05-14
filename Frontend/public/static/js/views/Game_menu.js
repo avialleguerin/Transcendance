@@ -24,7 +24,7 @@ export default class extends AbstractView {
 	}
 
 	async getHtml() {
-		return `
+		return /*html*/`
 		<link rel="stylesheet" href="./static/js/css/game_menu.css">
 		<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 		<div class="view1" id="view1">
@@ -191,16 +191,16 @@ export default class extends AbstractView {
 									<label for="confirm_password">Confirm new password</label>
 									<input type="password" id="confirm_change_password" name="confirm_password" placeholder="******">
 								</div>
-								<div class="btn_deconnect">
-									<button id="deconnect_btn" class="btn_deconnect_btn" onclick="logout()">Deconnexion</button>
-								</div>
 								<div id="fa_selector" class="fa_selector">
-									<p>2FA :<span id="active_fa" class="active_fa"></span></p>
+								<p>2FA :<span id="active_fa" class="active_fa"></span></p>
 								</div>
-								<button id="valid_profile_info" class="valid_profile_info_btn">Valider</button>
+								<button type="submit" id="valid_profile_info" class="valid_profile_info_btn">Valider</button>
 							</form>
+							<div class="btn_deconnect">
+								<button id="deconnect_btn" class="btn_deconnect_btn" onclick="logout()">Deconnexion</button>
+							</div>
+							<p id="resultChangeProfile" class="resultMessage" style="color:white"></p>
 						</div>
-						<p id="resultUpdateProfile"></p>
 					</div>
 				</div>
 
@@ -1113,7 +1113,6 @@ export default class extends AbstractView {
 		parametre_profile.addEventListener('click', () => {
 			console.log('Parrametre profile clicked');
 			parametre_profile_view.classList.add('active');
-			// fetchProfile();
 			view5.classList.remove('active');
 			btn_back_home.classList.remove('active');
 			view1.classList.remove('active');
@@ -1163,12 +1162,12 @@ export default class extends AbstractView {
 			changeProfilePicture();
 		});
 
-		valid_profile_info.addEventListener('click', () => {
-			console.log('Valide profile info clicked');
-			profile_param_unlocked_id.classList.remove('active');
-			modif_profil.classList.remove('hidden');
-			btn_back_home.classList.add('active');
-		});
+		// valid_profile_info.addEventListener('click', () => {
+		// 	console.log('Valide profile info clicked');
+		// 	profile_param_unlocked_id.classList.remove('active');
+		// 	modif_profil.classList.remove('hidden');
+		// 	btn_back_home.classList.add('active');
+		// });
 
 		active_fa.addEventListener('click', () => {
 			active_fa.classList.toggle('checked');

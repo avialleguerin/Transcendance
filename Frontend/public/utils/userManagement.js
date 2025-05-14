@@ -12,7 +12,12 @@ async function changeProfilePicture(event) {
 	});
 
 	const data = await response.json();
-	document.getElementById('resultUpdateProfile').innerHTML = `${data.message}<img src="${data.path}" width="200" />`;
+	if (data.success)
+		document.getElementById("resultChangeProfile").innerHTML = `${data.message}`;
+	else
+		document.getElementById("resultChangeProfile").innerHTML = `${data.error}`;
+		
+	fetchProfile();
 }
 
 async function accessProfileInfo(event) {
@@ -33,6 +38,7 @@ async function accessProfileInfo(event) {
 			modif_profil.classList.add('hidden');
 			btn_back_home.classList.remove('active');
 			profile_param_unlocked_id.classList.add('active');
+			document.getElementById("password").value = "";
 			fetchProfile();
 		} else {
 			alert('Error : ' + data.error);
@@ -158,8 +164,14 @@ async function updateProfileInfo(event) {
 	console.log("data", data);
 	if (data.success) {
 		console.log(data.message);
+		document.getElementById("change_username").value = "";
+		document.getElementById("change_email").value = "";
+		document.getElementById("change_password").value = "";
+		document.getElementById("confirm_change_password").value = "";
+		document.getElementById("resultChangeProfile").innerHTML = `${data.message}`;
 	} else {
 		console.log('Error : ' + data.error);
+		document.getElementById("resultChangeProfile").innerHTML = `${data.error}`;
 	}
 	fetchProfile();
 }

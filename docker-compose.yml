@@ -38,6 +38,7 @@ services:
     volumes:
       - ./Backend/Fastify:/app
       - /app/node_modules   # Préserve les modules installés dans le container
+      - ./Data/uploads:/usr/share/nginx/uploads
 
   nginx:
     container_name: nginx

@@ -193,7 +193,7 @@ async function register(event) {
 	const resultMessage = document.getElementById("add-resultMessage");
 
 	if (password !== confirmPassword) {
-		resultMessage.textContent = "Error : Fields Password and confirm Password are different";
+		resultMessage.textContent = "Passwords are different";
 		resultMessage.classList.add("text-red-500");
 		return ;
 	}
@@ -203,11 +203,16 @@ async function register(event) {
 	if (result.success) {
 		resultMessage.textContent = `User added : ${result.username} (${result.email})`;
 		resultMessage.classList.add("text-green-500");
-
+		// createAccountForm.classList.remove("active");
+		// loginForm.classList.remove("active");
 	} else {
-		resultMessage.textContent = "Error : " + result.error;
+		resultMessage.textContent = result.error;
 		resultMessage.classList.add("text-red-500");
 	}
+	username = "";
+	email = "";
+	password = "";
+	confirmPassword = "";
 };
 
 async function refreshToken() {
@@ -224,7 +229,7 @@ async function refreshToken() {
 		sessionStorage.setItem("accessToken", accessToken)
 		return true;
 	} else {
-		console.log("Error:", data.error)
+		console.log(data.error)
 		return false;
 	}
 }
