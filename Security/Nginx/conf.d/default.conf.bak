@@ -86,7 +86,7 @@ server {
     server_name localhost;
 
     location / {
-        root /usr/share/nginx/dist/static/js;
+        root /usr/share/nginx/dist;
         index index.html;
         try_files $uri $uri/ /index.html;
     }
