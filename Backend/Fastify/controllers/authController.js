@@ -4,11 +4,10 @@ import { hashPassword, verifyPassword } from '../utils/hashUtils.js'
 import { redisModel } from '../models/redisModel.js'
 import speakeasy from 'speakeasy'
 import qrcode from 'qrcode'
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
 
-
-
+const uploadDir = '/usr/share/nginx/uploads'
 const SECRET_LENGHT = 30
 
 export async function selectUsers(request, reply) {
@@ -49,11 +48,12 @@ export async function register(request, reply) {
 	if (!username || !password)
 		return reply.code(400).send({ error: '❌ Username, Email and Password are required' })
 
-	const user = userModel.getUserByEmail(email)
-
-	if (user)
+	const sameUsername = userModel.getUserByUsername(username)
+	if (sameUsername)
+		return reply.code(409).send({ error: "❌ This username is already used" })
+	const sameEmail = userModel.getUserByEmail(email)
+	if (sameEmail)
 		return reply.code(409).send({ error: "❌ This email is already used" })
-
 	try {
 		const hashedPassword = await hashPassword(password)
 		const info = userModel.createUser(username, email, hashedPassword)
@@ -71,7 +71,7 @@ export async function login(request, reply) {
 			return reply.code(401).send({ success: false, error: '❌ Invalid credentials' })
 		if (user.doubleAuth_enabled)
 			return reply.code(200).send({success: true, connection_status: "partially_connected", message: 'Double authentication required', user: user})
-		const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, {expiresIn: '1m' })
+		const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, {expiresIn: '15m' })
 		const refreshToken = fastify.jwt.sign({ userId: user.userId }, {expiresIn: '7d' })
 		if (!accessToken || !refreshToken)
 			return reply.code(500).send({ error: '❌ Internal Server Error' })
@@ -170,15 +170,25 @@ export async function changeProfile(request, reply) {
 		const user = userModel.getUserById(userId)
 		if (user){
 			if (newUsername)
+			{
+				const sameUsername = userModel.getUserByUsername(newUsername)
+				if (sameUsername)
+					return reply.code(409).send({ error: "❌ This username is already used" })
 				userModel.updateUsername(userId, newUsername)
+			}
 			if (newEmail)
+			{
+				const sameEmail = userModel.getUserByEmail(newEmail)
+				if (sameEmail)
+					return reply.code(409).send({ error: "❌ This email is already used" })
 				userModel.updateEmail(userId, newEmail)
+			}
 			if (newPassword)
 			{
 				const hashedPassword = await hashPassword(newPassword)
 				userModel.updatePassword(userId, hashedPassword)
 			}
-			return reply.code(200).send({ success: true, message: 'Profile updated successfully, please reconnect' })
+			return reply.code(200).send({ success: true, message: 'Profile updated successfully!' })
 		} else
 			return reply.code(404).send({ success: false, error: 'User not found' })
 } catch (err) {
@@ -187,49 +197,116 @@ export async function changeProfile(request, reply) {
 }
 
 export async function changeProfilePicture(request, reply) {
-	const { formData } = request.body
 	try {
-		const { userId } = formData
-		const file = formData.profilePicture
-		if (!userId) {
-			return reply.code(400).send({ success: false, error: 'User ID is required' })
+		const file = await request.body['profile-picture'];
+		if (!file)
+			return reply.code(400).send({ error: '❌ No file uploaded' })
+
+		let userId = null;
+		const refreshToken = request.cookies?.refreshToken
+		if (refreshToken && refreshToken !== undefined) {
+			const decodedRefresh = fastify.jwt.decode(refreshToken)
+			userId = decodedRefresh.userId
 		}
-		
+
+		if (!userId)
+			return reply.code(400).send({ error: '❌ User ID is required' })
+
 		const user = userModel.getUserById(userId)
-		if (!user) {
-			return reply.code(404).send({ success: false, error: 'User not found' })
+		if (!user)
+			return reply.code(404).send({ error: '❌ User not found' })
+
+		
+
+		const filename = `${Date.now()}-${user.username}-pp${path.extname(file.filename)}`;
+		const filePath = path.join(uploadDir, filename);
+
+		if(file._buf) {
+			await fs.writeFile(filePath, file._buf);
+		} else {
+			const fileStream = await fs.open(filePath, 'w');
+			const writeStream = fileStream.createWriteStream();
+			await pipeline(file.file, writeStream);
 		}
 
-		const fileExtension = path.extname(file.filename)
-		const newFileName = `${user.username}_profile_${Date.now()}${fileExtension}`
-		const uploadsDir = path.join(process.cwd(), 'uploads')
 
-		if (!fs.existsSync(uploadsDir)) {
-			fs.mkdirSync(uploadsDir, { recursive: true })
+		const oldProfilePicture = user.profile_picture;
+
+		if (oldProfilePicture !== "default-profile-picture.png") {
+			try {
+				const oldFilePath = path.join(uploadDir, oldProfilePicture);
+				const fileExists = await fs.access(oldFilePath)
+				.then(() => true)
+				.catch(() => false);
+				
+				if (fileExists) {
+					console.log(`🗑️ Deleting old profile picture: ${oldFilePath}`);
+					await fs.unlink(oldFilePath);
+				} else {
+					console.log(`⚠️ Old profile picture doesn't exist: ${oldFilePath}`);
+				}
+			} catch (deleteErr) {
+				console.error(`❌ Error deleting old profile picture: ${deleteErr.message}`);
+			}
 		}
 
-		const filePath = path.join(uploadsDir, newFileName)
-		await file.pipe(fs.createWriteStream(filePath))
-		userModel.updateProfilePicture(userId, file.name)
+		userModel.updateProfilePicture(userId, filename)
 
-		return reply.code(200).send({ success: true, message: 'Profile picture updated successfully' })
-} catch (err) {
-		return reply.code(500).send({ error: err.message })
+		reply.code(200).send({
+			success: true,
+			message: 'New profile picture uploaded successfully!',
+			path: `/uploads/${filename}`
+		});
+	} catch (err) {
+		console.error("❌ Error uploading new profile picture :", err);
+		return reply.code(500).send({ error: err.message });
 	}
 }
 
 export async function unregister(request, reply) {
-	const { userId } = request.params
+	const refreshToken = request.cookies.refreshToken
+	const accessToken = request.headers['authorization']?.split(' ')[1]
+	let userId = null
+	if (refreshToken && refreshToken !== undefined) {
+		const decodedRefresh = fastify.jwt.decode(refreshToken)
+		userId = decodedRefresh.userId
+		const expiresInRefresh = decodedRefresh.exp - Math.floor(Date.now() / 1000)
+		if (expiresInRefresh > 0)
+			redisModel.addToBlacklist(refreshToken, expiresInRefresh)
+		reply.clearCookie('refreshToken', { path: '/' })
+	}
+	if (accessToken && accessToken !== undefined) {
+		const decodedAccess = fastify.jwt.decode(accessToken)
+		const expiresInAccess = decodedAccess.exp - Math.floor(Date.now() / 1000)
+		if (expiresInAccess > 0)
+			redisModel.addToBlacklist(accessToken, expiresInAccess)
+	}
 	if (!userId)
-		return reply.code(400).send({ error: "❌ User id is required" })
-	
+		return reply.code(400).send({ error: "❌ userId is undefined" })
 	try {
-		
+		const user = userModel.getUserById(userId)
+		const oldProfilePicture = user.profile_picture;
+		if (oldProfilePicture !== "default-profile-picture.png") {
+			try {
+				const oldFilePath = path.join(uploadDir, oldProfilePicture);
+				const fileExists = await fs.access(oldFilePath)
+				.then(() => true)
+				.catch(() => false);
+				
+				if (fileExists) {
+					console.log(`🗑️ deleting old profile picture: ${oldFilePath}`);
+					await fs.unlink(oldFilePath);
+				} else {
+					console.log(`⚠️ Old profile picture doesn't exist: ${oldFilePath}`);
+				}
+			} catch (deleteErr) {
+				console.error(`❌ Error deleting old profile picture: ${deleteErr.message}`);
+			}
+		}
 		const info = userModel.unregister(userId)
-		
 		if (info.changes === 0)
 			return reply.code(404).send({ error: "❌ User not found" })
-		return reply.send({ success: true, message: "User deleted successfully"})
+		return reply.send({ success: true, message: "❌ User deleted successfully"})
 	} catch (err) {
 		fastify.log.error(err)
 		return reply.code(500).send({ error: err.message })
@@ -248,7 +325,7 @@ export async function refreshAccessToken(request, reply) {
 		const payload = fastify.jwt.verify(refreshToken)
 		console.log("payload :", payload)
 
-		const newAccessToken = fastify.jwt.sign({ userId: payload.userId }, { expiresIn: '1m' })
+		const newAccessToken = fastify.jwt.sign({ userId: payload.userId }, { expiresIn: '15m' })
 		console.log("newAccessToken :", newAccessToken)
 		return newAccessToken
 	} catch (err) {
@@ -276,7 +353,7 @@ export async function verifyDoubleAuth(request, reply) {
 
 
 		if (isValid) {
-			const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, { expiresIn: '1m' })
+			const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, { expiresIn: '15m' })
 			const refreshToken = fastify.jwt.sign({ userId: user.userId }, { expiresIn: '7d' })
 			console.log("🔑 Access Token created :", accessToken)
 			console.log("🔑 Refresh Token created :", refreshToken)
@@ -367,7 +444,7 @@ export async function refreshInfos(request, reply) {
 				return reply.code(401).send({ success: false , error: '❌ User not found' })
 			const expiresInRefresh = decodedRefresh.exp - Math.floor(Date.now() / 1000)
 			if (expiresInRefresh > 0) {
-				newAccessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, { expiresIn: '1m' })
+				newAccessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, { expiresIn: '15m' })
 				if (accessToken && accessToken !== undefined) {
 					const decodedAccess = fastify.jwt.decode(accessToken)
 					const expiresInAccess = decodedAccess.exp - Math.floor(Date.now() / 1000)
@@ -376,9 +453,9 @@ export async function refreshInfos(request, reply) {
 				}
 			} else
 				reply.clearCookie('refreshToken', { path: '/' })
+			if (!user.doubleAuth_enabled && user.doubleAuth_secret)
+				userModel.updateDoubleAuth_secret(userId, null)
 		}
-		if (!user.doubleAuth_enabled && user.doubleAuth_secret)
-			userModel.updateDoubleAuth_secret(userId, null)
 		return reply.code(200).send({ success: true, accessToken: newAccessToken, message: 'User infos refreshed' })
 	} catch (err) {
 		return reply.code(500).send({ error: err.message })

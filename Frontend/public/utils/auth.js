@@ -107,7 +107,16 @@ async function login(event) {
 
 	const email = document.getElementById("login-email").value;
 	const password = document.getElementById("login-password").value;
-	const data = await apiRequest("users/login", "PUT", { email, password }, {})
+	const response = await fetch('/api/users/login', {
+		method: 'PUT',
+		body: JSON.stringify({ email, password }),
+		headers: { 
+			'Content-Type': 'application/json',
+		},
+		credentials: 'include',
+	});
+	const data = await response.json();
+	// const data = await apiRequest("users/login", "PUT", { email, password }, {})
 	sessionStorage.setItem("accessToken", data.accessToken)
 	accessToken = sessionStorage.getItem("accessToken")
 	userId = getUserIdFromToken(accessToken);
@@ -144,13 +153,16 @@ async function login(event) {
 				}
 			});
 		});
-
+		
 	} else {
 		const resultMessage = document.getElementById("login-resultMessage");
 		resultMessage.textContent = data.error;
 		resultMessage.classList.add("text-green-500");
 		console.log("Error :", data.error)
 	}
+	document.getElementById("login-email").value = "";
+	document.getElementById("login-password").value = "";
+	document.getElementById("login-resultMessage").textContent = "";
 }
 
 async function logout(userId) {
@@ -193,7 +205,7 @@ async function register(event) {
 	const resultMessage = document.getElementById("add-resultMessage");
 
 	if (password !== confirmPassword) {
-		resultMessage.textContent = "Error : Fields Password and confirm Password are different";
+		resultMessage.textContent = "Passwords are different";
 		resultMessage.classList.add("text-red-500");
 		return ;
 	}
@@ -201,13 +213,19 @@ async function register(event) {
 	const result = await apiRequest("users/add", "POST", { username, email, password }, {})
 	
 	if (result.success) {
-		resultMessage.textContent = `User added : ${result.username} (${result.email})`;
-		resultMessage.classList.add("text-green-500");
-
+		resultMessage.textContent = `User added : ${result.username} (${result.email})`
+		resultMessage.classList.add("text-green-500")
+		document.getElementById("create_account_id").classList.remove("active")
+		document.getElementById("loginform_id").classList.remove("active")
 	} else {
-		resultMessage.textContent = "Error : " + result.error;
-		resultMessage.classList.add("text-red-500");
+		resultMessage.textContent = result.error
+		resultMessage.classList.add("text-red-500")
 	}
+	document.getElementById("add-username").value = ""
+	document.getElementById("add-email").value = ""
+	document.getElementById("add-password").value = ""
+	document.getElementById("add-confirm-password").value = ""
+	document.getElementById("add-resultMessage").textContent = ""
 };
 
 async function refreshToken() {
@@ -218,14 +236,14 @@ async function refreshToken() {
 		credentials: "include"
 	});
 
-	const data = await response.json();
+	const data = await response.json()
 	if (data.success) {
 		accessToken = data.accessToken
 		sessionStorage.setItem("accessToken", accessToken)
-		return true;
+		return true
 	} else {
-		console.log("Error:", data.error)
-		return false;
+		console.log(data.error)
+		return false
 	}
 }
 
