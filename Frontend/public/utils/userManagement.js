@@ -86,9 +86,9 @@ async function unregister(userId) {
 				},
 			},);
 			const data = await response.json();
+			sessionStorage.removeItem("accessToken");
+			accessToken = null;
 			if (data.success) {
-				sessionStorage.removeItem("accessToken");
-				accessToken = null;
 				console.log('User deleted successfully');
 				document.getElementById("updateProfile-resultMessage").innerHTML = `${data.message}`;
 				history.pushState({}, '', '/');

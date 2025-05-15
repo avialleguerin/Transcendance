@@ -153,13 +153,15 @@ async function login(event) {
 				}
 			});
 		});
-
+		
 	} else {
 		const resultMessage = document.getElementById("login-resultMessage");
 		resultMessage.textContent = data.error;
 		resultMessage.classList.add("text-green-500");
 		console.log("Error :", data.error)
 	}
+	document.getElementById("login-email").value = "";
+	document.getElementById("login-password").value = "";
 }
 
 async function logout(userId) {
@@ -195,11 +197,11 @@ async function logout(userId) {
 async function register(event) {
 	event.preventDefault();
 
-	let username = document.getElementById("add-username").value;
-	let email = document.getElementById("add-email").value;
-	let password = document.getElementById("add-password").value;
-	let confirmPassword = document.getElementById("add-confirm-password").value;
-	let resultMessage = document.getElementById("add-resultMessage");
+	const username = document.getElementById("add-username").value;
+	const email = document.getElementById("add-email").value;
+	const password = document.getElementById("add-password").value;
+	const confirmPassword = document.getElementById("add-confirm-password").value;
+	const resultMessage = document.getElementById("add-resultMessage");
 
 	if (password !== confirmPassword) {
 		resultMessage.textContent = "Passwords are different";
@@ -210,18 +212,19 @@ async function register(event) {
 	const result = await apiRequest("users/add", "POST", { username, email, password }, {})
 	
 	if (result.success) {
-		resultMessage.textContent = `User added : ${result.username} (${result.email})`;
-		resultMessage.classList.add("text-green-500");
-		document.getElementById("create_account_id").classList.remove("active");
-		document.getElementById("loginform_id").classList.remove("active");
+		resultMessage.textContent = `User added : ${result.username} (${result.email})`
+		resultMessage.classList.add("text-green-500")
+		document.getElementById("create_account_id").classList.remove("active")
+		document.getElementById("loginform_id").classList.remove("active")
 	} else {
-		resultMessage.textContent = result.error;
-		resultMessage.classList.add("text-red-500");
+		resultMessage.textContent = result.error
+		resultMessage.classList.add("text-red-500")
 	}
-	username = "";
-	email = "";
-	password = "";
-	confirmPassword = "";
+	document.getElementById("add-username").value = ""
+	document.getElementById("add-email").value = ""
+	document.getElementById("add-password").value = ""
+	document.getElementById("add-confirm-password").value = ""
+	document.getElementById("add-resultMessage").textContent = ""
 };
 
 async function refreshToken() {
@@ -232,14 +235,14 @@ async function refreshToken() {
 		credentials: "include"
 	});
 
-	const data = await response.json();
+	const data = await response.json()
 	if (data.success) {
 		accessToken = data.accessToken
 		sessionStorage.setItem("accessToken", accessToken)
-		return true;
+		return true
 	} else {
 		console.log(data.error)
-		return false;
+		return false
 	}
 }
 

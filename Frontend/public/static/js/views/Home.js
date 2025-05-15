@@ -96,12 +96,20 @@ export default class extends AbstractView {
 			console.log("createAccountForm");
 			loginForm.classList.add("active");
 			createAccountForm.classList.add("active");
+			document.getElementById("login-email").value = ""
+			document.getElementById("login-password").value = ""
+			document.getElementById("login-resultMessage").textContent = ""
 		});
 
 		alreadyHaveAccountButton.addEventListener("click", () => {
 			console.log("loginForm");
 			createAccountForm.classList.remove("active");
 			loginForm.classList.remove("active");
+			document.getElementById("add-username").value = ""
+			document.getElementById("add-email").value = ""
+			document.getElementById("add-password").value = ""
+			document.getElementById("add-confirm-password").value = ""
+			document.getElementById("add-resultMessage").textContent = ""
 		});
 	}
 }

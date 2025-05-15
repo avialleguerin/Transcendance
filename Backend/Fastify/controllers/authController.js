@@ -7,7 +7,7 @@ import qrcode from 'qrcode'
 import fs from 'fs/promises';
 import path from 'path';
 
-
+const uploadDir = '/usr/share/nginx/uploads'
 const SECRET_LENGHT = 30
 
 export async function selectUsers(request, reply) {
@@ -216,7 +216,7 @@ export async function changeProfilePicture(request, reply) {
 		if (!user)
 			return reply.code(404).send({ error: '❌ User not found' })
 
-		const uploadDir = '/usr/share/nginx/uploads';
+		
 
 		const filename = `${Date.now()}-${user.username}-pp${path.extname(file.filename)}`;
 		const filePath = path.join(uploadDir, filename);
@@ -282,12 +282,31 @@ export async function unregister(request, reply) {
 			redisModel.addToBlacklist(accessToken, expiresInAccess)
 	}
 	if (!userId)
-		return reply.code(400).send({ error: "❌ User id is required" })
+		return reply.code(400).send({ error: "❌ userId is undefined" })
 	try {
+		const user = userModel.getUserById(userId)
+		const oldProfilePicture = user.profile_picture;
+		if (oldProfilePicture !== "default-profile-picture.png") {
+			try {
+				const oldFilePath = path.join(uploadDir, oldProfilePicture);
+				const fileExists = await fs.access(oldFilePath)
+				.then(() => true)
+				.catch(() => false);
+				
+				if (fileExists) {
+					console.log(`🗑️ deleting old profile picture: ${oldFilePath}`);
+					await fs.unlink(oldFilePath);
+				} else {
+					console.log(`⚠️ Old picture doesn't exist: ${oldFilePath}`);
+				}
+			} catch (deleteErr) {
+				console.error(`❌ Erreur lors de la suppression de l'ancienne image: ${deleteErr.message}`);
+			}
+		}
 		const info = userModel.unregister(userId)
 		if (info.changes === 0)
 			return reply.code(404).send({ error: "❌ User not found" })
-		return reply.send({ success: true, message: "User deleted successfully"})
+		return reply.send({ success: true, message: "❌ User deleted successfully"})
 	} catch (err) {
 		fastify.log.error(err)
 		return reply.code(500).send({ error: err.message })
