@@ -4,5 +4,8 @@
 		"plaintext": false,
 		"markdown": false,
 		"scminput": false
+	},
+	"files.exclude": {
+    	"**/node_modules": true
 	}
 }

@@ -22,6 +22,8 @@ services:
     ports:
       - "6380:6379"
     restart: always
+    volumes:
+      - redis_data:/data
 
   fastify:
     container_name: fastify
@@ -40,11 +42,11 @@ services:
       - redis
       - vault
     volumes:
-      - ./Backend/Fastify:/app
-      - /app/node_modules    # Préserve les modules installés dans le container
-      - ./Data/vault_data:/app/vault/data
-      - ./Data/sqlite_data:/app/Data/db
-      - ./Data/uploads:/usr/share/nginx/uploads
+      - ./Backend/Fastify:/app:ro
+      - app_node_modules:/app/node_modules
+      - vault_data:/app/vault/data
+      - sqlite_data:/app/Data/db
+      - uploads_data:/usr/share/nginx/uploads
 
   nginx:
     container_name: nginx
@@ -63,26 +65,15 @@ services:
     environment:
       - NGINX_ENVSUBST_TEMPLATE_DIR=off
     volumes:
-      - ./Security/Nginx/conf.d:/etc/nginx/conf.d
-      - ./Security/ModSecurity:/etc/modsecurity.d
+      - ./Security/Nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./Security/ModSecurity:/etc/modsecurity.d:ro
       - ./Frontend/public:/usr/share/nginx/html:ro  #The Main Website
       - ./Frontend/admin:/usr/share/nginx/admin:ro  #The Admin Website
       - ./Frontend/utils:/usr/share/nginx/utils:ro  #The API Scripts
-      - ./Data/uploads:/usr/share/nginx/uploads
-      #TMP for Typescript
-      - ./Frontend/public/srcs:/usr/share/nginx/dist/srcs:ro  #The Main Website Typescript
-      - ./Frontend/public/static/js/css:/usr/share/nginx/dist/static/js/css:ro 
-      - ./Frontend/public/static/js/index.css:/usr/share/nginx/dist/static/js/index.css:ro  
-      - ./Frontend/public/index.html:/usr/share/nginx/dist/index.html:ro  
-      - ./Frontend/dist:/usr/share/nginx/dist  # The compiled JS files
-      #END for Typescript
-      #TMP for Typescript 2 (With new directories)
-      - ./Frontend/public2/srcs:/usr/share/nginx/dist2/srcs:ro  #The Main Website Typescript
-      - ./Frontend/public2/static/js/css:/usr/share/nginx/dist2/static/js/css:ro 
-      - ./Frontend/public2/static/js/index.css:/usr/share/nginx/dist2/static/js/index.css:ro  
-      - ./Frontend/public2/index.html:/usr/share/nginx/dist2/index.html:ro  
-      - ./Frontend/dist2:/usr/share/nginx/dist2  # The compiled JS files
-      #END for Typescript 2
+      - uploads_data:/usr/share/nginx/uploads
+      # Typescript build files
+      - ./Frontend/dist:/usr/share/nginx/dist:ro  # The compiled JS files
+      - ./Frontend/dist2:/usr/share/nginx/dist2:ro  # The compiled JS files
 
   tsengine:
     image: node:20-alpine
@@ -93,12 +84,13 @@ services:
               mkdir -p /app/dist &&
               tsc --project /app/tsconfig.json --watch"
     volumes:
-      - ./Frontend/public:/app/public
+      - ./Frontend/public:/app/public:ro
+      - ./Frontend/public2:/app/public2:ro
+      - ./Frontend/package.json:/app/package.json:ro
+      - ./Frontend/tsconfig.json:/app/tsconfig.json:ro
+      - ts_node_modules:/app/node_modules
       - ./Frontend/dist:/app/dist
       - ./Frontend/dist2:/app/dist2
-      - ./Frontend/package.json:/app/package.json
-      - ./Frontend/tsconfig.json:/app/tsconfig.json
-      - /app/node_modules
     restart: unless-stopped
 
   vault:
@@ -114,9 +106,8 @@ services:
       - VAULT_ADDR=http://127.0.0.1:8200
       - VAULT_DEV_ROOT_TOKEN_ID=root
     volumes:
-      - ./Data/vault_data:/vault/data
-      - ./Security/Vault/scripts:/vault/scripts
-      # - ./Security/Vault/vault_data:/vault/data
+      - vault_data:/vault/data
+      - ./Security/Vault/scripts:/vault/scripts:ro
     cap_add:
       - IPC_LOCK
     # entrypoint: "vault server -dev -dev-listen-address=0.0.0.0:8200"
@@ -125,10 +116,16 @@ services:
 #   transcendence-network:
 #      driver: bridge
 
-# volumes:
-  # postgresql_data:
-  #   driver: local
-  # sqlite_data:
-  #   driver: local
-  # vault_data:
-  #   driver: local
+volumes:
+  redis_data:
+    driver: local
+  sqlite_data:
+    driver: local
+  vault_data:
+    driver: local
+  uploads_data:
+    driver: local
+  app_node_modules:
+    driver: local
+  ts_node_modules:
+    driver: local
