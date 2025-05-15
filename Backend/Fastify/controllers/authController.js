@@ -240,13 +240,13 @@ export async function changeProfilePicture(request, reply) {
 				.catch(() => false);
 				
 				if (fileExists) {
-					console.log(`🗑️ Suppression de l'ancienne image: ${oldFilePath}`);
+					console.log(`🗑️ Deleting old profile picture: ${oldFilePath}`);
 					await fs.unlink(oldFilePath);
 				} else {
-					console.log(`⚠️ L'ancien fichier n'existait pas: ${oldFilePath}`);
+					console.log(`⚠️ Old profile picture doesn't exist: ${oldFilePath}`);
 				}
 			} catch (deleteErr) {
-				console.error(`❌ Erreur lors de la suppression de l'ancienne image: ${deleteErr.message}`);
+				console.error(`❌ Error deleting old profile picture: ${deleteErr.message}`);
 			}
 		}
 
@@ -254,11 +254,11 @@ export async function changeProfilePicture(request, reply) {
 
 		reply.code(200).send({
 			success: true,
-			message: 'New profile picture uploaded successfully',
+			message: 'New profile picture uploaded successfully!',
 			path: `/uploads/${filename}`
 		});
 	} catch (err) {
-		console.error("❌ Erreur lors de l'upload de l'image :", err);
+		console.error("❌ Error uploading new profile picture :", err);
 		return reply.code(500).send({ error: err.message });
 	}
 }
@@ -297,10 +297,10 @@ export async function unregister(request, reply) {
 					console.log(`🗑️ deleting old profile picture: ${oldFilePath}`);
 					await fs.unlink(oldFilePath);
 				} else {
-					console.log(`⚠️ Old picture doesn't exist: ${oldFilePath}`);
+					console.log(`⚠️ Old profile picture doesn't exist: ${oldFilePath}`);
 				}
 			} catch (deleteErr) {
-				console.error(`❌ Erreur lors de la suppression de l'ancienne image: ${deleteErr.message}`);
+				console.error(`❌ Error deleting old profile picture: ${deleteErr.message}`);
 			}
 		}
 		const info = userModel.unregister(userId)

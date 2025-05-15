@@ -13,7 +13,7 @@ import { redisModel } from './models/redisModel.js';
 await redisClient.connect();
 
 
-export const fastify = Fastify({ logger: true })
+export const fastify = Fastify({ logger: false })
 
 
 await fastify.register(fastifyMultipart, {

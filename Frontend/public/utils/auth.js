@@ -162,6 +162,7 @@ async function login(event) {
 	}
 	document.getElementById("login-email").value = "";
 	document.getElementById("login-password").value = "";
+	document.getElementById("login-resultMessage").textContent = "";
 }
 
 async function logout(userId) {

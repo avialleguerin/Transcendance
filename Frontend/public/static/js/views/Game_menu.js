@@ -21,6 +21,19 @@ export default class extends AbstractView {
 	constructor() {
 		super();
 		this.setTitle("Game_menu");
+		if (!accessToken || accessToken === undefined) {
+			history.pushState({}, '', '/');
+			import('./Home.js').then(module => {
+				const Home = module.default;
+				const homeInstance = new Home();
+				homeInstance.getHtml().then(html => {
+					document.getElementById('app').innerHTML = html;
+					if (homeInstance.createAccount) {
+						homeInstance.createAccount();
+					}
+				});
+			});
+		}
 	}
 
 	async getHtml() {

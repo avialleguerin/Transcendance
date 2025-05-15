@@ -40,14 +40,15 @@ export default class extends AbstractView {
 								<input type="email" id="login-email" name="email" placeholder="Your email" required>
 							</div>
 
-						<div class="input-container">
-							<label for="password">Password :</label>
-							<input type="password" id="login-password" name="password" placeholder="Your password" required>
-						</div>
-						<button type="submit" class="connexion">Login</button>
+							<div class="input-container">
+								<label for="password">Password :</label>
+								<input type="password" id="login-password" name="password" placeholder="Your password" required>
+							</div>
+							<button type="submit" class="connexion">Login</button>
+						</form>
 						<button class="creer-compte" id="create-Account">Create an account</button>
 						<p id="login-resultMessage" style="color:white"></p>
-					</form>
+					</div>
 				</div>
 				<div class="register-form" id="create_account_id">
 					<h1>SIGN IN</h1>
