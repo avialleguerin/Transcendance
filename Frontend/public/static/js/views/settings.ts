@@ -1,6 +1,6 @@
 import AbstractView from "./AbstractView.js";
 
-export default class  extends AbstractView {
+export default class extends AbstractView {
 	constructor() {
 		super();
 		this.setTitle("Settings");
@@ -8,7 +8,7 @@ export default class  extends AbstractView {
 
 	
 	async getHtml() {
-		return `
+		return /*html*/`
 			<style>
 			.container {
 				position: absolute;

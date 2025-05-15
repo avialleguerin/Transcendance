@@ -15,6 +15,7 @@ export default class extends AbstractView {
 	cooldowns: any;
 	cooldownTimes: any;
 	boundKeyPressHandler: (event: KeyboardEvent) => void;
+	gameLoop: NodeJS.Timeout | null;
 	
 
 	constructor() {
@@ -166,10 +167,10 @@ export default class extends AbstractView {
 		}
 
 
-		document.getElementById("nb-item-grenade-1").innerHTML = getPowerUP_value_multi();
-		document.getElementById("nb-item-teammate-1").innerHTML = getPowerUP_value_multi();
-		document.getElementById("nb-item-grenade-2").innerHTML = getPowerUP_value_multi();
-		document.getElementById("nb-item-teammate-2").innerHTML = getPowerUP_value_multi();
+		document.getElementById("nb-item-grenade-1").innerHTML = getPowerUP_value_multi().toString();
+		document.getElementById("nb-item-teammate-1").innerHTML = getPowerUP_value_multi().toString();
+		document.getElementById("nb-item-grenade-2").innerHTML = getPowerUP_value_multi().toString();
+		document.getElementById("nb-item-teammate-2").innerHTML = getPowerUP_value_multi().toString();
 	}
 
 	updateOverlays() {

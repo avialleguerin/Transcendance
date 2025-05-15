@@ -25,7 +25,7 @@ export default class Home extends AbstractView {
 
 	async getHtml(): Promise<string> {
     return /*html*/`
-      <link rel="stylesheet" href="./static/js/css/home.css">
+    	<link rel="stylesheet" href="./static/js/css/home.css">
 			<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 			<div class="container">
 				<div class="title">
