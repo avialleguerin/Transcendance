@@ -22,7 +22,9 @@ export default class solo_game extends AbstractView {
 			"c": 15000,
 			"1": 15000,
 			"2": 20000,
-			"3": 15000
+			"3": 15000,
+			"t": 1000,
+			" ": 1000,
 		};
 
 		this.boundKeyPressHandler = this.handleKeyPress.bind(this);
