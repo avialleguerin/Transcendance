@@ -1,4 +1,5 @@
-// import { handleViewTransitions } from "../srcs/game/gameplay/views/camera.js";
+// import { handleViewTransitions } from '../srcs/game/gameplay/views/camera.js';
+// import { handleViewTransitions } from camera
 
 
 let accessToken = sessionStorage.getItem("accessToken")
@@ -142,7 +143,7 @@ async function login(event) {
 		resultMessage.classList.add("text-green-500");
 		console.log("✅ Connected, Token :", accessToken)
 		history.pushState({}, '', '/Game_menu');
-		// handleViewTransitions("vue1", "vue2");
+		// handleViewTransitions("vue1", "default");
 		import('../static/js/views/Game_menu.js').then(module => {
 			const GameMenu = module.default;
 			const gameMenuInstance = new GameMenu();

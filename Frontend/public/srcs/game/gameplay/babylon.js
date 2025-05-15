@@ -11,6 +11,7 @@ import { gameIsFinished, SetIsGameFinished } from "./score.js";
 import { init_game_tournament, destroy_game_solo_tournament } from "./tournament/tournament.js";
 import { move_player_tournament } from "./tournament/init_player_tournament.js";
 import { init_all_skin } from "./solo/skin/init_skin_perso.js";
+import { handleViewTransitions } from "./views/camera.js";
 
 
 /**************************************************************/
@@ -173,7 +174,7 @@ camera.rotation = new BABYLON.Vector3(-0.029665280069011667, -2.566387085794712,
 camera.minZ = 0.1;
 camera.maxZ = 5000;
 camera.attachControl(canvas, true);
-camera.speed = 0.15;
+camera.speed = 1;
 
 const pipeline = new BABYLON.DefaultRenderingPipeline("defaultPipeline", true, scene, [camera]);
 
@@ -478,6 +479,8 @@ let lastFpsUpdate = performance.now();
 /*****************BOUCLE PRINCIPALE ************************/
 /***********************************************************/
 
+let isConnected = false;
+
 
 engine.runRenderLoop(() => {
 	try
@@ -498,6 +501,18 @@ engine.runRenderLoop(() => {
 			frameCount = 0;
 		}
 		applyQualitySettings();
+
+		if (accessToken && accessToken !== undefined && !isConnected) {
+			isConnected = true;
+			console.log("User is connectedddddddddddddddddddddddddddddd");
+			handleViewTransitions("vue1", "default");
+		}
+
+		if (!(accessToken && accessToken !== undefined) && isConnected) {
+			isConnected = false;
+			console.log("User is disconnectedddddddddddddddddddddddddddddd");
+			handleViewTransitions("vue1", "vue2");
+		}
 
 		if (Solo_gameStart && !gameIsFinished) {
 			if (!initialized) {

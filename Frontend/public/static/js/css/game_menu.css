@@ -312,12 +312,12 @@
 }
 
 .fa_selector {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	gap: 10px;
-	position: absolute;
-	transform: translate(150%, 0%);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    position: absolute;
+    transform: translate(-30%, 30%);
 }
 
 .fa_selector p {
@@ -1493,27 +1493,26 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
 
 .profile_param_unlocked {
 	display: none;
+	flex-direction: column;
 	align-items: center;
-	gap: 10px;
 	width: 100%;
 	height: 100%;
-	background-color: #000000ba;
-	flex-direction: column;
-	border: 2px solid white;
-	border-radius: 3%;
-	transform: translateY(-10%);
+	justify-content: flex-start; /* Changé de center à flex-start pour commencer depuis le haut */
+	padding-top: 100px; /* Ajouter un padding en haut pour décaler le contenu */
 
 }
 
 .input_container {
-	display: flex;
-	align-items: center;
-	gap: 10px;
-	width: 64%;
-	height: 10%;
-	background-color: #00000082;
-	transform: translate(22%, -60%);
-	padding-right: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 115%;
+    height: 20%;
+    /* background-color: #00000082; */
+    transform: translate(-15%, 100%);
+    padding-right: 10px;
+    padding-bottom: 10px;
+	overflow: hidden;
 }
 
 .input_container label {
@@ -1718,30 +1717,60 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
 }
 
 .profile_photo_circle {
-	width: 80px;
-	height: 80px;
-	border-radius: 50%;
-	border: 2px dashed #ccc;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 2px dashed #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* cursor: pointer; */
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#uploadForm {
 	display: flex;
+	/* flex-direction: column; */
 	align-items: center;
-	justify-content: center;
-	/* cursor: pointer; */
-	position: relative;
-	background-size: cover;
-	background-position: center;
-	background-repeat: no-repeat;
+	gap: 1rem;
+	/* background-color: #1e1e2f; */
+	padding: 1.5rem;
+	/* border-radius: 12px; */
+	max-width: 300px;
+	margin: 2rem auto;
 	position: absolute;
-	top: 35%;
-	left: 4%;
-	transform: translateY(-50%);
-}
+	top: 39%;
+	width: 80%;
+  }
 
-.photo_upload_icon {
-	color: #999;
-	font-size: 24px;
-	cursor: pointer;
-}
+  #uploadForm button {
+	padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 8px;
+    background-color: #858585;
+    color: #ffffff;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s;
+    font-size: 0.7vw;
+  }
 
+  #fileName {
+    color: white;
+    font-size: 0.9rem;
+  }
+
+  input[type="file"] {
+    display: none;
+  }
 /* .profile_photo_circle:hover {
 	border-color: #888;
 }
@@ -1761,29 +1790,30 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
 
 
 .valid_profile_info_btn {
-	padding: 15px 0px;
-	font-size: 0.7vw;
-	font-weight: bold;
-	color: rgb(255, 255, 255);
-	border: 2px solid #44444400;
-	background-color: transparent;
-	border-radius: 8px;
-	cursor: pointer;
-	text-align: center;
-	background-image: url("../../../srcs/game/assets/image/boutton.svg");
-	background-size: 100% auto;
-	background-position: center;
-	background-repeat: no-repeat;
-	line-height: 4vh;
-	width: 87px;
-	height: 50px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	position: relative;
-	/* bottom: -7%; */
-	/* left: 50%; */
-	transform: translate(0%, -30%);
+    padding: 15px 0px;
+    font-size: 0.7vw;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+    border: 2px solid #44444400;
+    background-color: transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    background-image: url("../../../srcs/game/assets/image/boutton.svg");
+    background-size: 100% auto;
+    background-position: center;
+    background-repeat: no-repeat;
+    line-height: 4vh;
+    width: 87px;
+    height: 50px;
+    display: flex
+;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    /* bottom: -7%; */
+    /* left: 50%; */
+	transform: translate(16%, 950%);
 }
 
 
@@ -1866,55 +1896,101 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
 
 .btn_deconnect_btn {
 	padding: 20px 40px;
-	font-size: 0.5vw;
-	font-weight: bold;
-	transform: translateY(-50%);
-	background-color: transparent;
-	color: white;
-	border: 2px solid #44444400;
-	border-radius: 8px;
-	cursor: pointer;
-	text-align: center;
-	background-image: url("../../../srcs/game/assets/image/boutton.svg");
-	background-size: 100% auto;
-	background-position: center;
-	background-repeat: no-repeat;
-	line-height: 3vh;
-	width: 88px;
-	height: 54px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-193%, 90%);
+    font-size: 0.5vw;
+    font-weight: bold;
+    transform: translateY(-50%);
+    background-color: transparent;
+    color: white;
+    border: 2px solid #44444400;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    background-image: url("../../../srcs/game/assets/image/boutton.svg");
+    background-size: 100% auto;
+    background-position: center;
+    background-repeat: no-repeat;
+    line-height: 3vh;
+    width: 88px;
+    height: 54px;
+    display: flex
+;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translate(-70%, 230%);
 }
 
 .btn_delete_btn {
-	padding: 20px 40px;
-	font-size: 0.5vw;
-	font-weight: bold;
-	transform: translateY(-50%);
-	background-color: transparent;
-	color: white;
-	border: 2px solid #44444400;
-	border-radius: 8px;
-	cursor: pointer;
-	text-align: center;
-	background-image: url("../../../srcs/game/assets/image/boutton.svg");
-	background-size: 100% auto;
-	background-position: center;
-	background-repeat: no-repeat;
-	line-height: 3vh;
-	width: 88px;
-	height: 54px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	/* Modification ici pour positionner à droite */
-	transform: translate(93%, 90%);
+    padding: 20px 40px;
+    font-size: 0.5vw;
+    font-weight: bold;
+    transform: translateY(-50%);
+    background-color: transparent;
+    color: white;
+    border: 2px solid #44444400;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    background-image: url("../../../srcs/game/assets/image/boutton.svg");
+    background-size: 100% auto;
+    background-position: center;
+    background-repeat: no-repeat;
+    line-height: 3vh;
+    width: 88px;
+    height: 54px;
+    display: flex
+;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translate(76%, 230%);
 }
+
+.profile_param_unlocked h1 {
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgb(0, 0, 0);
+    text-align: center;
+    font-size: 1.2vw;
+    position: relative;
+    font-family: 'Black Ops One', sans-serif;
+    top: 100%;
+    left: 0%;
+    transform: translateY(150%);
+}
+
+.game_statistics {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding-top: 80px;
+    overflow-y: auto;
+  }
+
+  .statistics {
+    background: linear-gradient(135deg, #1f1f2e, #2a2a3d);
+    border: 2px solid #444;
+    border-radius: 16px;
+    padding: 30px;
+    width: 300px;
+    text-align: left;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  }
+
+  .statistics p {
+    color: #ffffff;
+    font-family: 'Black Ops One', sans-serif;
+    font-size: 1.2rem;
+    margin: 15px 0;
+    text-shadow: 1px 1px 2px #000;
+  }
+
+  .statistics span {
+    color: #00ffcc;
+    font-weight: bold;
+  }

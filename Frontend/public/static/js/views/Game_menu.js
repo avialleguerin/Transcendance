@@ -189,10 +189,17 @@ export default class extends AbstractView {
 								<div class="profile_photo_container">
 									<div class="profile_photo_circle" id="profile_photo_circle"></div>
 									<form id="uploadForm" enctype="multipart/form-data" onsubmit="changeProfilePicture(event)">
-										<label for="profile_photo_input" class="photo_upload_icon"></label>
-										<input type="file" name="image" id="profile_photo_input" style="color:white"/>
-										<button type="submit">Upload</button>
+									<input type="file" name="image" id="profile_photo_input" accept="image/*" />
+									
+									<button type="button" onclick="document.getElementById('profile_photo_input').click()">
+										Choose File
+									</button>
+									
+									<div id="fileName"></div>
+
+									<button type="submit">Upload</button>
 									</form>
+
 								</div>
 							</div>
 							<form onsubmit="updateProfileInfo(event)">
@@ -215,8 +222,8 @@ export default class extends AbstractView {
 								<div id="fa_selector" class="fa_selector">
 								<p>2FA :<span id="active_fa" class="active_fa"></span></p>
 								</div>
+								</form>
 								<button type="submit" id="valid_profile_info" class="valid_profile_info_btn">Valider</button>
-							</form>
 							<div class="btn_deconnect">
 								<button id="deconnect_btn" class="btn_deconnect_btn" onclick="logout()">Deconnexion</button>
 							</div>
@@ -224,6 +231,16 @@ export default class extends AbstractView {
 								<button id="delete_btn" class="btn_delete_btn" onclick="unregister()">Delete account</button>
 							</div>
 							<p id="updateProfile-resultMessage" class="resultMessage" style="color:white"></p>
+
+							<h1>GAME STATISTICS</h1>
+							<div class="game_statistics">
+								<div class="statistics">
+									<p>Games Played: <span id="games_played" class="games_played"></span></p>
+									<p>Games Won: <span id="games_won" class="games_won"></span></p>
+									<p>Games Lost: <span id="games_lost" class="games_lost"></span></p>
+									<p>Win Rate: <span id="win_rate" class="win_rate"></span></p>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -1143,6 +1160,7 @@ export default class extends AbstractView {
 			btn_back_home.classList.remove('active');
 			view1.classList.remove('active');
 			btn_back_home.classList.add('active');
+			container_menu.classList.add('active');
 		});
 
 
@@ -1159,6 +1177,7 @@ export default class extends AbstractView {
 				view5.classList.add('active');
 				// btn_back_home.classList.remove('active');
 				view1.classList.add('active');
+				container_menu.classList.remove('active');
 			}
 		});
 

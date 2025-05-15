@@ -22,7 +22,7 @@ const views = {
 	vue2:
 	{
 		position: new BABYLON.Vector3(-18.362079870354155, 108.25251269427612, 25.862876364155152),
-		rotation: new BABYLON.Vector3(0.030709202934622, -3.1253471752812234, 0)
+		rotation: new BABYLON.Vector3(-0.03206367823184748, -3.1231242503824395, 0)
 	},
 	vue3:
 	{
