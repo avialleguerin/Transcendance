@@ -8,7 +8,7 @@ export default class extends AbstractView {
 
 	
 	async getHtml() {
-		return `
+		return /*html*/`
 		<style>
 		.container {
 			position: absolute;

@@ -58,10 +58,6 @@ async function validate2FA(event) {
 			console.log("✅ 2FA code valid!");
 			document.getElementById("login-resultMessage").textContent = "2FA validated successfully!";
 			document.getElementById("login-resultMessage").classList.add("text-green-500");
-
-			// setTimeout(() => {
-			// 	location.reload();
-			// }, 300);
 		} else {
 			console.error("❌ Invalid 2FA code:", data.error);
 			document.getElementById("login-resultMessage").textContent = "Invalid 2FA code!";
@@ -96,10 +92,6 @@ async function activate2FA(event) {
 			console.log("✅ 2FA code valid!");
 			document.getElementById("activate-2fa-resultMessage").textContent = "2FA validated successfully!";
 			document.getElementById("activate-2fa-resultMessage").classList.add("text-green-500");
-
-			// setTimeout(() => {
-			// 	location.reload();
-			// }, 300);
 		} else {
 			console.error("❌ Invalid 2FA code:", data.error);
 			document.getElementById("activate-2fa-resultMessage").textContent = "Invalid 2FA code!";
@@ -194,13 +186,11 @@ async function register(event) {
 		resultMessage.textContent = `User added : ${result.username} (${result.email})`;
 		resultMessage.classList.add("text-green-500");
 
-		setTimeout(() => {
-			location.reload();
-		}, 300);
 	} else {
 		resultMessage.textContent = "Error : " + result.error;
 		resultMessage.classList.add("text-red-500");
 	}
+	fetchUsers();
 };
 
 async function refreshToken() {
@@ -253,9 +243,6 @@ async function refreshInfos() {
 		accessToken = sessionStorage.getItem("accessToken");
 	}
 	if (data.success) {
-		// handleViewTransitions("vue2", "vue1");
-		// if (data.connection_status == "connected") // TODO - Remplacer par une redirection sur la page de jeu
-		// 	fetchProfile();
 		console.log("Infos refreshed successfully");
 	} else {
 		console.error("Error refreshing infos:", data.error);
@@ -265,10 +252,5 @@ async function refreshInfos() {
 window.addEventListener('DOMContentLoaded', () => {
 	console.log("accessToken: ", accessToken)
 	refreshInfos();
-	// if (!accessToken) {
-	// 	console.log("No access token found, redirecting to login view without reloading...");
-	// 	history.pushState({}, '', '/');
-	// 	return;
-	// }
 	fetchUsers();
 });

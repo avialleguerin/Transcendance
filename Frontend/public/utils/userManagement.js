@@ -1,203 +1,44 @@
-// document.getElementById("profile_photo_input").addEventListener("change", function(e) {
-// 	const file = e.target.files[0];
-// 	if (file) {
-// 		const reader = new FileReader();
-// 		reader.onload = function(event) {
-// 			// Affiche l'image uploadée en fond de la div
-// 			const circle = document.getElementById("profile_photo_circle");
-// 			circle.style.backgroundImage = `url(${event.target.result})`;
-// 			circle.style.backgroundSize = "cover";
-// 			circle.style.backgroundPosition = "center";
-// 		};
-// 		reader.readAsDataURL(file);
-// 	}
-// });
 
-async function changeProfilePicture() {
-	const profilePhotoInput = document.getElementById("profile_photo_input");
-	if (profilePhotoInput) {
-		profilePhotoInput.addEventListener("change", async (e) => {
-			const file = e.target.files[0];
-			if (file) {
-				console.log("File selected:", file.name);
-				
-				// Create FormData object to send the file
-				const formData = new FormData();
-				formData.append("profilePicture", file);
-				formData.append("userId", userId);
-				
-				try {
-					// Get the accessToken from sessionStorage
-					const accessToken = sessionStorage.getItem("accessToken");
-					if (!accessToken) {
-						console.error("No access token available");
-						return;
-					}
-					
-					// Send the file to the server
-					const response = await fetch("/api/users/update-profile-picture", {
-						method: "POST",
-						body: formData,
-						contentType: "multipart/form-data",
-						headers: {
-							"Authorization": `Bearer ${accessToken}`
-						}
-					});
-					
-					const data = await response.json();
-					
-					if (response.ok) {
-						console.log("Profile picture updated successfully:", data);
-						
-						// Update the profile picture in the UI
-						const circle = document.getElementById("profile_photo_circle");
-						
-						// Read the file and display it
-						const reader = new FileReader();
-						reader.onload = (event) => {
-							circle.style.backgroundImage = `url(${event.target.result})`;
-							circle.style.backgroundSize = "cover";
-							circle.style.backgroundPosition = "center";
-						};
-						reader.readAsDataURL(file);
-						
-						// Show success message
-						alert("Profile picture updated successfully!");
-					} else {
-						console.error("Error updating profile picture:", data.error || data.message);
-						alert("Failed to update profile picture: " + (data.error || data.message));
-					}
-				} catch (err) {
-					console.error("Error uploading profile picture:", err);
-					alert("An error occurred while uploading the profile picture");
-				}
-			}
-		});
-	}
+async function changeProfilePicture(event) {
+	event.preventDefault();
+	const input = document.getElementById('profile_photo_input');
+	const formData = new FormData();
+	formData.append('profile-picture', input.files[0]);
+	console.log("formData", formData);
+	console.log("input", input.files[0]);
+	const response = await fetch('/api/users/update-profile-picture', {
+		method: 'POST',
+		body: formData
+	});
+
+	const data = await response.json();
+	if (data.success)
+		document.getElementById("updateProfile-resultMessage").innerHTML = `${data.message}`;
+	else
+		document.getElementById("updateProfile-resultMessage").innerHTML = `${data.error}`;
+	document.getElementById("profile_photo_input").value = "";
+	fetchProfile();
 }
-
-// async function changeProfilePicture(userId) {
-// 	try {
-// 		const accessToken = sessionStorage.getItem("accessToken");
-// 		console.log("🔑 Access Token envoyé :", accessToken);
-
-// 		const response = await fetch(`/api/users/profile_picture/${userId}`, {
-// 			method: "PUT",
-// 			headers: {
-// 				"Content-Type": "application/json",
-// 				"Authorization": `Bearer ${accessToken}`
-// 			},
-// 			body: JSON.stringify({ userId, profilePicture })
-// 		});
-// 		if (response.ok) {
-// 			fetchUsers();
-// 		} else {
-// 			const error = await response.json();
-// 			alert('Error : ' + error.error);
-// 		}
-// 	} catch (err) {
-// 		console.error('Error :', err);
-// 	}
-// }
-
-// function openProfilePictureModal(userId) {
-// document.getElementById('profile-picture-modal').classList.remove('hidden');
-// // Store userId for later use during upload
-// document.getElementById('profile-picture-modal').dataset.userId = userId;
-// }
-
-// function closeProfilePictureModal() {
-// 	document.getElementById('profile-picture-modal').classList.add('hidden');
-// 	document.getElementById('profile-picture-input').value = '';
-// 	document.getElementById('upload-status').textContent = '';
-// 	document.getElementById('profile-preview').src = 'https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Image-Transparent-Background.png';
-// }
-
-// Show preview of selected image
-// document.getElementById('profile-picture-input').addEventListener('change', function(event) {
-// 	const file = event.target.files[0];
-// 	if (file) {
-// 		const reader = new FileReader();
-// 		reader.onload = function(e) {
-// 		document.getElementById('profile-preview').src = e.target.result;
-// 		}
-// 		reader.readAsDataURL(file);
-// }
-// });
-
-// async function uploadProfilePicture() {
-// 	const fileInput = document.getElementById('profile-picture-input');
-// 	const userId = document.getElementById('profile-picture-modal').dataset.userId;
-// 	const statusElement = document.getElementById('upload-status');
-
-// 	if (!fileInput.files || fileInput.files.length === 0) {
-// 		statusElement.textContent = "Please select an image first";
-// 		statusElement.classList.add("text-red-500");
-// 		return;
-// 	}
-
-// 	const file = fileInput.files[0];
-// 	const formData = new FormData();
-// 	formData.append('profilePicture', file);
-// 	formData.append('userId', userId);
-
-// 	try {
-// 		statusElement.textContent = "Uploading...";
-// 		statusElement.classList.remove("text-red-500");
-// 		statusElement.classList.add("text-blue-500");
-		
-// 		const response = await fetch(`/api/users/update-profile-picture/:${userId}`, {
-// 			method: 'POST',
-// 			body: formData,
-// 			// No Content-Type header needed, browser sets it with boundary for FormData
-// 			headers: {
-// 				'Authorization': `Bearer ${accessToken}`
-// 			}
-// 		});
-		
-// 		const result = await response.json();
-		
-// 		if (result.success) {
-// 			statusElement.textContent = "Profile picture updated successfully!";
-// 			statusElement.classList.remove("text-blue-500");
-// 			statusElement.classList.add("text-green-500");
-			
-// 			setTimeout(() => {
-// 				closeProfilePictureModal();
-// 				location.reload(); // Refresh to show new picture
-// 			}, 1000);
-// 		} else {
-// 			statusElement.textContent = "Error: " + result.error;
-// 			statusElement.classList.remove("text-blue-500");
-// 			statusElement.classList.add("text-red-500");
-// 		}
-// 	} catch (err) {
-// 		statusElement.textContent = "Error uploading image";
-// 		statusElement.classList.remove("text-blue-500");
-// 		statusElement.classList.add("text-red-500");
-// 		console.error("Error uploading profile picture:", err);
-// 	}
-// }
 
 async function accessProfileInfo(event) {
 	event.preventDefault();
 	const password = document.getElementById("password").value;
-	// const userId = getUserIdFromToken();
 
 	try {
-		const response = await fetch(`/api/users/access-profile-infos/:${userId}`, {
+		const response = await fetch('/api/users/access-profile-infos', {
 			method: "PUT",
 			headers: {
 				"Content-Type": "application/json",
 				"Authorization": `Bearer ${accessToken}`
 			},
-			body: JSON.stringify({ userId, password })
+			body: JSON.stringify({ password })
 		});
 		const data = await response.json();
 		if (data.success) {
 			modif_profil.classList.add('hidden');
 			btn_back_home.classList.remove('active');
 			profile_param_unlocked_id.classList.add('active');
+			document.getElementById("password").value = "";
 			fetchProfile();
 		} else {
 			alert('Error : ' + data.error);
@@ -236,14 +77,32 @@ async function enable_doubleAuth(userId) {
 }
 
 async function unregister(userId) {
-	if (confirm('Do you really want to delete this user ?')) {
+	if (confirm('Do you really want to delete your account ?')) {
 		try {
-			const response = await fetch(`/api/users/delete/${userId}`, { method: 'DELETE' });
-			if (!response.ok) {
-				const error = await response.json();
-				alert('Erreur : ' + error.error);
+			const response = await fetch(`/api/users/delete`, { 
+				method: 'DELETE',
+				headers: {
+					"Authorization": `Bearer ${accessToken}`
+				},
+			},);
+			const data = await response.json();
+			sessionStorage.removeItem("accessToken");
+			accessToken = null;
+			if (data.success) {
+				console.log('User deleted successfully');
+				document.getElementById("updateProfile-resultMessage").innerHTML = `${data.message}`;
+				history.pushState({}, '', '/');
+				import('../static/js/views/Home.js').then(module => {
+					const Home = module.default;
+					const homeInstance = new Home();
+					homeInstance.getHtml().then(html => {
+						document.getElementById('app').innerHTML = html;
+						if (homeInstance.createAccount) {
+							homeInstance.createAccount();
+						}
+					});
+				});
 			}
-			// else fetchUsers();-1  | 📡 Requête reçue : [POST] /api/users/refresh-infos/:1
 		} catch (err) {
 			console.error('Erreur lors de la suppression :', err);
 		}
@@ -324,11 +183,16 @@ async function updateProfileInfo(event) {
 	console.log("data", data);
 	if (data.success) {
 		console.log(data.message);
-		sessionStorage.removeItem("accessToken")
-		accessToken = null
+		document.getElementById("change_username").value = "";
+		document.getElementById("change_email").value = "";
+		document.getElementById("change_password").value = "";
+		document.getElementById("confirm_change_password").value = "";
+		document.getElementById("updateProfile-resultMessage").innerHTML = `${data.message}`;
 	} else {
 		console.log('Error : ' + data.error);
+		document.getElementById("updateProfile-resultMessage").innerHTML = `${data.error}`;
 	}
+	fetchProfile();
 }
 
 

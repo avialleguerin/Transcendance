@@ -24,33 +24,3 @@
 // 		console.error('Erreur lors de la récupération des utilisateurs :', err);
 // 	}
 // }
-
-async function changeRole(userId) {
-	try {
-		const accessToken = sessionStorage.getItem("accessToken");
-		console.log("🔑 Access Token envoyé :", accessToken);
-
-		const response = await fetch(`/api/users/update-role/${userId}`, {
-			method: "PUT",
-			headers: {
-				"Content-Type": "application/json",
-				"Authorization": `Bearer ${accessToken}`
-			},
-			body: JSON.stringify({ userId })
-		});
-		// if (response.ok) {
-		// 	// fetchUsers();
-		// } else {
-		// 	const error = await response.json();
-		// 	alert('Error : ' + error.error);
-		// }
-		response.ok 
-			? null // fetchUsers();
-			: alert('Error : ' + (await response.json()).error);
-	} catch (err) {
-		console.error('Error :', err);
-	}
-}
-
-
-
