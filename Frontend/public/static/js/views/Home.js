@@ -6,30 +6,25 @@ export default class extends AbstractView {
 	constructor() {
 		super();
 		this.setTitle("Home");
-		// console.log("accessToken", accessToken);
+		const accessToken = sessionStorage.getItem("accessToken");
 		if (accessToken) {
-			// Met à jour l'URL sans recharger la page
 			history.pushState({}, '', '/Game_menu');
-			// handleViewTransitions("vue2", "vue1");
-			// Charge dynamiquement la vue Game_menu
 			import('./Game_menu.js').then(module => {
 				const GameMenu = module.default;
 				const gameMenuInstance = new GameMenu();
 				gameMenuInstance.getHtml().then(html => {
 					document.getElementById('app').innerHTML = html;
-					// Optionnel : si tu as une méthode pour initialiser les events
 					if (gameMenuInstance.game_menu) {
 						gameMenuInstance.game_menu();
 					}
 				});
 			});
+			// handleViewTransitions("vue1", "vue2");
 		}
-		//  else
-		// 	window.location.href = "/";
 	}
 
 	async getHtml() {
-		return `
+		return /*html*/`
 			<link rel="stylesheet" href="./static/js/css/home.css">
 			<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 			<div class="container">
@@ -38,11 +33,12 @@ export default class extends AbstractView {
 				</div>
 				<div class="login-form" id="loginform_id">
 					<h1>LOGIN</h1>
-					<form class="form-group" id="loginForm" onsubmit="login(event)">
-						<div class="input-container">
-							<label for="email">Email :</label>
-							<input type="email" id="login-email" name="email" placeholder="email" required>
-						</div>
+					<div class="form-group">
+						<form id="loginForm" onsubmit="login(event)">
+							<div class="input-container">
+								<label for="email">Email :</label>
+								<input type="email" id="login-email" name="email" placeholder="Your email" required>
+							</div>
 
 						<div class="input-container">
 							<label for="password">Password :</label>
@@ -50,35 +46,37 @@ export default class extends AbstractView {
 						</div>
 						<button type="submit" class="connexion">Login</button>
 						<button class="creer-compte" id="create-Account">Create an account</button>
-						<p id="login-resultMessage"></p>
+						<p id="login-resultMessage" style="color:white"></p>
 					</form>
 				</div>
 				<div class="register-form" id="create_account_id">
 					<h1>SIGN IN</h1>
-					<form class="form-group" id="addForm" onsubmit="register(event)">
-						<div class="input-container">
-							<label for="username">Username :</label>
-							<input type="text" id="add-username" name="username" placeholder="Your username" required>
-						</div>
+					<div class="form-group">
+						<form id="addForm" onsubmit="register(event)">
+							<div class="input-container">
+								<label for="username">Username :</label>
+								<input type="text" id="add-username" name="username" placeholder="Your username" required>
+							</div>
 
-						<div class="input-container">
-							<label for="email">Email :</label>
-							<input type="email" id="add-email" name="email" placeholder="Your email" required>
-						</div>
+							<div class="input-container">
+								<label for="email">Email :</label>
+								<input type="email" id="add-email" name="email" placeholder="Your email" required>
+							</div>
 
-						<div class="input-container">
-							<label for="password">Password :</label>
-							<input type="password" id="add-password" name="password" placeholder="Your password" required>
-						</div>
+							<div class="input-container">
+								<label for="password">Password :</label>
+								<input type="password" id="add-password" name="password" placeholder="Your password" required>
+							</div>
 
-						<div class="input-container">
-							<label for="confirm-password">Confirm password :</label>
-							<input type="password" id="add-confirm-password" name="password" placeholder="Confirm your password" required>
-						</div>
-						<button type="submit" class="connexion">Sign In</button>
-						<button class="connexion" id="alreadyHaveAccountButton_id">Already have an account?</button>
-						<p id="add-resultMessage"></p>
-					</form>
+							<div class="input-container">
+								<label for="confirm-password">Confirm password :</label>
+								<input type="password" id="add-confirm-password" name="password" placeholder="Confirm your password" required>
+							</div>
+							<button type="submit" class="connexion">Sign In</button>
+						</form>
+						<button class="connexion" id="alreadyHaveAccountButton_id">Already have an account ?</button>
+						<p id="add-resultMessage" style="color:white"></p>
+					</div>
 				</div>
 			</div>
 		`;
@@ -97,12 +95,20 @@ export default class extends AbstractView {
 			console.log("createAccountForm");
 			loginForm.classList.add("active");
 			createAccountForm.classList.add("active");
+			document.getElementById("login-email").value = ""
+			document.getElementById("login-password").value = ""
+			document.getElementById("login-resultMessage").textContent = ""
 		});
 
 		alreadyHaveAccountButton.addEventListener("click", () => {
 			console.log("loginForm");
 			createAccountForm.classList.remove("active");
 			loginForm.classList.remove("active");
+			document.getElementById("add-username").value = ""
+			document.getElementById("add-email").value = ""
+			document.getElementById("add-password").value = ""
+			document.getElementById("add-confirm-password").value = ""
+			document.getElementById("add-resultMessage").textContent = ""
 		});
 	}
 }

@@ -7,7 +7,7 @@ import duo_game from "./views/duo_game.js";
 import multi_player_game from "./views/multi_player_game.js";
 import tournament from "./views/tournament.js";
 import tournament_game from "./views/tournament_game.js";
-import  PlatformView  from "./views/platformer/PlatformView.js";
+import PlatformView  from "./views/platformer/PlatformView.js";
 // import platformer from "./views/platformer/platformer.js";
 
 let leave_game_var = false;

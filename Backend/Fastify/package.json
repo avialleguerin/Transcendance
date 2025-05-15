@@ -3,6 +3,7 @@
   "dependencies": {
     "@fastify/cookie": "^11.0.2",
     "@fastify/jwt": "^9.0.4",
+    "@fastify/multipart": "^9.0.3",
     "argon2": "^0.41.1",
     "better-sqlite3": "^11.8.1",
     "better-sqlite3-multiple-ciphers": "^11.9.1",

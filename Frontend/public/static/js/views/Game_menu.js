@@ -21,28 +21,10 @@ export default class extends AbstractView {
 	constructor() {
 		super();
 		this.setTitle("Game_menu");
-		// if (!accessToken) {
-		// 	// S'il n'y a pas d'accessToken, redirige vers la page principale ("/")
-		// 	history.pushState({}, '', '/');
-		// 	// handleViewTransitions("vue1", "vue2");
-		// 	// Charge dynamiquement la vue Home (ou login)
-		// 	import('./Home.js').then(module => {
-		// 		const Home = module.default;
-		// 		const homeInstance = new Home();
-		// 		homeInstance.getHtml().then(html => {
-		// 			document.getElementById('app').innerHTML = html;
-		// 			// Si besoin, on peut initialiser des événements spécifiques à Home ici
-		// 			if (homeInstance.createAccount) {
-		// 				homeInstance.createAccount();
-		// 			}
-		// 		});
-		// 	});
-		// 	return; // On arrête l'exécution du constructeur
-		// }
 	}
 
 	async getHtml() {
-		return `
+		return /*html*/`
 		<link rel="stylesheet" href="./static/js/css/game_menu.css">
 		<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 		<div class="view1" id="view1">
@@ -192,13 +174,12 @@ export default class extends AbstractView {
 						<div class="profile_param_unlocked" id="profile_param_unlocked_id">
 							<div class="photo_profile">
 								<div class="profile_photo_container">
-									<div class="profile_photo_circle" id="profile_photo_circle">
-										
-										<label for="profile_photo_input" class="photo_upload_icon">
-											<i class="fa fa-camera"></i>
-										</label>
-									</div>
-									<input type="file" id="profile_photo_input" accept="image/*" style="display: none;">
+									<div class="profile_photo_circle" id="profile_photo_circle"></div>
+									<form id="uploadForm" enctype="multipart/form-data" onsubmit="changeProfilePicture(event)">
+										<label for="profile_photo_input" class="photo_upload_icon"></label>
+										<input type="file" name="image" id="profile_photo_input" style="color:white"/>
+										<button type="submit">Upload</button>
+									</form>
 								</div>
 							</div>
 							<form onsubmit="updateProfileInfo(event)">
@@ -218,14 +199,18 @@ export default class extends AbstractView {
 									<label for="confirm_password">Confirm new password</label>
 									<input type="password" id="confirm_change_password" name="confirm_password" placeholder="******">
 								</div>
-								<div class="btn_deconnect">
-									<button id="deconnect_btn" class="btn_deconnect_btn" onclick="logout()">Deconnexion</button>
-								</div>
 								<div id="fa_selector" class="fa_selector">
-									<p>2FA :<span id="active_fa" class="active_fa"></span></p>
+								<p>2FA :<span id="active_fa" class="active_fa"></span></p>
 								</div>
-								<button id="valid_profile_info" class="valid_profile_info_btn">Valider</button>
+								<button type="submit" id="valid_profile_info" class="valid_profile_info_btn">Valider</button>
 							</form>
+							<div class="btn_deconnect">
+								<button id="deconnect_btn" class="btn_deconnect_btn" onclick="logout()">Deconnexion</button>
+							</div>
+							<div class="btn_delete">
+								<button id="delete_btn" class="btn_delete_btn" onclick="unregister()">Delete account</button>
+							</div>
+							<p id="updateProfile-resultMessage" class="resultMessage" style="color:white"></p>
 						</div>
 					</div>
 				</div>
@@ -1141,7 +1126,6 @@ export default class extends AbstractView {
 		parametre_profile.addEventListener('click', () => {
 			console.log('Parrametre profile clicked');
 			parametre_profile_view.classList.add('active');
-			// fetchProfile();
 			view5.classList.remove('active');
 			btn_back_home.classList.remove('active');
 			view1.classList.remove('active');
@@ -1171,7 +1155,7 @@ export default class extends AbstractView {
 
 		const valid_mdp = document.getElementById('valid_mdp');
 		const modif_profil = document.getElementById('modif_profil');
-		const modif_profil_photo = document.getElementById('profile_photo_circle');
+		// const modif_profil_photo = document.getElementById('profile_photo_circle');
 		const profile_param_unlocked_id = document.getElementById('profile_param_unlocked_id');
 		const valid_profile_info = document.getElementById('valid_profile_info');
 		const fa_selector = document.getElementById('fa_selector');
@@ -1185,18 +1169,18 @@ export default class extends AbstractView {
 		// 	profile_param_unlocked_id.classList.add('active');
 		// });
 
-		modif_profil_photo.addEventListener('click', () => {
-			console.log('modif profile photo clicked');
-			document.getElementById("profile_photo_input").click();
-			changeProfilePicture();
-		});
+		// modif_profil_photo.addEventListener('click', () => {
+		// 	console.log('modif profile photo clicked');
+		// 	document.getElementById("profile_photo_input").click();
+		// 	changeProfilePicture();
+		// });
 
-		valid_profile_info.addEventListener('click', () => {
-			console.log('Valide profile info clicked');
-			profile_param_unlocked_id.classList.remove('active');
-			modif_profil.classList.remove('hidden');
-			btn_back_home.classList.add('active');
-		});
+		// valid_profile_info.addEventListener('click', () => {
+		// 	console.log('Valide profile info clicked');
+		// 	profile_param_unlocked_id.classList.remove('active');
+		// 	modif_profil.classList.remove('hidden');
+		// 	btn_back_home.classList.add('active');
+		// });
 
 		active_fa.addEventListener('click', () => {
 			active_fa.classList.toggle('checked');

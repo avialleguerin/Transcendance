@@ -43,18 +43,8 @@ services:
       - /app/node_modules   # Préserve les modules installés dans le container
       - ./Data/vault_data:/app/vault/data
       - ./Data/sqlite_data:/app/Data/db
+      - ./Data/uploads:/usr/share/nginx/uploads
 
-  # Devops (Grafana + Prometheus + ELK)
-  # grafana:
-  #   extends:
-  #     file: Devops/docker-compose.yml
-  #     service: grafana
-  #   networks:
-  #     - transcendence-network
-  
-
-
-  # Sécurité (Vault + SonarQube + Modsecurity)
   nginx:
     container_name: nginx
     build:

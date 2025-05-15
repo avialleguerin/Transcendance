@@ -4,7 +4,7 @@ import { initDb } from "./utils/db.js";
 // import { authenticate } from "./utils/vault.js";
 import jwt from "@fastify/jwt";
 import cookie from "@fastify/cookie";
-import fastifyMultipart from 'fastify-multipart';
+import fastifyMultipart from '@fastify/multipart';
 // Pages
 import routes from "./routes/routes.js"
 import { redisClient } from './utils/redis.js';
@@ -15,15 +15,13 @@ await redisClient.connect();
 
 export const fastify = Fastify({ logger: true })
 
+
 await fastify.register(fastifyMultipart, {
 	attachFieldsToBody: true,
 	limits: {
-		fileSize: 5 * 1024 * 1024 // 5MB limite de taille par exemple
+		fileSize: 5 * 1024 * 1024 // optionnel
 	}
 });
-// await authenticate(); // S'authentifier au démarrage
-
-
 await fastify.register(jwt, {
 	secret: 'supersecretkey', // a changer
 	cookie: {
