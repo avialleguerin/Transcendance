@@ -13,7 +13,7 @@ export const CREATE_USERS_TABLE = `
 		created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 		);
 `;
-// '/uploads/default-profile-picture.png'
+
 const userModel = {
 	createUser: (username, email, password) => {
 		db.prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)").run(username, email, password);

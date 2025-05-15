@@ -8,6 +8,10 @@ async function changeProfilePicture(event) {
 	console.log("input", input.files[0]);
 	const response = await fetch('/api/users/update-profile-picture', {
 		method: 'POST',
+		headers: {
+			"Authorization": `Bearer ${accessToken}`
+		},
+		credentials: 'include',
 		body: formData
 	});
 
@@ -58,7 +62,6 @@ async function enable_doubleAuth(userId) {
 				"Content-Type": "application/json",
 				"Authorization": `Bearer ${accessToken}`
 			},
-			body: JSON.stringify({ userId })
 		});
 		const data = await response.json();
 		if (response.ok) {
@@ -162,12 +165,12 @@ async function updateProfileInfo(event) {
 	console.log("confirmPassword", confirmPassword);
 
 	if (newUsername === "" && newEmail === "" && newPassword === "") {
-		console.log("Veuillez remplir au moins un champ !");
+		document.getElementById("updateProfile-resultMessage").innerHTML = 'Veuillez remplir au moins un champ !';
 		return;
 	}
 
 	if (newPassword && (!confirmPassword || newPassword !== confirmPassword)) {
-		console.log("Les mots de passe ne correspondent pas !");
+		document.getElementById("updateProfile-resultMessage").innerHTML = 'Les mots de passe ne correspondent pas !';
 		return;
 	}
 
@@ -177,16 +180,14 @@ async function updateProfileInfo(event) {
 			"Content-Type": "application/json",
 			"Authorization": `Bearer ${accessToken}`
 		},
-		body: JSON.stringify({ userId, newUsername, newEmail, newPassword })
+		body: JSON.stringify({ newUsername, newEmail, newPassword }),
+		credentials: 'include',
 	});
 	const data = await response.json();
 	console.log("data", data);
 	if (data.success) {
 		console.log(data.message);
-		document.getElementById("change_username").value = "";
-		document.getElementById("change_email").value = "";
-		document.getElementById("change_password").value = "";
-		document.getElementById("confirm_change_password").value = "";
+		document.getElementById("updateProfileForm").reset();
 		document.getElementById("updateProfile-resultMessage").innerHTML = `${data.message}`;
 	} else {
 		console.log('Error : ' + data.error);
@@ -194,8 +195,6 @@ async function updateProfileInfo(event) {
 	}
 	fetchProfile();
 }
-
-
 
 // async function fetchProfile() {
 // 	if (accessToken) {

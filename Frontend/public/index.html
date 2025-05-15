@@ -2,118 +2,118 @@
 <html lang="fr">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test</title>
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <style>
-        /* Style global */
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            overflow: hidden;
-        }
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Test</title>
+	<link rel="icon" href="favicon.ico" type="image/x-icon">
+	<style>
+		/* Style global */
+		body {
+			margin: 0;
+			padding: 0;
+			font-family: Arial, sans-serif;
+			overflow: hidden;
+		}
 
-        body.allow-scroll {
-            overflow: hidden;
-        }
+		body.allow-scroll {
+			overflow: hidden;
+		}
 
-        /* Les boutons en haut qui ne bougent jamais */
-        .navbar {
-            position: fixed; /* Rendre la barre de navigation fixe */
-            top: 0%;
-            left: 0;
-            width: 100%;
-            background-color: #000000;
-            padding: 10px 0;
-            display: flex;
-            justify-content: center; /* Centrer les boutons */
-            z-index: 3;
-        }
+		/* Les boutons en haut qui ne bougent jamais */
+		.navbar {
+			position: fixed; /* Rendre la barre de navigation fixe */
+			top: 0%;
+			left: 0;
+			width: 100%;
+			background-color: #000000;
+			padding: 10px 0;
+			display: flex;
+			justify-content: center; /* Centrer les boutons */
+			z-index: 3;
+		}
 
-        .navbar button {
-            background-color: #180247;
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            margin: 0 10px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
+		.navbar button {
+			background-color: #180247;
+			border: none;
+			color: white;
+			padding: 10px 20px;
+			margin: 0 10px;
+			font-size: 16px;
+			cursor: pointer;
+			border-radius: 5px;
+			transition: background-color 0.3s;
+		}
 
-        .navbar button:hover {
-            background-color: #6f45a0;
-        }
+		.navbar button:hover {
+			background-color: #6f45a0;
+		}
 
-        /* Le contenu principal en dessous des boutons */
-        #renderCanvas {
-            width: 100%;
-            height: 100%;
-            display: block; /* Élimine l'espace blanc sous le canvas */
-            touch-action: none; /* Améliore la prise en charge tactile */
-        }
+		/* Le contenu principal en dessous des boutons */
+		#renderCanvas {
+			width: 100%;
+			height: 100%;
+			display: block; /* Élimine l'espace blanc sous le canvas */
+			touch-action: none; /* Améliore la prise en charge tactile */
+		}
 
-        #app {
-        transition: opacity 0.5s ease-in-out;
-        }
+		#app {
+		transition: opacity 0.5s ease-in-out;
+		}
 
-        .fade-out {
-            opacity: 0;
-        }
+		.fade-out {
+			opacity: 0;
+		}
 
-        .fade-in {
-            opacity: 1;
-        }
+		.fade-in {
+			opacity: 1;
+		}
 
 
 
-    </style>
+	</style>
 </head>
 
 <body>
 
-    <div class="navbar">
-        <button data-view="vue1">
-            <a href="/Game_menu" class="nav-link" data-link>Game_menu</a>
-        </button>
-    </div>
-    <canvas id="renderCanvas" style="width: 100%; height: 100vh;"></canvas>
-    
-    <script type="module" src="/static/js/index.js"></script>
-    <div id="app"></div>
-    
-    <!-- <script src="./static/js/script/game_menu.js"></script> -->
+	<div class="navbar">
+		<button data-view="vue1">
+			<a href="/Game_menu" class="nav-link" data-link>Game_menu</a>
+		</button>
+	</div>
+	<canvas id="renderCanvas" style="width: 100%; height: 100vh;"></canvas>
+	
+	<script type="module" src="/static/js/index.js"></script>
+	<div id="app"></div>
+	
+	<!-- <script src="./static/js/script/game_menu.js"></script> -->
 	<script src="https://cdn.babylonjs.com/babylon.js"></script>
 	<script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
-    <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
+	<script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
 	<script type="module" src="srcs/game/gameplay/babylon.js"></script>
-    <script type="module" src="test.js"></script>
-    <script src="./utils/auth.js"></script>
-	<script src="./utils/admin.js"></script>
-    <script src="./utils/userManagement.js"></script>
+	<script type="module" src="test.js"></script>
+	<script src="./apiRequest/auth.js"></script>
+	<script src="./apiRequest/admin.js"></script>
+	<script src="./apiRequest/userManagement.js"></script>
 </body>
 
 </html>
 
 
-        <!-- <style>
-        /* Style global pour empêcher le défilement */
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden; /* Empêche le défilement */
-        }
-        
-        /* Le canvas remplit tout l'espace disponible */
-        #renderCanvas {
-            width: 100%;
-            height: 100%;
-            display: block; /* Élimine l'espace blanc sous le canvas */
-            touch-action: none; /* Améliore la prise en charge tactile */
-        }
-    </style> -->
+		<!-- <style>
+		/* Style global pour empêcher le défilement */
+		body, html {
+			margin: 0;
+			padding: 0;
+			width: 100%;
+			height: 100%;
+			overflow: hidden; /* Empêche le défilement */
+		}
+		
+		/* Le canvas remplit tout l'espace disponible */
+		#renderCanvas {
+			width: 100%;
+			height: 100%;
+			display: block; /* Élimine l'espace blanc sous le canvas */
+			touch-action: none; /* Améliore la prise en charge tactile */
+		}
+	</style> -->

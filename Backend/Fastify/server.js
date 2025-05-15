@@ -50,7 +50,7 @@ fastify.decorate('authenticate', async function (request, reply) {
 		if (await redisModel.isTokenBlacklisted(refreshToken))
 			return reply.code(401).send({ error: 'Token de rafraîchissement invalide (blacklisté)' });
 		await request.jwtVerify();
-		
+
 		if (!request.user?.userId)
 			return reply.code(401).send({ error: "Unauthorized: invalid payload" });
 	} catch (err) {

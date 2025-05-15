@@ -65,8 +65,6 @@ services:
       - ./Frontend/public:/usr/share/nginx/html:ro
       #The Admin Website
       - ./Frontend/admin:/usr/share/nginx/admin:ro
-      #The API Scripts
-      - ./Frontend/utils:/usr/share/nginx/utils:ro
       #old structure
       - ./Data/uploads:/usr/share/nginx/uploads
       # - ./Frontend/public:/usr/share/nginx/html:ro

@@ -7,7 +7,7 @@ export default class extends AbstractView {
 		super();
 		this.setTitle("Home");
 		const accessToken = sessionStorage.getItem("accessToken");
-		if (accessToken) {
+		if (accessToken && accessToken !== "undefined") {
 			history.pushState({}, '', '/Game_menu');
 			import('./Game_menu.js').then(module => {
 				const GameMenu = module.default;
@@ -53,30 +53,30 @@ export default class extends AbstractView {
 				<div class="register-form" id="create_account_id">
 					<h1>SIGN IN</h1>
 					<div class="form-group">
-						<form id="addForm" onsubmit="register(event)">
+						<form id="registerForm" onsubmit="register(event)">
 							<div class="input-container">
 								<label for="username">Username :</label>
-								<input type="text" id="add-username" name="username" placeholder="Your username" required>
+								<input type="text" id="register-username" name="username" placeholder="Your username" required>
 							</div>
 
 							<div class="input-container">
 								<label for="email">Email :</label>
-								<input type="email" id="add-email" name="email" placeholder="Your email" required>
+								<input type="email" id="register-email" name="email" placeholder="Your email" required>
 							</div>
 
 							<div class="input-container">
 								<label for="password">Password :</label>
-								<input type="password" id="add-password" name="password" placeholder="Your password" required>
+								<input type="password" id="register-password" name="password" placeholder="Your password" required>
 							</div>
 
 							<div class="input-container">
 								<label for="confirm-password">Confirm password :</label>
-								<input type="password" id="add-confirm-password" name="password" placeholder="Confirm your password" required>
+								<input type="password" id="register-confirm-password" name="password" placeholder="Confirm your password" required>
 							</div>
 							<button type="submit" class="connexion">Sign In</button>
 						</form>
 						<button class="connexion" id="alreadyHaveAccountButton_id">Already have an account ?</button>
-						<p id="add-resultMessage" style="color:white"></p>
+						<p id="register-resultMessage" style="color:white"></p>
 					</div>
 				</div>
 			</div>
@@ -105,11 +105,8 @@ export default class extends AbstractView {
 			console.log("loginForm");
 			createAccountForm.classList.remove("active");
 			loginForm.classList.remove("active");
-			document.getElementById("add-username").value = ""
-			document.getElementById("add-email").value = ""
-			document.getElementById("add-password").value = ""
-			document.getElementById("add-confirm-password").value = ""
-			document.getElementById("add-resultMessage").textContent = ""
+			document.getElementById("registerForm").reset();
+			document.getElementById("register-resultMessage").textContent = ""
 		});
 	}
 }

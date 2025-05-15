@@ -21,7 +21,7 @@ export default class extends AbstractView {
 	constructor() {
 		super();
 		this.setTitle("Game_menu");
-		if (!accessToken || accessToken === undefined) {
+		if (!accessToken || accessToken === "undefined") {
 			history.pushState({}, '', '/');
 			import('./Home.js').then(module => {
 				const Home = module.default;
@@ -195,7 +195,7 @@ export default class extends AbstractView {
 									</form>
 								</div>
 							</div>
-							<form onsubmit="updateProfileInfo(event)">
+							<form id="updateProfileForm" onsubmit="updateProfileInfo(event)">
 								<div class="input_container">
 									<label for="username">Change username</label>
 									<input type="text" id="change_username" name="username">
