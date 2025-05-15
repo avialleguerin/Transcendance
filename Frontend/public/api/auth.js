@@ -10,7 +10,7 @@ let userId = getUserIdFromToken(accessToken);
 // 		endpoint = endpoint.replace(`:${key}`, encodeURIComponent(params[key]));
 // 	});
 	
-// 	const response = await fetch(`/api/${endpoint}`, {
+// 	const response = await fetch('/request/${endpoint}', {
 // 		method,
 // 		headers: headers,
 // 		credentials: "include",
@@ -41,7 +41,7 @@ async function validate2FA(event) {
 	}
 	const code = document.getElementById("2fa-code").value;
 	try {
-		const response = await fetch(`/api/users/verify-2fa`, {
+		const response = await fetch('/request/user/verify-2fa', {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ code })
@@ -73,7 +73,7 @@ async function activate2FA(event) {
 	}
 	const code = document.getElementById("activate-2fa-code").value;
 	try {
-		const response = await fetch(`/api/users/activate-2fa`, {
+		const response = await fetch('/request/user/activate-2fa', {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ code })
@@ -100,7 +100,7 @@ async function login(event) {
 
 	const email = document.getElementById("login-email").value;
 	const password = document.getElementById("login-password").value;
-	const response = await fetch('/api/users/login', {
+	const response = await fetch('/request/user/login', {
 		method: 'PUT',
 		body: JSON.stringify({ email, password }),
 		headers: { 
@@ -154,11 +154,10 @@ async function login(event) {
 	}
 }
 
-async function logout(userId) {
-	const response = await fetch(`/api/users/logout`, {
+async function logout() {
+	const response = await fetch('/request/user/logout', {
 		method: 'POST',
 		headers: { 
-			'Content-Type': 'application/json',
 			"Authorization": `Bearer ${accessToken}`
 		},
 		credentials: 'include',
@@ -197,14 +196,21 @@ async function register(event) {
 		return ;
 	}
 
-	const result = await apiRequest("users/add", "POST", { username, email, password }, {})
-	
-	if (result.success) {
-		resultMessage.textContent = `User added : ${result.username} (${result.email})`
+	const response = await fetch('/request/user/register', {
+		method: 'POST',
+		headers: { 
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({ username, email, password }),
+		credentials: 'include',
+	});
+	const data = await response.json();
+	if (data.success) {
+		resultMessage.textContent = `User added : ${data.username} (${data.email})`
 		document.getElementById("create_account_id").classList.remove("active")
 		document.getElementById("loginform_id").classList.remove("active")
 	} else {
-		resultMessage.textContent = result.error
+		resultMessage.textContent = data.error
 	}
 };
 
@@ -239,7 +245,7 @@ function getUserIdFromToken(token) {
 }
 
 async function refreshInfos() {
-	const response = await fetch(`/api/users/refresh-infos`, {
+	const response = await fetch('/request/user/refresh-infos', {
 		method: "POST",
 		headers:
 		{
@@ -281,5 +287,4 @@ async function refreshInfos() {
 window.addEventListener('DOMContentLoaded', () => {
 	console.log("accessToken: ", accessToken)
 	refreshInfos();
-	// fetchUsers();
 });

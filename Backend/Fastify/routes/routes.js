@@ -1,4 +1,4 @@
-import { register, selectUsers, unregister, login, logout, changeDoubleAuth, accessProfileInfo, changeProfilePicture, changeProfile, getUserProfile, verifyDoubleAuth, activateDoubleAuth, refreshInfos } from '../controllers/authController.js';
+import { register, getAllUsers, deleteAccount, deleteUser, login, logout, changeDoubleAuth, accessProfileInfo, changeProfilePicture, changeProfile, getUserProfile, verifyDoubleAuth, activateDoubleAuth, refreshInfos } from '../controllers/authController.js';
 import { getSQLiteCreds } from '../utils/vault.js'
 
 /**
@@ -13,18 +13,19 @@ export default async function routes (fastify) {
 	});
 	//authController
 	fastify.get('/profile', getUserProfile)
-	fastify.get('/users', selectUsers)
-	fastify.post('/users/add', register)
-	fastify.put('/users/login', login)
-	fastify.post('/users/logout', logout)
-	fastify.put('/users/access-profile-infos', accessProfileInfo)
-	fastify.put('/users/update-2fa', changeDoubleAuth)
-	fastify.post('/users/verify-2fa', verifyDoubleAuth)
-	fastify.post('/users/activate-2fa', activateDoubleAuth)
-	fastify.post('/users/update-profile-picture', changeProfilePicture)
-	fastify.put('/users/update-profile', changeProfile)
-	fastify.delete('/users/delete', unregister)
-	fastify.post('/users/refresh-infos', refreshInfos)
+	fastify.get('/admin/get-all-users', getAllUsers)
+	fastify.delete('/admin/delete-user', deleteUser)
+	fastify.post('/user/register', register)
+	fastify.put('/user/login', login)
+	fastify.post('/user/logout', logout)
+	fastify.put('/user/access-profile-infos', accessProfileInfo)
+	fastify.put('/user/update-2fa', changeDoubleAuth)
+	fastify.post('/user/verify-2fa', verifyDoubleAuth)
+	fastify.post('/user/activate-2fa', activateDoubleAuth)
+	fastify.post('/user/update-profile-picture', changeProfilePicture)
+	fastify.put('/user/update-profile', changeProfile)
+	fastify.delete('/user/delete-account', deleteAccount)
+	fastify.post('/user/refresh-infos', refreshInfos)
 
 	//gameController
 	// fastify.get('/games', getGames)

@@ -6,8 +6,12 @@ async function changeProfilePicture(event) {
 	formData.append('profile-picture', input.files[0]);
 	console.log("formData", formData);
 	console.log("input", input.files[0]);
-	const response = await fetch('/api/users/update-profile-picture', {
+	const response = await fetch('/request/user/update-profile-picture', {
 		method: 'POST',
+		headers: {
+			"Authorization": `Bearer ${accessToken}`
+		},
+		credentials: 'include',
 		body: formData
 	});
 
@@ -25,7 +29,7 @@ async function accessProfileInfo(event) {
 	const password = document.getElementById("password").value;
 
 	try {
-		const response = await fetch('/api/users/access-profile-infos', {
+		const response = await fetch('/request/user/access-profile-infos', {
 			method: "PUT",
 			headers: {
 				"Content-Type": "application/json",
@@ -52,7 +56,7 @@ async function enable_doubleAuth(userId) {
 	try {
 		const accessToken = sessionStorage.getItem("accessToken");
 
-		const response = await fetch(`/api/users/update-2fa/${userId}`, {
+		const response = await fetch('/request/user/update-2fa', {
 			method: "PUT",
 			headers: {
 				"Content-Type": "application/json",
@@ -75,14 +79,15 @@ async function enable_doubleAuth(userId) {
 	}
 }
 
-async function unregister(userId) {
+async function delete_account() {
 	if (confirm('Do you really want to delete your account ?')) {
 		try {
-			const response = await fetch(`/api/users/delete`, { 
+			const response = await fetch('/request/user/delete-account', { 
 				method: 'DELETE',
 				headers: {
 					"Authorization": `Bearer ${accessToken}`
 				},
+				credentials: 'include'
 			},);
 			const data = await response.json();
 			sessionStorage.removeItem("accessToken");
@@ -111,7 +116,7 @@ async function unregister(userId) {
 async function fetchProfile() {
 	try {
 		if (accessToken) {
-			const response = await fetch(`/api/profile`, {
+			const response = await fetch('/request/profile', {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
@@ -170,13 +175,14 @@ async function updateProfileInfo(event) {
 		return;
 	}
 
-	const response = await fetch(`/api/users/update-profile/:${userId}`, {
+	const response = await fetch('/request/user/update-profile', {
 		method: "PUT",
 		headers: {
 			"Content-Type": "application/json",
 			"Authorization": `Bearer ${accessToken}`
 		},
-		body: JSON.stringify({ newUsername, newEmail, newPassword })
+		body: JSON.stringify({ newUsername, newEmail, newPassword }),
+		credentials: 'include',
 	});
 	const data = await response.json();
 	console.log("data", data);
@@ -214,7 +220,7 @@ async function updateProfileInfo(event) {
 // 				<td>
 // 				<button class="bg-gray-700 hover:bg-sky-500 m-2 text-white px-2 py-1 rounded" onclick="openProfilePictureModal(${user.userId})">change ProfilePicture</button>
 // 				<button class="bg-gray-700 hover:bg-sky-500 m-2 text-white px-2 py-1 rounded" onclick="enable_doubleAuth(${user.userId})">2FA</button>
-// 				<button class="bg-gray-700 hover:bg-sky-500 m-2 text-white px-2 py-1 rounded" onclick="logout(${user.userId})">Logout</button>
+// 				<button class="bg-gray-700 hover:bg-sky-500 m-2 text-white px-2 py-1 rounded" onclick="logout()">Logout</button>
 // 					<button class="bg-gray-700 hover:bg-red-500 m-2 text-white px-2 py-1 rounded" onclick="unregister(${user.userId})">Delete account</button>
 // 				</td>
 // 			</tr>

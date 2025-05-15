@@ -7,23 +7,46 @@ import qrcode from 'qrcode'
 import fs from 'fs/promises';
 import path from 'path';
 import { get } from 'http'
+import { access } from 'fs'
 
 const uploadDir = '/usr/share/nginx/uploads'
 const SECRET_LENGHT = 30
 
-async function getUserFromToken(request) {
-	const accessToken = request.headers.authorization?.split(' ')[1];
-	console.log("Access token :", accessToken)
-	if (!accessToken || accessToken === "undefined" || accessToken === "null")
+
+async function getUserFromToken(request, reply) {
+	let accessToken = request.headers.authorization?.split(' ')[1]
+	const { refreshToken } = request.cookies
+	if (!refreshToken || refreshToken === "undefined" || refreshToken === "null")
 		return null
-	const decoded = fastify.jwt.verify(accessToken);
-	const userId = decoded.userId
+	if (await redisModel.isTokenBlacklisted(accessToken))
+		return null
+	if (await redisModel.isTokenBlacklisted(refreshToken))
+		return null
+
+	const decodedRefresh = fastify.jwt.decode(refreshToken)
+	const expiresInRefresh = decodedRefresh.exp - Math.floor(Date.now() / 1000)
+	const userId = decodedRefresh.userId
 	if (!userId)
 		return null
-	return userModel.getUserById(userId);
+	const user = userModel.getUserById(userId)
+	if (!user)
+		return null
+	if (expiresInRefresh > 0)
+	{
+		const decodedAccess = fastify.jwt.decode(accessToken)
+		const expiresInAccess = decodedAccess.exp - Math.floor(Date.now() / 1000)
+		if (expiresInAccess <= 0)
+			accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, { expiresIn: '15m' })
+	} else {
+		reply.clearCookie('refreshToken', { path: '/' })
+		accessToken = null
+		user = null
+		return null
+	}
+	return {user: user, accessToken: accessToken}
 }
 
-export async function selectUsers(request, reply) {
+export async function getAllUsers(request, reply) {
 	try {
 		const users = userModel.getAllUsers()
 		return users
@@ -34,11 +57,15 @@ export async function selectUsers(request, reply) {
 
 export async function getUserProfile(request, reply) {
 	try {
-		const user = await getUserFromToken(request)
+		const infos = await getUserFromToken(request)
+		if (!infos)
+			return reply.code(401).send({ success: false, error: '❌ Unauthorized' })
+		const user = infos.user
+		const accessToken = infos.accessToken
 		if (!user)
 			return reply.code(401).send({ error: '❌ Unauthorized' })
 		const imgUrl = `uploads/${user.profile_picture}`
-		return reply.send({ user, profile_picture: imgUrl })
+		return reply.send({ user: user, accessToken: accessToken, profile_picture: imgUrl })
 	} catch (error) {
 		reply.code(500).send({ error: '❌ Internal Server Error' })
 	}
@@ -92,7 +119,8 @@ export async function login(request, reply) {
 }
 
 export async function logout(request, reply) {
-	const { accessToken } = request.body
+	const accessToken = request.headers.authorization?.split(' ')[1]
+	console.log("accessToken :", accessToken)
 	const { refreshToken } = request.cookies
 	if (!accessToken || accessToken === "undefined")
 		return reply.code(401).send({ success: false, error: '❌ Access token is missing' })
@@ -114,32 +142,34 @@ export async function logout(request, reply) {
 
 export async function changeDoubleAuth(request, reply) {
 	try {
-		const user = await getUserFromToken(request)
-		if (user){
-			if (user.doubleAuth_enabled || user.doubleAuth_secret !== null)
-			{
-				userModel.updateDoubleAuth(userId, 0)
-				userModel.updateDoubleAuth_secret(userId, null)
-				// console.log("Double Auth disabled")
-				return reply.code(200).send({message: "Double Auth disabled"})
-			}
-			const doubleAuthData = generateDoubleAuth(user.userId)
-			// console.log("Double Auth qrCode", (await doubleAuthData).qrCode)
-			// console.log("Double Auth secret", (await doubleAuthData).secret)
-
-			return reply.code(200).send({
-				userId: user.userId,
-				username: user.username,
-				email: user.email,
-				message: 'Double authentication waiting for activation',
-				enable_doubleAuth: true,
-				secret: (await doubleAuthData).secret,
-				qrCode: (await doubleAuthData).qrCode,
-				success: true
-			})
-		}
-		else
+		const infos = await getUserFromToken(request)
+		if (!infos)
+			return reply.code(401).send({ success: false, error: '❌ Unauthorized' })
+		const user = infos.user
+		const accessToken = infos.accessToken
+		if (!user)
 			return reply.code(404).send({ success: false, error: '❌ User not found' })
+		if (user.doubleAuth_enabled || user.doubleAuth_secret !== null)
+		{
+			userModel.updateDoubleAuth(user.userId, 0)
+			userModel.updateDoubleAuth_secret(user.userId, null)
+			// console.log("Double Auth disabled")
+			return reply.code(200).send({message: "Double Auth disabled"})
+		}
+		const doubleAuthData = generateDoubleAuth(user.userId)
+		// console.log("Double Auth qrCode", (await doubleAuthData).qrCode)
+		// console.log("Double Auth secret", (await doubleAuthData).secret)
+
+		return reply.code(200).send({
+			userId: user.userId,
+			username: user.username,
+			email: user.email,
+			message: 'Double authentication waiting for activation',
+			enable_doubleAuth: true,
+			secret: (await doubleAuthData).secret,
+			qrCode: (await doubleAuthData).qrCode,
+			success: true
+		})
 	} catch (err) {
 		return reply.code(500).send({ error: err.message })
 	}
@@ -148,13 +178,17 @@ export async function changeDoubleAuth(request, reply) {
 export async function accessProfileInfo(request, reply) {
 	try {
 		const { password } = request.body
-		const user = await getUserFromToken(request)
+		const infos = await getUserFromToken(request)
+		if (!infos)
+			return reply.code(401).send({ success: false, error: '❌ Unauthorized' })
+		const user = infos.user
+		const accessToken = infos.accessToken
 		if (!user)
 			return reply.code(404).send({ success: false, error: '❌ User not found' })
 		if (!await verifyPassword(user.password, password))
 			return reply.code(401).send({ success: false, error: '❌ Invalid password' })
 		else
-			return reply.code(200).send({success:true, message: 'access to profile infos accepted ', user: user})
+			return reply.code(200).send({success: true, accessToken: accessToken, message: 'access to profile infos accepted ', user: user})
 	} catch (err) {
 		return reply.code(500).send({ error: err.message })
 	}
@@ -163,30 +197,28 @@ export async function accessProfileInfo(request, reply) {
 export async function changeProfile(request, reply) {
 	const { newUsername, newEmail, newPassword } = request.body
 	try {
-		const user = await getUserFromToken(request)
-		if (user){
-			if (newUsername)
-			{
-				const sameUsername = userModel.getUserByUsername(newUsername)
-				if (sameUsername)
-					return reply.code(409).send({ error: "❌ This username is already used" })
-				userModel.updateUsername(user.userId, newUsername)
-			}
-			if (newEmail)
-			{
-				const sameEmail = userModel.getUserByEmail(newEmail)
-				if (sameEmail)
-					return reply.code(409).send({ error: "❌ This email is already used" })
-				userModel.updateEmail(user.userId, newEmail)
-			}
-			if (newPassword)
-			{
-				const hashedPassword = await hashPassword(newPassword)
-				userModel.updatePassword(user.userId, hashedPassword)
-			}
-			return reply.code(200).send({ success: true, message: 'Profile updated successfully!' })
-		} else
+		const infos = await getUserFromToken(request)
+		if (!infos)
+			return reply.code(401).send({ success: false, error: '❌ Unauthorized' })
+		const user = infos.user
+		const accessToken = infos.accessToken
+		if (!user)
 			return reply.code(404).send({ success: false, error: '❌ User not found' })
+		if (newUsername) {
+			const sameUsername = userModel.getUserByUsername(newUsername)
+			if (sameUsername)
+				return reply.code(409).send({ error: "❌ This username is already used" })
+			userModel.updateUsername(user.userId, newUsername)
+		} if (newEmail) {
+			const sameEmail = userModel.getUserByEmail(newEmail)
+			if (sameEmail)
+				return reply.code(409).send({ error: "❌ This email is already used" })
+			userModel.updateEmail(user.userId, newEmail)
+		} if (newPassword) {
+			const hashedPassword = await hashPassword(newPassword)
+			userModel.updatePassword(user.userId, hashedPassword)
+		}
+		return reply.code(200).send({ success: true, accessToken: accessToken, message: 'Profile updated successfully!' })
 } catch (err) {
 		return reply.code(500).send({ error: err.message })
 	}
@@ -198,7 +230,11 @@ export async function changeProfilePicture(request, reply) {
 		if (!file)
 			return reply.code(400).send({ error: '❌ No file uploaded' })
 
-		const user = await getUserFromToken(request)
+		const infos = await getUserFromToken(request)
+		if (!infos)
+			return reply.code(401).send({ success: false, error: '❌ Unauthorized' })
+		const user = infos.user
+		const accessToken = infos.accessToken
 		if (!user)
 			return reply.code(404).send({ error: '❌ User not found' })
 
@@ -238,6 +274,7 @@ export async function changeProfilePicture(request, reply) {
 
 		reply.code(200).send({
 			success: true,
+			accessToken: accessToken,
 			message: 'New profile picture uploaded successfully!',
 			path: `/uploads/${filename}`
 		});
@@ -247,24 +284,63 @@ export async function changeProfilePicture(request, reply) {
 	}
 }
 
-export async function unregister(request, reply) {
-	const refreshToken = request.cookies.refreshToken
+export async function deleteAccount(request, reply) {
+	const { refreshToken } = request.cookies
 	const accessToken = request.headers['authorization']?.split(' ')[1]
-	if (refreshToken && refreshToken !== "undefined") {
-		const decodedRefresh = fastify.jwt.decode(refreshToken)
-		const expiresInRefresh = decodedRefresh.exp - Math.floor(Date.now() / 1000)
-		if (expiresInRefresh > 0)
-			redisModel.addToBlacklist(refreshToken, expiresInRefresh)
-		reply.clearCookie('refreshToken', { path: '/' })
-	}
-	if (accessToken && accessToken !== "undefined") {
-		const decodedAccess = fastify.jwt.decode(accessToken)
-		const expiresInAccess = decodedAccess.exp - Math.floor(Date.now() / 1000)
-		if (expiresInAccess > 0)
-			redisModel.addToBlacklist(accessToken, expiresInAccess)
-	}
 	try {
-		const user = await getUserFromToken(request)
+		const infos = await getUserFromToken(request)
+		if (!infos)
+			return reply.code(401).send({ success: false, error: '❌ Unauthorized' })
+		const user = infos.user
+		const accessToken = infos.accessToken
+		if (!user)
+			return reply.code(404).send({ error: '❌ User not found' })
+		if (refreshToken && refreshToken !== "undefined") {
+			const decodedRefresh = fastify.jwt.decode(refreshToken)
+			const expiresInRefresh = decodedRefresh.exp - Math.floor(Date.now() / 1000)
+			if (expiresInRefresh > 0)
+				redisModel.addToBlacklist(refreshToken, expiresInRefresh)
+			reply.clearCookie('refreshToken', { path: '/' })
+		}
+		if (accessToken && accessToken !== "undefined") {
+			const decodedAccess = fastify.jwt.decode(accessToken)
+			const expiresInAccess = decodedAccess.exp - Math.floor(Date.now() / 1000)
+			if (expiresInAccess > 0)
+				redisModel.addToBlacklist(accessToken, expiresInAccess)
+		}
+		const oldProfilePicture = user.profile_picture;
+		if (oldProfilePicture !== "default-profile-picture.png") {
+			try {
+				const oldFilePath = path.join(uploadDir, oldProfilePicture);
+				const fileExists = await fs.access(oldFilePath)
+				.then(() => true)
+				.catch(() => false);
+				
+				if (fileExists) {
+					console.log(`🗑️ deleting old profile picture: ${oldFilePath}`);
+					await fs.unlink(oldFilePath);
+				} else {
+					console.log(`⚠️ Old profile picture doesn't exist: ${oldFilePath}`);
+				}
+			} catch (deleteErr) {
+				console.error(`❌ Error deleting old profile picture: ${deleteErr.message}`);
+			}
+		}
+		const info = userModel.delete(user.userId)
+		if (info.changes === 0)
+			return reply.code(404).send({ error: "❌ User not found" })
+		return reply.send({ success: true, message: "❌ User deleted successfully"})
+	} catch (err) {
+		fastify.log.error(err)
+		return reply.code(500).send({ error: err.message })
+	}
+}
+
+export async function deleteUser(request, reply) {
+	const { userId } = request.body
+	try {
+		const user = userModel.getUserById(userId)
+		console.log("user :", user)
 		if (!user)
 			return reply.code(404).send({ error: '❌ User not found' })
 		const oldProfilePicture = user.profile_picture;
@@ -285,7 +361,7 @@ export async function unregister(request, reply) {
 				console.error(`❌ Error deleting old profile picture: ${deleteErr.message}`);
 			}
 		}
-		const info = userModel.unregister(user.userId)
+		const info = userModel.delete(user.userId)
 		if (info.changes === 0)
 			return reply.code(404).send({ error: "❌ User not found" })
 		return reply.send({ success: true, message: "❌ User deleted successfully"})
@@ -413,33 +489,19 @@ export async function generateDoubleAuth(userId) {
 }
 
 export async function refreshInfos(request, reply) {
-	const accessToken = request.headers.authorization?.split(' ')[1];
-	const { refreshToken } = request.cookies
-	console.log("Request headers :", request.headers)
 
 	try {
-		let newAccessToken = null
-		const user = await getUserFromToken(request)
+		const infos = await getUserFromToken(request, reply)
+		if (!infos)
+			return reply.code(401).send({ success: false, error: '❌ Unauthorized' })
+		const user = infos.user
+		const accessToken = infos.accessToken
 		console.log("User :", user)
 		if (!user)
 			return reply.code(401).send({ success: false , error: '❌ User not found' })
-		if (refreshToken && refreshToken !== "undefined") {
-			const decodedRefresh = fastify.jwt.decode(refreshToken)
-			const expiresInRefresh = decodedRefresh.exp - Math.floor(Date.now() / 1000)
-			if (expiresInRefresh > 0) {
-				newAccessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, { expiresIn: '15m' })
-				if (accessToken && accessToken !== "undefined") {
-					const decodedAccess = fastify.jwt.decode(accessToken)
-					const expiresInAccess = decodedAccess.exp - Math.floor(Date.now() / 1000)
-					if (expiresInAccess > 0)
-						redisModel.addToBlacklist(accessToken, expiresInAccess)
-				}
-			} else
-				reply.clearCookie('refreshToken', { path: '/' })
-			if (!user.doubleAuth_enabled && user.doubleAuth_secret)
-				userModel.updateDoubleAuth_secret(user.userId, null)
-		}
-		return reply.code(200).send({ success: true, accessToken: newAccessToken, message: 'User infos refreshed' })
+		if (!user.doubleAuth_enabled && user.doubleAuth_secret)
+			userModel.updateDoubleAuth_secret(user.userId, null)
+		return reply.code(200).send({ success: true, accessToken: accessToken, message: 'User infos refreshed' })
 	} catch (err) {
 		return reply.code(500).send({ error: err.message })
 	}

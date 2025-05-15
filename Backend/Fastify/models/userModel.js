@@ -29,7 +29,7 @@ const userModel = {
 	updateEmail: (userId, newEmail) => { return db.prepare("UPDATE users SET email = ? WHERE userId = ?").run(newEmail, userId) },
 	updatePassword: (userId, newPassword) => { return db.prepare("UPDATE users SET password = ? WHERE userId = ?").run(newPassword, userId) },
 	updateProfilePicture: (userId, profile_picture) => { return db.prepare("UPDATE users SET profile_picture = ? WHERE userId = ?").run(profile_picture, userId) },
-	unregister: (userId) => { return db.prepare("DELETE FROM users WHERE userId = ?").run(userId) }
+	delete: (userId) => { return db.prepare("DELETE FROM users WHERE userId = ?").run(userId) }
 }
 
 export default userModel;

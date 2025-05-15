@@ -221,7 +221,7 @@ export default class extends AbstractView {
 								<button id="deconnect_btn" class="btn_deconnect_btn" onclick="logout()">Deconnexion</button>
 							</div>
 							<div class="btn_delete">
-								<button id="delete_btn" class="btn_delete_btn" onclick="unregister()">Delete account</button>
+								<button id="delete_btn" class="btn_delete_btn" onclick="delete_account()">Delete account</button>
 							</div>
 							<p id="updateProfile-resultMessage" class="resultMessage" style="color:white"></p>
 						</div>

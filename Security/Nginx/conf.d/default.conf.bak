@@ -10,11 +10,7 @@ server {
 	listen 8080;							# Écoute sur le port HTTP
 	server_name localhost;              # Nom du serveur
 
-
 	# return 301 https://$host$request_uri;  # Redirige toutes les requêtes HTTP vers HTTPS
-
-	
-	#### TEMPORAIRE ###
 	
 	# -----------------------
 	# FRONTEND : Application SPA (Single Page App)
@@ -30,16 +26,9 @@ server {
 	}
 
 	# -----------------------
-	# FICHIERS UTILES : accès direct via /utils/
-	# -----------------------
-	# location /utils/ {
-	# 	alias /usr/share/nginx/utils/;                  # Dossier de fichiers utilitaires
-	# }
-
-	# -----------------------
 	# BACKEND API : proxy vers le serveur Fastify + ModSecurity activé
 	# -----------------------
-	location /api/ {
+	location /request/ {
 		modsecurity on;							# Active ModSecurity (pare-feu applicatif)
 		modsecurity_rules_file /etc/modsecurity.d/modsecurity.conf;  # Fichier de config ModSecurity
 
@@ -53,35 +42,32 @@ server {
 
 # Serveur HTTP pour l'administration sur le port 8080
 server {
-    listen 8100;                         # Écoute sur le port 8080
-    server_name localhost;               # Nom du serveur
-
-    # -----------------------
-    # ADMIN : Page d'administration
-    # -----------------------
-    location / {
-        root /usr/share/nginx/admin;     # Répertoire des fichiers d'administration
-        index admin.html;                # Fichier index pour l'administration
-        try_files $uri $uri/ /admin.html; # Permet la navigation côté client
-    }
+	listen 8100;                         # Écoute sur le port 8080
+	server_name localhost;               # Nom du serveur
 
 	# -----------------------
-	# FICHIERS UTILES : accès direct via /utils/
+	# ADMIN : Page d'administration
 	# -----------------------
-	location /utils/ {
-		alias /usr/share/nginx/utils/;                  # Dossier de fichiers utilitaires
+	location / {
+		root /usr/share/nginx/admin;     # Répertoire des fichiers d'administration
+		index admin.html;                # Fichier index pour l'administration
+		try_files $uri $uri/ /admin.html; # Permet la navigation côté client
 	}
 
-    # -----------------------
-    # BACKEND API pour l'admin : proxy vers le serveur Fastify
-    # -----------------------
-    location /api/ {
-        proxy_pass http://fastify:3000;  # Redirige les requêtes vers ton backend Fastify
-        proxy_set_header Host $host;     # Transmet l'en-tête Host
-        proxy_set_header X-Real-IP $remote_addr; # Transmet l'IP réelle du client
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; # IPs en cascade
-        proxy_set_header X-Forwarded-Proto $scheme; # Transmet le protocole (http ou https)
-    }
+	location /api/ {
+		alias /usr/share/nginx/html/api/;
+	}
+
+	# -----------------------
+	# BACKEND API pour l'admin : proxy vers le serveur Fastify
+	# -----------------------
+	location /request/ {
+		proxy_pass http://fastify:3000;  # Redirige les requêtes vers ton backend Fastify
+		proxy_set_header Host $host;     # Transmet l'en-tête Host
+		proxy_set_header X-Real-IP $remote_addr; # Transmet l'IP réelle du client
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; # IPs en cascade
+		proxy_set_header X-Forwarded-Proto $scheme; # Transmet le protocole (http ou https)
+	}
 }
 
 # Serveur HTTPS sécurisé sur le port 443
