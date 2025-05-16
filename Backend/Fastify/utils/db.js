@@ -1,7 +1,7 @@
 import Database from "better-sqlite3-multiple-ciphers";
 import { getSQLiteCreds } from './vault.js';
-import { CREATE_USERS_TABLE } from '../models/userModel.js';
-import { CREATE_GAMES_TABLE } from '../models/gameModel.js';
+import { CREATE_USERS_TABLE } from '../models/usersModel.js';
+import { CREATE_GAMES_TABLE } from '../models/gamesModel.js';
 
 const dbFile = "Data/db/database.sqlite";
 

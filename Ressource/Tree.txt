@@ -38,7 +38,7 @@ Transcendance/
 |	│	│	├── paymentController.js
 |	│	│	└── coreController.js
 |	│	└── models/						 # Définition des modèles et accès à SQLite
-|	│		 ├── userModel.js
+|	│		 ├── usersModel.js
 |	│		 ├── paymentModel.js
 |	│		 └── coreModel.js
 |	├── nginx/

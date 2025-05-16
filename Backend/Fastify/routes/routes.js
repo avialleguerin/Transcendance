@@ -1,4 +1,5 @@
 import { register, getAllUsers, deleteAccount, deleteUser, login, logout, changeDoubleAuth, accessProfileInfo, changeProfilePicture, changeProfile, getUserProfile, verifyDoubleAuth, activateDoubleAuth, refreshInfos } from '../controllers/authController.js';
+import { getAllGames, addGame, deleteGame } from '../controllers/gameController.js';
 import { getSQLiteCreds } from '../utils/vault.js'
 
 /**
@@ -12,11 +13,11 @@ export default async function routes (fastify) {
 		console.log(`\n📡 Requête reçue : [${request.method}] ${request.url}\n`)
 	});
 	//authController
-	fastify.get('/profile', getUserProfile)
 	fastify.get('/admin/get-all-users', getAllUsers)
 	fastify.delete('/admin/delete-user', deleteUser)
+	fastify.get('/profile', getUserProfile)
 	fastify.post('/user/register', register)
-	fastify.put('/user/login', login)
+	fastify.post('/user/login', login)
 	fastify.post('/user/logout', logout)
 	fastify.put('/user/access-profile-infos', accessProfileInfo)
 	fastify.put('/user/update-2fa', changeDoubleAuth)
@@ -28,7 +29,9 @@ export default async function routes (fastify) {
 	fastify.post('/user/refresh-infos', refreshInfos)
 
 	//gameController
-	// fastify.get('/games', getGames)
+	fastify.get('/admin/get-all-games', getAllGames)
+	fastify.post('/game/create-game', addGame)
+	fastify.delete('/admin/delete-game', deleteGame)
 
 	// Tokens
 	// fastify.post('/refresh-token', refreshAccessToken)

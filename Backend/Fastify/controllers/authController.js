@@ -1,5 +1,5 @@
 import { fastify } from '../server.js'
-import userModel from '../models/userModel.js'
+import usersModel from '../models/usersModel.js'
 import { hashPassword, verifyPassword } from '../utils/hashUtils.js'
 import { redisModel } from '../models/redisModel.js'
 import speakeasy from 'speakeasy'
@@ -28,7 +28,7 @@ async function getUserFromToken(request, reply) {
 	const userId = decodedRefresh.userId
 	if (!userId)
 		return null
-	const user = userModel.getUserById(userId)
+	const user = usersModel.getUserById(userId)
 	if (!user)
 		return null
 	if (expiresInRefresh > 0)
@@ -48,7 +48,7 @@ async function getUserFromToken(request, reply) {
 
 export async function getAllUsers(request, reply) {
 	try {
-		const users = userModel.getAllUsers()
+		const users = usersModel.getAllUsers()
 		return users
 	} catch (err) {
 		return reply.code(500).send({ error: err.message })
@@ -77,15 +77,15 @@ export async function register(request, reply) {
 	if (!username || !password)
 		return reply.code(400).send({ error: '❌ Username, Email and Password are required' })
 
-	const sameUsername = userModel.getUserByUsername(username)
+	const sameUsername = usersModel.getUserByUsername(username)
 	if (sameUsername)
 		return reply.code(409).send({ error: "❌ This username is already used" })
-	const sameEmail = userModel.getUserByEmail(email)
+	const sameEmail = usersModel.getUserByEmail(email)
 	if (sameEmail)
 		return reply.code(409).send({ error: "❌ This email is already used" })
 	try {
 		const hashedPassword = await hashPassword(password)
-		const info = userModel.createUser(username, email, hashedPassword)
+		const info = usersModel.createUser(username, email, hashedPassword)
 		return reply.code(201).send({ success: true, id: info.lastInsertRowid, username, email})
 	} catch (err) {
 		return reply.code(500).send({ error: err.message })
@@ -95,7 +95,7 @@ export async function register(request, reply) {
 export async function login(request, reply) {
 	const { email, password } = request.body
 	try {
-		const user = userModel.getUserByEmail(email)
+		const user = usersModel.getUserByEmail(email)
 		if (!user || !await verifyPassword(user.password, password))
 			return reply.code(401).send({ success: false, error: '❌ Invalid credentials' })
 		if (user.doubleAuth_enabled)
@@ -151,8 +151,8 @@ export async function changeDoubleAuth(request, reply) {
 			return reply.code(404).send({ success: false, error: '❌ User not found' })
 		if (user.doubleAuth_enabled || user.doubleAuth_secret !== null)
 		{
-			userModel.updateDoubleAuth(user.userId, 0)
-			userModel.updateDoubleAuth_secret(user.userId, null)
+			usersModel.updateDoubleAuth(user.userId, 0)
+			usersModel.updateDoubleAuth_secret(user.userId, null)
 			// console.log("Double Auth disabled")
 			return reply.code(200).send({message: "Double Auth disabled"})
 		}
@@ -205,18 +205,18 @@ export async function changeProfile(request, reply) {
 		if (!user)
 			return reply.code(404).send({ success: false, error: '❌ User not found' })
 		if (newUsername) {
-			const sameUsername = userModel.getUserByUsername(newUsername)
+			const sameUsername = usersModel.getUserByUsername(newUsername)
 			if (sameUsername)
 				return reply.code(409).send({ error: "❌ This username is already used" })
-			userModel.updateUsername(user.userId, newUsername)
+			usersModel.updateUsername(user.userId, newUsername)
 		} if (newEmail) {
-			const sameEmail = userModel.getUserByEmail(newEmail)
+			const sameEmail = usersModel.getUserByEmail(newEmail)
 			if (sameEmail)
 				return reply.code(409).send({ error: "❌ This email is already used" })
-			userModel.updateEmail(user.userId, newEmail)
+			usersModel.updateEmail(user.userId, newEmail)
 		} if (newPassword) {
 			const hashedPassword = await hashPassword(newPassword)
-			userModel.updatePassword(user.userId, hashedPassword)
+			usersModel.updatePassword(user.userId, hashedPassword)
 		}
 		return reply.code(200).send({ success: true, accessToken: accessToken, message: 'Profile updated successfully!' })
 } catch (err) {
@@ -270,7 +270,7 @@ export async function changeProfilePicture(request, reply) {
 			}
 		}
 
-		userModel.updateProfilePicture(user.userId, filename)
+		usersModel.updateProfilePicture(user.userId, filename)
 
 		reply.code(200).send({
 			success: true,
@@ -285,8 +285,6 @@ export async function changeProfilePicture(request, reply) {
 }
 
 export async function deleteAccount(request, reply) {
-	const { refreshToken } = request.cookies
-	const accessToken = request.headers['authorization']?.split(' ')[1]
 	try {
 		const infos = await getUserFromToken(request)
 		if (!infos)
@@ -326,7 +324,7 @@ export async function deleteAccount(request, reply) {
 				console.error(`❌ Error deleting old profile picture: ${deleteErr.message}`);
 			}
 		}
-		const info = userModel.delete(user.userId)
+		const info = usersModel.delete(user.userId)
 		if (info.changes === 0)
 			return reply.code(404).send({ error: "❌ User not found" })
 		return reply.send({ success: true, message: "❌ User deleted successfully"})
@@ -339,7 +337,7 @@ export async function deleteAccount(request, reply) {
 export async function deleteUser(request, reply) {
 	const { userId } = request.body
 	try {
-		const user = userModel.getUserById(userId)
+		const user = usersModel.getUserById(userId)
 		console.log("user :", user)
 		if (!user)
 			return reply.code(404).send({ error: '❌ User not found' })
@@ -361,7 +359,7 @@ export async function deleteUser(request, reply) {
 				console.error(`❌ Error deleting old profile picture: ${deleteErr.message}`);
 			}
 		}
-		const info = userModel.delete(user.userId)
+		const info = usersModel.delete(user.userId)
 		if (info.changes === 0)
 			return reply.code(404).send({ error: "❌ User not found" })
 		return reply.send({ success: true, message: "❌ User deleted successfully"})
@@ -394,7 +392,11 @@ export async function deleteUser(request, reply) {
 export async function verifyDoubleAuth(request, reply) {
 	const { code } = request.body
 	try {
-		const user = await getUserFromToken(request)
+		const infos = await getUserFromToken(request)
+		if (!infos)
+			return reply.code(401).send({ success: false, error: '❌ Unauthorized' })
+		const user = infos.user
+		const accessToken = infos.accessToken
 		if (!user || !user.doubleAuth_secret) {
 			return reply.code(400).send({ success: false, error: '❌ 2FA not enabled or user not found' })
 		}
@@ -415,7 +417,7 @@ export async function verifyDoubleAuth(request, reply) {
 			const refreshToken = fastify.jwt.sign({ userId: user.userId }, { expiresIn: '7d' })
 			console.log("🔑 Access Token created :", accessToken)
 			console.log("🔑 Refresh Token created :", refreshToken)
-			userModel.updateDoubleAuth(user.userId, 1)
+			usersModel.updateDoubleAuth(user.userId, 1)
 			reply
 			.setCookie('refreshToken', refreshToken, {
 				path: '/',
@@ -426,7 +428,7 @@ export async function verifyDoubleAuth(request, reply) {
 			})
 			.send({ success:true, message: '2FA code is valid', connection_status: "connected", accessToken: accessToken })
 		} else {
-			userModel.updateDoubleAuth_secret(userId, null)
+			usersModel.updateDoubleAuth_secret(userId, null)
 			console.error("❌ Invalid 2FA code")
 			return reply.code(401).send({ success: false, error: '❌ Invalid 2FA code' })
 		}
@@ -438,7 +440,11 @@ export async function verifyDoubleAuth(request, reply) {
 
 export async function activateDoubleAuth(request, reply) {
 	const { code } = request.body
-	const user = await getUserFromToken(request)
+	const infos = await getUserFromToken(request)
+	if (!infos)
+		return reply.code(401).send({ success: false, error: '❌ Unauthorized' })
+	const user = infos.user
+	const accessToken = infos.accessToken
 	if (!user)
 		return reply.code(401).send({ success: false, error: '❌ User not found' })
 	console.log("🔑 Secret :", user.doubleAuth_secret)
@@ -451,10 +457,10 @@ export async function activateDoubleAuth(request, reply) {
 	console.log("🔑 isValid :", isValid)
 	console.log("État initial 2FA:", user.doubleAuth_enabled)
 	if (isValid) {
-		userModel.updateDoubleAuth(userId, 1)
+		usersModel.updateDoubleAuth(userId, 1)
 		return reply.send({ success: true, message: "2FA successfully activated" })
 	} else {
-		// userModel.updateDoubleAuth_secret(userId, null)
+		// usersModel.updateDoubleAuth_secret(userId, null)
 		return reply.code(400).send({ 
 			success: false, 
 			error: "❌ Verification failed. Please try scanning the QR code again."
@@ -463,14 +469,14 @@ export async function activateDoubleAuth(request, reply) {
 }
 
 export async function generateDoubleAuth(userId) {
-	const user = await getUserFromToken(request)
+	const user = usersModel.getUserById(userId)
 	if (!user) {
 		throw new Error(`User with ID ${userId} not found`)
 	}
 	const secretObj = speakeasy.generateSecret({ length: SECRET_LENGHT })
 	const secret = secretObj.base32
 	console.log("🔑 Secret généré:", secret)
-	userModel.updateDoubleAuth_secret(userId, secret)
+	usersModel.updateDoubleAuth_secret(userId, secret)
 
 	const otpauth = speakeasy.otpauthURL({
 		secret: secret,
@@ -500,7 +506,7 @@ export async function refreshInfos(request, reply) {
 		if (!user)
 			return reply.code(401).send({ success: false , error: '❌ User not found' })
 		if (!user.doubleAuth_enabled && user.doubleAuth_secret)
-			userModel.updateDoubleAuth_secret(user.userId, null)
+			usersModel.updateDoubleAuth_secret(user.userId, null)
 		return reply.code(200).send({ success: true, accessToken: accessToken, message: 'User infos refreshed' })
 	} catch (err) {
 		return reply.code(500).send({ error: err.message })

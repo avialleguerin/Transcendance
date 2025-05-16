@@ -45,9 +45,9 @@ export default class extends AbstractView {
 								<input type="password" id="login-password" name="password" placeholder="Your password" required>
 							</div>
 							<button type="submit" class="connexion">Login</button>
+							<button type="button" class="creer-compte" id="create-Account">Create an account</button>
+							<p id="login-resultMessage" style="color:white"></p>
 						</form>
-						<button class="creer-compte" id="create-Account">Create an account</button>
-						<p id="login-resultMessage" style="color:white"></p>
 					</div>
 				</div>
 				<div class="register-form" id="create_account_id">
@@ -74,9 +74,9 @@ export default class extends AbstractView {
 								<input type="password" id="register-confirm-password" name="password" placeholder="Confirm your password" required>
 							</div>
 							<button type="submit" class="connexion">Sign In</button>
+							<button type="button" class="connexion" id="alreadyHaveAccountButton_id">Already have an account ?</button>
+							<p id="register-resultMessage" style="color:white"></p>
 						</form>
-						<button class="connexion" id="alreadyHaveAccountButton_id">Already have an account ?</button>
-						<p id="register-resultMessage" style="color:white"></p>
 					</div>
 				</div>
 			</div>

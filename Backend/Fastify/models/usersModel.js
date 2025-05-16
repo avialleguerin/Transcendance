@@ -14,7 +14,7 @@ export const CREATE_USERS_TABLE = `
 		);
 `;
 
-const userModel = {
+const usersModel = {
 	createUser: (username, email, password) => {
 		db.prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)").run(username, email, password);
 		return { username, email };
@@ -32,4 +32,4 @@ const userModel = {
 	delete: (userId) => { return db.prepare("DELETE FROM users WHERE userId = ?").run(userId) }
 }
 
-export default userModel;
+export default usersModel;

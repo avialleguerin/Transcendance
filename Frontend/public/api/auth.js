@@ -1,44 +1,13 @@
 let accessToken = sessionStorage.getItem("accessToken")
-let userId = getUserIdFromToken(accessToken);
-
-// async function apiRequest(endpoint, method = "GET", body = null, params = {}) {
-// 	const headers = { "Content-Type": "application/json" };
-	
-// 	if (accessToken)
-// 		headers["Authorization"] = `Bearer ${accessToken}`;
-// 	Object.keys(params).forEach(key => {
-// 		endpoint = endpoint.replace(`:${key}`, encodeURIComponent(params[key]));
-// 	});
-	
-// 	const response = await fetch('/request/${endpoint}', {
-// 		method,
-// 		headers: headers,
-// 		credentials: "include",
-// 		body: body ? JSON.stringify(body) : null
-// 	});
-// 	const data = await response.json();
-// 	if (response.status === 401) {
-// 		if (data.error === "❌ Invalid credentials")
-// 			return data;
-// 		await refreshToken();
-// 		return apiRequest(endpoint, method, body, params);
-// 	} else if (response.status === 403) {
-// 		console.error("Acces interdit !");
-// 	} else if (response.status === 500) {
-// 		console.error("Error: Server");
-// 	}
-	
-// 	return data;
-// }
 
 async function validate2FA(event) {
 
 	event.preventDefault();
-	const userId = sessionStorage.getItem("userId");
-	if (!userId) {
-		console.error("❌ User ID not found in session storage!");
-		return;
-	}
+	// const userId = sessionStorage.getItem("userId");
+	// if (!userId) {
+	// 	console.error("❌ User ID not found in session storage!");
+	// 	return;
+	// }
 	const code = document.getElementById("2fa-code").value;
 	try {
 		const response = await fetch('/request/user/verify-2fa', {
@@ -51,7 +20,7 @@ async function validate2FA(event) {
 		if (data.success) {
 			sessionStorage.setItem("accessToken", data.accessToken);
 			accessToken = sessionStorage.getItem("accessToken");
-			sessionStorage.removeItem("userId")
+			// sessionStorage.removeItem("userId")
 			console.log("✅ 2FA code valid!");
 			document.getElementById("login-resultMessage").textContent = "2FA validated successfully!";
 		} else {
@@ -66,11 +35,11 @@ async function validate2FA(event) {
 async function activate2FA(event) {
 
 	event.preventDefault();
-	const userId = sessionStorage.getItem("userId");
-	if (!userId) {
-		console.error("❌ User ID not found in session storage!");
-		return;
-	}
+	// const userId = sessionStorage.getItem("userId");
+	// if (!userId) {
+	// 	console.error("❌ User ID not found in session storage!");
+	// 	return;
+	// }
 	const code = document.getElementById("activate-2fa-code").value;
 	try {
 		const response = await fetch('/request/user/activate-2fa', {
@@ -83,7 +52,7 @@ async function activate2FA(event) {
 		if (data.success) {
 			sessionStorage.setItem("accessToken", data.accessToken);
 			accessToken = sessionStorage.getItem("accessToken");
-			sessionStorage.removeItem("userId")
+			// sessionStorage.removeItem("userId")
 			console.log("✅ 2FA code valid!");
 			document.getElementById("activate-2fa-resultMessage").textContent = "2FA validated successfully!";
 		} else {
@@ -101,7 +70,7 @@ async function login(event) {
 	const email = document.getElementById("login-email").value;
 	const password = document.getElementById("login-password").value;
 	const response = await fetch('/request/user/login', {
-		method: 'PUT',
+		method: 'POST',
 		body: JSON.stringify({ email, password }),
 		headers: { 
 			'Content-Type': 'application/json',
@@ -112,7 +81,7 @@ async function login(event) {
 	// const data = await apiRequest("users/login", "PUT", { email, password }, {})
 	sessionStorage.setItem("accessToken", data.accessToken)
 	accessToken = sessionStorage.getItem("accessToken")
-	userId = getUserIdFromToken(accessToken);
+	// userId = getUserIdFromToken(accessToken);
 	console.log("data: ", data);
 	if (!accessToken && !data.success) {
 		const resultMessage = document.getElementById("login-resultMessage");
@@ -123,7 +92,7 @@ async function login(event) {
 	{
 		console.log("✅ Valid credentials !", data);
 		console.log("DoubleAuth enabled:", data.user.doubleAuth_enabled);
-		sessionStorage.setItem("userId", data.user.userId)
+		// sessionStorage.setItem("userId", data.user.userId)
 		document.getElementById("doubleAuthForm").classList.remove("hidden");
 	}
 	else if (data.success && data.connection_status === "connected")
@@ -214,35 +183,17 @@ async function register(event) {
 	}
 };
 
-// async function refreshToken() {
-// 	const response = await fetch("/api/refresh-token", {
-// 		method: "POST",
-// 		headers: { "Content-Type": "application/json" },
-// 		credentials: "include"
-// 	});
+// function getUserIdFromToken(token) {
+// 	if (!token) return null;
 
-// 	const data = await response.json()
-// 	if (data.success) {
-// 		accessToken = data.accessToken
-// 		sessionStorage.setItem("accessToken", accessToken)
-// 		return true
-// 	} else {
-// 		console.log(data.error)
-// 		return false
+// 	try {
+// 		const payload = JSON.parse(atob(token.split('.')[1]));
+// 		return payload.userId;
+// 	} catch (error) {
+// 		console.error("Error when decoding token :", error);
+// 		return null;
 // 	}
 // }
-
-function getUserIdFromToken(token) {
-	if (!token) return null;
-
-	try {
-		const payload = JSON.parse(atob(token.split('.')[1]));
-		return payload.userId;
-	} catch (error) {
-		console.error("Error when decoding token :", error);
-		return null;
-	}
-}
 
 async function refreshInfos() {
 	const response = await fetch('/request/user/refresh-infos', {
