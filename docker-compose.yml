@@ -77,11 +77,11 @@ services:
       - ./Frontend/dist:/usr/share/nginx/dist  # The compiled JS files
       #END for Typescript
       #TMP for Typescript 2 (With new directories)
-      - ./Frontend/public2/srcs:/usr/share/nginx/dist2/srcs:ro  #The Main Website Typescript
-      - ./Frontend/public2/static/js/css:/usr/share/nginx/dist2/static/js/css:ro 
-      - ./Frontend/public2/static/js/index.css:/usr/share/nginx/dist2/static/js/index.css:ro  
-      - ./Frontend/public2/index.html:/usr/share/nginx/dist2/index.html:ro  
-      - ./Frontend/dist2:/usr/share/nginx/dist2  # The compiled JS files
+      # - ./Frontend/public2/srcs:/usr/share/nginx/dist2/srcs:ro  #The Main Website Typescript
+      # - ./Frontend/public2/static/js/css:/usr/share/nginx/dist2/static/js/css:ro 
+      # - ./Frontend/public2/static/js/index.css:/usr/share/nginx/dist2/static/js/index.css:ro  
+      # - ./Frontend/public2/index.html:/usr/share/nginx/dist2/index.html:ro  
+      # - ./Frontend/dist2:/usr/share/nginx/dist2  # The compiled JS files
       #END for Typescript 2
 
   tsengine:
@@ -95,7 +95,7 @@ services:
     volumes:
       - ./Frontend/public:/app/public
       - ./Frontend/dist:/app/dist
-      - ./Frontend/dist2:/app/dist2
+      # - ./Frontend/dist2:/app/dist2
       - ./Frontend/package.json:/app/package.json
       - ./Frontend/tsconfig.json:/app/tsconfig.json
       - /app/node_modules
