@@ -15,144 +15,92 @@
 			<h1 class="text-3xl font-bold">Administration - Gestion des Users</h1>
 		</div>
 	</header>
-
-	<main class="container mb-6 mx-auto">
-		<h2 class="text-xl font-semibold mb-4 mt-4">List of Users</h2>
-		<table class="min-w-full bg-white shadow-md rounded">
-			<thead>
-				<tr>
-					<th class="py-2 border">ID</th>
-					<th class="py-2 border">PP</th>
-					<th class="py-2 border">Username</th>
-					<th class="py-2 border">Email</th>
-					<th class="py-2 border">Password</th>
-					<th class="py-2 border">2FA</th>
-					<th class="py-2 border">2FA Secret</th>
-					<th class="py-2 border">Actions</th>
-				</tr>
-			</thead>
-			<tbody id="users-table">
-			</tbody>
-		</table>
-	</main>
-
-	<div class="flex mx-auto container">
-		
-		<form id="addForm" class="flex-1 max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg"
-				onsubmit="register(event)">
-			<h2 class="text-2xl font-semibold text-center mb-4">Add User</h2>
-			<div class="mb-4">
-				<label for="username" class="block text-gray-700 font-medium">Username :</label>
-				<input type="text" id="add-username" name="username" placeholder="Username" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+	<div class="flex gap-x-8 mx-auto p-6">
+		<div class="container m-6 mx-auto">
+			<div class="container m-6 mx-auto">
+				<h2 class="text-xl font-semibold mb-4 mt-4">List of Users</h2>
+				<table class="min-w-full bg-white shadow-md rounded">
+					<thead>
+						<tr>
+							<th class="py-2 border">ID</th>
+							<th class="py-2 border">PP</th>
+							<th class="py-2 border">Username</th>
+							<th class="py-2 border">Email</th>
+							<th class="py-2 border">Password</th>
+							<th class="py-2 border">2FA</th>
+							<th class="py-2 border">2FA Secret</th>
+							<th class="py-2 border">Date</th>
+							<th class="py-2 border">Actions</th>
+						</tr>
+					</thead>
+					<tbody id="users-table"></tbody>
+				</table>
+				<button class="bg-blue-500 text-white font-bold py-2 px-4 m-6 mx-auto block w-auto rounded-lg hover:bg-blue-600 transition" onclick="add_user_modal()">Add User</button>
 			</div>
-			<div class="mb-4">
-				<label for="email" class="block text-gray-700 font-medium">Email :</label>
-				<input type="email" id="add-email" name="email" placeholder="Email" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-			</div>
-			<div class="mb-4">
-				<label for="password" class="block text-gray-700 font-medium">Password :</label>
-				<input type="password" id="add-password" name="password" placeholder="Password" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-			</div>
-			<div class="mb-4">
-				<label for="password" class="block text-gray-700 font-medium">Confirm password :</label>
-				<input type="password" id="add-confirm-password" name="password" placeholder="Password" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-			</div>
-			<button type="submit" class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition">
-					Add
-			</button>
-			<p id="add-resultMessage" class="mt-4 text-center text-sm font-semibold text-gray-700"></p>
-		</form>
-
-		<div class="flex-1 max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg">
-			<form id="loginForm" class=""
-				onsubmit="login(event)">
-				<h2 class="text-2xl font-semibold text-center mb-4">Log In</h2>
-				<div class="mb-4">
-					<label for="email" class="block text-gray-700 font-medium">Email :</label>
-					<input type="email" id="login-email" name="email" placeholder="Email" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-				</div>
-				<div class="mb-4">
-					<label for="password" class="block text-gray-700 font-medium">Password :</label>
-					<input type="password" id="login-password" name="password" placeholder="Password" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-				</div>
-				<button type="submit" class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition">
-						Log In
+		</div>
+		<div class="container m-6 mx-auto">
+			<div class="container m-6 mx-auto">
+				<h2 class="text-xl font-semibold mb-4 mt-4">List of Games</h2>
+				<table class="min-w-full bg-white shadow-md rounded">
+					<thead>
+						<tr>
+							<th class="py-2 border">ID</th>
+							<th class="py-2 border">User1</th>
+							<th class="py-2 border">User2</th>
+							<th class="py-2 border">Winner</th>
+							<th class="py-2 border">Date</th>
+							<th class="py-2 border">Actions</th>
+						</tr>
+					</thead>
+					<tbody id="games-table"></tbody>
+				</table>
+				<button class="bg-blue-500 text-white font-bold py-2 px-4 m-6 mx-auto block w-auto rounded-lg hover:bg-blue-600 transition" onclick="add_game_modal()">
+					Add Game
 				</button>
-				
-			</form>
-			<form id="doubleAuthForm" class="hidden mt-4" onsubmit="validate2FA(event)">
-				<h2 class="text-2xl font-semibold text-center mb-4">2FA</h2>
-				<div class="mb-4">
-					<label for="2fa" class="block text-gray-700 font-medium">2FA Code :</label>
-					<input type="text" id="2fa-code" name="2fa" placeholder="2FA Code" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-				</div>
-				<button type="submit" class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition">Validate</button>
-			</form>
-			<p id="login-resultMessage" class="mt-4 text-center text-sm font-semibold text-gray-700"></p>
-		</div>
-
-	</div>
-	<div id="user-div" class="container m-6 mx-auto hidden">
-		<table class="min-w-full bg-white shadow-md rounded">
-			<thead>
-				<tr>
-					<th class="py-2 border">ID</th>
-					<th class="py-2 border">PP</th>
-					<th class="py-2 border">Username</th>
-					<th class="py-2 border">Email</th>
-					<th class="py-2 border">Password</th>
-					<th class="py-2 border">2FA</th>
-					<th class="py-2 border">2FA Secret</th>
-					<th class="py-2 border">Actions</th>
-				</tr>
-			</thead>
-			<tbody id="user-table">
-			</tbody>
-		</table>
-		<div id="activateDoubleAuth" class="m-6 flex-1 max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg hidden">
-			<img class="m-6 mx-auto" id="qrCode" alt="QR Code" />
-			<form id="activateDoubleAuthForm" class="mt-4" onsubmit="activate2FA(event)">
-				<h2 class="text-2xl font-semibold text-center mb-4">2FA</h2>
-				<div class="mb-4">
-					<label for="2fa" class="block text-gray-700 font-medium">2FA Code :</label>
-					<input type="text" id="activate-2fa-code" name="2fa" placeholder="2FA Code" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-				</div>
-				<button type="submit" class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition">Validate</button>
-			</form>
-			<p id="activate-2fa-resultMessage" class="mt-4 text-center text-sm font-semibold text-gray-700"></p>
+			</div>
 		</div>
 	</div>
-	<div id="profile-picture-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center hidden z-50">
-		<div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-md">
-			<h2 class="text-2xl font-semibold text-center mb-4">Change Profile Picture</h2>
-			
-			<div class="mb-4">
-			<div class="flex justify-center">
-				<img id="profile-preview" class="w-32 h-32 object-cover rounded-full border-2 border-gray-300 mb-4" 
-					src="https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Image-Transparent-Background.png" alt="Profile Preview">
+	<div id="addUserModal" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 hidden w-[400px]">
+		<form id="addUserForm" class="mx-auto bg-white p-6 rounded-lg shadow-lg" onsubmit="register(event)">
+			<h2 class="text-2xl font-semibold text-center mb-2">Add User</h2>
+			<div class="mb-2">
+				<label for="username" class="block text-gray-700 font-medium">Username :</label>
+				<input type="text" id="addUser-username" name="username" placeholder="Username" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
 			</div>
-			
-			<label class="block text-gray-700 font-medium mb-2">Select new image:</label>
-			<input type="file" id="profile-picture-input" accept="image/*" 
-					class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+			<div class="mb-2">
+				<label for="email" class="block text-gray-700 font-medium">Email :</label>
+				<input type="email" id="addUser-email" name="email" placeholder="Email" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
 			</div>
-			
-			<div class="flex items-center justify-between mt-6">
-			<button type="button" onclick="closeProfilePictureModal()" 
-					class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition">
-				Cancel
-			</button>
-			<button type="button" onclick="uploadProfilePicture()" 
-					class="bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition">
-				Upload
-			</button>
+			<div class="mb-2">
+				<label for="password" class="block text-gray-700 font-medium">Password :</label>
+				<input type="password" id="addUser-password" name="password" placeholder="Password" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
 			</div>
-			
-			<p id="upload-status" class="mt-4 text-center text-sm font-semibold"></p>
-		</div>
+			<div class="mb-2">
+				<label for="password" class="block text-gray-700 font-medium">Confirm password :</label>
+				<input type="password" id="addUser-confirm-password" name="password" placeholder="Password" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+			</div>
+			<button type="submit" class="w-full bg-green-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-600 transition">Add</button>
+			<button type="button" class="mt-4 w-full bg-red-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-600 transition" onclick="close_user_modal()">Cancel</button>
+			<p id="addUser-resultMessage" class="mt-4 text-center text-sm font-semibold text-gray-700"></p>
+		</form>
 	</div>
-	<script src="../utils/auth.js"></script>
-	<script src="../utils/admin.js"></script>
-	<script src="../utils/userManagement.js"></script>
+	<div id="addGameModal" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 hidden w-[400px]">
+		<form id="addGameForm" class="flex-1 mx-auto bg-white p-6 rounded-lg shadow-lg" onsubmit="add_game(event)">
+			<h2 class="text-2xl font-semibold text-center mb-2">Add Game</h2>
+			<div class="mb-2">
+				<label for="user1" class="block text-gray-700 font-medium">User1 :</label>
+				<input type="text" id="addGame-user1" name="user1" placeholder="User1" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+			</div>
+			<div class="mb-2">
+				<label for="user2" class="block text-gray-700 font-medium">User2 :</label>
+				<input type="text" id="addGame-user2" name="user2" placeholder="User2" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+			</div>
+			<button type="submit" class="w-full bg-green-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-600 transition">Add Game</button>
+			<button type="button" class="mt-4 w-full bg-red-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-600 transition" onclick="close_game_modal()">Cancel</button>
+			<p id="addGame-resultMessage" class="mt-4 text-center text-sm font-semibold text-gray-700"></p>
+		</form>
+	</div>
+		
+	<script src="./api/admin.js"></script>
 </body>
 </html>

@@ -12,31 +12,31 @@ import { enable_skin_perso_player_solo, disable_skin_perso_player_solo, disable_
 import { enable_skin_multi, disable_skin_and_save_multi, disable_skin_multi, switch_skin_perso_player1_right_multi, switch_skin_perso_player1_left_multi, switch_skin_perso_player2_left_multi, switch_skin_perso_player2_right_multi, switch_skin_perso_player3_left_multi, switch_skin_perso_player3_right_multi, switch_skin_perso_player4_left_multi, switch_skin_perso_player4_right_multi } from "../../../srcs/game/gameplay/multiplayer/init_skin_perso_multi.js";
 let powerUP_nb = 0;
 let powerUP_nb_multi = 0;
-export default class Game_menu extends AbstractView {
-    constructor() {
-        super();
-        this.setTitle("Game_menu");
-        // Get accessToken from localStorage or other source
-        const accessToken = localStorage.getItem('accessToken');
-        if (!accessToken || accessToken === undefined) {
-            history.pushState({}, '', '/');
-            import('./Home.js').then((module) => {
-                const Home = module.default;
-                const homeInstance = new Home();
-                homeInstance.getHtml().then((html) => {
-                    const appElement = document.getElementById('app');
-                    if (appElement) {
-                        appElement.innerHTML = html;
-                        if (homeInstance.createAccount && typeof homeInstance.createAccount === 'function') {
-                            homeInstance.createAccount();
-                        }
-                    }
-                });
-            });
-        }
-    }
-    async getHtml() {
-        return /*html*/ `
+
+
+
+
+export default class extends AbstractView {
+	constructor() {
+		super();
+		this.setTitle("Game_menu");
+		if (!accessToken || accessToken === "undefined") {
+			history.pushState({}, '', '/');
+			import('./Home.js').then(module => {
+				const Home = module.default;
+				const homeInstance = new Home();
+				homeInstance.getHtml().then(html => {
+					document.getElementById('app').innerHTML = html;
+					if (homeInstance.createAccount) {
+						homeInstance.createAccount();
+					}
+				});
+			});
+		}
+	}
+
+	async getHtml() {
+		return /*html*/`
 		<link rel="stylesheet" href="./static/js/css/game_menu.css">
 		<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 		<div class="view1" id="view1">
@@ -188,7 +188,7 @@ export default class Game_menu extends AbstractView {
 									</form>
 								</div>
 							</div>
-							<form onsubmit="updateProfileInfo(event)">
+							<form id="updateProfileForm" onsubmit="updateProfileInfo(event)">
 								<div class="input_container">
 									<label for="username">Change username</label>
 									<input type="text" id="change_username" name="username">
@@ -214,7 +214,7 @@ export default class Game_menu extends AbstractView {
 								<button id="deconnect_btn" class="btn_deconnect_btn" onclick="logout()">Deconnexion</button>
 							</div>
 							<div class="btn_delete">
-								<button id="delete_btn" class="btn_delete_btn" onclick="unregister()">Delete account</button>
+								<button id="delete_btn" class="btn_delete_btn" onclick="delete_account()">Delete account</button>
 							</div>
 							<p id="updateProfile-resultMessage" class="resultMessage" style="color:white"></p>
 						</div>

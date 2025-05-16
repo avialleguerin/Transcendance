@@ -13,7 +13,7 @@ import { redisModel } from './models/redisModel.js';
 await redisClient.connect();
 
 
-export const fastify = Fastify({ logger: false })
+export const fastify = Fastify({ logger: true })
 
 await fastify.register(fastifyMultipart, {
 	attachFieldsToBody: true,
@@ -31,7 +31,7 @@ await fastify.register(jwt, {
 
 await fastify.register(cookie);
 fastify.decorate('redis', redisClient);
-fastify.register(routes, { prefix: '/api' })
+fastify.register(routes, { prefix: '/request' })
 initDb();
 
 fastify.decorate('authenticate', async function (request, reply) {
@@ -40,16 +40,16 @@ fastify.decorate('authenticate', async function (request, reply) {
 		const { refreshToken } = request.cookies;
 		console.log("🔑 Access Token reçu :", accessToken);
 		console.log("🔑 Refresh Token reçu :", refreshToken);
-		if (!refreshToken || refreshToken === undefined)
+		if (!refreshToken || refreshToken === "undefined" || refreshToken === "null")
 			return reply.code(401).send({ error: 'Token de rafraîchissement manquant' });
-		if (!accessToken)
+		if (!accessToken || accessToken === "undefined" || accessToken === "null")
 			return reply.code(401).send({ error: 'Token d\'accès manquant' });
 		if (await redisModel.isTokenBlacklisted(accessToken))
 			return reply.code(401).send({ error: 'Token d\'accès invalide (blacklisté)' });
 		if (await redisModel.isTokenBlacklisted(refreshToken))
 			return reply.code(401).send({ error: 'Token de rafraîchissement invalide (blacklisté)' });
 		await request.jwtVerify();
-		
+
 		if (!request.user?.userId)
 			return reply.code(401).send({ error: "Unauthorized: invalid payload" });
 	} catch (err) {
