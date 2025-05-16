@@ -1,14 +1,11 @@
 import AbstractView from "./AbstractView.js";
-
 export default class jouer extends AbstractView {
-	constructor() {
-		super();
-		this.setTitle("Jouer");
-	}
-
-	
-	async getHtml() {
-		return /*html*/`
+    constructor() {
+        super();
+        this.setTitle("Jouer");
+    }
+    async getHtml() {
+        return /*html*/ `
 		<style>
 		.container {
 			position: absolute;
@@ -117,5 +114,5 @@ export default class jouer extends AbstractView {
 			</div>
 		</div>
 	</div>`;
-	}
+    }
 }

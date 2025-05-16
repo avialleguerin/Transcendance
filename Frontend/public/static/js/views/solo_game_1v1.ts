@@ -2,7 +2,7 @@ import AbstractView from "./AbstractView.js";
 import { getPowerUP_value } from "./Game_menu.js";
 import { leave_Game } from "../../../srcs/game/gameplay/babylon.js";
 import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.js";
-import { getValue_leave_game, setLeaveGameVar } from "../index.js";
+import { setLeaveGameVar } from "../index.js";
 import { isGameFinished } from "../../../srcs/game/gameplay/score.js";
 import { disable_skin_perso_player_first_and_seconde } from "../../../srcs/game/gameplay/solo/skin/init_skin_player_podium.js";
 import { getPlayer_1_win, getPlayer_2_win } from "../../../srcs/game/gameplay/score.js";
@@ -168,15 +168,12 @@ export default class solo_game extends AbstractView {
 
 		const container_player1 = document.getElementById("container-player1_id");
 		const container_player2 = document.getElementById("container-player2_id");
-
-		if (getPowerUP_value() !== 0)
-		{
+        if (getPowerUP_value() !== 0) {
 			console.log("powerUP valueje reeeeedjkhkjefwhjkewhfkjwe == ", getPowerUP_value());
 			container_player1.classList.add("active");
 			container_player2.classList.add("active");
 		}
-		else
-		{
+        else {
 			console.log(" else    powerUP valueje reeeeedjkhkjefwhjkewhfkjwe == ", getPowerUP_value());
 			if (container_player1.classList.contains("active"))
 				container_player1.classList.remove("active");
@@ -226,7 +223,8 @@ export default class solo_game extends AbstractView {
 			if (press_space) {
 				press_space.style.visibility = "hidden";
 				press_space.style.animation = "none";
-			} else {
+            }
+            else {
 				console.error("press_space_id introuvable !");
 			}
 			spacePressed = true;

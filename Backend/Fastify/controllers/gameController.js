@@ -27,7 +27,7 @@ export async function addGame(request, reply) {
 		if (user1 === user2)
 			return reply.code(400).send({ succes: false, error: "Cannot create a game with the same user twice" })
 
-		const game = gamesModel.createGame(user1, user2)
+		gamesModel.createGame(user1, user2)
 			
 		return reply.code(201).send({ 
 			success: true,

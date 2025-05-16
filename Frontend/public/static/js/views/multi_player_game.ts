@@ -3,7 +3,6 @@ import { getPowerUP_value_multi } from "./Game_menu.js";
 import { leave_Multiplayer_Game } from "../../../srcs/game/gameplay/babylon.js";
 import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.js";
 import { setLeaveGameVar } from "../index.js";
-import { getPowerUP_value } from "./Game_menu.js";
 import { disable_skin_multi_podium } from "../../../srcs/game/gameplay/multiplayer/init_teamPlayer_podium.js";
 import { isGameFinished } from "../../../srcs/game/gameplay/score.js";
 import { getIsTeam1Win, getIsTeam2Win } from "../../../srcs/game/gameplay/score.js";
@@ -148,25 +147,20 @@ export default class extends AbstractView {
 		const container_player2 = document.getElementById("container-player2-id");
 
 		console.log("powerUP_value_multi", getPowerUP_value_multi());
-
-		if (getPowerUP_value_multi() !== 0)
-		{
+        if (getPowerUP_value_multi() !== 0) {
 			console.log("powerUP_value_multi je rentre ici");
 			// container_player1.classList.add("active");
 			// container_player2.classList.add("active");
 			container_player1.style.visibility = "visible";
 			container_player2.style.visibility = "visible";
 		}
-		else
-		{
+        else {
 			console.log("powerUP_value_multi je rentre ici222");
 			// container_player1.classList.remove("active");
 			// container_player2.classList.remove("active");
 			container_player1.style.visibility = "hidden";
 			container_player2.style.visibility = "hidden";
 		}
-
-
 		document.getElementById("nb-item-grenade-1").innerHTML = getPowerUP_value_multi().toString();
 		document.getElementById("nb-item-teammate-1").innerHTML = getPowerUP_value_multi().toString();
 		document.getElementById("nb-item-grenade-2").innerHTML = getPowerUP_value_multi().toString();
@@ -331,19 +325,16 @@ export default class extends AbstractView {
 		if (isGameFinished()) {
 			winnerContainer.classList.add("active");
 			clearInterval(this.gameLoop); // Arrête la boucle quand la partie est finie
-			if (team_player1_win)
-			{
+            if (team_player1_win) {
 				document.getElementById("Winner_id").innerHTML = "Player 1 - Player 2 Win";
 				document.getElementById("looser_id").innerHTML = "Player 3 - Player 4 Loose";
 			}
-			else if (team_player2_win)
-			{
+            else if (team_player2_win) {
 				document.getElementById("Winner_id").innerHTML = "Player 3 - Player 4 Win";
 				document.getElementById("looser_id").innerHTML = "Player 1 - Player 2 Loose";
 			}
 		}
-		else 
-		{
+        else {
 			winnerContainer.classList.remove("active");
 		}
 	}

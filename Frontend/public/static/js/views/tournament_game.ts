@@ -1,9 +1,7 @@
 import AbstractView from "./AbstractView.js";
 import { getPlayer_1_win, getPlayer_2_win, isGameFinished } from "../../../srcs/game/gameplay/score.js";
-import { leave_Game, leave_tournament_game } from "../../../srcs/game/gameplay/babylon.js";
+import { leave_tournament_game } from "../../../srcs/game/gameplay/babylon.js";
 import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.js";
-import { destroy_game_solo_tournament } from "../../../srcs/game/gameplay/tournament/tournament.js";
-
 export default class extends AbstractView {
 	private cooldowns: Record<string, boolean>;
 	private cooldownTimes: Record<string, number>;

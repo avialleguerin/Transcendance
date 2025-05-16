@@ -2,7 +2,7 @@ import AbstractView from "./AbstractView.js";
 // import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.js";
 // import Game_menu from "./Game_menu.js";
 
-export default class Home extends AbstractView {
+export default class extends AbstractView {
 	constructor() {
 		super();
 		this.setTitle("Home");
@@ -23,9 +23,9 @@ export default class Home extends AbstractView {
 		}
 	}
 
-	async getHtml(): Promise<string> {
-    	return /*html*/`
-    		<link rel="stylesheet" href="./static/js/css/home.css">
+	async getHtml() {
+		return /*html*/`
+			<link rel="stylesheet" href="./static/js/css/home.css">
 			<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 			<div class="container">
 				<div class="title">
@@ -40,11 +40,11 @@ export default class Home extends AbstractView {
 								<input type="email" id="login-email" name="email" placeholder="Your email" required>
 						</div>
 
-						<div class="input-container">
-							<label for="password">Password :</label>
-							<input type="password" id="login-password" name="password" placeholder="Your password" required>
-						</div>
-						<button type="submit" class="connexion">Login</button>
+							<div class="input-container">
+								<label for="password">Password :</label>
+								<input type="password" id="login-password" name="password" placeholder="Your password" required>
+							</div>
+							<button type="submit" class="connexion">Login</button>
 							<button type="button" class="creer-compte" id="create-Account">Create an account</button>
 							<p id="login-resultMessage" style="color:white"></p>
 						</form>
@@ -56,19 +56,22 @@ export default class Home extends AbstractView {
 						<form id="registerForm" onsubmit="register(event)">
 							<div class="input-container">
 								<label for="username">Username :</label>
-									<input type="text" id="register-username" name="username" placeholder="Your username" required>
+								<input type="text" id="register-username" name="username" placeholder="Your username" required>
 							</div>
+
 							<div class="input-container">
 								<label for="email">Email :</label>
-									<input type="email" id="register-email" name="email" placeholder="Your email" required>
+								<input type="email" id="register-email" name="email" placeholder="Your email" required>
 							</div>
+
 							<div class="input-container">
 								<label for="password">Password :</label>
-									<input type="password" id="register-password" name="password" placeholder="Your password" required>
+								<input type="password" id="register-password" name="password" placeholder="Your password" required>
 							</div>
+
 							<div class="input-container">
 								<label for="confirm-password">Confirm password :</label>
-									<input type="password" id="register-confirm-password" name="password" placeholder="Confirm your password" required>
+								<input type="password" id="register-confirm-password" name="password" placeholder="Confirm your password" required>
 							</div>
 							<button type="submit" class="connexion">Sign In</button>
 							<button type="button" class="connexion" id="alreadyHaveAccountButton_id">Already have an account ?</button>
@@ -77,7 +80,8 @@ export default class Home extends AbstractView {
 					</div>
 				</div>
 			</div>
-    	`;}
+		`;
+	}
 
 	createAccount() {
 
@@ -92,8 +96,8 @@ export default class Home extends AbstractView {
 			console.log("createAccountForm");
 			loginForm.classList.add("active");
 			createAccountForm.classList.add("active");
-			(document.getElementById("login-email") as HTMLInputElement).value = "";
-			(document.getElementById("login-password") as HTMLInputElement).value = "";
+			document.getElementById("login-email").value = ""
+			document.getElementById("login-password").value = ""
 			document.getElementById("login-resultMessage").textContent = ""
 		});
 
@@ -101,8 +105,8 @@ export default class Home extends AbstractView {
 			console.log("loginForm");
 			createAccountForm.classList.remove("active");
 			loginForm.classList.remove("active");
-			(document.getElementById("registerForm") as HTMLFormElement).reset();
-			document.getElementById("register-resultMessage").textContent = "";
+			document.getElementById("registerForm").reset();
+			document.getElementById("register-resultMessage").textContent = ""
 		});
 	}
 }

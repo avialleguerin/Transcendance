@@ -1,8 +1,7 @@
 import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.js";
 import AbstractView from "./AbstractView.js";
 import { startTournamentGame } from "../../../srcs/game/gameplay/babylon.js";
-import { getPlayer_1_win, getPlayer_2_win } from "../../../srcs/game/gameplay/score.js";
-
+import { getPlayer_1_win } from "../../../srcs/game/gameplay/score.js";
 let count = 0;
 
 let tournamentStarted = false;
