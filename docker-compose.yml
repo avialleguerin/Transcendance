@@ -67,14 +67,14 @@ services:
       - ./Security/ModSecurity:/etc/modsecurity.d
       - ./Frontend/public:/usr/share/nginx/html:ro  #The Main Website
       - ./Frontend/admin:/usr/share/nginx/admin:ro  #The Admin Website
-      # - ./Frontend/utils:/usr/share/nginx/utils:ro  #The API Scripts
       - ./Data/uploads:/usr/share/nginx/uploads
       #TMP for Typescript
-      # - ./Frontend/public/srcs:/usr/share/nginx/dist/srcs:ro  #The Main Website Typescript
-      # - ./Frontend/public/static/js/css:/usr/share/nginx/dist/static/js/css:ro 
-      # - ./Frontend/public/static/js/index.css:/usr/share/nginx/dist/static/js/index.css:ro  
-      # - ./Frontend/public/index.html:/usr/share/nginx/dist/index.html:ro  
-      # - ./Frontend/dist:/usr/share/nginx/dist  # The compiled JS files
+      - ./Frontend/public/srcs:/usr/share/nginx/dist/srcs:ro  #The Main Website Typescript
+      - ./Frontend/public/static/js/css:/usr/share/nginx/dist/static/js/css:ro 
+      - ./Frontend/public/static/js/index.css:/usr/share/nginx/dist/static/js/index.css:ro  
+      - ./Frontend/public/index.html:/usr/share/nginx/dist/index.html:ro  
+      - ./Frontend/public/api:/usr/share/nginx/dist/api:ro
+      - ./Frontend/dist:/usr/share/nginx/dist  # The compiled JS files
       #END for Typescript
       #TMP for Typescript 2 (With new directories)
       # - ./Frontend/public2/srcs:/usr/share/nginx/dist2/srcs:ro  #The Main Website Typescript
@@ -84,22 +84,22 @@ services:
       # - ./Frontend/dist2:/usr/share/nginx/dist2  # The compiled JS files
       #END for Typescript 2
 
-  # tsengine:
-  #   image: node:20-alpine
-  #   container_name: tsengine
-  #   working_dir: /app
-  #   command: >
-  #     sh -c "npm i -g typescript && npm i &&
-  #             mkdir -p /app/dist &&
-  #             tsc --project /app/tsconfig.json --watch"
-  #   volumes:
-  #     - ./Frontend/public:/app/public
-  #     - ./Frontend/dist:/app/dist
-  #     # - ./Frontend/dist2:/app/dist2
-  #     - ./Frontend/package.json:/app/package.json
-  #     - ./Frontend/tsconfig.json:/app/tsconfig.json
-  #     - /app/node_modules
-  #   restart: unless-stopped
+  tsengine:
+    image: node:20-alpine
+    container_name: tsengine
+    working_dir: /app
+    command: >
+      sh -c "npm i -g typescript && npm i &&
+              mkdir -p /app/dist &&
+              tsc --project /app/tsconfig.json --watch"
+    volumes:
+      - ./Frontend/public:/app/public
+      - ./Frontend/dist:/app/dist
+      # - ./Frontend/dist2:/app/dist2
+      - ./Frontend/package.json:/app/package.json
+      - ./Frontend/tsconfig.json:/app/tsconfig.json
+      - /app/node_modules
+    restart: unless-stopped
 
   vault:
     image: custom-vault

@@ -1,11 +1,16 @@
-__pycache__/
-db.sqlite3
 *.exe
 *.out
 *.o
 
+# Python & dockers
+db.sqlite3
+__pycache__/
 .envPy
 .env
 .docker
 
+# Builds
+Frontend/dist
+Frontend/node_modules
+Backend/node_modules
 node_modules

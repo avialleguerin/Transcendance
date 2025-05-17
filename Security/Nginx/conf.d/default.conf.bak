@@ -95,11 +95,12 @@ server {
         try_files $uri $uri/ /index.html;
     }
 
-	location /utils/ {
-		alias /usr/share/nginx/utils/;
-	}
+	# location /api/ {
+    #     alias /usr/share/nginx/dist/api/;
+    #     add_header Content-Type application/javascript;
+    # }
 
-    location /api/ {
+    location /request/ {
         proxy_pass http://fastify:3000;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
