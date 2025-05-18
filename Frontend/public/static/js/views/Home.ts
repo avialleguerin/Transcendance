@@ -2,13 +2,20 @@ import AbstractView from "./AbstractView.js";
 // import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.js";
 // import Game_menu from "./Game_menu.js";
 
+
+declare global {
+	interface Window {
+		accessToken: string | null;
+	}
+}
+
 export default class Home extends AbstractView {
 	constructor() {
 		super();
 		this.setTitle("Home");
-		const accessToken = sessionStorage.getItem("accessToken");
-		if (accessToken && accessToken !== "undefined") {
-			history.pushState({}, '', '/Game_menu');
+		// const accessToken = sessionStorage.getItem("accessToken");
+		if (window.accessToken && window.accessToken !== "undefined") {
+			history
 			import('./Game_menu.js').then(module => {
 				const GameMenu = module.default;
 				const gameMenuInstance = new GameMenu();

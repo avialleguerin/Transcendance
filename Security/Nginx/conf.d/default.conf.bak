@@ -100,6 +100,15 @@ server {
     #     add_header Content-Type application/javascript;
     # }
 
+	location /uploads/ {
+		alias /usr/share/nginx/uploads/;
+		types {
+			image/jpeg jpg jpeg;
+			image/png png;
+			image/gif gif;
+		}
+	}
+
     location /request/ {
         proxy_pass http://fastify:3000;
         proxy_set_header Host $host;

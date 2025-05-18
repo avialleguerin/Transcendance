@@ -14,11 +14,10 @@ const SECRET_LENGHT = 30
 
 
 async function getUserFromToken(request, reply) {
-	let accessToken = request.headers.authorization?.split(' ')[1]
+	const accessToken = request.headers.authorization?.split(' ')[1]
+	console.log("🔑 Access Token reçu :", accessToken)
 	const { refreshToken } = request.cookies
-	if (!refreshToken || refreshToken === "undefined" || refreshToken === "null")
-		return null
-	if (await redisModel.isTokenBlacklisted(accessToken))
+	if (!refreshToken || refreshToken === undefined || refreshToken === null)
 		return null
 	if (await redisModel.isTokenBlacklisted(refreshToken))
 		return null
@@ -33,17 +32,20 @@ async function getUserFromToken(request, reply) {
 		return null
 	if (expiresInRefresh > 0)
 	{
-		const decodedAccess = fastify.jwt.decode(accessToken)
-		const expiresInAccess = decodedAccess.exp - Math.floor(Date.now() / 1000)
-		if (expiresInAccess <= 0)
-			accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, { expiresIn: '15m' })
+		if (accessToken && accessToken !== undefined && accessToken !== null && accessToken !== "undefined" && accessToken !== "null")
+		{
+			// console.log("🔑 je passe la :", accessToken)
+			const decodedAccess = fastify.jwt.decode(accessToken)
+			const expiresInAccess = decodedAccess.exp - Math.floor(Date.now() / 1000)
+			if (expiresInAccess > 0)
+				return {user: user, accessToken: accessToken}
+		}
+		const newAccessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, { expiresIn: '15m' })
+		return {user: user, accessToken: newAccessToken}
 	} else {
 		reply.clearCookie('refreshToken', { path: '/' })
-		accessToken = null
-		user = null
 		return null
 	}
-	return {user: user, accessToken: accessToken}
 }
 
 export async function getAllUsers(request, reply) {
@@ -120,7 +122,6 @@ export async function login(request, reply) {
 
 export async function logout(request, reply) {
 	const accessToken = request.headers.authorization?.split(' ')[1]
-	console.log("accessToken :", accessToken)
 	const { refreshToken } = request.cookies
 	if (!accessToken || accessToken === "undefined")
 		return reply.code(401).send({ success: false, error: '❌ Access token is missing' })
@@ -495,9 +496,11 @@ export async function generateDoubleAuth(userId) {
 }
 
 export async function refreshInfos(request, reply) {
+	console.log("🔑 refreshing user infos")
 
 	try {
 		const infos = await getUserFromToken(request, reply)
+		console.log("🔑 infos :", infos)
 		if (!infos)
 			return reply.code(401).send({ success: false, error: '❌ Unauthorized' })
 		const user = infos.user

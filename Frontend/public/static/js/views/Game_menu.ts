@@ -15,6 +15,11 @@ let powerUP_nb = 0;
 let powerUP_nb_multi = 0;
 
 
+declare global {
+	interface Window {
+		accessToken: string | null;
+	}
+}
 
 
 export default class Game_menu extends AbstractView {
@@ -23,9 +28,9 @@ export default class Game_menu extends AbstractView {
 		this.setTitle("Game_menu");
 		
 		// Get accessToken from localStorage or other source
-		const accessToken: string | null = localStorage.getItem('accessToken');
+		// const accessToken: string | null = localStorage.getItem('accessToken');
 		
-		if (!accessToken || accessToken === undefined) {
+		if (!window.accessToken || window.accessToken === "undefined") {
 			history.pushState({}, '', '/');
 			import('./Home.js').then((module: any) => {
 				const Home = module.default;
