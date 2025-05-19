@@ -188,13 +188,19 @@ export default class Game_menu extends AbstractView {
 								<div class="profile_photo_container">
 									<div class="profile_photo_circle" id="profile_photo_circle"></div>
 									<form id="uploadForm" enctype="multipart/form-data" onsubmit="changeProfilePicture(event)">
-										<label for="profile_photo_input" class="photo_upload_icon"></label>
-										<input type="file" name="image" id="profile_photo_input" style="color:white"/>
+									<input type="file" name="image" id="profile_photo_input" accept="image/*" />
+									
+									<button type="button" onclick="document.getElementById('profile_photo_input').click()">
+										Choose File
+									</button>
+									
+									<div id="fileName"></div>
+
 										<button type="submit">Upload</button>
 									</form>
 								</div>
 							</div>
-							<form id="updateProfileForm" onsubmit="updateProfileInfo(event)">
+							<form id="updateProfileForm" onsubmit="updateProfileInfo(event)"> // CHECK - ID
 								<div class="input_container">
 									<label for="username">Change username</label>
 									<input type="text" id="change_username" name="username">
@@ -223,9 +229,22 @@ export default class Game_menu extends AbstractView {
 								<button id="delete_btn" class="btn_delete_btn" onclick="delete_account()">Delete account</button>
 							</div>
 							<p id="updateProfile-resultMessage" class="resultMessage" style="color:white"></p>
+
+							<h1>GAME STATISTICS</h1>
+							<div class="game_statistics">
+								<div class="statistics">
+									<p>Games Played: <span id="games_played" class="games_played"></span></p>
+									<p>Games Won: <span id="games_won" class="games_won"></span></p>
+									<p>Games Lost: <span id="games_lost" class="games_lost"></span></p>
+									<p>Win Rate: <span id="win_rate" class="win_rate"></span></p>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
+
+
+
 
 				<div class="view6" id="view6">
 					<div class="view6-content">
@@ -277,7 +296,7 @@ export default class Game_menu extends AbstractView {
 							</div>
 						</div>
 						<div class="skin">
-							<p>Skin Personnalise :<span id="skin_perso" class="skin_perso"</span></p>
+							<p>Skin Personnalise :<span id="skin_perso" class="skin_perso"></span></p>
 						</div>
 						<button id="solo_ai_btn" class="btn">
 							<a href="/solo_game_ai" class="nav-link" data-link>Lancer la partie</a>
@@ -313,6 +332,14 @@ export default class Game_menu extends AbstractView {
 					</div>
 				</div>
 			</div>
+
+			<form id="code_validation_id" class="code_validation" onsubmit="accessProfileInfo(event)">
+				<img src="../../../srcs/game/assets/image/timer-reset.svg" alt="delay">
+				<label for="code">code</label>
+				<input type="code" id="code" name="code" placeholder="code" required>
+				<button type="submit" class="btn_valider_qr_code">Valider</button>
+			</form>
+
 			<div class="back" id="back_to_select_mode_view6">
 				<button id="back_to_menu_view6" class="btn_back">BACK</button>
 			</div>
@@ -1080,6 +1107,7 @@ export default class Game_menu extends AbstractView {
 			btn_back_home.classList.remove('active');
 			view1.classList.remove('active');
 			btn_back_home.classList.add('active');
+			container_menu.classList.add('active');
 		});
 
 
@@ -1096,6 +1124,7 @@ export default class Game_menu extends AbstractView {
 				view5.classList.add('active');
 				// btn_back_home.classList.remove('active');
 				view1.classList.add('active');
+				container_menu.classList.remove('active');
 			}
 		});
 
@@ -1132,11 +1161,14 @@ export default class Game_menu extends AbstractView {
 		// 	btn_back_home.classList.add('active');
 		// });
 
+		const code_validation_id = document.getElementById('code_validation_id');
+
 		active_fa.addEventListener('click', () => {
 			active_fa.classList.toggle('checked');
 			if (active_fa.classList.contains('checked')) {
 				console.log('FA is active');
 				fa_selector.classList.add('active');
+				code_validation_id.classList.add('active');
 			}
 			else {
 				console.log('FA is inactive');
