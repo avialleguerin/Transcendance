@@ -6,6 +6,6 @@
     "typescript": "^5.3.0"
   },
   "devDependencies": {
-    "@types/node": "^22.15.18"
+    "@types/node": "^22.15.19"
   }
 }

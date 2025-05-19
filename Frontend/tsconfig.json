@@ -11,37 +11,8 @@
     "inlineSources": true,
     "strict": true,
     "allowJs": true,
-    // "noEmit": true, // Disable emitting files, as we are using Babel for transpilation
-    // "allowImportingTsExtensions": true, // Allow importing .ts files
     "strictNullChecks": false           // TODO: Set to true when all code is updated
   },
   "include": ["public/static/js/**/*.ts"],
   "exclude": ["node_modules"]
 }
-
-// {
-//   "compilerOptions": {
-//     "types": ["node"],
-//     "target": "ES2020",
-//     "module": "ES2020",
-//     "moduleResolution": "node",
-//     "esModuleInterop": true,
-//     "outDir": "./dist",
-//     "rootDir": "./public2",
-//     "inlineSourceMap": true,
-//     "inlineSources": true,
-//     "strict": true,
-//     "allowJs": true,
-//     // "noEmit": true, // Disable emitting files, as we are using Babel for transpilation
-//     // "allowImportingTsExtensions": true, // Allow importing .ts files
-//     "strictNullChecks": false,           // TODO: Set to true when all code is updated
-//     "baseUrl": "./public2",
-//     "paths": {
-//       "*.js": ["./views/*"]
-//     }
-//   },
-//   "include": ["public2/**/*.ts"],
-//   "exclude": ["node_modules", "dist"],
-//   // "include": ["public2/static/**/*.ts"],
-//   // "exclude": ["node_modules"]
-// }
