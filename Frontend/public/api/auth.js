@@ -101,6 +101,7 @@ async function login(event) {
 		const resultMessage = document.getElementById("login-resultMessage");
 		resultMessage.textContent = "Login success !";
 		console.log("✅ Connected, Token :", accessToken)
+		console.log("accessToken before Game menu: ", accessToken);
 		history.pushState({}, '', '/Game_menu');
 		// handleViewTransitions("vue1", "vue2");
 		import('../static/js/views/Game_menu.js').then(module => {

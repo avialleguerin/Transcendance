@@ -37,7 +37,7 @@ async function getUserFromToken(request, reply) {
 			// console.log("🔑 je passe la :", accessToken)
 			const decodedAccess = fastify.jwt.decode(accessToken)
 			const expiresInAccess = decodedAccess.exp - Math.floor(Date.now() / 1000)
-			if (expiresInAccess > 0)
+			if (expiresInAccess > 0 && !await redisModel.isTokenBlacklisted(accessToken))
 				return {user: user, accessToken: accessToken}
 		}
 		const newAccessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, { expiresIn: '15m' })
@@ -287,21 +287,23 @@ export async function changeProfilePicture(request, reply) {
 
 export async function deleteAccount(request, reply) {
 	try {
+		const { refreshToken } = request.cookies
 		const infos = await getUserFromToken(request)
+		console.log("infos :", infos)
 		if (!infos)
 			return reply.code(401).send({ success: false, error: '❌ Unauthorized' })
 		const user = infos.user
 		const accessToken = infos.accessToken
 		if (!user)
 			return reply.code(404).send({ error: '❌ User not found' })
-		if (refreshToken && refreshToken !== "undefined") {
+		if (refreshToken && refreshToken !== undefined && refreshToken !== null) {
 			const decodedRefresh = fastify.jwt.decode(refreshToken)
 			const expiresInRefresh = decodedRefresh.exp - Math.floor(Date.now() / 1000)
 			if (expiresInRefresh > 0)
 				redisModel.addToBlacklist(refreshToken, expiresInRefresh)
 			reply.clearCookie('refreshToken', { path: '/' })
 		}
-		if (accessToken && accessToken !== "undefined") {
+		if (accessToken && accessToken !== undefined && accessToken !== null) {
 			const decodedAccess = fastify.jwt.decode(accessToken)
 			const expiresInAccess = decodedAccess.exp - Math.floor(Date.now() / 1000)
 			if (expiresInAccess > 0)

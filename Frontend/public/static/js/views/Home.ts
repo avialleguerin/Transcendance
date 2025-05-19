@@ -3,18 +3,12 @@ import AbstractView from "./AbstractView.js";
 // import Game_menu from "./Game_menu.js";
 
 
-declare global {
-	interface Window {
-		accessToken: string | null;
-	}
-}
-
 export default class Home extends AbstractView {
 	constructor() {
 		super();
 		this.setTitle("Home");
-		// const accessToken = sessionStorage.getItem("accessToken");
-		if (window.accessToken && window.accessToken !== "undefined") {
+		const accessToken : string | null = sessionStorage.getItem("accessToken");
+		if (accessToken && accessToken !== undefined) {
 			history
 			import('./Game_menu.js').then(module => {
 				const GameMenu = module.default;

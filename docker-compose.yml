@@ -69,12 +69,12 @@ services:
       - ./Frontend/admin:/usr/share/nginx/admin:ro  #The Admin Website
       - ./Data/uploads:/usr/share/nginx/uploads
       #TMP for Typescript
+      - ./Frontend/dist:/usr/share/nginx/dist  # The compiled JS files
       - ./Frontend/public/srcs:/usr/share/nginx/dist/srcs:ro  #The Main Website Typescript
       - ./Frontend/public/static/js/css:/usr/share/nginx/dist/static/js/css:ro 
       - ./Frontend/public/static/js/index.css:/usr/share/nginx/dist/static/js/index.css:ro  
-      - ./Frontend/public/index.html:/usr/share/nginx/dist/index.html:ro  
+      - ./Frontend/public/index.html:/usr/share/nginx/dist/index.html:ro
       - ./Frontend/public/api:/usr/share/nginx/dist/api:ro
-      - ./Frontend/dist:/usr/share/nginx/dist  # The compiled JS files
       #END for Typescript
       #TMP for Typescript 2 (With new directories)
       # - ./Frontend/public2/srcs:/usr/share/nginx/dist2/srcs:ro  #The Main Website Typescript

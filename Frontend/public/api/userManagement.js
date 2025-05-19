@@ -90,19 +90,23 @@ async function delete_account() {
 				credentials: 'include'
 			},);
 			const data = await response.json();
-			sessionStorage.removeItem("accessToken");
-			accessToken = null;
 			if (data.success) {
+				sessionStorage.removeItem("accessToken");
+				accessToken = null;
 				console.log('User deleted successfully');
 				document.getElementById("updateProfile-resultMessage").innerHTML = `${data.message}`;
 				history.pushState({}, '', '/');
-				import('../static/js/views/Home.js').then(module => {
+				import('../static/js/views/Home.js').then((module) => {
+					console.log("Home module loaded");
 					const Home = module.default;
 					const homeInstance = new Home();
-					homeInstance.getHtml().then(html => {
-						document.getElementById('app').innerHTML = html;
-						if (homeInstance.createAccount) {
-							homeInstance.createAccount();
+					homeInstance.getHtml().then((html) => {
+						const appElement = document.getElementById('app');
+						if (appElement) {
+							appElement.innerHTML = html;
+							if (homeInstance.createAccount && typeof homeInstance.createAccount === 'function') {
+								homeInstance.createAccount();
+							}
 						}
 					});
 				});
