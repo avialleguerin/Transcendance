@@ -52,14 +52,50 @@ async function accessProfileInfo(event) {
 	}
 }
 
-async function enable_doubleAuth(userId) {
+async function activate2FA(event) {
+
+	event.preventDefault();
+	// const userId = sessionStorage.getItem("userId");
+	// if (!userId) {
+	// 	console.error("❌ User ID not found in session storage!");
+	// 	return;
+	// }
+	const code = document.getElementById("activate-2fa-code").value;
 	try {
-		const accessToken = sessionStorage.getItem("accessToken");
+		const response = await fetch('/request/user/activate-2fa', {
+			method: "POST",
+			headers: { 
+				"Content-Type": "application/json",
+				"Authorization": `Bearer ${accessToken}`
+			 },
+			body: JSON.stringify({ code })
+		});
+		
+		const data = await response.json();
+		if (data.success) {
+			sessionStorage.setItem("accessToken", data.accessToken);
+			accessToken = sessionStorage.getItem("accessToken");
+			// sessionStorage.removeItem("userId")
+			console.log("✅ 2FA code valid!");
+			document.getElementById("activate-2fa-resultMessage").textContent = "2FA validated successfully!";
+			document.getElementById("fa_selector").classList.remove('active');
+		} else {
+			console.error("❌ Invalid 2FA code:", data.error);
+			document.getElementById("activate-2fa-resultMessage").textContent = "❌ Invalid 2FA code!";
+		}
+	} catch (err) {
+		console.error("Error when validating 2FA :", err);
+	}
+}
+
+
+async function enable_doubleAuth() {
+	try {
+		// const accessToken = sessionStorage.getItem("accessToken");
 
 		const response = await fetch('/request/user/update-2fa', {
 			method: "PUT",
 			headers: {
-				"Content-Type": "application/json",
 				"Authorization": `Bearer ${accessToken}`
 			},
 		});
@@ -68,9 +104,9 @@ async function enable_doubleAuth(userId) {
 			// fetchUsers()
 			if (data.enable_doubleAuth)
 			{
-				sessionStorage.setItem("userId", userId);
+				// sessionStorage.setItem("userId", userId);
 				document.getElementById('qrCode').src = data.qrCode;
-				document.getElementById("activateDoubleAuth").classList.remove("hidden");
+				// document.getElementById("activateDoubleAuth").classList.remove("hidden");
 			}
 		} else
 			alert('Error : ' + data.message);
@@ -141,7 +177,7 @@ async function fetchProfile() {
 			username.placeholder = user.username;
 			const email = document.getElementById("change_email");
 			email.placeholder = user.email;
-			const doubleAuth = document.getElementById("fa_selector");
+			const doubleAuth = document.getElementById("active_fa");
 			if (user.enable_doubleAuth)
 				doubleAuth.classList.add("checked");
 			else

@@ -33,37 +33,6 @@ async function validate2FA(event) {
 	}
 }
 
-async function activate2FA(event) {
-
-	event.preventDefault();
-	// const userId = sessionStorage.getItem("userId");
-	// if (!userId) {
-	// 	console.error("❌ User ID not found in session storage!");
-	// 	return;
-	// }
-	const code = document.getElementById("activate-2fa-code").value;
-	try {
-		const response = await fetch('/request/user/activate-2fa', {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ code })
-		});
-		
-		const data = await response.json();
-		if (data.success) {
-			sessionStorage.setItem("accessToken", data.accessToken);
-			accessToken = sessionStorage.getItem("accessToken");
-			// sessionStorage.removeItem("userId")
-			console.log("✅ 2FA code valid!");
-			document.getElementById("activate-2fa-resultMessage").textContent = "2FA validated successfully!";
-		} else {
-			console.error("❌ Invalid 2FA code:", data.error);
-			document.getElementById("activate-2fa-resultMessage").textContent = "❌ Invalid 2FA code!";
-		}
-	} catch (err) {
-		console.error("Error when validating 2FA :", err);
-	}
-}
 
 async function login(event) {
 	event.preventDefault();

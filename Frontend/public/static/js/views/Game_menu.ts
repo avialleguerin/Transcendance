@@ -200,7 +200,7 @@ export default class Game_menu extends AbstractView {
 									</form>
 								</div>
 							</div>
-							<form id="updateProfileForm" onsubmit="updateProfileInfo(event)"> // CHECK - ID
+							<form id="updateProfileForm" onsubmit="updateProfileInfo(event)">
 								<div class="input_container">
 									<label for="username">Change username</label>
 									<input type="text" id="change_username" name="username">
@@ -218,7 +218,7 @@ export default class Game_menu extends AbstractView {
 									<input type="password" id="confirm_change_password" name="confirm_password" placeholder="******">
 								</div>
 								<div id="fa_selector" class="fa_selector">
-								<p>2FA :<span id="active_fa" class="active_fa"></span></p>
+								<p>2FA :<input type="checkbox" id="active_fa" onchange="this.checked ? enable_doubleAuth(): void(0)" /></p>
 								</div>
 								<button type="submit" id="valid_profile_info" class="valid_profile_info_btn">Valider</button>
 							</form>
@@ -333,11 +333,12 @@ export default class Game_menu extends AbstractView {
 				</div>
 			</div>
 
-			<form id="code_validation_id" class="code_validation" onsubmit="accessProfileInfo(event)">
-				<img src="../../../srcs/game/assets/image/timer-reset.svg" alt="delay">
+			<form id="code_validation_id" class="code_validation" onsubmit="activate2FA(event)">
+				<img id="qrCode" src="../../../srcs/game/assets/image/timer-reset.svg" style="width:auto" alt="delay">
 				<label for="code">code</label>
-				<input type="code" id="code" name="code" placeholder="code" required>
-				<button type="submit" class="btn_valider_qr_code">Valider</button>
+				<input type="code" id="activate-2fa-code" name="code" placeholder="code" required>
+				<button type="submit" class="btn_valider_qr_code">Validate</button>
+				<p id="activate-2fa-resultMessage" style="color:white"></p>
 			</form>
 
 			<div class="back" id="back_to_select_mode_view6">

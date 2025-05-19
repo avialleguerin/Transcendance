@@ -144,10 +144,10 @@ export async function logout(request, reply) {
 export async function changeDoubleAuth(request, reply) {
 	try {
 		const infos = await getUserFromToken(request)
+		console.log("🔑 infos :", infos)
 		if (!infos)
 			return reply.code(401).send({ success: false, error: '❌ Unauthorized' })
 		const user = infos.user
-		const accessToken = infos.accessToken
 		if (!user)
 			return reply.code(404).send({ success: false, error: '❌ User not found' })
 		if (user.doubleAuth_enabled || user.doubleAuth_secret !== null)
@@ -447,7 +447,6 @@ export async function activateDoubleAuth(request, reply) {
 	if (!infos)
 		return reply.code(401).send({ success: false, error: '❌ Unauthorized' })
 	const user = infos.user
-	const accessToken = infos.accessToken
 	if (!user)
 		return reply.code(401).send({ success: false, error: '❌ User not found' })
 	console.log("🔑 Secret :", user.doubleAuth_secret)
@@ -460,7 +459,7 @@ export async function activateDoubleAuth(request, reply) {
 	console.log("🔑 isValid :", isValid)
 	console.log("État initial 2FA:", user.doubleAuth_enabled)
 	if (isValid) {
-		usersModel.updateDoubleAuth(userId, 1)
+		usersModel.updateDoubleAuth(user.userId, 1)
 		return reply.send({ success: true, message: "2FA successfully activated" })
 	} else {
 		// usersModel.updateDoubleAuth_secret(userId, null)
