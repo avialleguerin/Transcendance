@@ -502,13 +502,13 @@ engine.runRenderLoop(() => {
 		}
 		applyQualitySettings();
 
-		if (accessToken && accessToken !== undefined && !isConnected) {
+		if ((accessToken && accessToken !== undefined) && accessToken !== "undefined" && !isConnected) {
 			isConnected = true;
 			console.log("User is connectedddddddddddddddddddddddddddddd");
 			handleViewTransitions("vue1", "default");
 		}
 
-		if (!(accessToken && accessToken !== undefined) && isConnected) {
+		if (!(accessToken && accessToken !== undefined) && accessToken !== "undefined" && isConnected) {
 			isConnected = false;
 			console.log("User is disconnectedddddddddddddddddddddddddddddd");
 			handleViewTransitions("vue1", "vue2");

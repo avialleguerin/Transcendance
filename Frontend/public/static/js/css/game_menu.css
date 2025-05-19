@@ -1994,3 +1994,107 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
     color: #00ffcc;
     font-weight: bold;
   }
+
+
+
+
+.code_validation img {
+    width: 65%;
+    height: 55%;
+    /* object-fit: contain; */
+    /* border-radius: 50%; */
+    /* border: 2px solid #ffffff; */
+    box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.6);
+    transition: transform 0.3sease, box-shadow 0.3sease;
+    background: rgba(161, 161, 161, 0.9);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -85%);
+}
+
+.code_validation {
+    position: absolute;
+    top: 53%;
+    left: 51%;
+    transform: translate(-50%, -50%);
+    width: 14%;
+    height: 24%;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #444444;
+    padding-left: 60px;
+    padding-right: 60px;
+    padding-top: 5%;
+    gap: 20px;
+    z-index: 9999;
+    border: 2px solid white;
+    border-radius: 20px;
+}
+
+
+.code_validation .btn_valider_qr_code {
+    padding: 15px 0px;
+    font-size: 0.7vw;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+    border: 2px solid #44444400;
+    background-color: transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    background-image: url("../../../srcs/game/assets/image/boutton.svg");
+    background-size: 100% auto;
+    background-position: center;
+    background-repeat: no-repeat;
+    line-height: 4vh;
+    display: flex
+;
+    width: 100px;
+    height: 60px;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 79%;
+}
+
+.code_validation.active {
+	display: flex;
+}
+
+
+.code_validation label {
+    color: #fff;
+    font-size: 1vw;
+    font-family: "Black Ops One", sans-serif;
+    /* width: 30%; */
+    text-align: right;
+    position: absolute;
+    top: 64%;
+    left: 18%;
+}
+
+.code_validation input {
+	width: 40%;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+    background: rgb(0 0 0 / 17%);
+    color: white;
+    position: absolute;
+    top: 62%;
+    left: 34%;
+}
+
+.code_validation input::placeholder {
+	color: rgba(255, 255, 255, 0.6);
+}
+
+.code_validation input:focus {
+	border: 1px solid #ffffff;
+	box-shadow: 0 0 8px #ffffff;
+}

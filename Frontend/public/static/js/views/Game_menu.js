@@ -298,7 +298,7 @@ export default class extends AbstractView {
 							</div>
 						</div>
 						<div class="skin">
-							<p>Skin Personnalise :<span id="skin_perso" class="skin_perso"</span></p>
+							<p>Skin Personnalise :<span id="skin_perso" class="skin_perso"></span></p>
 						</div>
 						<button id="solo_ai_btn" class="btn">
 							<a href="/solo_game_ai" class="nav-link" data-link>Lancer la partie</a>
@@ -334,6 +334,14 @@ export default class extends AbstractView {
 					</div>
 				</div>
 			</div>
+
+			<form id="code_validation_id" class="code_validation" onsubmit="accessProfileInfo(event)">
+				<img src="../../../srcs/game/assets/image/timer-reset.svg" alt="delay">
+				<label for="code">code</label>
+				<input type="code" id="code" name="code" placeholder="code" required>
+				<button type="submit" class="btn_valider_qr_code">Valider</button>
+			</form>
+
 			<div class="back" id="back_to_select_mode_view6">
 				<button id="back_to_menu_view6" class="btn_back">BACK</button>
 			</div>
@@ -440,6 +448,8 @@ export default class extends AbstractView {
 					X
 				</button>
 			</div>
+
+x
 		</div>
 	
 		`;
@@ -1214,11 +1224,14 @@ export default class extends AbstractView {
 		// 	btn_back_home.classList.add('active');
 		// });
 
+		const code_validation_id = document.getElementById('code_validation_id');
+
 		active_fa.addEventListener('click', () => {
 			active_fa.classList.toggle('checked');
 			if (active_fa.classList.contains('checked')) {
 				console.log('FA is active');
 				fa_selector.classList.add('active');
+				code_validation_id.classList.add('active');
 			}
 			else {
 				console.log('FA is inactive');

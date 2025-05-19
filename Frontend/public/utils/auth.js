@@ -144,16 +144,19 @@ async function login(event) {
 		console.log("✅ Connected, Token :", accessToken)
 		history.pushState({}, '', '/Game_menu');
 		// handleViewTransitions("vue1", "default");
-		import('../static/js/views/Game_menu.js').then(module => {
-			const GameMenu = module.default;
-			const gameMenuInstance = new GameMenu();
-			gameMenuInstance.getHtml().then(html => {
-				document.getElementById('app').innerHTML = html;
-				if (gameMenuInstance.game_menu) {
-					gameMenuInstance.game_menu();
-				}
+		setTimeout (() => {
+			import('../static/js/views/Game_menu.js').then(module => {
+				const GameMenu = module.default;
+				const gameMenuInstance = new GameMenu();
+				gameMenuInstance.getHtml().then(html => {
+					document.getElementById('app').innerHTML = html;
+					if (gameMenuInstance.game_menu) {
+						gameMenuInstance.game_menu();
+					}
+				});
 			});
-		});
+
+	}, 1500);
 		
 	} else {
 		const resultMessage = document.getElementById("login-resultMessage");
