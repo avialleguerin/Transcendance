@@ -1,4 +1,4 @@
-import { register, getAllUsers, deleteAccount, deleteUser, login, logout, changeDoubleAuth, accessProfileInfo, changeProfilePicture, changeProfile, getUserProfile, verifyDoubleAuth, activateDoubleAuth, refreshInfos } from '../controllers/authController.js';
+import { register, getAllUsers, deleteAccount, deleteUser, login, logout, updateDoubleAuth, accessProfileInfo, changeProfilePicture, changeProfile, getUserProfile, verifyDoubleAuth, activateDoubleAuth, refreshInfos } from '../controllers/authController.js';
 import { getAllGames, addGame, deleteGame } from '../controllers/gameController.js';
 import { getSQLiteCreds } from '../utils/vault.js'
 
@@ -20,7 +20,8 @@ export default async function routes (fastify) {
 	fastify.post('/user/login', login)
 	fastify.post('/user/logout', logout)
 	fastify.put('/user/access-profile-infos', accessProfileInfo)
-	fastify.put('/user/update-2fa', changeDoubleAuth)
+	fastify.put('/user/update-2fa', updateDoubleAuth)
+	// fastify.put('/user/disable-2fa', disableDoubleAuth)
 	fastify.post('/user/verify-2fa', verifyDoubleAuth)
 	fastify.post('/user/activate-2fa', activateDoubleAuth)
 	fastify.post('/user/update-profile-picture', changeProfilePicture)

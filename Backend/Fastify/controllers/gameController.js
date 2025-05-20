@@ -44,11 +44,11 @@ export async function deleteGame(request, reply) {
 	try {
 		const game = gamesModel.getgameById(gameId)
 		if (!game)
-			return reply.code(404).send({ error: '❌ Game not found' })
+			return reply.code(404).send({ error: 'Game not found' })
 		const info = gamesModel.delete(game.gameId)
 		if (info.changes === 0)
-			return reply.code(404).send({ error: "❌ Game not found" })
-		return reply.send({ success: true, message: "❌ Game deleted successfully"})
+			return reply.code(404).send({ error: "Game not found" })
+		return reply.send({ success: true, message: "Game deleted successfully"})
 	} catch (err) {
 		fastify.log.error(err)
 		return reply.code(500).send({ error: err.message })

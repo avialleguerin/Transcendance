@@ -28,26 +28,31 @@ export default class Home extends AbstractView {
     	return /*html*/`
     		<link rel="stylesheet" href="./static/js/css/home.css">
 			<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
-			<div class="container">
+			<div class="container-login">
 				<div class="title">
 					<h1> TRANSCENDENCE </h1>
 				</div>
 				<div class="login-form" id="loginform_id">
-					<h1>LOGIN</h1>
+					<h1 id="login-title">LOGIN</h1>
 					<div class="form-group">
 						<form id="loginForm" onsubmit="login(event)">
-						<div class="input-container">
-							<label for="email">Email :</label>
+							<div class="input-container">
+								<label for="email">Email :</label>
 								<input type="email" id="login-email" name="email" placeholder="Your email" required>
-						</div>
-
-						<div class="input-container">
-							<label for="password">Password :</label>
-							<input type="password" id="login-password" name="password" placeholder="Your password" required>
-						</div>
-						<button type="submit" class="connexion">Login</button>
+							</div>
+							<div class="input-container">
+								<label for="password">Password :</label>
+								<input type="password" id="login-password" name="password" placeholder="Your password" required>
+							</div>
+							<button type="submit" class="connexion" id="validate-login">Login</button>
 							<button type="button" class="creer-compte" id="create-Account">Create an account</button>
-							<p id="login-resultMessage" style="color:white"></p>
+						</form>
+						<form id="doubleAuthForm" class="hidden" onsubmit="verify2FA(event)">
+							<div class="input-container">
+								<label for="code">2FA Code :</label>
+								<input type="text" id="verify-2fa-code" name="code" placeholder="123456" required>
+							</div>
+							<button type="submit" class="connexion">Validate</button>
 						</form>
 					</div>
 				</div>
@@ -73,12 +78,15 @@ export default class Home extends AbstractView {
 							</div>
 							<button type="submit" class="connexion">Sign In</button>
 							<button type="button" class="connexion" id="alreadyHaveAccountButton_id">Already have an account ?</button>
-							<p id="register-resultMessage" style="color:white"></p>
+							
 						</form>
 					</div>
 				</div>
 			</div>
-    	`;}
+			<div id="notification-container" class="fixed top-0 left-0 right-0 flex justify-center z-50 mt-4">
+				<p id="resultMessage" class="py-2 px-4 rounded shadow-lg transition-all duration-300 transform translate-y-0 opacity-0"></p>
+			</div>
+`;}
 
 	createAccount() {
 
@@ -95,7 +103,6 @@ export default class Home extends AbstractView {
 			createAccountForm.classList.add("active");
 			(document.getElementById("login-email") as HTMLInputElement).value = "";
 			(document.getElementById("login-password") as HTMLInputElement).value = "";
-			document.getElementById("login-resultMessage").textContent = ""
 		});
 
 		alreadyHaveAccountButton.addEventListener("click", () => {
@@ -103,7 +110,6 @@ export default class Home extends AbstractView {
 			createAccountForm.classList.remove("active");
 			loginForm.classList.remove("active");
 			(document.getElementById("registerForm") as HTMLFormElement).reset();
-			document.getElementById("register-resultMessage").textContent = "";
 		});
 	}
 }

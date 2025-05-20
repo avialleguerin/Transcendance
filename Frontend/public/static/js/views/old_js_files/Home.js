@@ -46,7 +46,6 @@ export default class extends AbstractView {
 							</div>
 							<button type="submit" class="connexion">Login</button>
 							<button type="button" class="creer-compte" id="create-Account">Create an account</button>
-							<p id="login-resultMessage" style="color:white"></p>
 						</form>
 					</div>
 				</div>
@@ -75,7 +74,6 @@ export default class extends AbstractView {
 							</div>
 							<button type="submit" class="connexion">Sign In</button>
 							<button type="button" class="connexion" id="alreadyHaveAccountButton_id">Already have an account ?</button>
-							<p id="register-resultMessage" style="color:white"></p>
 						</form>
 					</div>
 				</div>
@@ -98,7 +96,6 @@ export default class extends AbstractView {
 			createAccountForm.classList.add("active");
 			document.getElementById("login-email").value = ""
 			document.getElementById("login-password").value = ""
-			document.getElementById("login-resultMessage").textContent = ""
 		});
 
 		alreadyHaveAccountButton.addEventListener("click", () => {
@@ -106,7 +103,6 @@ export default class extends AbstractView {
 			createAccountForm.classList.remove("active");
 			loginForm.classList.remove("active");
 			document.getElementById("registerForm").reset();
-			document.getElementById("register-resultMessage").textContent = ""
 		});
 	}
 }

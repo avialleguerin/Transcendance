@@ -17,9 +17,9 @@ async function changeProfilePicture(event) {
 
 	const data = await response.json();
 	if (data.success)
-		document.getElementById("updateProfile-resultMessage").innerHTML = `${data.message}`;
+		showNotification(data.message, true);
 	else
-		document.getElementById("updateProfile-resultMessage").innerHTML = `${data.error}`;
+		showNotification(data.error, false);
 	document.getElementById("profile_photo_input").value = "";
 	fetchProfile();
 }
@@ -55,11 +55,6 @@ async function accessProfileInfo(event) {
 async function activate2FA(event) {
 
 	event.preventDefault();
-	// const userId = sessionStorage.getItem("userId");
-	// if (!userId) {
-	// 	console.error("❌ User ID not found in session storage!");
-	// 	return;
-	// }
 	const code = document.getElementById("activate-2fa-code").value;
 	try {
 		const response = await fetch('/request/user/activate-2fa', {
@@ -75,45 +70,61 @@ async function activate2FA(event) {
 		if (data.success) {
 			sessionStorage.setItem("accessToken", data.accessToken);
 			accessToken = sessionStorage.getItem("accessToken");
-			// sessionStorage.removeItem("userId")
-			console.log("✅ 2FA code valid!");
-			document.getElementById("activate-2fa-resultMessage").textContent = "2FA validated successfully!";
-			document.getElementById("fa_selector").classList.remove('active');
-		} else {
-			console.error("❌ Invalid 2FA code:", data.error);
-			document.getElementById("activate-2fa-resultMessage").textContent = "❌ Invalid 2FA code!";
-		}
+			showNotification(data.message, true);
+			document.getElementById("code_validation_id").classList.remove('active');
+		} else
+			showNotification(data.error, false);
 	} catch (err) {
 		console.error("Error when validating 2FA :", err);
 	}
 }
 
 
-async function enable_doubleAuth() {
+async function update_doubleAuth() {
 	try {
 		// const accessToken = sessionStorage.getItem("accessToken");
-
+		// document.getElementById('code_validation_id').classList.remove('hidden');
 		const response = await fetch('/request/user/update-2fa', {
 			method: "PUT",
 			headers: {
 				"Authorization": `Bearer ${accessToken}`
 			},
 		});
+
 		const data = await response.json();
-		if (response.ok) {
-			// fetchUsers()
-			if (data.enable_doubleAuth)
-			{
-				// sessionStorage.setItem("userId", userId);
+		if (data.success) {
+			if (data.doubleAuth_status)
 				document.getElementById('qrCode').src = data.qrCode;
-				// document.getElementById("activateDoubleAuth").classList.remove("hidden");
-			}
+			else
+				showNotification(data.message, true);
 		} else
-			alert('Error : ' + data.message);
+			showNotification(data.error, false);
 	} catch (err) {
 		console.error('Error :', err);
 	}
 }
+
+// async function disable_doubleAuth() {
+// 	try {
+// 		const response = await fetch('/request/user/disable-2fa', {
+// 			method: "PUT",
+// 			headers: {
+// 				"Authorization": `Bearer ${accessToken}`
+// 			},
+// 		});
+// 		const data = await response.json();
+// 		if (data.success) {
+// 			// fetchUsers()
+// 			if (data.doubleAuth_status)
+// 			{
+// 				document.getElementById('qrCode').src = data.qrCode;
+// 			}
+// 		} else
+// 			alert('Error : ' + data.message);
+// 	} catch (err) {
+// 		console.error('Error :', err);
+// 	}
+// }
 
 async function delete_account() {
 	if (confirm('Do you really want to delete your account ?')) {
@@ -130,7 +141,7 @@ async function delete_account() {
 				sessionStorage.removeItem("accessToken");
 				accessToken = null;
 				console.log('User deleted successfully');
-				document.getElementById("updateProfile-resultMessage").innerHTML = `${data.message}`;
+				showNotification(data.message, true);
 				history.pushState({}, '', '/');
 				import('../static/js/views/Home.js').then((module) => {
 					console.log("Home module loaded");
@@ -148,7 +159,7 @@ async function delete_account() {
 				});
 			}
 		} catch (err) {
-			console.error('Erreur lors de la suppression :', err);
+			showNotification("Erreur lors de la suppression : " + err, false);
 		}
 	}
 }
@@ -170,6 +181,7 @@ async function fetchProfile() {
 			}
 		
 			const user = data.user;
+			console.log("user", user);
 			document.getElementById("profile_photo_circle").innerHTML = `
 				<img src="./${data.profile_picture}" alt="Profile Photo" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
 			`;
@@ -178,11 +190,15 @@ async function fetchProfile() {
 			const email = document.getElementById("change_email");
 			email.placeholder = user.email;
 			const doubleAuth = document.getElementById("active_fa");
-			if (user.enable_doubleAuth)
-				doubleAuth.classList.add("checked");
+			console.log("doubleAuth", user.doubleAuth_status);
+			if (user.doubleAuth_status)
+				doubleAuth.checked = true;
 			else
+			{
+				doubleAuth.checked = false;
 				if (doubleAuth.classList.contains("checked"))
 					doubleAuth.classList.remove("checked");
+			}
 		}
 		else {
 			console.log("❌ Aucun accessToken reçu !");
@@ -206,12 +222,12 @@ async function updateProfileInfo(event) {
 	console.log("confirmPassword", confirmPassword);
 
 	if (newUsername === "" && newEmail === "" && newPassword === "") {
-		document.getElementById("updateProfile-resultMessage").innerHTML = 'Veuillez remplir au moins un champ !';
+		showNotification("Veuillez remplir au moins un champ !", false);
 		return;
 	}
 
 	if (newPassword && (!confirmPassword || newPassword !== confirmPassword)) {
-		document.getElementById("updateProfile-resultMessage").innerHTML = 'Les mots de passe ne correspondent pas !';
+		showNotification("Les mots de passe ne correspondent pas !", false);
 		return;
 	}
 
@@ -229,11 +245,9 @@ async function updateProfileInfo(event) {
 	if (data.success) {
 		console.log(data.message);
 		document.getElementById("updateProfileForm").reset();
-		document.getElementById("updateProfile-resultMessage").innerHTML = `${data.message}`;
-	} else {
-		console.log('Error : ' + data.error);
-		document.getElementById("updateProfile-resultMessage").innerHTML = `${data.error}`;
-	}
+		showNotification(data.message, true);
+	} else
+		showNotification(data.error, false);
 	fetchProfile();
 }
 
@@ -255,7 +269,7 @@ async function updateProfileInfo(event) {
 // 				<td class="border px-4 py-2">${user.email}</td>
 // 				<td class="border px-4 py-2">********</td> <!-- Masquer le mot de passe -->
 // 				<td class="border px-4 py-2">${user.role}</td>
-// 				<td class="border px-4 py-2">${user.doubleAuth_enabled === 0 ? "disabled" : "enabled"}</td>
+// 				<td class="border px-4 py-2">${user.doubleAuth_status === 0 ? "disabled" : "enabled"}</td>
 // 				<td class="border px-4 py-2">${user.doubleAuth_secret}</td>
 // 				<td>
 // 				<button class="bg-gray-700 hover:bg-sky-500 m-2 text-white px-2 py-1 rounded" onclick="openProfilePictureModal(${user.userId})">change ProfilePicture</button>

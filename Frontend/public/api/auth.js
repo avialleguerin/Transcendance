@@ -1,33 +1,61 @@
 let accessToken = sessionStorage.getItem("accessToken")
-window.accessToken = accessToken;
+// window.accessToken = accessToken;
 
-async function validate2FA(event) {
+function showNotification(message, isSuccess = true) {
+	const notification = document.getElementById('resultMessage');
+	
+	if (notification) {
+		if (isSuccess) {
+			notification.innerHTML = "<div style='display:flex; align-items:center;'><img src='../srcs/game/assets/image/success.png' style='width:20px; height:20px; margin-right:5px;'><span>" + message + "</span></div>";
+			notification.className = "py-2 px-4 rounded shadow-lg bg-green-500 text-white font-medium"
+		} else {
+			notification.innerHTML = "<div style='display:flex; align-items:center;'><img src='../srcs/game/assets/image/failure.png' style='width:20px; height:20px; margin-right:5px;'><span>" + message + "</span></div>";
+			notification.className = "py-2 px-4 rounded shadow-lg bg-red-500 text-white font-medium";
+		}
+
+		setTimeout(() => {
+			notification.classList.add('opacity-100');
+		}, 10);
+
+		setTimeout(() => {
+			notification.classList.remove('opacity-100');
+			notification.classList.add('opacity-0');
+		}, 3000);
+	}
+}
+
+async function verify2FA(event) {
 
 	event.preventDefault();
-	// const userId = sessionStorage.getItem("userId");
-	// if (!userId) {
-	// 	console.error("❌ User ID not found in session storage!");
-	// 	return;
-	// }
-	const code = document.getElementById("2fa-code").value;
+	const userId = sessionStorage.getItem("userId");
+	const code = document.getElementById("verify-2fa-code").value;
 	try {
 		const response = await fetch('/request/user/verify-2fa', {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ code })
+			body: JSON.stringify({ userId, code })
 		});
 		
 		const data = await response.json();
 		if (data.success) {
 			sessionStorage.setItem("accessToken", data.accessToken);
 			accessToken = sessionStorage.getItem("accessToken");
-			// sessionStorage.removeItem("userId")
+			sessionStorage.removeItem("userId")
 			console.log("✅ 2FA code valid!");
-			document.getElementById("login-resultMessage").textContent = "2FA validated successfully!";
-		} else {
-			console.error("❌ Invalid 2FA code:", data.error);
-			document.getElementById("login-resultMessage").textContent = "Invalid 2FA code!";
-		}
+			showNotification(data.message, true);
+			history.pushState({}, '', '/Game_menu');
+			import('../static/js/views/Game_menu.js').then(module => {
+				const GameMenu = module.default;
+				const gameMenuInstance = new GameMenu();
+				gameMenuInstance.getHtml().then(html => {
+					document.getElementById('app').innerHTML = html;
+					if (gameMenuInstance.game_menu) {
+						gameMenuInstance.game_menu();
+					}
+				});
+			});
+		} else
+			showNotification(data.error, false);
 	} catch (err) {
 		console.error("Erreur lors de la validation du code 2FA :", err);
 	}
@@ -48,31 +76,24 @@ async function login(event) {
 		credentials: 'include',
 	});
 	const data = await response.json();
-	// const data = await apiRequest("users/login", "PUT", { email, password }, {})
 	sessionStorage.setItem("accessToken", data.accessToken)
 	accessToken = sessionStorage.getItem("accessToken")
-	// userId = getUserIdFromToken(accessToken);
 	console.log("data: ", data);
-	if (!accessToken && !data.success) {
-		const resultMessage = document.getElementById("login-resultMessage");
-		resultMessage.textContent = data.error;
-		console.error("❌ AccessToken is missing !");
-	}
-	else if (data.success && data.connection_status === "partially_connected" && data.user.doubleAuth_enabled)
+	if (!accessToken && !data.success)
+		showNotification(data.error, false);
+	else if (data.success && data.connection_status === "partially_connected" && data.user.doubleAuth_status)
 	{
-		console.log("✅ Valid credentials !", data);
-		console.log("DoubleAuth enabled:", data.user.doubleAuth_enabled);
-		// sessionStorage.setItem("userId", data.user.userId)
+		sessionStorage.setItem("userId", data.user.userId);
 		document.getElementById("doubleAuthForm").classList.remove("hidden");
+		document.getElementById("loginForm").classList.add("hidden");
+		document.getElementById("login-title").textContent = "Double Authentication";
 	}
 	else if (data.success && data.connection_status === "connected")
 	{
-		const resultMessage = document.getElementById("login-resultMessage");
-		resultMessage.textContent = "Login success !";
+		showNotification(data.message, true);
 		console.log("✅ Connected, Token :", accessToken)
 		console.log("accessToken before Game menu: ", accessToken);
 		history.pushState({}, '', '/Game_menu');
-		// handleViewTransitions("vue1", "vue2");
 		import('../static/js/views/Game_menu.js').then(module => {
 			const GameMenu = module.default;
 			const gameMenuInstance = new GameMenu();
@@ -87,44 +108,40 @@ async function login(event) {
 		document.getElementById("login-password").value = "";
 		
 	} else {
-		const resultMessage = document.getElementById("login-resultMessage");
-		resultMessage.textContent = data.error;
+		showNotification(data.error, false);
 		document.getElementById("login-password").value = "";
 		console.log(data.error)
 	}
 }
 
 async function logout() {
-	const response = await fetch('/request/user/logout', {
+	await fetch('/request/user/logout', {
 		method: 'POST',
 		headers: { 
 			"Authorization": `Bearer ${accessToken}`
 		},
 		credentials: 'include',
 	});
-	const data = await response.json();
-	if (data.success) {
-		sessionStorage.removeItem("accessToken")
-		accessToken = null
-		console.log("✅ Logged out successfully !");
-		history.pushState({}, '', '/');
-		import('../static/js/views/Home.js').then((module) => {
-			console.log("Home module loaded");
-			const Home = module.default;
-			const homeInstance = new Home();
-			homeInstance.getHtml().then((html) => {
-				const appElement = document.getElementById('app');
-				if (appElement) {
-					appElement.innerHTML = html;
-					if (homeInstance.createAccount && typeof homeInstance.createAccount === 'function') {
-						homeInstance.createAccount();
-					}
+	sessionStorage.removeItem("accessToken")
+	accessToken = null
+	console.log("✅ Logged out successfully !");
+	history.pushState({}, '', '/');
+	import('../static/js/views/Home.js').then((module) => {
+		console.log("Home module loaded");
+		const Home = module.default;
+		const homeInstance = new Home();
+		homeInstance.getHtml().then((html) => {
+			const appElement = document.getElementById('app');
+			if (appElement) {
+				appElement.innerHTML = html;
+				if (homeInstance.createAccount && typeof homeInstance.createAccount === 'function') {
+					homeInstance.createAccount();
 				}
-			});
+			}
 		});
-	} else
-	console.log(data.error)
+	});
 }
+
 
 async function register(event) {
 	event.preventDefault();
@@ -133,10 +150,9 @@ async function register(event) {
 	const email = document.getElementById("register-email").value;
 	const password = document.getElementById("register-password").value;
 	const confirmPassword = document.getElementById("register-confirm-password").value;
-	const resultMessage = document.getElementById("register-resultMessage");
 
 	if (password !== confirmPassword) {
-		resultMessage.textContent = "❌ Passwords are different";
+		showNotification("Passwords are different", false);
 		return ;
 	}
 
@@ -150,12 +166,11 @@ async function register(event) {
 	});
 	const data = await response.json();
 	if (data.success) {
-		resultMessage.textContent = `User added : ${data.username} (${data.email})`
+		showNotification(data.message, true);
 		document.getElementById("create_account_id").classList.remove("active")
 		document.getElementById("loginform_id").classList.remove("active")
-	} else {
-		resultMessage.textContent = data.error
-	}
+	} else
+		showNotification(data.error, false);
 };
 
 // function getUserIdFromToken(token) {

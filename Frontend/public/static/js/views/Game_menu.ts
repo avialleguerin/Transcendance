@@ -218,7 +218,7 @@ export default class Game_menu extends AbstractView {
 									<input type="password" id="confirm_change_password" name="confirm_password" placeholder="******">
 								</div>
 								<div id="fa_selector" class="fa_selector">
-								<p>2FA :<input type="checkbox" id="active_fa" onchange="this.checked ? enable_doubleAuth(): void(0)" /></p>
+									<p>2FA :<input type="checkbox" id="active_fa" class="active_fa" onchange="this.checked ? update_doubleAuth() : update_doubleAuth()" /></p>
 								</div>
 								<button type="submit" id="valid_profile_info" class="valid_profile_info_btn">Valider</button>
 							</form>
@@ -228,7 +228,6 @@ export default class Game_menu extends AbstractView {
 							<div class="btn_delete">
 								<button id="delete_btn" class="btn_delete_btn" onclick="delete_account()">Delete account</button>
 							</div>
-							<p id="updateProfile-resultMessage" class="resultMessage" style="color:white"></p>
 
 							<h1>GAME STATISTICS</h1>
 							<div class="game_statistics">
@@ -333,12 +332,11 @@ export default class Game_menu extends AbstractView {
 				</div>
 			</div>
 
-			<form id="code_validation_id" class="code_validation" onsubmit="activate2FA(event)">
+			<form id="code_validation_id" class="code_validation hidden" onsubmit="activate2FA(event)">
 				<img id="qrCode" src="../../../srcs/game/assets/image/timer-reset.svg" style="width:auto" alt="delay">
 				<label for="code">code</label>
 				<input type="code" id="activate-2fa-code" name="code" placeholder="code" required>
 				<button type="submit" class="btn_valider_qr_code">Validate</button>
-				<p id="activate-2fa-resultMessage" style="color:white"></p>
 			</form>
 
 			<div class="back" id="back_to_select_mode_view6">
@@ -445,6 +443,9 @@ export default class Game_menu extends AbstractView {
 					X
 				</button>
 			</div>
+		</div>
+		<div id="notification-container" class="fixed top-0 left-0 right-0 flex justify-center z-50 mt-4">
+			<p id="resultMessage" class="py-2 px-4 rounded shadow-lg transition-all duration-300 transform translate-y-0 opacity-0"></p>
 		</div>
 	`;}
 
@@ -1139,7 +1140,7 @@ export default class Game_menu extends AbstractView {
 		const profile_param_unlocked_id = document.getElementById('profile_param_unlocked_id');
 		const valid_profile_info = document.getElementById('valid_profile_info');
 		const fa_selector = document.getElementById('fa_selector');
-		const active_fa = document.getElementById('active_fa');
+		const active_fa = document.getElementById('active_fa') as HTMLInputElement;;
 
 
 		// valid_mdp.addEventListener('click', () => {
@@ -1164,16 +1165,17 @@ export default class Game_menu extends AbstractView {
 
 		const code_validation_id = document.getElementById('code_validation_id');
 
-		active_fa.addEventListener('click', () => {
-			active_fa.classList.toggle('checked');
-			if (active_fa.classList.contains('checked')) {
+		active_fa.addEventListener('change', () => {
+			if (active_fa.checked) {
 				console.log('FA is active');
-				fa_selector.classList.add('active');
 				code_validation_id.classList.add('active');
+				fa_selector.classList.remove('hidden');
 			}
 			else {
 				console.log('FA is inactive');
-				fa_selector.classList.remove('active');
+				// fa_selector.classList.remove('active');
+				fa_selector.classList.add('hidden');
+
 			}
 		});
 

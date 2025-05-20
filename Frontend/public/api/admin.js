@@ -11,7 +11,7 @@ async function fetch_users() {
 				<td class="border px-4 py-2">${user.username}</td>
 				<td class="border px-4 py-2">${user.email}</td>
 				<td class="border px-4 py-2">********</td>
-				<td class="border px-4 py-2">${user.doubleAuth_enabled === 0 ? "disabled" : "enabled" }</td>
+				<td class="border px-4 py-2">${user.doubleAuth_status === 0 ? "disabled" : "enabled"}</td>
 				<td class="border px-4 py-2">${user.doubleAuth_secret}</td>
 				<td class="border px-4 py-2">${user.created_at}</td>
 				<td class="border px-4 py-2"><button class="bg-gray-700 hover:bg-red-500 m-2 text-white px-2 py-1 rounded" onclick="delete_user(${user.userId})">Delete</button></td>

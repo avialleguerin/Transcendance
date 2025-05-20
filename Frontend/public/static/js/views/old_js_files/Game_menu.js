@@ -230,7 +230,6 @@ export default class extends AbstractView {
 							<div class="btn_delete">
 								<button id="delete_btn" class="btn_delete_btn" onclick="unregister()">Delete account</button>
 							</div>
-							<p id="updateProfile-resultMessage" class="resultMessage" style="color:white"></p>
 
 							<h1>GAME STATISTICS</h1>
 							<div class="game_statistics">

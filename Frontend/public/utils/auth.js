@@ -57,12 +57,10 @@ async function validate2FA(event) {
 			accessToken = sessionStorage.getItem("accessToken");
 			sessionStorage.removeItem("userId")
 			console.log("✅ 2FA code valid!");
-			document.getElementById("login-resultMessage").textContent = "2FA validated successfully!";
-			document.getElementById("login-resultMessage").classList.add("text-green-500");
+			showNotification(data.message, true);
 		} else {
 			console.error("❌ Invalid 2FA code:", data.error);
-			document.getElementById("login-resultMessage").textContent = "Invalid 2FA code!";
-			document.getElementById("login-resultMessage").classList.add("text-red-500");
+			showNotification(data.error, false);
 		}
 	} catch (err) {
 		console.error("Erreur lors de la validation du code 2FA :", err);
@@ -91,13 +89,9 @@ async function activate2FA(event) {
 			accessToken = sessionStorage.getItem("accessToken");
 			sessionStorage.removeItem("userId")
 			console.log("✅ 2FA code valid!");
-			document.getElementById("activate-2fa-resultMessage").textContent = "2FA validated successfully!";
-			document.getElementById("activate-2fa-resultMessage").classList.add("text-green-500");
-		} else {
-			console.error("❌ Invalid 2FA code:", data.error);
-			document.getElementById("activate-2fa-resultMessage").textContent = "Invalid 2FA code!";
-			document.getElementById("activate-2fa-resultMessage").classList.add("text-red-500");
-		}
+			showNotification(data.message, true);
+		} else
+			showNotification(data.error, false);
 	} catch (err) {
 		console.error("Erreur lors de la validation du code 2FA :", err);
 	}
@@ -123,27 +117,18 @@ async function login(event) {
 	userId = getUserIdFromToken(accessToken);
 	console.log("hola accessToken: ", accessToken)
 	console.log("data: ", data);
-	if (!accessToken && !data.success) {
-		const resultMessage = document.getElementById("login-resultMessage");
-		resultMessage.textContent = "Error : " + data.error;
-		resultMessage.classList.add("text-red-500");
-		console.error("❌ Aucun accessToken reçue !");
-	}
-	else if (data.success && data.connection_status === "partially_connected" && data.user.doubleAuth_enabled)
+	if (!accessToken && !data.success)
+		showNotification(data.error, false);
+	else if (data.success && data.connection_status === "partially_connected" && data.user.doubleAuth_status)
 	{
-		console.log("✅ Valid credentials !", data);
-		console.log("DoubleAuth enabled:", data.user.doubleAuth_enabled);
+		console.log("DoubleAuth enabled:", data.user.doubleAuth_status);
 		sessionStorage.setItem("userId", data.user.userId)
 		document.getElementById("doubleAuthForm").classList.remove("hidden");
 	}
 	else if (data.success && data.connection_status === "connected")
 	{
-		const resultMessage = document.getElementById("login-resultMessage");
-		resultMessage.textContent = "Login success !";
-		resultMessage.classList.add("text-green-500");
-		console.log("✅ Connected, Token :", accessToken)
+		showNotification(data.message, true);
 		history.pushState({}, '', '/Game_menu');
-		// handleViewTransitions("vue1", "default");
 		setTimeout (() => {
 			import('../static/js/views/Game_menu.js').then(module => {
 				const GameMenu = module.default;
@@ -158,15 +143,10 @@ async function login(event) {
 
 	}, 1500);
 		
-	} else {
-		const resultMessage = document.getElementById("login-resultMessage");
-		resultMessage.textContent = data.error;
-		resultMessage.classList.add("text-green-500");
-		console.log("Error :", data.error)
-	}
+	} else
+		showNotification(data.error, false);
 	document.getElementById("login-email").value = "";
 	document.getElementById("login-password").value = "";
-	document.getElementById("login-resultMessage").textContent = "";
 }
 
 async function logout(userId) {
@@ -206,30 +186,24 @@ async function register(event) {
 	const email = document.getElementById("add-email").value;
 	const password = document.getElementById("add-password").value;
 	const confirmPassword = document.getElementById("add-confirm-password").value;
-	const resultMessage = document.getElementById("add-resultMessage");
 
 	if (password !== confirmPassword) {
-		resultMessage.textContent = "Passwords are different";
-		resultMessage.classList.add("text-red-500");
+		showNotification("❌ Passwords are different", false);
 		return ;
 	}
 
 	const result = await apiRequest("users/add", "POST", { username, email, password }, {})
 	
 	if (result.success) {
-		resultMessage.textContent = `User added : ${result.username} (${result.email})`
-		resultMessage.classList.add("text-green-500")
+		showNotification(result.message, true);
 		document.getElementById("create_account_id").classList.remove("active")
 		document.getElementById("loginform_id").classList.remove("active")
-	} else {
-		resultMessage.textContent = result.error
-		resultMessage.classList.add("text-red-500")
-	}
+	} else
+		showNotification(result.error, false);
 	document.getElementById("add-username").value = ""
 	document.getElementById("add-email").value = ""
 	document.getElementById("add-password").value = ""
 	document.getElementById("add-confirm-password").value = ""
-	document.getElementById("add-resultMessage").textContent = ""
 };
 
 async function refreshToken() {
