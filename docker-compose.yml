@@ -50,6 +50,7 @@ services:
       - ./Security/ModSecurity:/etc/modsecurity.d
       - ./Frontend/public:/usr/share/nginx/html:ro  #The Main Website
       - ./Frontend/admin:/usr/share/nginx/admin:ro  #The Admin Website
+      # - ./Security/RGPD/Cartography.md:/usr/share/nginx/html/Cartography.md:ro
       - ./Data/uploads:/usr/share/nginx/uploads
       #TMP for Typescript
       - ./Frontend/dist:/usr/share/nginx/dist                 # The compiled JS files
