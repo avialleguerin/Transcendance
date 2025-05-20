@@ -621,13 +621,6 @@ export default class Game_menu extends AbstractView {
 		});
 	}
 
-	init_solo_game_ai() {
-		document.getElementById("solo_ai_btn").addEventListener("click", () => {
-			// console.log("Solo AI game started");
-			startAI_Game();
-			handleViewTransitions("vue3", "vue2");
-		});
-	}
 
 	tournament_view() {
 		document.getElementById("tournament_view").addEventListener("click", () => {
