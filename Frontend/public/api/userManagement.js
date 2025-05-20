@@ -250,36 +250,3 @@ async function updateProfileInfo(event) {
 		showNotification(data.error, false);
 	fetchProfile();
 }
-
-// async function fetchProfile() {
-// 	if (accessToken) {
-// 		const profileData = await apiRequest("profile", "GET", null, {})
-// 		if (!profileData.user) {
-// 			console.error("Aucun utilisateur dans la réponse !");
-// 			return;
-// 		}
-	
-// 		const user = profileData.user;
-// 		document.getElementById("user-div").classList.remove("hidden");
-// 		document.getElementById('user-table').innerHTML = `
-// 			<tr>
-// 				<td class="border px-4 py-2">${user.userId}</td>
-// 				<td class="border px-4 py-2"><img style="width: 100%; height: auto; max-height: 80px; object-fit: contain;"  src="${user.profile_picture}"></td>
-// 				<td class="border px-4 py-2">${user.username}</td>
-// 				<td class="border px-4 py-2">${user.email}</td>
-// 				<td class="border px-4 py-2">********</td> <!-- Masquer le mot de passe -->
-// 				<td class="border px-4 py-2">${user.role}</td>
-// 				<td class="border px-4 py-2">${user.doubleAuth_status === 0 ? "disabled" : "enabled"}</td>
-// 				<td class="border px-4 py-2">${user.doubleAuth_secret}</td>
-// 				<td>
-// 				<button class="bg-gray-700 hover:bg-sky-500 m-2 text-white px-2 py-1 rounded" onclick="openProfilePictureModal(${user.userId})">change ProfilePicture</button>
-// 				<button class="bg-gray-700 hover:bg-sky-500 m-2 text-white px-2 py-1 rounded" onclick="enable_doubleAuth(${user.userId})">2FA</button>
-// 				<button class="bg-gray-700 hover:bg-sky-500 m-2 text-white px-2 py-1 rounded" onclick="logout()">Logout</button>
-// 					<button class="bg-gray-700 hover:bg-red-500 m-2 text-white px-2 py-1 rounded" onclick="unregister(${user.userId})">Delete account</button>
-// 				</td>
-// 			</tr>
-// 		`;
-// 	} else {
-// 		console.log("❌ Aucun accessToken reçu !");
-// 	}
-// }
