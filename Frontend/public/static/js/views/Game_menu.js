@@ -15,103 +15,35 @@ let powerUP_nb = 0;
 let powerUP_nb_multi = 0;
 
 
-export default class Game_menu extends AbstractView {
+
+
+export default class extends AbstractView {
 	constructor() {
 		super();
 		this.setTitle("Game_menu");
-		
-		// Get accessToken from localStorage or other source
-		// const accessToken: string | null = localStorage.getItem('accessToken');
-		const accessToken: string | null = sessionStorage.getItem('accessToken');
 		if (!accessToken || accessToken === undefined) {
 			history.pushState({}, '', '/');
-			import('./Home.js').then((module: any) => {
+			import('./Home.js').then(module => {
 				const Home = module.default;
 				const homeInstance = new Home();
-				homeInstance.getHtml().then((html: string) => {
-					const appElement = document.getElementById('app');
-					if (appElement) {
-						appElement.innerHTML = html;
-						if (homeInstance.createAccount && typeof homeInstance.createAccount === 'function') {
-							homeInstance.createAccount();
-						}
+				homeInstance.getHtml().then(html => {
+					document.getElementById('app').innerHTML = html;
+					if (homeInstance.createAccount) {
+						homeInstance.createAccount();
 					}
 				});
 			});
 		}
 	}
 
-	async getHtml(): Promise<string> {
+	async getHtml() {
 		return /*html*/`
 		<link rel="stylesheet" href="./static/js/css/game_menu.css">
 		<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
-		<div class="navbar_menu">
-			<div class="profile_photo_circle_nav_bar" id="profile_photo_circle_nav_bar"></div>
-			<h1 class="player_name">ILYAN</h1>
+		<div class="navbar">
 			<button class="option_navBar" id="option_btn_navBar">
 				<img src="../../../srcs/game/assets/image/menu.svg" alt="leave">
 			</button>
-			
-		</div>
-		<div class="panel_option_navbar" id="panel_option_navbar">
-			<button class="option-in-panel" id="option_btn_remove">
-				<img src="../../../srcs/game/assets/image/menu.svg" alt="leave">
-			</button>
-			<h1>Friend list</h1>
-			<form class="friend_list_container">
-				<div class="friend_list_scrollable">
-					<!-- injecter le script qui qjoute des ami ici -->
-				</div>
-
-				<div class="add_friend_section">
-					<input type="text" id="friend_name_input" placeholder="Nom de l'ami..." />
-					<button type="submit" id="add_friend_btn">Ajouter</button>
-				</div>
-			</form>
-			<div class="game_history_navBar" id="game_history_navBar">
-				<div class="game_history_content_navBar">
-					<div class="game_history_header_navBar">
-						<div class="profile_photo_circle_Game_History_navBar" id="profile_photo_circle_Game_History_navBar"></div>
-						<h1>ILYAN</h1>
-					</div>
-					<h1>GAME HISTORY</h1>
-
-					<div class="game_history_scrollable_navBar">
-						<!-- Game 1 -->
-						<div class="game_card_navBar win">
-							<div class="profile_navBar">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username_navBar">You</p>
-							</div>
-							<div class="vs_info_navBar">
-								<p class="score_navBar">5 - 2</p>
-								<p class="result_navBar">Win</p>
-							</div>
-							<div class="opponent_navBar">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username_navBar">Enemy1</p>
-							</div>
-						</div>
-
-						<div class="game_card_navBar lose">
-							<div class="profile_navBar">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username_navBar">You</p>
-							</div>
-							<div class="vs_info_navBar">
-								<p class="score_navBar">2 - 5</p>
-								<p class="result_navBar">lose</p>
-							</div>
-							<div class="opponent_navBar">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username_navBar">Enemy1</p>
-							</div>
-						</div>
-
-					</div>
-				</div>
-			</div>
-			<button class="deconexion_navBar" id="deconnect_btn_navBar" onclick="logout()">Disconnect</button>
 		</div>
 		<div class="view1" id="view1">
 			<div class="view1-content">
@@ -146,6 +78,7 @@ export default class Game_menu extends AbstractView {
 						<h1>SOLO GAME MODE</h1>
 						<div id="game_mode_btn" class="game_mode_btn">
 							<button id="prepar_game_1v1" class="btn">1v1</button>
+							<button id="prepar_gane_ai" class="btn">ai</button>
 						</div>
 						<button id="back_to_menu_view3" class="btn">BACK TO MENU</button>
 					</div>
@@ -159,16 +92,31 @@ export default class Game_menu extends AbstractView {
 						<button id="back_to_menu_view4" class="btn">BACK TO MENU</button>
 					</div>
 				</div>
+
+
+
+
 				<div class="view5" id="view5">
 					<div class="view5-content">
 						<h1>SETTINGS</h1>
 						<div id="select_parametres" class="select_parametres">
 							<button id="profile_parrametre_btn" class="btn">PROFILE</button>
 							<button id="parrametre_jeux_btn" class="btn">GAME</button>
-							<button id="Game_History_btn" class="btn">GAME HISTORY</button>
+							<button class="option" id="option_btn">
+								<img src="../../../srcs/game/assets/image/menu.svg" alt="leave">
+							</button>
 						</div>
 					</div>
 				</div>
+
+				<div class="option_deconnect" id="option_deconnect">
+					<div class="option_deconnect_content">
+						<h1>OPTIONS</h1>
+						<button id="deconnect_btn" class="option_deconnect_btn">LOG OUT</button>
+						<button id="option_deconnected_btn" class="option_deconnected_btn_back">X</button>
+					</div>
+				</div>
+
 
 				<div class="parametres_jeu" id="parametres_jeu">
 					<div class="parametres_jeu_content" id="parametre_jeux_content">
@@ -254,11 +202,12 @@ export default class Game_menu extends AbstractView {
 									
 									<div id="fileName"></div>
 
-										<button type="submit">Upload</button>
+									<button type="submit">Upload</button>
 									</form>
+
 								</div>
 							</div>
-							<form id="updateProfileForm" onsubmit="updateProfileInfo(event)">
+							<form onsubmit="updateProfileInfo(event)">
 								<div class="input_container">
 									<label for="username">Change username</label>
 									<input type="text" id="change_username" name="username">
@@ -276,16 +225,17 @@ export default class Game_menu extends AbstractView {
 									<input type="password" id="confirm_change_password" name="confirm_password" placeholder="******">
 								</div>
 								<div id="fa_selector" class="fa_selector">
-									<p>2FA :<input type="checkbox" id="active_fa" class="active_fa" onchange="this.checked ? update_doubleAuth() : update_doubleAuth()" /></p>
+								<p>2FA :<span id="active_fa" class="active_fa"></span></p>
 								</div>
+								</form>
 								<button type="submit" id="valid_profile_info" class="valid_profile_info_btn">Valider</button>
-							</form>
 							<div class="btn_deconnect">
 								<button id="deconnect_btn" class="btn_deconnect_btn" onclick="logout()">Deconnexion</button>
 							</div>
 							<div class="btn_delete">
-								<button id="delete_btn" class="btn_delete_btn" onclick="delete_account()">Delete account</button>
+								<button id="delete_btn" class="btn_delete_btn" onclick="unregister()">Delete account</button>
 							</div>
+							<p id="updateProfile-resultMessage" class="resultMessage" style="color:white"></p>
 
 							<h1>GAME STATISTICS</h1>
 							<div class="game_statistics">
@@ -303,11 +253,40 @@ export default class Game_menu extends AbstractView {
 
 
 
-				<div class="view6" id="view6">
-					<div class="view6-content">
-						<h1 id="custom_ta_game">CUSTOMIZE YOUR GAME</h1>
+			<div class="view6" id="view6">
+			<div class="view6-content">
+				<h1 id="custom_ta_game">CUSTOMIZE YOUR GAME</h1>
+				<div class="powerUP">
+					<p>PowerUP: <span id="power_up_info_id" class="power_up_info"></span><span id="powerUP" class="active_powerUP"></span></p>
+					<div id="power_selector" class="power_selector">
+						<div class="powerUP_number">
+							<p>1</p>
+							<span id="number_powerUP_1" class="number_powerUP"></span>
+						</div>
+						<div class="powerUP_number">
+							<p>3</p>
+							<span id="number_powerUP_3" class="number_powerUP"></span>
+						</div>
+						<div class="powerUP_number">
+							<p>5</p>
+							<span id="number_powerUP_5" class="number_powerUP"></span>
+						</div>
+					</div>
+				</div>
+				<div class="skin">
+					<p>Custom Skin: <span id="skin_perso" class="skin_perso"></span></p>
+				</div>
+				<button id="solo_1v1_btn" class="btn">
+					<a href="/solo_game_1v1" class="nav-link" data-link>Start Game</a>
+				</button>
+			</div>
+		</div>
+		
+				<div class="view7" id="view7">
+					<div class="view7-content">
+						<h1>CUSTOMISE TA GAME CONTRE L'IA</h1>
 						<div class="powerUP">
-							<p>PowerUP: <span id="power_up_info_id" class="power_up_info"></span><span id="powerUP" class="active_powerUP"></span></p>
+							<p>PowerUP :<span id="powerUP" class="active_powerUP"></span></p>
 							<div id="power_selector" class="power_selector">
 								<div class="powerUP_number">
 									<p>1</p>
@@ -324,14 +303,13 @@ export default class Game_menu extends AbstractView {
 							</div>
 						</div>
 						<div class="skin">
-							<p>Custom Skin: <span id="skin_perso" class="skin_perso"></span></p>
+							<p>Skin Personnalise :<span id="skin_perso" class="skin_perso"></span></p>
 						</div>
-						<button id="solo_1v1_btn" class="btn">
-							<a href="/solo_game_1v1" class="nav-link" data-link>Start Game</a>
+						<button id="solo_ai_btn" class="btn">
+							<a href="/solo_game_ai" class="nav-link" data-link>Lancer la partie</a>
 						</button>
 					</div>
 				</div>
-	
 				<div class="view8" id="view8">
 					<div class="view8-content">
 						<h1 id="custom_ta_game_multi">CUSTOMIZE YOUR MULTIPLAYER GAME</h1>
@@ -362,138 +340,12 @@ export default class Game_menu extends AbstractView {
 				</div>
 			</div>
 
-			<form id="code_validation_id" class="code_validation hidden" onsubmit="activate2FA(event)">
-				<img id="qrCode" src="../../../srcs/game/assets/image/timer-reset.svg" style="width:auto" alt="delay">
+			<form id="code_validation_id" class="code_validation" onsubmit="accessProfileInfo(event)">
+				<img src="../../../srcs/game/assets/image/timer-reset.svg" alt="delay">
 				<label for="code">code</label>
-				<input type="code" id="activate-2fa-code" name="code" placeholder="code" required>
-				<button type="submit" class="btn_valider_qr_code">Validate</button>
+				<input type="code" id="code" name="code" placeholder="code" required>
+				<button type="submit" class="btn_valider_qr_code">Valider</button>
 			</form>
-
-			<div class="game_history" id="game_history">
-				<div class="game_history_content">
-					<div class="game_history_header">
-						<div class="profile_photo_circle_Game_History" id="profile_photo_circle_Game_History"></div>
-						<h1>ILYAN</h1>
-					</div>
-					<h1>GAME HISTORY</h1>
-
-					<div class="game_history_scrollable">
-						<!-- Game 1 -->
-						<div class="game_card win">
-							<div class="profile">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">You</p>
-							</div>
-							<div class="vs_info">
-								<p class="score">5 - 2</p>
-								<p class="result">Win</p>
-							</div>
-							<div class="opponent">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">Enemy1</p>
-							</div>
-						</div>
-
-						<!-- Game 2 -->
-						<div class="game_card lose">
-							<div class="profile">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">You</p>
-							</div>
-							<div class="vs_info">
-								<p class="score">3 - 5</p>
-								<p class="result">Lose</p>
-							</div>
-							<div class="opponent">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">Enemy2</p>
-							</div>
-						</div>
-						<!-- Game 2 -->
-						<div class="game_card lose">
-							<div class="profile">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">You</p>
-							</div>
-							<div class="vs_info">
-								<p class="score">3 - 5</p>
-								<p class="result">Lose</p>
-							</div>
-							<div class="opponent">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">Enemy2</p>
-							</div>
-						</div>
-						<!-- Game 2 -->
-						<div class="game_card lose">
-							<div class="profile">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">You</p>
-							</div>
-							<div class="vs_info">
-								<p class="score">3 - 5</p>
-								<p class="result">Lose</p>
-							</div>
-							<div class="opponent">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">Enemy2</p>
-							</div>
-						</div>
-						<!-- Game 2 -->
-						<div class="game_card lose">
-							<div class="profile">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">You</p>
-							</div>
-							<div class="vs_info">
-								<p class="score">3 - 5</p>
-								<p class="result">Lose</p>
-							</div>
-							<div class="opponent">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">Enemy2</p>
-							</div>
-						</div>
-						<!-- Game 2 -->
-						<div class="game_card lose">
-							<div class="profile">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">You</p>
-							</div>
-							<div class="vs_info">
-								<p class="score">3 - 5</p>
-								<p class="result">Lose</p>
-							</div>
-							<div class="opponent">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">Enemy2</p>
-							</div>
-						</div>
-						<!-- Game 2 -->
-						<div class="game_card lose">
-							<div class="profile">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">You</p>
-							</div>
-							<div class="vs_info">
-								<p class="score">3 - 5</p>
-								<p class="result">Lose</p>
-							</div>
-							<div class="opponent">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">Enemy2</p>
-							</div>
-						</div>
-
-						<div class="exit_game_history" id="exit_game_history">
-							<button id="exit_game_history_btn" class="exit_game_history_btn">
-								X
-							</button>
-						</div>
-					</div>
-				</div>
-			</div>
-
 
 			<div class="back" id="back_to_select_mode_view6">
 				<button id="back_to_menu_view6" class="btn_back">BACK</button>
@@ -574,8 +426,10 @@ export default class Game_menu extends AbstractView {
 				</button>
 			</div>
 		</div>
+		
 
-		<div id="container_info_power_up_multi" class="container_info_power_up">
+
+			<div id="container_info_power_up_multi" class="container_info_power_up">
 			<div class="text_powerUP">
 				<h1>Power-UP</h1>
 				<p class="explication_general">The Power-Up is a bonus that gives you an advantage over your opponent. By enabling this option, you will start the match with at least one Power-Up of each type. You can also customize this amount and start with three or five of each.</p>
@@ -599,15 +453,16 @@ export default class Game_menu extends AbstractView {
 					X
 				</button>
 			</div>
+
+x
 		</div>
-		<div id="notification-container" class="fixed top-0 left-0 right-0 flex justify-center z-50 mt-4">
-			<p id="resultMessage" class="py-2 px-4 rounded shadow-lg transition-all duration-300 transform translate-y-0 opacity-0"></p>
-		</div>
-	`;}
+	
+		`;
+	}
 
 	init_solo_game() {
 		document.getElementById("solo_1v1_btn").addEventListener("click", () => {
-			// console.log("Solo 1v1 game started");
+			console.log("Solo 1v1 game started");
 			startGame();
 			handleViewTransitions("vue3", "vue2");
 		});
@@ -615,7 +470,7 @@ export default class Game_menu extends AbstractView {
 
 	initEvents() {
 		document.getElementById("multiplayer_btn").addEventListener("click", () => {
-			// console.log("Multiplayer 2v2 game started");
+			console.log("Multiplayer 2v2 game started");
 			startMultiGame();
 			handleViewTransitions("vue3", "vue2");
 		});
@@ -623,25 +478,27 @@ export default class Game_menu extends AbstractView {
 
 	init_solo_game_ai() {
 		document.getElementById("solo_ai_btn").addEventListener("click", () => {
-			// console.log("Solo AI game started");
+			console.log("Solo AI game started");
 			startAI_Game();
 			handleViewTransitions("vue3", "vue2");
 		});
 	}
 
-	tournament_view() {
+	tournament_view()
+	{
 		document.getElementById("tournament_view").addEventListener("click", () => {
-			// console.log("Tournament view started");
+			console.log("Tournament view started");
 			handleViewTransitions("tournament");
 		});
 	}
 
-	handleDeconnection() {
+	handleDeconnection()
+	{
 		const deconnect_btn = document.getElementById("deconnect_btn");
 
 		deconnect_btn.addEventListener("click", () => {
 			handleViewTransitions("vue1", "vue2");
-			// console.log("Back to home page");
+			console.log("Back to home page");
 			window.history.back();
 		});
 	}
@@ -665,6 +522,7 @@ export default class Game_menu extends AbstractView {
 		const view7 = document.getElementById('view7');
 		const view8 = document.getElementById('view8');
 		const prepar_game_1v1 = document.getElementById('prepar_game_1v1');
+		const prepar_gane_ai = document.getElementById('prepar_gane_ai');
 		const prepar_game_multi = document.getElementById('prepar_game_multi');
 		const back_to_menu_view6 = document.getElementById('back_to_menu_view6');
 		const back_to_menu_view7 = document.getElementById('back_to_menu_view7');
@@ -797,6 +655,12 @@ export default class Game_menu extends AbstractView {
 		});
 
 
+		prepar_gane_ai.addEventListener('click', () => {
+			view3.classList.remove('active');
+			view7.classList.add('active');
+			back_to_select_mode_view7.classList.add('active');
+		});
+
 		prepar_game_multi.addEventListener('click', () => {
 			view4.classList.remove('active');
 			view8.classList.add('active');
@@ -811,32 +675,40 @@ export default class Game_menu extends AbstractView {
 			view6.classList.remove('active');
 			view3.classList.add('active');
 			back_to_select_mode_view6.classList.remove('active');
-            if (skin_perso.classList.contains('checked')) {
+			if (skin_perso.classList.contains('checked'))
+			{
 				skin_perso.classList.remove('checked');
-                if (choose_your_skin.classList.contains('active')) {
+				if (choose_your_skin.classList.contains('active'))
+				{
 					choose_your_skin.classList.remove('active');
 					solo_1v1_btn.style.display = 'block';
 					custom_ta_game.style.visibility = 'visible';
 				}
 			}
-            if (power_selector.classList.contains('active')) {
+			if (power_selector.classList.contains('active'))
+			{
 				power_selector.classList.remove('active');
 				powerUP.classList.remove('checked');
 				reset_powerUP_grenade();
 				reset_powerUP_teammate();
 				reset_powerUP_inverse_player();
 				powerUP_nb = 0;
-                if (number_powerUP_1.classList.contains('checked')) {
+				if (number_powerUP_1.classList.contains('checked'))
+				{
 					number_powerUP_1.classList.remove('checked');
 				}
-                if (number_powerUP_3.classList.contains('checked')) {
+				if (number_powerUP_3.classList.contains('checked'))
+				{
 					number_powerUP_3.classList.remove('checked');
 				}
-                if (number_powerUP_5.classList.contains('checked')) {
+				if (number_powerUP_5.classList.contains('checked'))
+				{
 					number_powerUP_5.classList.remove('checked');
 				}
 			}
 		});
+
+
 
 		const skin_perso_game_multi = document.getElementById('skin_perso_game_multi');
 
@@ -845,29 +717,35 @@ export default class Game_menu extends AbstractView {
 			view3.classList.add('active');
 			view7.classList.remove('active');
 			back_to_select_mode_view7.classList.remove('active');
-            if (skin_perso.classList.contains('checked')) {
+			if (skin_perso.classList.contains('checked'))
+			{
 				skin_perso.classList.remove('checked');
-                if (choose_your_skin.classList.contains('active')) {
+				if (choose_your_skin.classList.contains('active'))
+				{
 					choose_your_skin.classList.remove('active');
 					solo_1v1_btn.style.display = 'block';
 					custom_ta_game.style.visibility = 'visible';
 					disable_skin_perso_player_solo();
 				}
 			}
-            if (power_selector.classList.contains('active')) {
+			if (power_selector.classList.contains('active'))
+			{
 				power_selector.classList.remove('active');
 				powerUP.classList.remove('checked');
 				reset_powerUP_grenade();
 				reset_powerUP_teammate();
 				reset_powerUP_inverse_player();
 				powerUP_nb = 0;
-                if (number_powerUP_1.classList.contains('checked')) {
+				if (number_powerUP_1.classList.contains('checked'))
+				{
 					number_powerUP_1.classList.remove('checked');
 				}
-                if (number_powerUP_3.classList.contains('checked')) {
+				if (number_powerUP_3.classList.contains('checked'))
+				{
 					number_powerUP_3.classList.remove('checked');
 				}
-                if (number_powerUP_5.classList.contains('checked')) {
+				if (number_powerUP_5.classList.contains('checked'))
+				{
 					number_powerUP_5.classList.remove('checked');
 				}
 			}
@@ -877,37 +755,46 @@ export default class Game_menu extends AbstractView {
 			view8.classList.remove('active');
 			view4.classList.add('active');
 			back_to_select_mode_view8.classList.remove('active');
-            if (skin_perso_game_multi.classList.contains('checked')) {
+			if (skin_perso_game_multi.classList.contains('checked'))
+			{
 				skin_perso_game_multi.classList.remove('checked');
-                if (choose_your_skin_game_multi.classList.contains('active')) {
+				if (choose_your_skin_game_multi.classList.contains('active'))
+				{
 					choose_your_skin_game_multi.classList.remove('active');
 					multiplayer_btn.style.display = 'block';
 					custom_ta_game_multi.style.visibility = 'visible';
 					disable_skin_multi();
 				}
 			}
-            if (power_selector_game_multi.classList.contains('active')) {
+			if (power_selector_game_multi.classList.contains('active'))
+			{
 				power_selector_game_multi.classList.remove('active');
 				powerUP_multi.classList.remove('checked');
 				reset_powerUP_grenadeTeam_player();
 				reset_powerUP_freeze_Team_player();
 				powerUP_nb = 0;
 				powerUP_nb_multi = 0;
-                if (number_powerUP_1_game_multi.classList.contains('checked')) {
+				if (number_powerUP_1_game_multi.classList.contains('checked'))
+				{
 					number_powerUP_1_game_multi.classList.remove('checked');
 				}
-                if (number_powerUP_3_game_multi.classList.contains('checked')) {
+				if (number_powerUP_3_game_multi.classList.contains('checked'))
+				{
 					number_powerUP_3_game_multi.classList.remove('checked');
 				}
-                if (number_powerUP_5_game_multi.classList.contains('checked')) {
+				if (number_powerUP_5_game_multi.classList.contains('checked'))
+				{
 					number_powerUP_5_game_multi.classList.remove('checked');
 				}
 			}
 		});
 
+
+
 		/***********************************************************************/
 		/**************************POWER_UP_SOLO********************************/
 		/***********************************************************************/
+
 
 		powerUP.addEventListener('click', () => {
 			powerUP.classList.toggle('checked');
@@ -924,20 +811,24 @@ export default class Game_menu extends AbstractView {
 				reset_powerUP_inverse_player();
 				powerUP_nb = 0;
 				powerUP_nb_multi = 0;
-                if (number_powerUP_1.classList.contains('checked')) {
+				if (number_powerUP_1.classList.contains('checked'))
+				{
 					number_powerUP_1.classList.remove('checked');
 				}
-                if (number_powerUP_3.classList.contains('checked')) {
+				if (number_powerUP_3.classList.contains('checked'))
+				{
 					number_powerUP_3.classList.remove('checked');
 				}
-                if (number_powerUP_5.classList.contains('checked')) {
+				if (number_powerUP_5.classList.contains('checked'))
+				{
 					number_powerUP_5.classList.remove('checked');
 				}
 			}
 		});
 
+
 		number_powerUP_1.addEventListener('click', () => {
-			number_powerUP_1.classList.toggle('checked');
+			number_powerUP_1.classList.toggle('checked')
 			number_powerUP_3.classList.remove('checked');
 			number_powerUP_5.classList.remove('checked');
 			console.log('1 powerUP selected and 3 and 5 unselected');
@@ -945,10 +836,11 @@ export default class Game_menu extends AbstractView {
 			init_nb_powerUP_teammate(1);
 			init_powerUP_inverse_player(1);
 			powerUP_nb = 1;
+
 		});
 
 		number_powerUP_3.addEventListener('click', () => {
-			number_powerUP_3.classList.toggle('checked');
+			number_powerUP_3.classList.toggle('checked')
 			number_powerUP_1.classList.remove('checked');
 			number_powerUP_5.classList.remove('checked');
 			console.log('3 powerUP selected and 1 and 5 unselected');
@@ -959,7 +851,7 @@ export default class Game_menu extends AbstractView {
 		});
 
 		number_powerUP_5.addEventListener('click', () => {
-			number_powerUP_5.classList.toggle('checked');
+			number_powerUP_5.classList.toggle('checked')
 			number_powerUP_1.classList.remove('checked');
 			number_powerUP_3.classList.remove('checked');
 			console.log('5 powerUP selected and 1 and 3 unselected');
@@ -969,9 +861,18 @@ export default class Game_menu extends AbstractView {
 			powerUP_nb = 5;
 		});
 
+
+
+
+
+
+
 		/***********************************************************************/
 		/**************************POWER_UP_multi*******************************/
 		/***********************************************************************/
+
+
+
 
 		const powerUP_multi = document.getElementById('powerUP_multi');
 		const number_powerUP_1_game_multi = document.getElementById('number_powerUP_1_game_multi');
@@ -993,39 +894,46 @@ export default class Game_menu extends AbstractView {
 				reset_powerUP_freeze_Team_player();
 				powerUP_nb = 0;
 				powerUP_nb_multi = 0;
-                if (number_powerUP_1_game_multi.classList.contains('checked')) {
+				if (number_powerUP_1_game_multi.classList.contains('checked'))
+				{
 					number_powerUP_1_game_multi.classList.remove('checked');
 				}
-                if (number_powerUP_3_game_multi.classList.contains('checked')) {
+				if (number_powerUP_3_game_multi.classList.contains('checked'))
+				{
 					number_powerUP_3_game_multi.classList.remove('checked');
 				}
-                if (number_powerUP_5_game_multi.classList.contains('checked')) {
+				if (number_powerUP_5_game_multi.classList.contains('checked'))
+				{
 					number_powerUP_5_game_multi.classList.remove('checked');
 				}
 			}
 		});
 
+
 		number_powerUP_1_game_multi.addEventListener('click', () => {
-            number_powerUP_1_game_multi.classList.toggle('checked');
+			number_powerUP_1_game_multi.classList.toggle('checked')
 			number_powerUP_3_game_multi.classList.remove('checked');
 			number_powerUP_5_game_multi.classList.remove('checked');
 			console.log('1 powerUP selected and 3 and 5 unselected');
 			init_nb_powerUP_grenadeFlash_team_player(1);
 			init_powerUP_freeze_Team_player(1);
 			powerUP_nb_multi = 1;
+			
 		});
 
 		number_powerUP_3_game_multi.addEventListener('click', () => {
-            number_powerUP_3_game_multi.classList.toggle('checked');
+			number_powerUP_3_game_multi.classList.toggle('checked')
 			number_powerUP_1_game_multi.classList.remove('checked');
 			number_powerUP_5_game_multi.classList.remove('checked');
 			console.log('3 powerUP selected and 1 and 5 unselected');
 			init_nb_powerUP_grenadeFlash_team_player(3);
 			init_powerUP_freeze_Team_player(3);
 			powerUP_nb_multi = 3;
+
 		});
+
 		number_powerUP_5_game_multi.addEventListener('click', () => {
-            number_powerUP_5_game_multi.classList.toggle('checked');
+			number_powerUP_5_game_multi.classList.toggle('checked')
 			number_powerUP_1_game_multi.classList.remove('checked');
 			number_powerUP_3_game_multi.classList.remove('checked');
 			console.log('5 powerUP selected and 1 and 3 unselected');
@@ -1033,14 +941,22 @@ export default class Game_menu extends AbstractView {
 			init_powerUP_freeze_Team_player(5);
 			powerUP_nb_multi = 5;
 		});
-        if (getValue_leave_game() == true) {
+
+		if (getValue_leave_game() == true)
+		{
 			powerUP_nb = 0;
 			powerUP_nb_multi = 0;
 			setLeaveGameVar(false);
 		}
+
+
+
+
 		/***********************************************************************/
 		/**************************SKIN-SOLO************************************/
 		/***********************************************************************/
+
+
 		const choose_your_skin = document.getElementById('choose_your_skin');
 		const valide_ton_skin = document.getElementById('valide_ton_skin');
 		const custom_ta_game = document.getElementById('custom_ta_game');
@@ -1060,15 +976,16 @@ export default class Game_menu extends AbstractView {
 				custom_ta_game.style.visibility = 'hidden';
 				enable_skin_perso_player_solo();
 
-				valide_ton_skin.addEventListener('click', () => { // NOTE - I removed the if statement here
+				if (valide_ton_skin.addEventListener('click', () => {
 					console.log('Valide ton skin button clicked');
 					choose_your_skin.classList.remove('active');
 					solo_1v1_btn.style.display = 'block';
 					custom_ta_game.style.visibility = 'visible';
 					disable_skin_perso_player_solo_and_save();
-				});
+				}));
 			}
-            else {
+			else
+			{
 				console.log('Skin perso is inactive');
 				if (choose_your_skin.classList.contains('active')) {
 					choose_your_skin.classList.remove('active');
@@ -1127,13 +1044,13 @@ export default class Game_menu extends AbstractView {
 				custom_ta_game_multi.style.visibility = 'hidden';
 				enable_skin_multi();
 
-				valide_ton_skin_game_multi.addEventListener('click', () => { // NOTE - I removed the if statement here for Typescript
+				if (valide_ton_skin_game_multi.addEventListener('click', () => {
 					console.log('Valide ton skin button clicked');
 					choose_your_skin_game_multi.classList.remove('active');
 					multiplayer_btn.style.display = 'block';
 					custom_ta_game_multi.style.visibility = 'visible';
 					disable_skin_and_save_multi();
-				});
+				}));
 			}
 			else
 			{
@@ -1289,7 +1206,7 @@ export default class Game_menu extends AbstractView {
 		const profile_param_unlocked_id = document.getElementById('profile_param_unlocked_id');
 		const valid_profile_info = document.getElementById('valid_profile_info');
 		const fa_selector = document.getElementById('fa_selector');
-		const active_fa = document.getElementById('active_fa') as HTMLInputElement;;
+		const active_fa = document.getElementById('active_fa');
 
 
 		// valid_mdp.addEventListener('click', () => {
@@ -1314,17 +1231,16 @@ export default class Game_menu extends AbstractView {
 
 		const code_validation_id = document.getElementById('code_validation_id');
 
-		active_fa.addEventListener('change', () => {
-			if (active_fa.checked) {
+		active_fa.addEventListener('click', () => {
+			active_fa.classList.toggle('checked');
+			if (active_fa.classList.contains('checked')) {
 				console.log('FA is active');
+				fa_selector.classList.add('active');
 				code_validation_id.classList.add('active');
-				fa_selector.classList.remove('hidden');
 			}
 			else {
 				console.log('FA is inactive');
-				// fa_selector.classList.remove('active');
-				fa_selector.classList.add('hidden');
-
+				fa_selector.classList.remove('active');
 			}
 		});
 
@@ -1340,78 +1256,29 @@ export default class Game_menu extends AbstractView {
 			handleViewTransitions("platformer", "vue2");
 		});
 
-		// /***********************************************************************/
-		// /*************************Option deconnected****************************/
-		// /***********************************************************************/
-
-		// const option_deconnect = document.getElementById('option_deconnect');
-		// const option_btn = document.getElementById('option_btn');
-		// const option_deconnected_btn = document.getElementById('option_deconnected_btn');
-
-		// option_btn.addEventListener('click', () => {
-		// 	console.log('Option deconnect clicked');
-		// 	option_deconnect.classList.add('active');	
-		// 	view5.classList.remove('active');
-		// 	btn_back_home.classList.remove('active');
-		// 	view1.classList.remove('active');
-		// });
-
-		// option_deconnected_btn.addEventListener('click', () => {
-		// 	console.log('Option deconnect back clicked');
-		// 	option_deconnect.classList.remove('active');
-		// 	view5.classList.add('active');
-		// 	btn_back_home.classList.add('active');
-		// 	view1.classList.add('active');
-		// });
-
-
 		/***********************************************************************/
-		/*************************navbar****************************************/
+		/*************************Option deconnected****************************/
 		/***********************************************************************/
 
-		const option_btn_navBar = document.getElementById('option_btn_navBar');
-		const panel_option_navbar = document.getElementById('panel_option_navbar');
-		const option_btn_remove = document.getElementById('option_btn_remove');
-		const deconnect_btn_navBar = document.getElementById('deconnect_btn_navBar');
+		const option_deconnect = document.getElementById('option_deconnect');
+		const option_btn = document.getElementById('option_btn');
+		const option_deconnected_btn = document.getElementById('option_deconnected_btn');
 
-		option_btn_navBar.addEventListener('click', () => {
+		option_btn.addEventListener('click', () => {
 			console.log('Option deconnect clicked');
-			panel_option_navbar.classList.toggle('active');
-		});
-
-		option_btn_remove.addEventListener('click', () => {
-			console.log('Option deconnect back clicked');
-			panel_option_navbar.classList.remove('active');
-		});
-
-		deconnect_btn_navBar.addEventListener('click', () => {
-			console.log('Deconnect button clicked');
-			handleViewTransitions("vue1", "vue2");
-			window.history.back();
-		});
-
-		/***********************************************************************/
-		/*************************Game History**********************************/
-		/***********************************************************************/
-
-		const Game_History_btn = document.getElementById('Game_History_btn');
-		const game_history = document.getElementById('game_history');
-		const exit_game_history_btn = document.getElementById('exit_game_history_btn');	
-
-		Game_History_btn.addEventListener('click', () => {
-			game_history.classList.add('active');
-			view1.classList.remove('active');
-			btn_back_home.classList.remove('active');
+			option_deconnect.classList.add('active');
 			view5.classList.remove('active');
+			btn_back_home.classList.remove('active');
+			view1.classList.remove('active');
 		});
 
-		exit_game_history_btn.addEventListener('click', () => {
-			game_history.classList.remove('active');
-			view1.classList.add('active');
-			btn_back_home.classList.add('active');
+		option_deconnected_btn.addEventListener('click', () => {
+			console.log('Option deconnect back clicked');
+			option_deconnect.classList.remove('active');
 			view5.classList.add('active');
+			btn_back_home.classList.add('active');
+			view1.classList.add('active');
 		});
-
 
 	}
 }
