@@ -47,7 +47,7 @@ export default class Home extends AbstractView {
 							<button type="submit" class="connexion" id="validate-login">Login</button>
 							<button type="button" class="creer-compte" id="create-Account">Create an account</button>
 						</form>
-						<form id="doubleAuthForm" class="hidden" onsubmit="verify2FA(event)">
+						<form id="doubleAuthForm" onsubmit="verify2FA(event)">
 							<div class="input-container">
 								<label for="code">2FA Code :</label>
 								<input type="text" id="verify-2fa-code" name="code" placeholder="123456" required>
