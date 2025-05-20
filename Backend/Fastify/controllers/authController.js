@@ -492,7 +492,6 @@ export async function activateDoubleAuth(request, reply) {
 		usersModel.updateDoubleAuth_status(user.userId, 1)
 		return reply.send({ success: true, message: "2FA successfully activated" })
 	} else {
-		// usersModel.updateDoubleAuth_secret(userId, null)
 		return reply.code(400).send({ 
 			success: false, 
 			error: "Verification failed. Please try scanning the QR code again."
