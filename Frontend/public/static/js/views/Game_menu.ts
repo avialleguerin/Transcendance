@@ -171,7 +171,68 @@ export default class Game_menu extends AbstractView {
 					</div>
 				</div>
 
+				<div class="parametres_jeu" id="parametres_jeu">
+					<div class="parametres_jeu_content" id="parametre_jeux_content">
+						<h1>GAME SETTINGS</h1>
+						<h2>PONG</h2>
+						<div class="parametre_mode_jeu">
+							<div class="mode_de_jeu_solo_parametre">
+							<h3>Solo Game Mode</h3>
 
+							<div class="joueur_touch">
+								<div class="joueur" id="joueur1">
+									<p>Player 1</p>
+									<div class="controls">
+										<p>Movement: W / S</p>
+										<p>PowerUP: Z / X / C</p>
+									</div>
+								</div>
+								<div class="joueur" id="joueur2">
+									<p>Player 2</p>
+									<div class="controls">
+										<p>Movement: ⬆ / ⬇</p>
+										<p>PowerUP: 1 / 2 / 3</p>
+									</div>
+								</div>
+							</div>
+
+							<div class="mode_de_jeu_multi_parametre">
+								<h3>Multiplayer Game Mode</h3>
+								<div class="joueur_touch">
+									<div class="joueur" id="joueur1">
+										<p>Player 1</p>
+										<div class="controls">
+											<p>Movement: W / S</p>
+											<p>PowerUP: Z / X / C</p>
+										</div>
+									</div>
+									<div class="joueur" id="joueur2">
+										<p>Player 2</p>
+										<div class="controls">
+											<p>Movement: E / D</p>
+											<p>PowerUP: Z / X / C</p>
+										</div>
+									</div>
+									<div class="joueur" id="joueur3">
+										<p>Player 3</p>
+										<div class="controls">
+											<p>Movement: O / L</p>
+											<p>PowerUP: 1 / 2 / 3</p>
+										</div>
+									</div>
+									<div class="joueur" id="joueur4">
+										<p>Player 4</p>
+										<div class="controls">
+											<p>Movement: ⬆ / ⬇</p>
+											<p>PowerUP: 1 / 2 / 3</p>
+										</div>
+									</div>
+								</div>
+								</div>
+							</div>
+						</div>
+					</div>
+			  </div>
 
 				<div class="parrametres_profile" id="parametres_profile">
 					<div class="parametres_profile_content">
