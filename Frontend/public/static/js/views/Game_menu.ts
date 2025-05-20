@@ -146,7 +146,6 @@ export default class Game_menu extends AbstractView {
 						<h1>SOLO GAME MODE</h1>
 						<div id="game_mode_btn" class="game_mode_btn">
 							<button id="prepar_game_1v1" class="btn">1v1</button>
-							<button id="prepar_gane_ai" class="btn">ai</button>
 						</div>
 						<button id="back_to_menu_view3" class="btn">BACK TO MENU</button>
 					</div>
@@ -333,35 +332,7 @@ export default class Game_menu extends AbstractView {
 						</button>
 					</div>
 				</div>
-		
-				<div class="view7" id="view7">
-					<div class="view7-content">
-						<h1>CUSTOMISE TA GAME CONTRE L'IA</h1>
-						<div class="powerUP">
-							<p>PowerUP :<span id="powerUP" class="active_powerUP"></span></p>
-							<div id="power_selector" class="power_selector">
-								<div class="powerUP_number">
-									<p>1</p>
-									<span id="number_powerUP_1" class="number_powerUP"></span>
-								</div>
-								<div class="powerUP_number">
-									<p>3</p>
-									<span id="number_powerUP_3" class="number_powerUP"></span>
-								</div>
-								<div class="powerUP_number">
-									<p>5</p>
-									<span id="number_powerUP_5" class="number_powerUP"></span>
-								</div>
-							</div>
-						</div>
-						<div class="skin">
-							<p>Skin Personnalise :<span id="skin_perso" class="skin_perso"></span></p>
-						</div>
-						<button id="solo_ai_btn" class="btn">
-							<a href="/solo_game_ai" class="nav-link" data-link>Lancer la partie</a>
-						</button>
-					</div>
-				</div>
+	
 				<div class="view8" id="view8">
 					<div class="view8-content">
 						<h1 id="custom_ta_game_multi">CUSTOMIZE YOUR MULTIPLAYER GAME</h1>
@@ -692,7 +663,6 @@ export default class Game_menu extends AbstractView {
 		const view7 = document.getElementById('view7');
 		const view8 = document.getElementById('view8');
 		const prepar_game_1v1 = document.getElementById('prepar_game_1v1');
-		const prepar_gane_ai = document.getElementById('prepar_gane_ai');
 		const prepar_game_multi = document.getElementById('prepar_game_multi');
 		const back_to_menu_view6 = document.getElementById('back_to_menu_view6');
 		const back_to_menu_view7 = document.getElementById('back_to_menu_view7');
@@ -824,12 +794,6 @@ export default class Game_menu extends AbstractView {
 			back_to_select_mode_view6.classList.add('active');
 		});
 
-
-		prepar_gane_ai.addEventListener('click', () => {
-			view3.classList.remove('active');
-			view7.classList.add('active');
-			back_to_select_mode_view7.classList.add('active');
-		});
 
 		prepar_game_multi.addEventListener('click', () => {
 			view4.classList.remove('active');
