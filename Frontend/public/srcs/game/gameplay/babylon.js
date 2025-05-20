@@ -173,7 +173,7 @@ window.camera = new BABYLON.FreeCamera("camera", new BABYLON.Vector3(-45.7930195
 camera.rotation = new BABYLON.Vector3(-0.029665280069011667, -2.566387085794712, 0);
 camera.minZ = 0.1;
 camera.maxZ = 5000;
-camera.attachControl(canvas, true);
+// camera.attachControl(canvas, false);
 camera.speed = 1;
 
 const pipeline = new BABYLON.DefaultRenderingPipeline("defaultPipeline", true, scene, [camera]);
@@ -463,7 +463,7 @@ export function leave_AI_Game() {
 
 const fpsDiv = document.createElement('div');
 fpsDiv.style.position = 'absolute';
-fpsDiv.style.top = '10px';
+fpsDiv.style.top = '50px';
 fpsDiv.style.left = '10px';
 fpsDiv.style.color = 'green';
 fpsDiv.style.zIndex = '1000';

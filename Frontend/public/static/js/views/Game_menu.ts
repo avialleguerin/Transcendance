@@ -46,7 +46,7 @@ export default class Game_menu extends AbstractView {
 		<link rel="stylesheet" href="./static/js/css/game_menu.css">
 		<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 		<div class="navbar_menu">
-			<div class="profile_photo_circle_nav_bar" id="profile_photo_circle"></div>
+			<div class="profile_photo_circle_nav_bar" id="profile_photo_circle_nav_bar"></div>
 			<h1 class="player_name">ILYAN</h1>
 			<button class="option_navBar" id="option_btn_navBar">
 				<img src="../../../srcs/game/assets/image/menu.svg" alt="leave">
@@ -58,53 +58,60 @@ export default class Game_menu extends AbstractView {
 				<img src="../../../srcs/game/assets/image/menu.svg" alt="leave">
 			</button>
 			<h1>Friend list</h1>
-			<div class="friend_list_container">
+			<form class="friend_list_container">
 				<div class="friend_list_scrollable">
-					<div class="friend">
-						<div class="friend_photo"></div>
-						<p class="friend_name">ozan</p>
-					</div>
-					<div class="friend">
-						<div class="friend_photo"></div>
-						<p class="friend_name">ilyan</p>
-					</div>
-					<div class="friend">
-						<div class="friend_photo"></div>
-						<p class="friend_name">amandine</p>
-					</div>
-					<div class="friend">
-						<div class="friend_photo"></div>
-						<p class="friend_name">test_1</p>
-					</div>
-					<div class="friend">
-						<div class="friend_photo"></div>
-						<p class="friend_name">test_2</p>
-					</div>
-					<div class="friend">
-						<div class="friend_photo"></div>
-						<p class="friend_name">test_3</p>
-					</div>
-					<div class="friend">
-						<div class="friend_photo"></div>
-						<p class="friend_name">test_4</p>
-					</div>
-					<div class="friend">
-						<div class="friend_photo"></div>
-						<p class="friend_name">test_5</p>
-					</div>
-					<div class="friend">
-						<div class="friend_photo"></div>
-						<p class="friend_name">test_6</p>
-					</div>
-
+					<!-- injecter le script qui qjoute des ami ici -->
 				</div>
 
 				<div class="add_friend_section">
 					<input type="text" id="friend_name_input" placeholder="Nom de l'ami..." />
-					<button id="add_friend_btn">Ajouter</button>
+					<button type="submit" id="add_friend_btn">Ajouter</button>
+				</div>
+			</form>
+			<div class="game_history_navBar" id="game_history_navBar">
+				<div class="game_history_content_navBar">
+					<div class="game_history_header_navBar">
+						<div class="profile_photo_circle_Game_History_navBar" id="profile_photo_circle_Game_History_navBar"></div>
+						<h1>ILYAN</h1>
+					</div>
+					<h1>GAME HISTORY</h1>
+
+					<div class="game_history_scrollable_navBar">
+						<!-- Game 1 -->
+						<div class="game_card_navBar win">
+							<div class="profile_navBar">
+								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
+								<p class="username_navBar">You</p>
+							</div>
+							<div class="vs_info_navBar">
+								<p class="score_navBar">5 - 2</p>
+								<p class="result_navBar">Win</p>
+							</div>
+							<div class="opponent_navBar">
+								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
+								<p class="username_navBar">Enemy1</p>
+							</div>
+						</div>
+
+						<div class="game_card_navBar lose">
+							<div class="profile_navBar">
+								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
+								<p class="username_navBar">You</p>
+							</div>
+							<div class="vs_info_navBar">
+								<p class="score_navBar">2 - 5</p>
+								<p class="result_navBar">lose</p>
+							</div>
+							<div class="opponent_navBar">
+								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
+								<p class="username_navBar">Enemy1</p>
+							</div>
+						</div>
+
+					</div>
 				</div>
 			</div>
-			<button class="deconexion_navBar" id="deconnect_btn_navBar">Disconnect</button>
+			<button class="deconexion_navBar" id="deconnect_btn_navBar" onclick="logout()">Disconnect</button>
 		</div>
 		<div class="view1" id="view1">
 			<div class="view1-content">
@@ -159,82 +166,12 @@ export default class Game_menu extends AbstractView {
 						<div id="select_parametres" class="select_parametres">
 							<button id="profile_parrametre_btn" class="btn">PROFILE</button>
 							<button id="parrametre_jeux_btn" class="btn">GAME</button>
-							<button class="option" id="option_btn">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="leave">
-							</button>
+							<button id="Game_History_btn" class="btn">GAME HISTORY</button>
 						</div>
 					</div>
 				</div>
-				<div class="option_deconnect" id="option_deconnect">
-					<div class="option_deconnect_content">
-						<h1>OPTIONS</h1>
-						<button id="deconnect_btn" class="option_deconnect_btn">LOG OUT</button>
-						<button id="option_deconnected_btn" class="option_deconnected_btn_back">X</button>
-					</div>
-				</div>
 
-				<div class="parametres_jeu" id="parametres_jeu">
-					<div class="parametres_jeu_content" id="parametre_jeux_content">
-						<h1>GAME SETTINGS</h1>
-						<h2>PONG</h2>
-						<div class="parametre_mode_jeu">
-							<div class="mode_de_jeu_solo_parametre">
-							<h3>Solo Game Mode</h3>
 
-							<div class="joueur_touch">
-								<div class="joueur" id="joueur1">
-									<p>Player 1</p>
-									<div class="controls">
-										<p>Movement: W / S</p>
-										<p>PowerUP: Z / X / C</p>
-									</div>
-								</div>
-								<div class="joueur" id="joueur2">
-									<p>Player 2</p>
-									<div class="controls">
-										<p>Movement: ⬆ / ⬇</p>
-										<p>PowerUP: 1 / 2 / 3</p>
-									</div>
-								</div>
-							</div>
-
-							<div class="mode_de_jeu_multi_parametre">
-								<h3>Multiplayer Game Mode</h3>
-								<div class="joueur_touch">
-									<div class="joueur" id="joueur1">
-										<p>Player 1</p>
-										<div class="controls">
-											<p>Movement: W / S</p>
-											<p>PowerUP: Z / X / C</p>
-										</div>
-									</div>
-									<div class="joueur" id="joueur2">
-										<p>Player 2</p>
-										<div class="controls">
-											<p>Movement: E / D</p>
-											<p>PowerUP: Z / X / C</p>
-										</div>
-									</div>
-									<div class="joueur" id="joueur3">
-										<p>Player 3</p>
-										<div class="controls">
-											<p>Movement: O / L</p>
-											<p>PowerUP: 1 / 2 / 3</p>
-										</div>
-									</div>
-									<div class="joueur" id="joueur4">
-										<p>Player 4</p>
-										<div class="controls">
-											<p>Movement: ⬆ / ⬇</p>
-											<p>PowerUP: 1 / 2 / 3</p>
-										</div>
-									</div>
-								</div>
-								</div>
-							</div>
-						</div>
-					</div>
-			  </div>
 
 				<div class="parrametres_profile" id="parametres_profile">
 					<div class="parametres_profile_content">
@@ -261,7 +198,7 @@ export default class Game_menu extends AbstractView {
 									</form>
 								</div>
 							</div>
-							<form id="updateProfileForm" onsubmit="updateProfileInfo(event)"> // CHECK - ID
+							<form id="updateProfileForm" onsubmit="updateProfileInfo(event)">
 								<div class="input_container">
 									<label for="username">Change username</label>
 									<input type="text" id="change_username" name="username">
@@ -400,6 +337,132 @@ export default class Game_menu extends AbstractView {
 				<input type="code" id="code" name="code" placeholder="code" required>
 				<button type="submit" class="btn_valider_qr_code">Valider</button>
 			</form>
+
+			<div class="game_history" id="game_history">
+				<div class="game_history_content">
+					<div class="game_history_header">
+						<div class="profile_photo_circle_Game_History" id="profile_photo_circle_Game_History"></div>
+						<h1>ILYAN</h1>
+					</div>
+					<h1>GAME HISTORY</h1>
+
+					<div class="game_history_scrollable">
+						<!-- Game 1 -->
+						<div class="game_card win">
+							<div class="profile">
+								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
+								<p class="username">You</p>
+							</div>
+							<div class="vs_info">
+								<p class="score">5 - 2</p>
+								<p class="result">Win</p>
+							</div>
+							<div class="opponent">
+								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
+								<p class="username">Enemy1</p>
+							</div>
+						</div>
+
+						<!-- Game 2 -->
+						<div class="game_card lose">
+							<div class="profile">
+								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
+								<p class="username">You</p>
+							</div>
+							<div class="vs_info">
+								<p class="score">3 - 5</p>
+								<p class="result">Lose</p>
+							</div>
+							<div class="opponent">
+								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
+								<p class="username">Enemy2</p>
+							</div>
+						</div>
+						<!-- Game 2 -->
+						<div class="game_card lose">
+							<div class="profile">
+								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
+								<p class="username">You</p>
+							</div>
+							<div class="vs_info">
+								<p class="score">3 - 5</p>
+								<p class="result">Lose</p>
+							</div>
+							<div class="opponent">
+								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
+								<p class="username">Enemy2</p>
+							</div>
+						</div>
+						<!-- Game 2 -->
+						<div class="game_card lose">
+							<div class="profile">
+								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
+								<p class="username">You</p>
+							</div>
+							<div class="vs_info">
+								<p class="score">3 - 5</p>
+								<p class="result">Lose</p>
+							</div>
+							<div class="opponent">
+								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
+								<p class="username">Enemy2</p>
+							</div>
+						</div>
+						<!-- Game 2 -->
+						<div class="game_card lose">
+							<div class="profile">
+								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
+								<p class="username">You</p>
+							</div>
+							<div class="vs_info">
+								<p class="score">3 - 5</p>
+								<p class="result">Lose</p>
+							</div>
+							<div class="opponent">
+								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
+								<p class="username">Enemy2</p>
+							</div>
+						</div>
+						<!-- Game 2 -->
+						<div class="game_card lose">
+							<div class="profile">
+								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
+								<p class="username">You</p>
+							</div>
+							<div class="vs_info">
+								<p class="score">3 - 5</p>
+								<p class="result">Lose</p>
+							</div>
+							<div class="opponent">
+								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
+								<p class="username">Enemy2</p>
+							</div>
+						</div>
+						<!-- Game 2 -->
+						<div class="game_card lose">
+							<div class="profile">
+								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
+								<p class="username">You</p>
+							</div>
+							<div class="vs_info">
+								<p class="score">3 - 5</p>
+								<p class="result">Lose</p>
+							</div>
+							<div class="opponent">
+								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
+								<p class="username">Enemy2</p>
+							</div>
+						</div>
+
+						<div class="exit_game_history" id="exit_game_history">
+							<button id="exit_game_history_btn" class="exit_game_history_btn">
+								X
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
 
 			<div class="back" id="back_to_select_mode_view6">
 				<button id="back_to_menu_view6" class="btn_back">BACK</button>
@@ -1249,29 +1312,29 @@ export default class Game_menu extends AbstractView {
 			handleViewTransitions("platformer", "vue2");
 		});
 
-		/***********************************************************************/
-		/*************************Option deconnected****************************/
-		/***********************************************************************/
+		// /***********************************************************************/
+		// /*************************Option deconnected****************************/
+		// /***********************************************************************/
 
-		const option_deconnect = document.getElementById('option_deconnect');
-		const option_btn = document.getElementById('option_btn');
-		const option_deconnected_btn = document.getElementById('option_deconnected_btn');
+		// const option_deconnect = document.getElementById('option_deconnect');
+		// const option_btn = document.getElementById('option_btn');
+		// const option_deconnected_btn = document.getElementById('option_deconnected_btn');
 
-		option_btn.addEventListener('click', () => {
-			console.log('Option deconnect clicked');
-			option_deconnect.classList.add('active');
-			view5.classList.remove('active');
-			btn_back_home.classList.remove('active');
-			view1.classList.remove('active');
-		});
+		// option_btn.addEventListener('click', () => {
+		// 	console.log('Option deconnect clicked');
+		// 	option_deconnect.classList.add('active');	
+		// 	view5.classList.remove('active');
+		// 	btn_back_home.classList.remove('active');
+		// 	view1.classList.remove('active');
+		// });
 
-		option_deconnected_btn.addEventListener('click', () => {
-			console.log('Option deconnect back clicked');
-			option_deconnect.classList.remove('active');
-			view5.classList.add('active');
-			btn_back_home.classList.add('active');
-			view1.classList.add('active');
-		});
+		// option_deconnected_btn.addEventListener('click', () => {
+		// 	console.log('Option deconnect back clicked');
+		// 	option_deconnect.classList.remove('active');
+		// 	view5.classList.add('active');
+		// 	btn_back_home.classList.add('active');
+		// 	view1.classList.add('active');
+		// });
 
 
 		/***********************************************************************/
@@ -1281,6 +1344,7 @@ export default class Game_menu extends AbstractView {
 		const option_btn_navBar = document.getElementById('option_btn_navBar');
 		const panel_option_navbar = document.getElementById('panel_option_navbar');
 		const option_btn_remove = document.getElementById('option_btn_remove');
+		const deconnect_btn_navBar = document.getElementById('deconnect_btn_navBar');
 
 		option_btn_navBar.addEventListener('click', () => {
 			console.log('Option deconnect clicked');
@@ -1291,6 +1355,36 @@ export default class Game_menu extends AbstractView {
 			console.log('Option deconnect back clicked');
 			panel_option_navbar.classList.remove('active');
 		});
+
+		deconnect_btn_navBar.addEventListener('click', () => {
+			console.log('Deconnect button clicked');
+			handleViewTransitions("vue1", "vue2");
+			window.history.back();
+		});
+
+		/***********************************************************************/
+		/*************************Game History**********************************/
+		/***********************************************************************/
+
+		const Game_History_btn = document.getElementById('Game_History_btn');
+		const game_history = document.getElementById('game_history');
+		const exit_game_history_btn = document.getElementById('exit_game_history_btn');	
+
+		Game_History_btn.addEventListener('click', () => {
+			game_history.classList.add('active');
+			view1.classList.remove('active');
+			btn_back_home.classList.remove('active');
+			view5.classList.remove('active');
+		});
+
+		exit_game_history_btn.addEventListener('click', () => {
+			game_history.classList.remove('active');
+			view1.classList.add('active');
+			btn_back_home.classList.add('active');
+			view5.classList.add('active');
+		});
+
+
 	}
 }
 
