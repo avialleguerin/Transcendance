@@ -17,9 +17,9 @@ async function changeProfilePicture(event) {
 
 	const data = await response.json();
 	if (data.success)
-		showNotification(data.message, true);
+		notif(data.message, true);
 	else
-		showNotification(data.error, false);
+		notif(data.error, false);
 	document.getElementById("profile_photo_input").value = "";
 	fetchProfile();
 }
@@ -70,10 +70,10 @@ async function activate2FA(event) {
 		if (data.success) {
 			sessionStorage.setItem("accessToken", data.accessToken);
 			accessToken = sessionStorage.getItem("accessToken");
-			showNotification(data.message, true);
+			notif(data.message, true);
 			document.getElementById("code_validation_id").classList.remove('active');
 		} else
-			showNotification(data.error, false);
+			notif(data.error, false);
 	} catch (err) {
 		console.error("Error when validating 2FA :", err);
 	}
@@ -96,9 +96,9 @@ async function update_doubleAuth() {
 			if (data.doubleAuth_status)
 				document.getElementById('qrCode').src = data.qrCode;
 			else
-				showNotification(data.message, true);
+				notif(data.message, true);
 		} else
-			showNotification(data.error, false);
+			notif(data.error, false);
 	} catch (err) {
 		console.error('Error :', err);
 	}
@@ -141,7 +141,7 @@ async function delete_account() {
 				sessionStorage.removeItem("accessToken");
 				accessToken = null;
 				console.log('User deleted successfully');
-				showNotification(data.message, true);
+				notif(data.message, true);
 				history.pushState({}, '', '/');
 				import('../static/js/views/Home.js').then((module) => {
 					console.log("Home module loaded");
@@ -159,7 +159,7 @@ async function delete_account() {
 				});
 			}
 		} catch (err) {
-			showNotification("Erreur lors de la suppression : " + err, false);
+			notif("Erreur lors de la suppression : " + err, false);
 		}
 	}
 }
@@ -222,12 +222,12 @@ async function updateProfileInfo(event) {
 	console.log("confirmPassword", confirmPassword);
 
 	if (newUsername === "" && newEmail === "" && newPassword === "") {
-		showNotification("Veuillez remplir au moins un champ !", false);
+		notif("Veuillez remplir au moins un champ !", false);
 		return;
 	}
 
 	if (newPassword && (!confirmPassword || newPassword !== confirmPassword)) {
-		showNotification("Les mots de passe ne correspondent pas !", false);
+		notif("Les mots de passe ne correspondent pas !", false);
 		return;
 	}
 
@@ -245,8 +245,8 @@ async function updateProfileInfo(event) {
 	if (data.success) {
 		console.log(data.message);
 		document.getElementById("updateProfileForm").reset();
-		showNotification(data.message, true);
+		notif(data.message, true);
 	} else
-		showNotification(data.error, false);
+		notif(data.error, false);
 	fetchProfile();
 }

@@ -1,5 +1,6 @@
-import { register, getAllUsers, deleteAccount, deleteUser, login, logout, updateDoubleAuth, accessProfileInfo, changeProfilePicture, changeProfile, getUserProfile, verifyDoubleAuth, activateDoubleAuth, refreshInfos } from '../controllers/authController.js';
-import { getAllGames, addGame, deleteGame } from '../controllers/gameController.js';
+import { register, getAllUsers, deleteAccount, deleteUser, login, logout, updateDoubleAuth, accessProfileInfo, changeProfilePicture, changeProfile, getUserProfile, verifyDoubleAuth, activateDoubleAuth, refreshInfos } from '../controllers/usersController.js';
+import { getAllGames, addGame, deleteGame } from '../controllers/gamesController.js';
+import { addFriend } from '../controllers/friendsController.js';
 import { getSQLiteCreds } from '../utils/vault.js'
 
 /**
@@ -12,9 +13,12 @@ export default async function routes (fastify) {
 	fastify.addHook("onRequest", async (request, reply) => {
 		console.log(`\n📡 Requête reçue : [${request.method}] ${request.url}\n`)
 	});
-	//authController
+	// adminController
 	fastify.get('/admin/get-all-users', getAllUsers)
+	fastify.get('/admin/get-all-games', getAllGames)
 	fastify.delete('/admin/delete-user', deleteUser)
+	fastify.delete('/admin/delete-game', deleteGame)
+	//usersController
 	fastify.get('/profile', getUserProfile)
 	fastify.post('/user/register', register)
 	fastify.post('/user/login', login)
@@ -29,10 +33,10 @@ export default async function routes (fastify) {
 	fastify.delete('/user/delete-account', deleteAccount)
 	fastify.post('/user/refresh-infos', refreshInfos)
 
-	//gameController
-	fastify.get('/admin/get-all-games', getAllGames)
+	//friendsController
+	fastify.post('/game/create-friendship', addGame)
+	//gamesController
 	fastify.post('/game/create-game', addGame)
-	fastify.delete('/admin/delete-game', deleteGame)
 
 	// Tokens
 	// fastify.post('/refresh-token', refreshAccessToken)

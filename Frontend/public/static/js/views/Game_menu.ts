@@ -63,10 +63,10 @@ export default class Game_menu extends AbstractView {
 					<!-- injecter le script qui qjoute des ami ici -->
 				</div>
 
-				<div class="add_friend_section">
-					<input type="text" id="friend_name_input" placeholder="Nom de l'ami..." />
+				<form class="add_friend_section" onsubmit="addFriend(event)">
+					<input type="text" id="friend_name_input" placeholder="Username..." />
 					<button type="submit" id="add_friend_btn">Ajouter</button>
-				</div>
+				</form>
 			</form>
 			<div class="game_history_navBar" id="game_history_navBar">
 				<div class="game_history_content_navBar">

@@ -2,14 +2,7 @@ import { fastify } from '../server.js'
 import usersModel from '../models/usersModel.js'
 import gamesModel from '../models/gamesModel.js'
 
-export async function getAllGames(request, reply) {
-	try {
-		const games = gamesModel.getAllGames()
-		return games
-	} catch (err) {
-		return reply.code(500).send({ error: err.message })
-	}
-}
+
 
 export async function addGame(request, reply) {
 	const { user1, user2 } = request.body
@@ -36,21 +29,5 @@ export async function addGame(request, reply) {
 	} catch (err) {
 		console.error("Error creating game:", err)
 		return reply.code(500).send({ error: "Internal server error" })
-	}
-}
-
-export async function deleteGame(request, reply) {
-	const { gameId } = request.body
-	try {
-		const game = gamesModel.getgameById(gameId)
-		if (!game)
-			return reply.code(404).send({ error: 'Game not found' })
-		const info = gamesModel.delete(game.gameId)
-		if (info.changes === 0)
-			return reply.code(404).send({ error: "Game not found" })
-		return reply.send({ success: true, message: "Game deleted successfully"})
-	} catch (err) {
-		fastify.log.error(err)
-		return reply.code(500).send({ error: err.message })
 	}
 }

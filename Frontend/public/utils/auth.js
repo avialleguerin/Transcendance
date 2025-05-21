@@ -57,10 +57,10 @@ async function validate2FA(event) {
 			accessToken = sessionStorage.getItem("accessToken");
 			sessionStorage.removeItem("userId")
 			console.log("✅ 2FA code valid!");
-			showNotification(data.message, true);
+			notif(data.message, true);
 		} else {
 			console.error("❌ Invalid 2FA code:", data.error);
-			showNotification(data.error, false);
+			notif(data.error, false);
 		}
 	} catch (err) {
 		console.error("Erreur lors de la validation du code 2FA :", err);
@@ -89,9 +89,9 @@ async function activate2FA(event) {
 			accessToken = sessionStorage.getItem("accessToken");
 			sessionStorage.removeItem("userId")
 			console.log("✅ 2FA code valid!");
-			showNotification(data.message, true);
+			notif(data.message, true);
 		} else
-			showNotification(data.error, false);
+			notif(data.error, false);
 	} catch (err) {
 		console.error("Erreur lors de la validation du code 2FA :", err);
 	}
@@ -118,7 +118,7 @@ async function login(event) {
 	console.log("hola accessToken: ", accessToken)
 	console.log("data: ", data);
 	if (!accessToken && !data.success)
-		showNotification(data.error, false);
+		notif(data.error, false);
 	else if (data.success && data.connection_status === "partially_connected" && data.user.doubleAuth_status)
 	{
 		console.log("DoubleAuth enabled:", data.user.doubleAuth_status);
@@ -127,7 +127,7 @@ async function login(event) {
 	}
 	else if (data.success && data.connection_status === "connected")
 	{
-		showNotification(data.message, true);
+		notif(data.message, true);
 		history.pushState({}, '', '/Game_menu');
 		setTimeout (() => {
 			import('../static/js/views/Game_menu.js').then(module => {
@@ -144,7 +144,7 @@ async function login(event) {
 	}, 1500);
 		
 	} else
-		showNotification(data.error, false);
+		notif(data.error, false);
 	document.getElementById("login-email").value = "";
 	document.getElementById("login-password").value = "";
 }
@@ -188,18 +188,18 @@ async function register(event) {
 	const confirmPassword = document.getElementById("add-confirm-password").value;
 
 	if (password !== confirmPassword) {
-		showNotification("❌ Passwords are different", false);
+		notif("Passwords are different", false);
 		return ;
 	}
 
 	const result = await apiRequest("users/add", "POST", { username, email, password }, {})
 	
 	if (result.success) {
-		showNotification(result.message, true);
+		notif(result.message, true);
 		document.getElementById("create_account_id").classList.remove("active")
 		document.getElementById("loginform_id").classList.remove("active")
 	} else
-		showNotification(result.error, false);
+		notif(result.error, false);
 	document.getElementById("add-username").value = ""
 	document.getElementById("add-email").value = ""
 	document.getElementById("add-password").value = ""
