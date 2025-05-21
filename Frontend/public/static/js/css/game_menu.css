@@ -2734,17 +2734,22 @@ to {
 
 
 .choose_your_opponent_1v1_content {
-	position: absolute;
-	top: 36%;
-	left: 0%;
-	transform: translateY(-50%);
-	width: 94%;
-	height: 55%;
 	display: none;
 	flex-direction: column;
 	align-items: center;
-	justify-content: center;
+	justify-content: flex-start;
 	gap: 20px;
+	padding: 30px;
+	width: 80%;
+	max-width: 600px;
+	margin: 0 auto;
+	position: absolute;
+	top: 0;
+	left: 50%;
+	transform: translateX(-50%);
+	height: 100vh; /* <-- hauteur totale de l'écran */
+	overflow-y: auto;
+	overflow-x: hidden;
 }
 
 .choose_your_opponent_1v1_content.active {
@@ -2755,12 +2760,9 @@ to {
 	color: #ffffff;
 	text-shadow: 2px 2px 4px rgb(0, 0, 0);
 	text-align: center;
-	font-size: 1.2vw;
-	position: relative;
+	font-size: 1vw;
 	font-family: 'Black Ops One', sans-serif;
-	top: 5%;
-	left: 45%;
-	transform: translate(-50%, -50%);
+	margin-bottom: 30px;
 }
 
 /* .valider_opponent_btn {
@@ -2806,6 +2808,7 @@ to {
 	transform: translateX(-50%);
 	height: 100vh; /* <-- hauteur totale de l'écran */
 	overflow-y: auto; /* <-- active le scroll vertical */
+	overflow-x: hidden;
 }
 
 .choose_your_opponent_multi_content.active {
@@ -2816,7 +2819,7 @@ to {
   color: #ffffff;
   text-shadow: 2px 2px 4px rgb(0, 0, 0);
   text-align: center;
-  font-size: 1.5vw;
+  font-size: 1vw;
   font-family: 'Black Ops One', sans-serif;
   margin-bottom: 30px;
 }
@@ -2833,7 +2836,7 @@ to {
   gap: 15px;
 }
 
-.choose_your_opponent_multi_content p {
+.choose_your_opponent_multi_content, .choose_your_opponent_1v1_content p {
   color: #ffffff;
   text-shadow: 1px 1px 2px rgb(0, 0, 0);
   font-size: 1vw;
@@ -2844,20 +2847,51 @@ to {
 }
 
 .valider_opponent_btn {
-  font-size: 1vw;
-  font-weight: bold;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  background-image: url("../../../srcs/game/assets/image/boutton.svg");
-  background-size: 100% auto;
-  background-position: center;
-  background-repeat: no-repeat;
-  width: 120px;
-  height: 60px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
+	font-size: 0.7vw;
+	font-weight: bold;
+	color: rgb(255, 255, 255);
+	border: 2px solid #44444400;
+	background-color: transparent;
+	border-radius: 8px;
+	cursor: pointer;
+	text-align: center;
+	background-image: url("../../../srcs/game/assets/image/boutton.svg");
+	background-size: 100% auto;
+	background-position: center;
+	background-repeat: no-repeat;
+	line-height: 4vh;
+	width: 90px;
+	height: 70px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: absolute;
+	top: 75%;
+	left: 50%;
+	transform: translate(-50%, -20%);
+}
+
+.valider_opponent_btn_1v1 {
+	font-size: 0.7vw;
+	font-weight: bold;
+	color: rgb(255, 255, 255);
+	border: 2px solid #44444400;
+	background-color: transparent;
+	border-radius: 8px;
+	cursor: pointer;
+	text-align: center;
+	background-image: url("../../../srcs/game/assets/image/boutton.svg");
+	background-size: 100% auto;
+	background-position: center;
+	background-repeat: no-repeat;
+	line-height: 4vh;
+	width: 90px;
+	height: 70px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: absolute;
+	top: 28%;
+	left: 50%;
+	transform: translate(-50%, -20%);
 }

@@ -7,7 +7,7 @@ let count = 0;
 let tournamentStarted = false;
 
 export default class extends AbstractView {
-	private gameLoop: NodeJS.Timeout;  // NOTE - or 'any'
+	private gameLoop: number;  // NOTE - or 'any'
     constructor() {
         super();
         this.setTitle("Tournament");

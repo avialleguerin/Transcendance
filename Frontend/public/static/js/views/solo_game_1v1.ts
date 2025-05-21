@@ -14,7 +14,7 @@ export default class solo_game extends AbstractView {
 	cooldowns: { [key: string]: boolean };
 	cooldownTimes: { [key: string]: number };
 	boundKeyPressHandler: (event: KeyboardEvent) => void;
-	gameLoop: NodeJS.Timeout | null;
+	gameLoop: number | null;
 
 	constructor() {
 		super();
@@ -208,15 +208,16 @@ export default class solo_game extends AbstractView {
 	handleKeyPress(event: KeyboardEvent) { //NOTE - jai ajouter le type event: KeyboardEvent
 		console.log("Key pressed:", event.key);
 		const key = event.key;
-
-
-
+		
+		
+		
 		
 		// Vérifier si la touche a un cooldown défini
 		if (!(key in this.cooldownTimes)) return;
-	
+		
+		if (this.cooldowns[key])
+			return; // Ignore l'action si en cooldown
 		// Vérifier si la touche est en cooldown
-		if (this.cooldowns[key]) return; // Ignore l'action si en cooldown
 
 		if (key === " ") {
 			const press_space = document.getElementById("press_space_id");
@@ -241,13 +242,13 @@ export default class solo_game extends AbstractView {
 				case "x":
 					elem = document.getElementById("nb-item-teammate-1");
 					break;
-					case "c":
-						elem = document.getElementById("nb-item-autre-1");
-						break;
-						case "1":
-							elem = document.getElementById("nb-item-grenade-2");
-							break;
-							case "2":
+				case "c":
+					elem = document.getElementById("nb-item-autre-1");
+					break;
+				case "1":
+					elem = document.getElementById("nb-item-grenade-2");
+					break;
+				case "2":
 					elem = document.getElementById("nb-item-teammate-2");
 					break;
 				case "3":
@@ -258,11 +259,8 @@ export default class solo_game extends AbstractView {
 			if (elem) {
 				let currentValue = parseInt(elem.innerHTML, 10);
 				if (currentValue > 0) {
-					elem.innerHTML = (currentValue - 1).toString(); //NOTE - jai changer le type pour que ca passe ici
+					elem.innerHTML = (currentValue - 1).toString();
 					
-					console.log(`${key} utilisé, cooldown activé pour ${this.cooldownTimes[key]}ms`);
-					
-					// Mettre en cooldown cette touche
 					this.cooldowns[key] = true;
 					
 					// Ajouter la classe d'animation pour démarrer l'overlay reloading

@@ -14,7 +14,7 @@ export default class extends AbstractView {
 	cooldowns: any;
 	cooldownTimes: any;
 	boundKeyPressHandler: (event: KeyboardEvent) => void;
-	gameLoop: NodeJS.Timeout | null;
+	gameLoop: number | null;
 	
 
 	constructor() {

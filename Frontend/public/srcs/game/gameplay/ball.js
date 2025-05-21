@@ -54,11 +54,11 @@ export function createBall(scene) {
 
 function resetBall(ball) { 
 	ball.position = new BABYLON.Vector3(-7, 300.8, -72.5);
-	ballSpeed = 0.7;
+	ballSpeed = 1;
 	ballDirection = getRandomDirection();
 }
 
-let ballSpeed = 0.7;
+let ballSpeed = 1;
 
 function getRandomDirection()
 {
@@ -69,8 +69,8 @@ function getRandomDirection()
 	x /= length;
 	z /= length;
 
-	if (Math.abs(x) < 0.3) x = x > 0 ? 0.3 : -0.3;
-	if (Math.abs(z) < 0.3) z = z > 0 ? 0.3 : -0.3;
+	if (Math.abs(x) < 0.5) x = x > 0 ? 0.5 : -0.5;
+	if (Math.abs(z) < 0.5) z = z > 0 ? 0.5 : -0.5;
 	return { x, z };
 }
 

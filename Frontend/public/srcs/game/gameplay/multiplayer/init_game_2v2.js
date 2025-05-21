@@ -37,8 +37,8 @@ export async function init_game_multiplayer(scene) {
             console.log("Balle chargée avec position :", ball.position);
         }
     
-        loadScoreModel(0, "left", true);
-        loadScoreModel(0, "right", false);
+        loadScoreModel(0, true);
+        loadScoreModel(0, false);
         is_init = true;
         return { player_1, player_2, player_3, player_4, ball };
     }
@@ -55,10 +55,10 @@ export function start_game_multiplayer(scene) {
 }
 
 export function destroy_game_multiplayer(scene) {
-	destroy_all_by_metadata(scene, "isPlayer_parent");
-	destroy_all_by_metadata(scene, "isPlayer_paddle");
-	destroy_all_by_metadata(scene, "isPlayerRepere");
-	destroy_all_by_metadata(scene, "isPlayer");
+	destroy_all_by_metadata(scene, "isPlayer_parent_2v2");
+	destroy_all_by_metadata(scene, "isPlayer_paddle_2v2");
+	destroy_all_by_metadata(scene, "isPlayerRepere_2v2");
+	destroy_all_by_metadata(scene, "isPlayer_2v2");
 	destroy_ball(ball);
 	destroy_score();
 	destroy_game(scene);
@@ -66,10 +66,11 @@ export function destroy_game_multiplayer(scene) {
 
 function already_init()
 {
-	enable_all_by_metadata(scene, "isPlayer_parent");
-	enable_all_by_metadata(scene, "isPlayer_paddle");
-	enable_all_by_metadata(scene, "isPlayerRepere");
-	enable_all_by_metadata(scene, "isPlayer");
+    console.log("already_init");
+	enable_all_by_metadata(scene, "isPlayer_parent_2v2");
+	enable_all_by_metadata(scene, "isPlayer_paddle_2v2");
+	enable_all_by_metadata(scene, "isPlayerRepere_2v2");
+	enable_all_by_metadata(scene, "isPlayer_2v2");
 	init_game(scene);
 	init_ball(ball);
 }

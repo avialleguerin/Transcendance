@@ -101,13 +101,13 @@ export function updateScore(side)
 		scoreLeft++;
 		if (scoreLeft > 9)
 			scoreLeft = 0;
-		loadScoreModel(scoreLeft, 'left', true);
+		loadScoreModel(scoreLeft, true);
 	} else if (side === 'right')
 	{
 		scoreRight++;
 		if (scoreRight > 9)
 			scoreRight = 0;
-		loadScoreModel(scoreRight, 'right', false);
+		loadScoreModel(scoreRight, false);
 	}
 	if (soloGameStart)
 	{
