@@ -1,5 +1,7 @@
 import { fastify } from '../server.js'
 import usersModel from '../models/usersModel.js'
+import gamesModel from '../models/gamesModel.js'
+import friendshipsModel from '../models/friendshipsModel.js'
 
 export async function getAllUsers(request, reply) {
 	try {
@@ -64,6 +66,55 @@ export async function deleteGame(request, reply) {
 		if (info.changes === 0)
 			return reply.code(404).send({ error: "Game not found" })
 		return reply.send({ success: true, message: "Game deleted successfully"})
+	} catch (err) {
+		fastify.log.error(err)
+		return reply.code(500).send({ error: err.message })
+	}
+}
+
+export async function getAllFriendships(request, reply) {
+	try {
+		const friendships = friendshipsModel.getAllFriendships()
+		return friendships
+	} catch (err) {
+		return reply.code(500).send({ error: err.message })
+	}
+}
+
+export async function addFriendship(request, reply) {
+	const { user_username, friend_username } = request.body
+	
+	try {
+		console.log("user_username :", user_username)
+		const user = usersModel.getUserByUsername(user_username)
+		if (!user)
+			return reply.code(401).send({ error: "User not found" })
+		const friend = usersModel.getUserByUsername(friend_username)
+		if (!friend)
+			return reply.code(404).send({ succes: false, error: `User '${friend_username}' not found` })
+
+		friendshipsModel.createFriendship(user.userId, friend.userId);
+
+		return reply.code(201).send({ 
+			success: true,
+			message: "Friendship created successfully",
+		})
+	} catch (err) {
+		console.error("Error creating friendship:", err)
+		return reply.code(500).send({ error: "Internal server error" })
+	}
+}
+
+export async function deleteFriendship(request, reply) {
+	const { friendshipId } = request.body
+	try {
+		const friendship = friendshipsModel.getfriendshipById(friendshipId)
+		if (!friendship)
+			return reply.code(404).send({ error: 'Friendship not found' })
+		const info = friendshipsModel.delete(friendship.friendshipId)
+		if (info.changes === 0)
+			return reply.code(404).send({ error: "Friendship not found" })
+		return reply.send({ success: true, message: "Friendship deleted successfully"})
 	} catch (err) {
 		fastify.log.error(err)
 		return reply.code(500).send({ error: err.message })

@@ -1,10 +1,11 @@
 import { fastify } from '../server.js'
 import usersModel from '../models/usersModel.js'
 import gamesModel from '../models/gamesModel.js'
+import { getUserFromToken } from './utils.js'
 
 
 
-export async function addGame(request, reply) {
+export async function createGame(request, reply) {
 	const { user1, user2 } = request.body
 	
 	try {
@@ -19,8 +20,9 @@ export async function addGame(request, reply) {
 
 		if (user1 === user2)
 			return reply.code(400).send({ succes: false, error: "Cannot create a game with the same user twice" })
-
-		gamesModel.createGame(user1, user2)
+		console.log("user1 :", user1Exists.userId)
+		console.log("user2 :", user2Exists.userId)
+		gamesModel.createGame(user1Exists.userId, user2Exists.userId)
 			
 		return reply.code(201).send({ 
 			success: true,

@@ -48,7 +48,7 @@ export default class Game_menu extends AbstractView {
 		<div class="navbar_menu">
 			<div class="profile_photo_circle_nav_bar" id="profile_photo_circle_nav_bar"></div>
 			<h1 class="player_name">ILYAN</h1>
-			<button class="option_navBar" id="option_btn_navBar">
+			<button class="option_navBar" id="option_btn_navBar" onclick="togglePanel(event)">
 				<img src="../../../srcs/game/assets/image/menu.svg" alt="leave">
 			</button>
 			
@@ -58,16 +58,16 @@ export default class Game_menu extends AbstractView {
 				<img src="../../../srcs/game/assets/image/menu.svg" alt="leave">
 			</button>
 			<h1>Friend list</h1>
-			<form class="friend_list_container">
-				<div class="friend_list_scrollable">
-					<!-- injecter le script qui qjoute des ami ici -->
-				</div>
+			<div class="friend_list_container">
+				<table class="friend_list_scrollable">
+					<tbody id="friendships-table"></tbody>
+				</table>
 
 				<form class="add_friend_section" onsubmit="addFriend(event)">
 					<input type="text" id="friend_name_input" placeholder="Username..." />
 					<button type="submit" id="add_friend_btn">Ajouter</button>
 				</form>
-			</form>
+			</div>
 			<div class="game_history_navBar" id="game_history_navBar">
 				<div class="game_history_content_navBar">
 					<div class="game_history_header_navBar">

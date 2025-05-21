@@ -2,6 +2,7 @@ import { fastify } from '../server.js'
 import usersModel from '../models/usersModel.js'
 import { hashPassword, verifyPassword } from '../utils/hashUtils.js'
 import { redisModel } from '../models/redisModel.js'
+import { getUserFromToken } from './utils.js'
 import speakeasy from 'speakeasy'
 import qrcode from 'qrcode'
 import fs from 'fs/promises';
@@ -9,45 +10,6 @@ import path from 'path';
 
 const uploadDir = '/usr/share/nginx/uploads'
 const SECRET_LENGHT = 30
-
-
-async function getUserFromToken(request, reply) {
-	const accessToken = request.headers.authorization?.split(' ')[1]
-	console.log("🔑 Access Token reçu :", accessToken)
-	const { refreshToken } = request.cookies
-	if (!refreshToken || refreshToken === undefined || refreshToken === null)
-		return null
-	if (await redisModel.isTokenBlacklisted(refreshToken))
-		return null
-
-	const decodedRefresh = fastify.jwt.decode(refreshToken)
-	const expiresInRefresh = decodedRefresh.exp - Math.floor(Date.now() / 1000)
-	const userId = decodedRefresh.userId
-	if (!userId)
-		return null
-	const user = usersModel.getUserById(userId)
-	if (!user)
-		return null
-	if (expiresInRefresh > 0)
-	{
-		if (accessToken && accessToken !== undefined && accessToken !== null && accessToken !== "undefined" && accessToken !== "null")
-		{
-			// console.log("🔑 je passe la :", accessToken)
-			const decodedAccess = fastify.jwt.decode(accessToken)
-			const expiresInAccess = decodedAccess.exp - Math.floor(Date.now() / 1000)
-			if (expiresInAccess > 0 && !await redisModel.isTokenBlacklisted(accessToken))
-				return {user: user, accessToken: accessToken}
-		}
-		const newAccessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, { expiresIn: '15m' })
-		console.log("🔑 New Access Token :", newAccessToken)
-		return {user: user, accessToken: newAccessToken}
-	} else {
-		reply.clearCookie('refreshToken', { path: '/' })
-		return null
-	}
-}
-
-
 
 export async function getUserProfile(request, reply) {
 	try {
@@ -65,7 +27,7 @@ export async function getUserProfile(request, reply) {
 	}
 }
 
-export async function register(request, reply) {
+export async function createUser(request, reply) {
 	const { username, email, password } = request.body
 
 	if (!username || !password)

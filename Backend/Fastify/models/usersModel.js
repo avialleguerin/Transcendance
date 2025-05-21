@@ -11,7 +11,7 @@ export const CREATE_USERS_TABLE = `
 		doubleAuth_status INTEGER DEFAULT 0 CHECK(doubleAuth_status IN (0, 1)),
 		doubleAuth_secret TEXT,
 		created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-		);
+	);
 `;
 
 const usersModel = {

@@ -18,14 +18,21 @@
 				<div class="w-6 text-center">
 					<i class="text-gray-700 fas fa-users group-hover:text-white"></i>
 				</div>
-				<span class="ml-3">Utilisateurs</span>
+				<span class="ml-3">Users</span>
+			</button>
+			<button onclick="showTab('friendships-tab')" class="text-gray-700 tab-btn group w-full flex items-center py-3 px-4 rounded-lg hover:bg-violet-600 hover:text-white transition-colors" id="friendships-tab-btn">
+				<div class="w-6 text-center">
+					<i class="text-gray-700 fas fa-handshake group-hover:text-white"></i>
+				</div>
+				<span class="ml-3">Friendships</span>
 			</button>
 			<button onclick="showTab('games-tab')" class="text-gray-700 tab-btn group w-full flex items-center py-3 px-4 rounded-lg hover:bg-violet-600 hover:text-white transition-colors" id="games-tab-btn">
 				<div class="w-6 text-center">
 					<i class="text-gray-700 fas fa-gamepad group-hover:text-white"></i>
 				</div>
-				<span class="ml-3">Jeux</span>
+				<span class="ml-3">Games</span>
 			</button>
+			
 			<button onclick="showTab('rgpd-tab')" class="text-gray-700 tab-btn group w-full flex items-center py-3 px-4 rounded-lg hover:bg-violet-600 hover:text-white transition-colors" id="rgpd-tab-btn">
 				<div class="w-6 text-center">
 					<i class="text-gray-700 fas fa-shield-alt group-hover:text-white"></i>
@@ -70,6 +77,71 @@
 			</div>
 		</div>
 
+		<!-- </div> -->
+		<div id="addUserModal" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 hidden w-[400px]">
+			<form id="addUserForm" class="mx-auto bg-white p-6 rounded-lg shadow-lg" onsubmit="create_user(event)">
+				<h2 class="text-2xl font-semibold text-center mb-2">Add User</h2>
+				<div class="mb-2">
+					<label for="username" class="block text-gray-700 font-medium">Username :</label>
+					<input type="text" id="addUser-username" name="username" placeholder="Username" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
+				</div>
+				<div class="mb-2">
+					<label for="email" class="block text-gray-700 font-medium">Email :</label>
+					<input type="email" id="addUser-email" name="email" placeholder="Email" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
+				</div>
+				<div class="mb-2">
+					<label for="password" class="block text-gray-700 font-medium">Password :</label>
+					<input type="password" id="addUser-password" name="password" placeholder="Password" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
+				</div>
+				<div class="mb-2">
+					<label for="password" class="block text-gray-700 font-medium">Confirm password :</label>
+					<input type="password" id="addUser-confirm-password" name="password" placeholder="Password" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
+				</div>
+				<button type="submit" class="w-full bg-violet-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-violet-600 transition">Add</button>
+				<button type="button" class="mt-4 w-full border border-violet-500 text-violet-500 font-bold py-2 px-4 rounded-lg hover:bg-violet-500 hover:text-white transition" onclick="close_user_modal()">Cancel</button>
+			</form>
+		</div>
+
+		<div id="friendships-tab" class="tab-content hidden container m-6 mx-auto">
+			<div class="px-4 md:px-8 container mx-auto">
+				<h2 class="text-xl font-semibold mb-6 mt-4">List of Friendships</h2>
+				<div class="bg-white">
+					<table class="py-4 my-4 md:py-8 min-w-full border-separate border-spacing-y-3">
+						<thead>
+							<tr>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider rounded-l-xl">Friendship ID</th>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">User</th>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Friend</th>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Status</th>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Date</th>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider rounded-r-xl">Action</th>
+							</tr>
+						</thead>
+						<tbody class="bg-white" id="friendships-table">
+							<!-- Les données seront injectées ici par le JavaScript -->
+						</tbody>
+					</table>
+				</div>
+				<button class="bg-violet-500 text-white font-bold py-2 px-4 m-6 mx-auto block w-auto rounded-lg hover:bg-violet-600 transition" onclick="add_friendship_modal()">Add Friendship</button>
+			</div>
+		</div>
+
+		<div id="addFriendshipModal" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 hidden w-[400px]">
+			<form id="addFriendshipForm" class="mx-auto bg-white p-6 rounded-lg shadow-lg" onsubmit="create_friendship(event)">
+				<h2 class="text-2xl font-semibold text-center mb-2">Add User</h2>
+				<div class="mb-2">
+					<label for="username" class="block text-gray-700 font-medium">User :</label>
+					<input type="text" id="addFriendship-user" name="username" placeholder="Username" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
+				</div>
+				<div class="mb-2">
+					<label for="username" class="block text-gray-700 font-medium">Friend username :</label>
+					<input type="text" id="addFriendship-friend" name="username" placeholder="Username" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
+				</div>
+				<button type="submit" class="w-full bg-violet-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-violet-600 transition">Add</button>
+				<button type="button" class="mt-4 w-full border border-violet-500 text-violet-500 font-bold py-2 px-4 rounded-lg hover:bg-violet-500 hover:text-white transition" onclick="close_friendship_modal()">Cancel</button>
+			</form>
+		</div>
+
 		<div id="games-tab" class="tab-content hidden container m-6 mx-auto">
 			<div class="px-4 md:px-8 container mx-auto">
 				<h2 class="text-xl font-semibold mb-6 mt-4">List of Games</h2>
@@ -93,31 +165,26 @@
 				<button class="bg-violet-500 text-white font-bold py-2 px-4 m-6 mx-auto block w-auto rounded-lg hover:bg-violet-600 transition" onclick="add_game_modal()">Add Game</button>
 			</div>
 		</div>
-		<!-- </div> -->
-		<div id="addUserModal" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 hidden w-[400px]">
-			<form id="addUserForm" class="mx-auto bg-white p-6 rounded-lg shadow-lg" onsubmit="register(event)">
-				<h2 class="text-2xl font-semibold text-center mb-2">Add User</h2>
+
+		<div id="addGameModal" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 hidden w-[400px]">
+			<form id="addGameForm" class="flex-1 mx-auto bg-white p-6 rounded-lg shadow-lg" onsubmit="add_game(event)">
+				<h2 class="text-2xl font-semibold text-center mb-2">Add Game</h2>
 				<div class="mb-2">
-					<label for="username" class="block text-gray-700 font-medium">Username :</label>
-					<input type="text" id="addUser-username" name="username" placeholder="Username" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
+					<label for="user1" class="block text-gray-700 font-medium">User1 :</label>
+					<input type="text" id="addGame-user1" name="user1" placeholder="User1" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
 				</div>
 				<div class="mb-2">
-					<label for="email" class="block text-gray-700 font-medium">Email :</label>
-					<input type="email" id="addUser-email" name="email" placeholder="Email" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
+					<label for="user2" class="block text-gray-700 font-medium">User2 :</label>
+					<input type="text" id="addGame-user2" name="user2" placeholder="User2" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
 				</div>
-				<div class="mb-2">
-					<label for="password" class="block text-gray-700 font-medium">Password :</label>
-					<input type="password" id="addUser-password" name="password" placeholder="Password" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
-				</div>
-				<div class="mb-2">
-					<label for="password" class="block text-gray-700 font-medium">Confirm password :</label>
-					<input type="password" id="addUser-confirm-password" name="password" placeholder="Password" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
-				</div>
-				<button type="submit" class="w-full bg-violet-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-violet-600 transition">Add</button>
-				<button type="button" class="mt-4 w-full border border-violet-500 text-violet-500 font-bold py-2 px-4 rounded-lg hover:bg-violet-500 hover:text-white transition" onclick="close_user_modal()">Cancel</button>
-				<p id="addUser-resultMessage" class="mt-4 text-center text-sm font-semibold text-gray-700"></p>
+				<button type="submit" class="w-full bg-green-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-600 transition">Add Game</button>
+				<button type="button" class="mt-4 w-full bg-red-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-600 transition" onclick="close_game_modal()">Cancel</button>
 			</form>
 		</div>
+
+		<!-- friendships-tab -->
+		
+		
 
 		<div id="rgpd-tab" class="tab-content hidden container mx-auto my-6 p-6 bg-white rounded-lg">
 			<h2 class="text-xl font-semibold mb-4">RGPD - Cartographie des données personnelles</h2>
@@ -267,30 +334,17 @@
 				</p>
 			</div>
 		</div>
-
-		<div id="addGameModal" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 hidden w-[400px]">
-			<form id="addGameForm" class="flex-1 mx-auto bg-white p-6 rounded-lg shadow-lg" onsubmit="add_game(event)">
-				<h2 class="text-2xl font-semibold text-center mb-2">Add Game</h2>
-				<div class="mb-2">
-					<label for="user1" class="block text-gray-700 font-medium">User1 :</label>
-					<input type="text" id="addGame-user1" name="user1" placeholder="User1" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
-				</div>
-				<div class="mb-2">
-					<label for="user2" class="block text-gray-700 font-medium">User2 :</label>
-					<input type="text" id="addGame-user2" name="user2" placeholder="User2" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
-				</div>
-				<button type="submit" class="w-full bg-green-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-600 transition">Add Game</button>
-				<button type="button" class="mt-4 w-full bg-red-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-600 transition" onclick="close_game_modal()">Cancel</button>
-				<p id="addGame-resultMessage" class="mt-4 text-center text-sm font-semibold text-gray-700"></p>
-			</form>
+		<div id="notification-container" class="fixed top-0 left-0 right-0 flex justify-center z-50 mt-4">
+			<p id="resultMessage" class="py-2 px-4 rounded shadow-lg transition-all duration-300 transform translate-y-0 opacity-0"></p>
 		</div>
-			
+
 		<script src="./api/admin.js"></script>
 		<script>
 			function showTab(tabId) {
 				const tabNames = {
 					'users-tab': 'Utilisateurs',
 					'games-tab': 'Jeux',
+					'friendships-tab': 'Friendships',
 					'rgpd-tab': 'RGPD'
 				};
 				
