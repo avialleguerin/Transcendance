@@ -2,6 +2,9 @@
 *.out
 *.o
 
+# Password files
+.htpasswd
+
 # Python & dockers
 db.sqlite3
 __pycache__/
