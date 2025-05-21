@@ -36,6 +36,8 @@ export async function init_game_solo(scene) {
     else
     {
         already_init();
+        loadScoreModel(0, true);
+        loadScoreModel(0, false);
         reset_player_position(player_1, player_2);
         return { player_1, player_2, ball };
     }

@@ -36,6 +36,8 @@ const router = async (): Promise<void> => {
 	];
 
 	const potentialMatches: RouteMatch[] = routes.map((route) => {
+		console.log(`Router is running ${route}||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||`);
+
 		return {
 			route: route,
 			isMatch: location.pathname === route.path,

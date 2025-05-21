@@ -37,17 +37,6 @@ export default class solo_game extends AbstractView {
 				<div class="press_space" >
 					<h1 id="press_space_id">Press SPACE to Start</h1>
 				</div>
-				<div class="container-leave">
-					<button class="option" id="option_btn">
-						<img src="../../../srcs/game/assets/image/menu.svg" alt="leave">
-					</button>
-				</div>
-				<div class="panel" id="panel_id">
-					<button class="option-in-panel" id="option_btn-remove">
-						<img src="../../../srcs/game/assets/image/menu.svg" alt="leave">
-					</button>
-					<button class="leave_game" id="leave_game_id">Leave Game</button>
-				</div>
 
 				<div class="container-Player1" id="container-player1_id">
 					<h1>Player 1</h1>
@@ -116,18 +105,6 @@ export default class solo_game extends AbstractView {
     cleanup() {
         document.removeEventListener("keydown", this.boundKeyPressHandler);
         clearInterval(this.gameLoop);
-    }
-    leave_game() {
-        document.getElementById("leave_game_id").addEventListener("click", () => {
-            this.cleanup();
-            setLeaveGameVar(true);
-            spacePressed = false;
-            handleViewTransitions("vue2", "vue4");
-            setTimeout(() => {
-                window.history.back();
-                leave_Game();
-            }, 1500);
-        });
     }
     leave_game_2() {
         document.getElementById("leave_game_2_id").addEventListener("click", () => {

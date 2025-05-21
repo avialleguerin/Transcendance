@@ -8,6 +8,7 @@ import { isGameFinished } from "../../../srcs/game/gameplay/score.js";
 import { getIsTeam1Win, getIsTeam2Win } from "../../../srcs/game/gameplay/score.js";
 
 let space_pressed = false;
+let bool = false;
 
 export default class extends AbstractView {
 
@@ -31,11 +32,14 @@ export default class extends AbstractView {
 			" ": 1000,
 		};
 
-		this.boundKeyPressHandler = this.handleKeyPress.bind(this);
-		document.addEventListener("keydown", this.boundKeyPressHandler);
+		if (bool === false) {
+			this.boundKeyPressHandler = this.handleKeyPress.bind(this);
+			document.addEventListener("keydown", this.boundKeyPressHandler);
 
-		if (window.location.pathname === "/multi_player_game") {
-			this.gameLoop = setInterval(() => { this.checkGameOver(); 1000 });
+			if (window.location.pathname === "/multi_player_game") {
+				this.gameLoop = setInterval(() => { this.checkGameOver(); 1000 });
+			}
+			bool = true;
 		}
 	}
 
@@ -47,30 +51,21 @@ export default class extends AbstractView {
 				<div class="press_space" >
 					<h1 id="press_space_id">Press SPACE to Start</h1>
 				</div>
-				<div class="container-leave">
-					<button class="option" id="option_btn">
-						<img src="../../../srcs/game/assets/image/menu.svg" alt="leave">
-					</button>
-				</div>
-				<div class="panel" id="panel_id">
-					<button class="option-in-panel" id="option_btn-remove">
-						<img src="../../../srcs/game/assets/image/menu.svg" alt="leave">
-					</button>
-					<button class="leave_game" id="leave_game_id">Leave Game</button>
-				</div>
 				<div class="container-Player1" id="container-player1-id">
 					<h1>Player 1 - Player 2</h1>
 					<div class="container-item_player1">
 						<p id="nb-item-grenade-1"></p>
+						<p class="touch_player1">Z</p>
 						<div class="item-circle" id="item-circle-grenade1">
 							<img src="../../../srcs/game/assets/image/grenadeflashTest.jpg" alt="Item 1">
 							<div class="overlay" id="overlay-grenade-1"></div>
 							<div class="overlay-reloading" id="overlay-reloading-grenade-1"></div>
 						</div>
 						<p id="nb-item-teammate-1"></p>
-						<div class="item-circle" id="item-circle-teammate1">
+						<p class="touch_player1">X</p>
+						<div class="item-circle" id="item-circle-freeze1">
 							<img src="../../../srcs/game/assets/image/freeze.png" alt="Item 2">
-							<div class="overlay" id="overlay-teammate-1"></div>
+							<div class="overlay" id="overlay-freeze-1"></div>
 							<div class="overlay-reloading-freeze" id="overlay-reloading-freeze-1"></div>
 						</div>
 					</div>
@@ -79,15 +74,17 @@ export default class extends AbstractView {
 					<h1>Player 3 - Player 4</h1>
 					<div class="container-item_player2">
 						<p id="nb-item-grenade-2"></p>
+						<p class="touch_player2">1</p>
 						<div class="item-circle" id="item-circle-grenade2">
 							<img src="../../../srcs/game/assets/image/grenadeflashTest.jpg" alt="Item 1">
 							<div class="overlay" id="overlay-grenade-2"></div>
 							<div class="overlay-reloading" id="overlay-reloading-grenade-2"></div>
 						</div>
 						<p id="nb-item-teammate-2"></p>
-						<div class="item-circle" id="item-circle-teammate2">
+						<p class="touch_player2">2</p>
+						<div class="item-circle" id="item-circle-freeze2">
 							<img src="../../../srcs/game/assets/image/freeze.png" alt="Item 2">
-							<div class="overlay" id="overlay-teammate-2"></div>
+							<div class="overlay" id="overlay-freeze-2"></div>
 							<div class="overlay-reloading-freeze" id="overlay-reloading-freeze-2"></div>
 						</div>
 					</div>
@@ -110,21 +107,6 @@ export default class extends AbstractView {
 		clearInterval(this.gameLoop);
 	}
 
-	leave_game_multi() {
-		document.getElementById("leave_game_id").addEventListener("click", () => {
-			console.log("leave_the_game");
-			this.cleanup();
-
-			setLeaveGameVar(true);
-			space_pressed = false;
-			handleViewTransitions("vue2", "vue4");
-			setTimeout(() => {
-				window.history.back();
-				leave_Multiplayer_Game();
-			}, 1500);
-		});
-	}
-
 	leave_game_2_multi() {
 		document.getElementById("leave_game_2_id").addEventListener("click", () => {
 			console.log("leave_the_game2222222222");
@@ -133,6 +115,7 @@ export default class extends AbstractView {
 			setLeaveGameVar(true);
 			disable_skin_multi_podium();
 			space_pressed = false;
+			bool = false;
 			handleViewTransitions("vue2", "vue4");
 			setTimeout(() => {
 				window.history.back();
@@ -149,15 +132,11 @@ export default class extends AbstractView {
 		console.log("powerUP_value_multi", getPowerUP_value_multi());
         if (getPowerUP_value_multi() !== 0) {
 			console.log("powerUP_value_multi je rentre ici");
-			// container_player1.classList.add("active");
-			// container_player2.classList.add("active");
 			container_player1.style.visibility = "visible";
 			container_player2.style.visibility = "visible";
 		}
         else {
 			console.log("powerUP_value_multi je rentre ici222");
-			// container_player1.classList.remove("active");
-			// container_player2.classList.remove("active");
 			container_player1.style.visibility = "hidden";
 			container_player2.style.visibility = "hidden";
 		}
@@ -175,8 +154,8 @@ export default class extends AbstractView {
 	
 		document.getElementById("overlay-grenade-1").classList.toggle("active", nb_powerUP_grenade_player1 === 0);
 		document.getElementById("overlay-grenade-2").classList.toggle("active", nb_powerUP_grenade_player2 === 0);
-		document.getElementById("overlay-teammate-1").classList.toggle("active", nb_powerUP_teammate_player1 === 0);
-		document.getElementById("overlay-teammate-2").classList.toggle("active", nb_powerUP_teammate_player2 === 0);
+		document.getElementById("overlay-freeze-1").classList.toggle("active", nb_powerUP_teammate_player1 === 0);
+		document.getElementById("overlay-freeze-2").classList.toggle("active", nb_powerUP_teammate_player2 === 0);
 	}
 
 	handleKeyPress(event: KeyboardEvent) {
@@ -239,7 +218,7 @@ export default class extends AbstractView {
 						break;
 					case "x":
 						overlayReloading_teammate = document.getElementById("overlay-reloading-freeze-1");
-						itemCircle = document.getElementById("item-circle-teammate1");
+						itemCircle = document.getElementById("item-circle-freeze1");
 						break;
 					case "1":
 						overlayReloading = document.getElementById("overlay-reloading-grenade-2");
@@ -247,7 +226,7 @@ export default class extends AbstractView {
 						break;
 					case "2":
 						overlayReloading_teammate = document.getElementById("overlay-reloading-freeze-2");
-						itemCircle = document.getElementById("item-circle-teammate2");
+						itemCircle = document.getElementById("item-circle-freeze2");
 						break;
 				}
 
@@ -291,35 +270,14 @@ export default class extends AbstractView {
 		}
 	}
 
-	event_multiPlayer_game() {
-		const option = document.getElementById("option_btn");
-		const panel = document.getElementById("panel_id");
-		const option_remove = document.getElementById("option_btn-remove");
-
-		
-		option.addEventListener("click", () => {
-			console.log("option clicked");
-			panel.classList.add("active");
-			panel.classList.remove("remove");
-			option.classList.add("active");
-		});
-	
-		option_remove.addEventListener("click", () => {
-			console.log("option_remove clicked");
-			panel.classList.add("remove");
-			option.classList.remove("active");
-			setTimeout(() => {
-				panel.classList.remove("active");
-			}, 1100);
-		});
-	}
-
 	checkGameOver() {
 		if (window.location.pathname !== "/multi_player_game")
 			return;
 		const winnerContainer = document.querySelector(".container-EndGame");
 		let team_player1_win = getIsTeam1Win();
 		let team_player2_win = getIsTeam2Win();
+		const container_player1 = document.getElementById("container-player1-id");
+		const container_player2 = document.getElementById("container-player2-id");
 		if (!winnerContainer)
 			return;
 		if (isGameFinished()) {
@@ -333,6 +291,8 @@ export default class extends AbstractView {
 				document.getElementById("Winner_id").innerHTML = "Player 3 - Player 4 Win";
 				document.getElementById("looser_id").innerHTML = "Player 1 - Player 2 Loose";
 			}
+			container_player1.style.visibility = "hidden";
+			container_player2.style.visibility = "hidden";
 		}
         else {
 			winnerContainer.classList.remove("active");

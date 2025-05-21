@@ -123,16 +123,15 @@ export function MoveBall(player_1, player_2, ball, player_1_bonus, player_2_bonu
 		ball.position.x - BALL_RADIUS <= player_1.position.x + PADDLE_WIDTH / 2 &&
 		ball.position.z + BALL_RADIUS >= player_1.position.z - PADDLE_HEIGHT / 2 &&
 		ball.position.z - BALL_RADIUS <= player_1.position.z + PADDLE_HEIGHT / 2) {
-
-		ballDirection.x *= -1; 
+		ballDirection.x *= -1;
 		const relativeImpact = (ball.position.z - player_1.position.z) / (PADDLE_HEIGHT / 2);
-		const MAX_ANGLE_FACTOR = 0.8;
-		ballDirection.z = relativeImpact * MAX_ANGLE_FACTOR;
+		ballDirection.z = relativeImpact * 0.8;
+		ballDirection.x = (ballDirection.x > 0) ? 0.7 : -0.7;
 		const length = Math.sqrt(ballDirection.x * ballDirection.x + ballDirection.z * ballDirection.z);
 		ballDirection.x /= length;
 		ballDirection.z /= length;
 		ballSpeed += 0.05;
-		ball.position.x += ballDirection.x * 0.1;
+		ball.position.x += ballDirection.x * 0.2;
 	}
 
 	if (ball.position.x + BALL_RADIUS >= player_2.position.x - PADDLE_WIDTH / 2 &&
@@ -141,24 +140,31 @@ export function MoveBall(player_1, player_2, ball, player_1_bonus, player_2_bonu
 		ball.position.z - BALL_RADIUS <= player_2.position.z + PADDLE_HEIGHT / 2) {
 		ballDirection.x *= -1;
 		const relativeImpact = (ball.position.z - player_2.position.z) / (PADDLE_HEIGHT / 2);
-		const MAX_ANGLE_FACTOR = 0.8;
-		ballDirection.z = relativeImpact * MAX_ANGLE_FACTOR;
+		ballDirection.z = relativeImpact * 8.8;
+		ballDirection.x = (ballDirection.x > 0) ? 0.7 : -0.7;
 		const length = Math.sqrt(ballDirection.x * ballDirection.x + ballDirection.z * ballDirection.z);
 		ballDirection.x /= length;
 		ballDirection.z /= length;
 		ballSpeed += 0.05;
-		ball.position.x += ballDirection.x * 0.1;
+		ball.position.x += ballDirection.x * 0.2;
 	}
 
 	if (player_1_bonus)
 	{
 		if (ball.position.x + BALL_RADIUS >= player_1_bonus.position.x - PADDLE_WIDTH / 2 &&
-			ball.position.x - BALL_RADIUS <= player_1_bonus.position.x + PADDLE_WIDTH / 2 &&
-			ball.position.z + BALL_RADIUS >= player_1_bonus.position.z - PADDLE_HEIGHT / 2 &&
-			ball.position.z - BALL_RADIUS <= player_1_bonus.position.z + PADDLE_HEIGHT / 2) {
+				ball.position.x - BALL_RADIUS <= player_1_bonus.position.x + PADDLE_WIDTH / 2 &&
+				ball.position.z + BALL_RADIUS >= player_1_bonus.position.z - PADDLE_HEIGHT / 2 &&
+				ball.position.z - BALL_RADIUS <= player_1_bonus.position.z + PADDLE_HEIGHT / 2)
+		{
+			ballDirection.x *= -1;
 			const relativeImpact = (ball.position.z - player_1_bonus.position.z) / (PADDLE_HEIGHT / 2);
-			ballDirection.z = relativeImpact * 1;
-			ballSpeed += 0.01;
+			ballDirection.z = relativeImpact * 8.8;
+			ballDirection.x = (ballDirection.x > 0) ? 0.7 : -0.7;
+			const length = Math.sqrt(ballDirection.x * ballDirection.x + ballDirection.z * ballDirection.z);
+			ballDirection.x /= length;
+			ballDirection.z /= length;
+			ballSpeed += 0.05;
+			ball.position.x += ballDirection.x * 0.2;
 		}
 	}
 
@@ -168,12 +174,19 @@ export function MoveBall(player_1, player_2, ball, player_1_bonus, player_2_bonu
 			ball.position.x - BALL_RADIUS <= player_2_bonus.position.x + PADDLE_WIDTH / 2 &&
 			ball.position.z + BALL_RADIUS >= player_2_bonus.position.z - PADDLE_HEIGHT / 2 &&
 			ball.position.z - BALL_RADIUS <= player_2_bonus.position.z + PADDLE_HEIGHT / 2) {
+			ballDirection.x *= -1;
 			const relativeImpact = (ball.position.z - player_2_bonus.position.z) / (PADDLE_HEIGHT / 2);
-			ballDirection.z = relativeImpact * 1;
-			ballSpeed += 0.01;
+			ballDirection.z = relativeImpact * 8.8;
+			ballDirection.x = (ballDirection.x > 0) ? 0.7 : -0.7;
+			const length = Math.sqrt(ballDirection.x * ballDirection.x + ballDirection.z * ballDirection.z);
+			ballDirection.x /= length;
+			ballDirection.z /= length;
+			ballSpeed += 0.05;
+			ball.position.x += ballDirection.x * 0.2;
 		}
 	}
 }
+
 
 export function MoveBall2v2(player_1, player_2, player_3, player_4, ball)
 {
@@ -216,46 +229,39 @@ export function MoveBall2v2(player_1, player_2, player_3, player_4, ball)
 		ballDirection.x *= -1;
 	}
 
-	checkPaddleCollision(player_1.leftPaddle, ball, BALL_RADIUS, PADDLE_WIDTH);
-	checkPaddleCollision(player_1.rightPaddle, ball, BALL_RADIUS, PADDLE_WIDTH);
+	checkPaddleCollision_2v2(player_1.leftPaddle, ball, BALL_RADIUS, PADDLE_WIDTH);
+	checkPaddleCollision_2v2(player_1.rightPaddle, ball, BALL_RADIUS, PADDLE_WIDTH);
 	
-	checkPaddleCollision(player_2.leftPaddle, ball, BALL_RADIUS, PADDLE_WIDTH);
-	checkPaddleCollision(player_2.rightPaddle, ball, BALL_RADIUS, PADDLE_WIDTH);
+	checkPaddleCollision_2v2(player_2.leftPaddle, ball, BALL_RADIUS, PADDLE_WIDTH);
+	checkPaddleCollision_2v2(player_2.rightPaddle, ball, BALL_RADIUS, PADDLE_WIDTH);
 	
-	checkPaddleCollision(player_3.leftPaddle, ball, BALL_RADIUS, PADDLE_WIDTH);
-	checkPaddleCollision(player_3.rightPaddle, ball, BALL_RADIUS, PADDLE_WIDTH);
+	checkPaddleCollision_2v2(player_3.leftPaddle, ball, BALL_RADIUS, PADDLE_WIDTH);
+	checkPaddleCollision_2v2(player_3.rightPaddle, ball, BALL_RADIUS, PADDLE_WIDTH);
 	
-	checkPaddleCollision(player_4.leftPaddle, ball, BALL_RADIUS, PADDLE_WIDTH);
-	checkPaddleCollision(player_4.rightPaddle, ball, BALL_RADIUS, PADDLE_WIDTH);
+	checkPaddleCollision_2v2(player_4.leftPaddle, ball, BALL_RADIUS, PADDLE_WIDTH);
+	checkPaddleCollision_2v2(player_4.rightPaddle, ball, BALL_RADIUS, PADDLE_WIDTH);
 }
 
-function checkPaddleCollision(paddle, ball, BALL_RADIUS, PADDLE_WIDTH)
+function checkPaddleCollision_2v2(paddle, ball, BALL_RADIUS, PADDLE_WIDTH)
 {
 	if (!paddle)
 		return;
 
 	const paddleWorldPosition = paddle.getAbsolutePosition();
-	
-	if (ball.position.x + BALL_RADIUS >= paddleWorldPosition.x - PADDLE_WIDTH / 2 &&
-		ball.position.x - BALL_RADIUS <= paddleWorldPosition.x + PADDLE_WIDTH / 2 &&
-		ball.position.z + BALL_RADIUS >= paddleWorldPosition.z - PADDLE_DEPTH / 2 &&
-		ball.position.z - BALL_RADIUS <= paddleWorldPosition.z + PADDLE_DEPTH / 2)
-	{
-		// const relativeImpact = (ball.position.z - paddleWorldPosition.z) / (PADDLE_DEPTH / 2);
 
-		// ballDirection.x *= -1;
-		// ballDirection.z = relativeImpact * 1;
-
-		// ballSpeed += 0.01;
+	if (ball.position.x + BALL_RADIUS >= paddleWorldPosition.position.x - PADDLE_WIDTH / 2 &&
+		ball.position.x - BALL_RADIUS <= paddleWorldPosition.position.x + PADDLE_WIDTH / 2 &&
+		ball.position.z + BALL_RADIUS >= paddleWorldPosition.position.z - PADDLE_HEIGHT / 2 &&
+		ball.position.z - BALL_RADIUS <= paddleWorldPosition.position.z + PADDLE_HEIGHT / 2) {
 		ballDirection.x *= -1;
-		const relativeImpact = (ball.position.z - paddleWorldPosition.z) / (PADDLE_DEPTH / 2);
-		const MAX_ANGLE_FACTOR = 0.8;
-		ballDirection.z = relativeImpact * MAX_ANGLE_FACTOR;
+		const relativeImpact = (ball.position.z - paddleWorldPosition.position.z) / (PADDLE_HEIGHT / 2);
+		ballDirection.z = relativeImpact * 8.8;
+		ballDirection.x = (ballDirection.x > 0) ? 0.7 : -0.7;
 		const length = Math.sqrt(ballDirection.x * ballDirection.x + ballDirection.z * ballDirection.z);
 		ballDirection.x /= length;
 		ballDirection.z /= length;
 		ballSpeed += 0.05;
-		ball.position.x += ballDirection.x * 0.1;
+		ball.position.x += ballDirection.x * 0.2;
 	}
 }
 

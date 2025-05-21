@@ -111,9 +111,9 @@ export function updateScore(side)
 	}
 	if (soloGameStart)
 	{
-		if (scoreLeft === 1 || scoreRight === 1) {
+		if (scoreLeft === 5 || scoreRight === 5) {
 			SetIsGameFinished(true);
-			if (scoreLeft === 3)
+			if (scoreLeft === 5)
 			{
 				isPlayer1_win = true;
 				isPlayer2_win = false;
@@ -129,9 +129,9 @@ export function updateScore(side)
 	}
 	else if (multi_player_game)
 	{
-		if (scoreLeft === 1 || scoreRight === 1) {
+		if (scoreLeft === 5 || scoreRight === 5) {
 			SetIsGameFinished(true);
-			if (scoreLeft === 3)
+			if (scoreLeft === 5)
 			{
 				isTeam1_win = true;
 				isTeam2_win = false;

@@ -1,4 +1,3 @@
-
 import { create_environment_view1, create_environment_view3, create_environment_view2 } from "./init_game.js";
 import { UpdatePlayerPose } from "./player.js";
 import { MoveBall, MoveBall2v2 } from "./ball.js";
@@ -230,6 +229,7 @@ let Multi_gameStart = false;
 let AI_gameStart = false;
 let tournament_game = false;
 let play = false;
+let canPressSpace = false; // Nouveau drapeau pour bloquer l'appui sur Espace
 let lastPerformanceCheck = Date.now();
 let frameCounter = 0;
 let fpsHistory = [];
@@ -388,6 +388,13 @@ export function startGame() {
 	AI_gameStart = false;
 	tournament_game = false;
 	SetIsGameFinished(false);
+
+	// Bloquer l'appui sur Espace pendant 5 secondes
+	canPressSpace = false;
+	setTimeout(() => {
+		canPressSpace = true; // Autoriser l'appui sur Espace après 5 secondes
+		console.log("Espace activé !");
+	}, 5000);
 }
 
 export function startMultiGame() {
@@ -520,8 +527,14 @@ engine.runRenderLoop(() => {
 				initialized = true;
 			}
 			if (initialized) {
-				if (scene.inputStates.space && !play)
+				// Bloquer l'appui sur Espace si canPressSpace est false
+				if (scene.inputStates.space && !play) {
+					if (!canPressSpace) {
+						console.log("Espace désactivé, veuillez attendre...");
+						return;
+					}
 					play = true;
+				}
 				if (play) {
 					const bonusPlayer = UpdatePlayerPose(player_1, player_2);
 					MoveBall(player_1, player_2, ball, bonusPlayer.player_1_bonus, bonusPlayer.player_2_bonus);
@@ -550,8 +563,13 @@ engine.runRenderLoop(() => {
 				initialized = true;
 			}
 			if (initialized) {
-				if (scene.inputStates.space && !play)
+				if (scene.inputStates.space && !play) {
+					if (!canPressSpace) {
+						console.log("Espace désactivé, veuillez attendre...");
+						return;
+					}
 					play = true;
+				}
 				if (play) {
 					UpdatePlayerAndAI_Pose(player_1, AI_player, ball);
 					MoveBall(player_1, AI_player, ball);
