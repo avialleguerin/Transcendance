@@ -9,7 +9,7 @@ RUN wget -q https://releases.hashicorp.com/vault/1.15.0/vault_1.15.0_linux_amd64
     && mv vault /usr/local/bin/ \
     && rm vault_1.15.0_linux_amd64.zip
 
-RUN apk add --no-cache jq curl file
+RUN apk add --no-cache jq curl file apache2-utils
 
 RUN mkdir -p /vault/config /vault/policies /vault/scripts
 
