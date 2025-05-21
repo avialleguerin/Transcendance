@@ -1,7 +1,7 @@
 let accessToken = sessionStorage.getItem("accessToken")
 // window.accessToken = accessToken;
 
-function showNotification(message, isSuccess = true) {
+function notif(message, isSuccess = true) {
 	const notification = document.getElementById('resultMessage');
 	
 	if (notification) {
@@ -42,7 +42,7 @@ async function verify2FA(event) {
 			accessToken = sessionStorage.getItem("accessToken");
 			sessionStorage.removeItem("userId")
 			console.log("✅ 2FA code valid!");
-			showNotification(data.message, true);
+			notif(data.message, true);
 			history.pushState({}, '', '/Game_menu');
 			import('../static/js/views/Game_menu.js').then(module => {
 				const GameMenu = module.default;
@@ -55,7 +55,7 @@ async function verify2FA(event) {
 				});
 			});
 		} else
-			showNotification(data.error, false);
+			notif(data.error, false);
 	} catch (err) {
 		console.error("Erreur lors de la validation du code 2FA :", err);
 	}
@@ -80,7 +80,7 @@ async function login(event) {
 	accessToken = sessionStorage.getItem("accessToken")
 	console.log("data: ", data);
 	if (!accessToken && !data.success)
-		showNotification(data.error, false);
+		notif(data.error, false);
 	else if (data.success && data.connection_status === "partially_connected" && data.user.doubleAuth_status)
 	{
 		sessionStorage.setItem("userId", data.user.userId);
@@ -90,7 +90,7 @@ async function login(event) {
 	}
 	else if (data.success && data.connection_status === "connected")
 	{
-		showNotification(data.message, true);
+		notif(data.message, true);
 		console.log("✅ Connected, Token :", accessToken)
 		console.log("accessToken before Game menu: ", accessToken);
 		history.pushState({}, '', '/Game_menu');
@@ -108,7 +108,7 @@ async function login(event) {
 		document.getElementById("login-password").value = "";
 		
 	} else {
-		showNotification(data.error, false);
+		notif(data.error, false);
 		document.getElementById("login-password").value = "";
 		console.log(data.error)
 	}
@@ -152,7 +152,7 @@ async function register(event) {
 	const confirmPassword = document.getElementById("register-confirm-password").value;
 
 	if (password !== confirmPassword) {
-		showNotification("Passwords are different", false);
+		notif("Passwords are different", false);
 		return ;
 	}
 
@@ -166,11 +166,11 @@ async function register(event) {
 	});
 	const data = await response.json();
 	if (data.success) {
-		showNotification(data.message, true);
+		notif(data.message, true);
 		document.getElementById("create_account_id").classList.remove("active")
 		document.getElementById("loginform_id").classList.remove("active")
 	} else
-		showNotification(data.error, false);
+		notif(data.error, false);
 };
 
 // function getUserIdFromToken(token) {
