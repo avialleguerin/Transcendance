@@ -1,21 +1,22 @@
+{/* <td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">********</td> */}
+{/* <td class="bg-white px-6 py-4 border border-gray-200 border-r-0 border-l-0"><img class="rounded-lg" style="width: 100%; height: auto; max-height: 50px; object-fit: contain;" src="/uploads/${user.profile_picture}"></td> */}
+
+// <td class="bg-white px-6 py-4 border border-gray-200 border-r-0 border-l-0">${user.email}</td>
 async function fetch_users() {
 	try {
 		const response = await fetch('/request/admin/get-all-users', {
 			method: 'GET',
 		});
 		const users = await response.json();
-		document.getElementById('users-table').innerHTML = users.map(user => `
-			<tr>
-				<td class="border px-4 py-2">${user.userId}</td>
-				<td class="border px-4 py-2"><img class="rounded-lg" style="width: 100%; height: auto; max-height: 80px; object-fit: contain;" src="/uploads/${user.profile_picture}"></td>
-				<td class="border px-4 py-2">${user.username}</td>
-				<td class="border px-4 py-2">${user.email}</td>
-				<td class="border px-4 py-2">********</td>
-				<td class="border px-4 py-2">${user.doubleAuth_status === 0 ? "disabled" : "enabled"}</td>
-				<td class="border px-4 py-2">${user.doubleAuth_secret}</td>
-				<td class="border px-4 py-2">${user.created_at}</td>
-				<td class="border px-4 py-2"><button class="bg-gray-700 hover:bg-red-500 m-2 text-white px-2 py-1 rounded" onclick="delete_user(${user.userId})">Delete</button></td>
-			</tr>
+		document.getElementById('users-table').innerHTML = users.map(user => /*html*/`
+			<tr class="border-collapse text-sm">
+                <td class="bg-white px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${user.userId}</td>
+                <td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.username}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.email.substring(0, 2)}***@${user.email.split('@')[1]}</td>
+                <td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.doubleAuth_status === 0 ? "Disabled" : "Enabled"}</td>
+                <td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.created_at}</td>
+                <td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0"><button class="bg-red-200 hover:bg-red-300 m-2 text-red-500 hover:text-red-600 px-4 py-1 rounded-full" onclick="delete_user(${user.userId})">Delete</button></td>
+            </tr>
 		`).join('');
 	} catch (err) {
 		console.error('Erreur lors de la récupération des utilisateurs :', err);
@@ -28,14 +29,14 @@ async function fetch_games() {
 			method: 'GET',
 		});
 		const games = await response.json();
-		document.getElementById('games-table').innerHTML = games.map(game => `
+		document.getElementById('games-table').innerHTML = games.map(game => /*html*/`
 			<tr>
-				<td class="border px-4 py-2">${game.gameId}</td>
-				<td class="border px-4 py-2">${game.user1}</td>
-				<td class="border px-4 py-2">${game.user2}</td>
-				<td class="border px-4 py-2">${game.winner}</td>
-				<td class="border px-4 py-2">${game.created_at}</td>
-				<td class="border px-4 py-2"><button class="bg-gray-700 hover:bg-red-500 m-2 text-white px-2 py-1 rounded" onclick="delete_game(${game.gameId})">Delete</button></td>
+				<td class="bg-white px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${game.gameId}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.user1}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.user2}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.winner}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.created_at}</td>
+				<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0"><button class="bg-red-200 hover:bg-red-300 m-2 text-red-500 hover:text-red-600 px-4 py-1 rounded-full" onclick="delete_game(${game.gameId})">Delete</button></td>
 			</tr>
 		`).join('');
 	} catch (err) {
