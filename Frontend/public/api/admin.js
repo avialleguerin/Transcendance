@@ -3,30 +3,6 @@
 
 // <td class="bg-white px-6 py-4 border border-gray-200 border-r-0 border-l-0">${user.email}</td>
 
-function notif(message, isSuccess = true) {
-	const notification = document.getElementById('resultMessage');
-	
-	if (notification) {
-		if (isSuccess) {
-			notification.innerHTML = "<div style='display:flex; align-items:center;'><img src='./srcs/game/assets/image/success.png' style='width:20px; height:20px; margin-right:5px;'><span>" + message + "</span></div>";
-			notification.className = "py-2 px-4 rounded shadow-lg bg-green-500 text-white font-medium"
-		} else {
-			notification.innerHTML = "<div style='display:flex; align-items:center;'><img src='./srcs/game/assets/image/failure.png' style='width:20px; height:20px; margin-right:5px;'><span>" + message + "</span></div>";
-			notification.className = "py-2 px-4 rounded shadow-lg bg-red-500 text-white font-medium";
-		}
-
-		setTimeout(() => {
-			notification.classList.add('opacity-100');
-		}, 10);
-
-		setTimeout(() => {
-			notification.classList.remove('opacity-100');
-			notification.classList.add('opacity-0');
-		}, 3000);
-	}
-}
-
-
 async function fetch_users() {
 	try {
 		const response = await fetch('/request/admin/get-all-users', {

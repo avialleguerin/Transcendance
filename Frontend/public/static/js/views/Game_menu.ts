@@ -19,9 +19,7 @@ export default class Game_menu extends AbstractView {
 	constructor() {
 		super();
 		this.setTitle("Game_menu");
-		
-		// Get accessToken from localStorage or other source
-		// const accessToken: string | null = localStorage.getItem('accessToken');
+	
 		const accessToken: string | null = sessionStorage.getItem('accessToken');
 		if (!accessToken || accessToken === undefined) {
 			history.pushState({}, '', '/');
@@ -246,14 +244,11 @@ export default class Game_menu extends AbstractView {
 								<div class="profile_photo_container">
 									<div class="profile_photo_circle" id="profile_photo_circle"></div>
 									<form id="uploadForm" enctype="multipart/form-data" onsubmit="changeProfilePicture(event)">
-									<input type="file" name="image" id="profile_photo_input" accept="image/*" />
-									
-									<button type="button" onclick="document.getElementById('profile_photo_input').click()">
-										Choose File
-									</button>
-									
-									<div id="fileName"></div>
-
+										<input type="file" name="image" id="profile_photo_input" accept="image/*" />
+										<button type="button" onclick="document.getElementById('profile_photo_input').click()">
+											Choose File
+										</button>
+										<div id="fileName"></div>
 										<button type="submit">Upload</button>
 									</form>
 								</div>

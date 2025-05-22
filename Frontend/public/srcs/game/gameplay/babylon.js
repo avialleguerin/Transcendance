@@ -501,7 +501,7 @@ engine.runRenderLoop(() => {
 			frameCount = 0;
 		}
 		applyQualitySettings();
-
+		const accessToken = sessionStorage.getItem('accessToken');
 		if ((accessToken && accessToken !== undefined) && accessToken !== "undefined" && !isConnected) {
 			isConnected = true;
 			console.log("User is connectedddddddddddddddddddddddddddddd");

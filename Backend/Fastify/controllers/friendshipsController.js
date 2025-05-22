@@ -5,7 +5,7 @@ import { getUserFromToken } from './utils.js'
 
 export async function getUserFriendships(request, reply) {
 	try {
-		const infos = getUserFromToken(request)
+		const infos = await getUserFromToken(request)
 		if (!infos)
 			return reply.code(401).send({ error: "Unauthorized" })
 		const user = infos.user
@@ -16,6 +16,7 @@ export async function getUserFriendships(request, reply) {
 		if (!infos.accessToken)
 			return reply.code(401).send({ error: "Unauthorized" })
 		const friendships = friendshipsModel.getUserFriendships(user.userId)
+		console.log("friendships :", friendships)
 		return reply.send({ succes: true, friendships: friendships, accessToken: infos.accessToken })
 	} catch (err) {
 		return reply.code(500).send({ error: err.message, accessToken: infos.accessToken })
@@ -27,7 +28,7 @@ export async function createFriendship(request, reply) {
 	
 	try {
 		console.log("friend :", friend)
-		const infos = getUserFromToken(request)
+		const infos = await getUserFromToken(request)
 		if (!infos)
 			return reply.code(401).send({ error: "Unauthorized" })
 		const user = infos.user
