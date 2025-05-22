@@ -281,7 +281,9 @@ export default class Game_menu extends AbstractView {
 							<div class="btn_delete">
 								<button id="delete_btn" class="btn_delete_btn" onclick="delete_account()">Delete account</button>
 							</div>
-
+							<div class="export_btn">
+								<button id="export_btn" class="btn_export_btn" onclick="export_data()">Export data</button>
+							</div>
 							<h1>GAME STATISTICS</h1>
 							<div class="game_statistics">
 								<div class="statistics">

@@ -1950,6 +1950,34 @@ input[type="file"] {
 	transform: translate(56%, 230%);
 }
 
+.btn_export_btn {
+    padding: 20px 40px;
+    font-size: 0.5vw;
+    font-weight: bold;
+    transform: translateY(-50%);
+    background-color: transparent;
+    color: white;
+    border: 2px solid #44444400;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    background-image: url("../../../srcs/game/assets/image/boutton.svg");
+    background-size: 100% auto;
+    background-position: center;
+    background-repeat: no-repeat;
+    line-height: 3vh;
+    width: 88px;
+    height: 54px;
+    display: flex
+;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translate(75%, 1100%);
+}
+
 .profile_param_unlocked h1 {
 	color: #ffffff;
 	text-shadow: 2px 2px 4px rgb(0, 0, 0);

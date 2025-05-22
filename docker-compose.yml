@@ -59,6 +59,8 @@ services:
       - ./Frontend/public/static/js/index.css:/usr/share/nginx/dist/static/js/index.css:ro  
       - ./Frontend/public/index.html:/usr/share/nginx/dist/index.html:ro
       - ./Frontend/public/api:/usr/share/nginx/dist/api:ro
+      #For mdp for admin panel
+      - ./Security/Nginx/passwd:/etc/nginx/passwd
 
   tsengine:
     image: node:20-alpine
@@ -91,6 +93,7 @@ services:
     volumes:
       - ./Data/vault_data:/vault/data
       - ./Security/Vault/scripts:/vault/scripts
+      - ./Security/Nginx/passwd:/nginx/passwd
       # - ./Security/Vault/vault_data:/vault/data
     cap_add:
       - IPC_LOCK

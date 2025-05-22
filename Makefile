@@ -33,6 +33,7 @@ build:
 down:
 	@docker compose down
 	@rm -rf ./Frontend/dist
+	@rm -rf ./Security/Nginx/passwd
 
 re:
 	@make down

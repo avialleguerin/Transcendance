@@ -4,15 +4,15 @@
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>Admin - Gestion des Users</title>
+	<title>Panel Admin</title>
 	<script src="https://cdn.tailwindcss.com"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body class="bg-white text-gray-800 flex">
-	<!-- Sidebar -->
+
 	<aside class="bg-gray-100 text-white w-64 min-h-screen fixed left-0 top-0 ">
-		<h1 class="p-4 pl-7 text-2xl text-violet-600 font-bold"><i class="fas fa-file-alt mr-2"></i>Panel Admin</h1>
+		<h1 class="p-4 pl-7 text-2xl text-violet-600 font-bold"><i class="fas fa-database mr-2"></i>Panel Admin</h1>
 		<nav class="mt-6 flex flex-col space-y-2 px-3">
 			<button onclick="showTab('users-tab')" class="text-gray-700 tab-btn group w-full flex items-center py-3 px-4 rounded-lg hover:bg-violet-600 hover:text-white transition-colors" id="users-tab-btn">
 				<div class="w-6 text-center">
@@ -42,34 +42,35 @@
 		</nav>
 	</aside>>
 
-	<!-- Main Content -->
+	<div id="notification-container" class="fixed top-0 left-0 right-0 flex justify-center z-50 mt-4">
+		<p id="resultMessage" class="py-2 px-4 rounded shadow-lg transition-all duration-300 transform translate-y-0 opacity-0"></p>
+	</div>
+
 	<main class="ml-64 w-full">
 		<header class="bg-white p-4 border-b-2 border-gray-100">
 			<div class="container mx-auto">
-				<h1 id="header-title" class="px-4 md:px-8 text-4xl font-semibold">Utilisateurs</h1>
+				<h1 id="header-title" class="px-4 md:px-8 text-4xl font-semibold">Users</h1>
 			</div>
 		</header>
 
-		<!-- Content Tabs -->
 		<div id="users-tab" class="tab-content container m-6 mx-auto">
 			<div class="px-4 md:px-8 container mx-auto">
 				<h2 class=" text-xl font-semibold mb-6 mt-4">List of Users</h2>
 				<div class=" bg-white ">
 					<table class="py-4 my-4 md:py-8 min-w-full border-separate border-spacing-y-3">
 						<thead>
-								<tr>
-									<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider rounded-l-xl">User ID</th>
-									<!-- <th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Avatar</th> -->
-									<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Username</th>
-									<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Email</th>
-									<!-- <th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Password</th> -->
-									<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">2FA</th>
-									<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Date</th>
-									<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider rounded-r-xl">Action</th>
-								</tr>
+							<tr>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider rounded-l-xl">User ID</th>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Username</th>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Email</th>
+								<!-- <th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Password</th> or the level of the password--> 
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">2FA</th>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Date</th>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider rounded-r-xl">Action</th>
+							</tr>
 						</thead>
 						<tbody class="bg-white " id="users-table">
-							<!-- Les données seront injectées ici par le JavaScript -->
+							 <!-- Data will be injected here by JavaScript -->
 						</tbody>
 					</table>
 				</div>
@@ -158,17 +159,16 @@
 							</tr>
 						</thead>
 						<tbody class="bg-white" id="games-table">
-							<!-- Les données seront injectées ici par le JavaScript -->
+							 <!-- Data will be injected here by JavaScript -->
 						</tbody>
 					</table>
 				</div>
 				<button class="bg-violet-500 text-white font-bold py-2 px-4 m-6 mx-auto block w-auto rounded-lg hover:bg-violet-600 transition" onclick="add_game_modal()">Add Game</button>
 			</div>
 		</div>
-
-		<div id="addGameModal" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 hidden w-[400px]">
-			<form id="addGameForm" class="flex-1 mx-auto bg-white p-6 rounded-lg shadow-lg" onsubmit="add_game(event)">
-				<h2 class="text-2xl font-semibold text-center mb-2">Add Game</h2>
+		<div id="addUserModal" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 hidden w-[400px]">
+			<form id="addUserForm" class="mx-auto bg-white p-6 rounded-lg shadow-lg" onsubmit="register(event)">
+				<h2 class="text-2xl font-semibold text-center mb-2">Add User</h2>
 				<div class="mb-2">
 					<label for="user1" class="block text-gray-700 font-medium">User1 :</label>
 					<input type="text" id="addGame-user1" name="user1" placeholder="User1" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
@@ -188,20 +188,8 @@
 
 		<div id="rgpd-tab" class="tab-content hidden container mx-auto my-6 p-6 bg-white rounded-lg">
 			<h2 class="text-xl font-semibold mb-4">RGPD - Cartographie des données personnelles</h2>
-			
-			<!-- Section 1: Cartographie des données -->
 			<div class="mb-8">
-				<h3 class="text-lg font-semibold text-violet-600 mb-2">1. Cartographie des données personnelles</h3>
-				
-				<h4 class="font-medium text-gray-700 mb-2">Données personnelles identifiées :</h4>
-				<ul class="list-disc pl-5 mb-4">
-				<li>ID utilisateur</li>
-				<li>Username</li>
-				<li>Email</li>
-				<li>Rôle (Admin, User, Guest)</li>
-				<li>Date de création</li>
-				</ul>
-				
+				<h3 class="text-lg font-semibold text-violet-600 mb-2">Cartographie des données personnelles de nos utilisateurs</h3>
 				<div class="overflow-x-auto mb-4">
 					<table class="min-w-full bg-white">
 						<thead class="bg-gray-50">
@@ -242,25 +230,33 @@
 								<td class="py-2 px-4 border">Base de données utilisateurs</td>
 								<td class="py-2 px-4 border">Durée du compte</td>
 							</tr>
+							<tr>
+								<td class="py-2 px-4 border">Données d'utilisation</td>
+								<td class="py-2 px-4 border">Scores, historique des parties</td>
+								<td class="py-2 px-4 border">Faible</td>
+								<td class="py-2 px-4 border">Base de données jeux</td>
+								<td class="py-2 px-4 border">Durée du compte</td>
+							</tr>
+							<tr>
+								<td class="py-2 px-4 border">Données techniques</td>
+								<td class="py-2 px-4 border">Cookies de session, préférences</td>
+								<td class="py-2 px-4 border">Normale</td>
+								<td class="py-2 px-4 border">Navigateur utilisateur</td>
+								<td class="py-2 px-4 border">Variable (session à 1 an)</td>
+							</tr>
+							<tr>
+								<td class="py-2 px-4 border">Données techniques</td>
+								<td class="py-2 px-4 border">Logs de connexion, actions utilisateur</td>
+								<td class="py-2 px-4 border">Normale</td>
+								<td class="py-2 px-4 border">Serveur d'application</td>
+								<td class="py-2 px-4 border">3 mois</td>
+							</tr>
 						</tbody>
 					</table>
 				</div>
-		  
-			  <h4 class="font-medium text-gray-700 mb-2">Sources de données supplémentaires :</h4>
-			  <ul class="list-disc pl-5 mb-4">
-				<li>Formulaires d'inscription</li>
-				<li>Profils utilisateurs</li>
-				<li>Données de jeu (scores, historique)</li>
-				<li>Données de messagerie/chat</li>
-				<li>Cookies et traceurs</li>
-				<li>Journaux d'activité (logs)</li>
-			  </ul>
 			</div>
-			
-			<!-- Section 2: Analyse des traitements -->
 			<div class="mb-8">
-				<h3 class="text-lg font-semibold text-violet-600 mb-2">2. Analyse des traitements</h3>
-				
+				<h3 class="text-lg font-semibold text-violet-600 mb-2">Analyse des traitements</h3>
 				<div class="overflow-x-auto mb-4">
 					<table class="min-w-full bg-white">
 						<thead class="bg-gray-50">
@@ -273,96 +269,163 @@
 						</tr>
 						</thead>
 						<tbody>
-						<tr>
-							<td class="py-2 px-4 border">Gestion des comptes</td>
-							<td class="py-2 px-4 border">Administration des utilisateurs</td>
-							<td class="py-2 px-4 border">ID, username, email, rôle</td>
-							<td class="py-2 px-4 border">Administration</td>
-							<td class="py-2 px-4 border">Administrateurs</td>
-						</tr>
-						<tr>
-							<td class="py-2 px-4 border">Authentification</td>
-							<td class="py-2 px-4 border">Vérification d'identité</td>
-							<td class="py-2 px-4 border">Username, email</td>
-							<td class="py-2 px-4 border">Sécurité</td>
-							<td class="py-2 px-4 border">Utilisateurs, Système</td>
-						</tr>
+							<tr>
+								<td class="py-2 px-4 border">Gestion des comptes</td>
+								<td class="py-2 px-4 border">Administration des utilisateurs</td>
+								<td class="py-2 px-4 border">ID, username, email, rôle</td>
+								<td class="py-2 px-4 border">Administration</td>
+								<td class="py-2 px-4 border">Administrateurs</td>
+							</tr>
+							<tr>
+								<td class="py-2 px-4 border">Authentification</td>
+								<td class="py-2 px-4 border">Vérification d'identité</td>
+								<td class="py-2 px-4 border">Username, email</td>
+								<td class="py-2 px-4 border">Sécurité</td>
+								<td class="py-2 px-4 border">Utilisateurs, Système</td>
+							</tr>
+							<tr>
+								<td class="py-2 px-4 border">Inscription</td>
+								<td class="py-2 px-4 border">Création de comptes utilisateurs</td>
+								<td class="py-2 px-4 border">Formulaires d'inscription, données d'identification</td>
+								<td class="py-2 px-4 border">Création de compte</td>
+								<td class="py-2 px-4 border">Utilisateurs</td>
+							</tr>
+							<tr>
+								<td class="py-2 px-4 border">Jeu en ligne</td>
+								<td class="py-2 px-4 border">Fourniture du service de jeu</td>
+								<td class="py-2 px-4 border">Scores, historique des parties</td>
+								<td class="py-2 px-4 border">Service principal</td>
+								<td class="py-2 px-4 border">Utilisateurs</td>
+							</tr>
+							<tr>
+								<td class="py-2 px-4 border">Suivi technique</td>
+								<td class="py-2 px-4 border">Journaux d'activité et cookies</td>
+								<td class="py-2 px-4 border">Logs, cookies de session</td>
+								<td class="py-2 px-4 border">Sécurité et performance</td>
+								<td class="py-2 px-4 border">Système, Administrateurs</td>
+							</tr>
+							<tr>
+								<td class="py-2 px-4 border">Fonctionnalités sociales</td>
+								<td class="py-2 px-4 border">Gestion des amis et messagerie</td>
+								<td class="py-2 px-4 border">Listes d'amis, données de profil</td>
+								<td class="py-2 px-4 border">Interaction sociale</td>
+								<td class="py-2 px-4 border">Utilisateurs</td>
+							</tr>
+							<tr>
+								<td class="py-2 px-4 border">Classements</td>
+								<td class="py-2 px-4 border">Suivi des performances des joueurs</td>
+								<td class="py-2 px-4 border">Historique des parties, scores</td>
+								<td class="py-2 px-4 border">Compétition</td>
+								<td class="py-2 px-4 border">Utilisateurs, Public</td>
+							</tr>
 						</tbody>
 					</table>
 				</div>
 			</div>
-			
-			<!-- Section 3: Base juridique -->
 			<div class="mb-8">
-			  <h3 class="text-lg font-semibold text-violet-600 mb-2">3. Base juridique</h3>
-			  
+				<h3 class="text-lg font-semibold text-violet-600 mb-2">Base juridique</h3>
 				<div class="overflow-x-auto mb-4">
-					<table class="min-w-full bg-white">
-						<thead class="bg-gray-50">
-						<tr>
-							<th class="py-2 px-4 border">Traitement</th>
-							<th class="py-2 px-4 border">Base juridique</th>
-							<th class="py-2 px-4 border">Justification</th>
-						</tr>
-						</thead>
-						<tbody>
-						<tr>
-							<td class="py-2 px-4 border">Gestion des comptes</td>
-							<td class="py-2 px-4 border">Intérêt légitime</td>
-							<td class="py-2 px-4 border">Nécessaire à l'administration de la plateforme</td>
-						</tr>
-						<tr>
-							<td class="py-2 px-4 border">Authentification</td>
-							<td class="py-2 px-4 border">Exécution contractuelle</td>
-							<td class="py-2 px-4 border">Nécessaire pour fournir le service</td>
-						</tr>
-						<tr>
-							<td class="py-2 px-4 border">Communication marketing</td>
-							<td class="py-2 px-4 border">Consentement</td>
-							<td class="py-2 px-4 border">Opt-in explicite requis</td>
-						</tr>
-						</tbody>
-					</table>
+				  <table class="min-w-full bg-white">
+					<thead class="bg-gray-50">
+					<tr>
+					  <th class="py-2 px-4 border">Traitement</th>
+					  <th class="py-2 px-4 border">Base juridique</th>
+					  <th class="py-2 px-4 border">Justification</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+					  <td class="py-2 px-4 border">Gestion des comptes</td>
+					  <td class="py-2 px-4 border">Intérêt légitime</td>
+					  <td class="py-2 px-4 border">Nécessaire à l'administration de la plateforme</td>
+					</tr>
+					<tr>
+					  <td class="py-2 px-4 border">Authentification</td>
+					  <td class="py-2 px-4 border">Exécution contractuelle</td>
+					  <td class="py-2 px-4 border">Nécessaire pour fournir le service</td>
+					</tr>
+					<tr>
+					  <td class="py-2 px-4 border">Inscription</td>
+					  <td class="py-2 px-4 border">Exécution contractuelle</td>
+					  <td class="py-2 px-4 border">Nécessaire à la création du compte utilisateur</td>
+					</tr>
+					<tr>
+					  <td class="py-2 px-4 border">Jeu en ligne</td>
+					  <td class="py-2 px-4 border">Exécution contractuelle</td>
+					  <td class="py-2 px-4 border">Constitue le service principal de la plateforme</td>
+					</tr>
+					<tr>
+					  <td class="py-2 px-4 border">Suivi technique</td>
+					  <td class="py-2 px-4 border">Intérêt légitime</td>
+					  <td class="py-2 px-4 border">Garantir la sécurité et la performance du système</td>
+					</tr>
+					<tr>
+					  <td class="py-2 px-4 border">Fonctionnalités sociales</td>
+					  <td class="py-2 px-4 border">Consentement</td>
+					  <td class="py-2 px-4 border">Fonctionnalités optionnelles activées par l'utilisateur</td>
+					</tr>
+					<tr>
+					  <td class="py-2 px-4 border">Classements</td>
+					  <td class="py-2 px-4 border">Intérêt légitime</td>
+					  <td class="py-2 px-4 border">Inhérent à la dimension compétitive du jeu</td>
+					</tr>
+					</tbody>
+				  </table>
 				</div>
-			</div>
-			
-			<!-- Section 4: Registre des traitements -->
-			<div>
-				<h3 class="text-lg font-semibold text-violet-600 mb-2">4. Registre des traitements (Article 30)</h3>
-				<p class="text-gray-700">Document structuré conforme à l'article 30 : 
-				<a href="#" class="text-violet-600 hover:underline" id="show-RADT">Voir le RADT_fr.md</a>
-				</p>
-			</div>
-		</div>
-		<div id="notification-container" class="fixed top-0 left-0 right-0 flex justify-center z-50 mt-4">
-			<p id="resultMessage" class="py-2 px-4 rounded shadow-lg transition-all duration-300 transform translate-y-0 opacity-0"></p>
+			  </div>
 		</div>
 
-		<script src="./api/admin.js"></script>
-		<script src="./api/utils.js"></script>
-		<script>
-			function showTab(tabId) {
-				const tabNames = {
-					'users-tab': 'Utilisateurs',
-					'games-tab': 'Jeux',
-					'friendships-tab': 'Friendships',
-					'rgpd-tab': 'RGPD'
-				};
+		<div id="addGameModal" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 hidden w-[400px]">
+			<form id="addGameForm" class="flex-1 mx-auto bg-white p-6 rounded-lg shadow-lg" onsubmit="add_game(event)">
+				<h2 class="text-2xl font-semibold text-center mb-2">Add Game</h2>
+				<div class="mb-2">
+					<label for="user1" class="block text-gray-700 font-medium">User1 :</label>
+					<input type="text" id="addGame-user1" name="user1" placeholder="User1" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
+				</div>
+				<div class="mb-2">
+					<label for="user2" class="block text-gray-700 font-medium">User2 :</label>
+					<input type="text" id="addGame-user2" name="user2" placeholder="User2" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
+				</div>
+				<button type="submit" class="w-full bg-green-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-600 transition">Add Game</button>
+				<button type="button" class="mt-4 w-full bg-red-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-600 transition" onclick="close_game_modal()">Cancel</button>
+				<p id="addGame-resultMessage" class="mt-4 text-center text-sm font-semibold text-gray-700"></p>
+			</form>
+		</div>
+	</main>
+
+	<script src="./api/admin.js"></script>
+	<script src="./api/utils.js"></script>
+	<script>
+		function showTab(tabId) {
+			const tabNames = {
+				'users-tab': 'Users',
+				'games-tab': 'Games',
+				'friendships-tab': 'Friendships',
+				'rgpd-tab': 'RGPD'
+			};
+			
+			// Stock the active tab in localStorage
+			localStorage.setItem('transcendance_admin_active_tab', tabId);
+			
+			document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+			document.getElementById(tabId).classList.remove('hidden');
+			document.getElementById('header-title').textContent = tabNames[tabId];
+			document.querySelectorAll('.tab-btn').forEach(btn => {
+				const isActive = btn.id === tabId + '-btn';
+				btn.classList.toggle('bg-violet-600', isActive);
+				btn.classList.toggle('text-white', isActive);
 				
-				document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
-				document.getElementById(tabId).classList.remove('hidden');
-				document.getElementById('header-title').textContent = tabNames[tabId];
-				document.querySelectorAll('.tab-btn').forEach(btn => {
-					const isActive = btn.id === tabId + '-btn';
-					btn.classList.toggle('bg-violet-600', isActive);
-					btn.classList.toggle('text-white', isActive);
-					
-					const icon = btn.querySelector('i');
-					icon.classList.toggle('text-white', isActive);
-					icon.classList.toggle('text-gray-700', !isActive);
-				});
-			}
-			window.onload = () => showTab('users-tab');
-		</script>
-	</body>
-	</html>
+				const icon = btn.querySelector('i');
+				icon.classList.toggle('text-white', isActive);
+				icon.classList.toggle('text-gray-700', !isActive);
+			});
+		}
+	
+		window.onload = () => {
+			// Get the last active tab or use 'users-tab' by default
+			const lastActiveTab = localStorage.getItem('transcendance_admin_active_tab') || 'users-tab';
+			showTab(lastActiveTab);
+		}
+	</script>
+</body>
+</html>
