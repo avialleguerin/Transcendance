@@ -52,7 +52,7 @@ async function fetch_friendships() {
 		});
 		const friendships = await response.json();
 		document.getElementById('friendships-table').innerHTML = friendships.map(friendship => /*html*/`
-			<tr>
+			<tr class="border-collapse text-sm hover:shadow-lg hover:rounded-xl hover:-translate-y-1 transition-all duration-200 ease-in-out cursor-pointer">
 				<td class="bg-white px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${friendship.friendshipId}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${friendship.username}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${friendship.friend_username}</td>
@@ -99,7 +99,7 @@ async function create_user(event) {
 	fetch_users();
 };
 
-async function add_game(event) {
+async function create_game(event) {
 	event.preventDefault();
 
 	const user1 = document.getElementById("addGame-user1").value;
