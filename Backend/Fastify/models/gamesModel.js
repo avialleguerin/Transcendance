@@ -21,8 +21,8 @@ const gamesModel = {
 	},
 	getAllGames: () => db.prepare("SELECT g.gameId, g.user1_id, g.user2_id, g.winner_id, g.created_at, u1.username as user1_name, u2.username as user2_name, w.username as winner_name FROM games g JOIN users u1 ON g.user1_id = u1.userId JOIN users u2 ON g.user2_id = u2.userId LEFT JOIN users w ON g.winner_id = w.userId").all(),
 	getgameById: (gameId) => { return db.prepare("SELECT * FROM games WHERE gameId = ?").get(gameId) },
-	delete: (gameId) => { return db.prepare("DELETE FROM games WHERE gameId = ?").run(gameId) }
-	// getGameByUser: (user) => { return db.prepare("SELECT * FROM games WHERE user1 = ? OR user2 = ?").all(user, user) },
+	deleteGame: (gameId) => { return db.prepare("DELETE FROM games WHERE gameId = ?").run(gameId) },
+	getUserGames: (user) => { return db.prepare("  SELECT g.gameId, g.user1_id, g.user2_id, g.winner_id, g.created_at,u1.username as user1_username,u1.profile_picture as user1ProfilePicture,u2.username as user2_username,u2.profile_picture as user2ProfilePicture,w.username as winner_username FROM games g JOIN users u1 ON g.user1_id = u1.userId JOIN users u2 ON g.user2_id = u2.userId LEFT JOIN users w ON g.winner_id = w.userId WHERE g.user1_id = ? OR g.user2_id = ? ORDER BY g.created_at").all(user, user) },
 
 }
 

@@ -1,6 +1,6 @@
 import { createUser , deleteAccount, login, logout, updateDoubleAuth, accessProfileInfo, changeProfilePicture, changeProfile, getUserProfile, verifyDoubleAuth, activateDoubleAuth, refreshInfos } from '../controllers/usersController.js';
-import { createGame  } from '../controllers/gamesController.js';
-import { getUserFriendships, createFriendship } from '../controllers/friendshipsController.js';
+import { getUserGames, createGame } from '../controllers/gamesController.js';
+import { getUserFriendships, addFriend } from '../controllers/friendshipsController.js';
 import { getAllUsers, deleteUser, getAllGames, deleteGame, getAllFriendships, addFriendship, deleteFriendship } from '../controllers/adminController.js';
 import { getSQLiteCreds } from '../utils/vault.js'
 
@@ -39,9 +39,10 @@ export default async function routes (fastify) {
 
 	//friendsController
 	fastify.get('/friendship/get-user-friendships', getUserFriendships)
-	fastify.post('/friendship/create-friendship', createFriendship)
+	fastify.post('/friendship/add-friend', addFriend)
 
 	//gamesController
+	fastify.get('/game/get-user-games', getUserGames)
 	fastify.post('/game/create-game', createGame)
 
 	// Tokens

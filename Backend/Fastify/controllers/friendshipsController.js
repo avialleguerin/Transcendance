@@ -9,21 +9,19 @@ export async function getUserFriendships(request, reply) {
 		if (!infos)
 			return reply.code(401).send({ error: "Unauthorized" })
 		const user = infos.user
-		console.log("user :", user)
-		console.log("accessToken :", infos.accessToken)
 		if (!user)
 			return reply.code(401).send({ error: "User not found" })
 		if (!infos.accessToken)
 			return reply.code(401).send({ error: "Unauthorized" })
 		const friendships = friendshipsModel.getUserFriendships(user.userId)
 		console.log("friendships :", friendships)
-		return reply.send({ succes: true, friendships: friendships, accessToken: infos.accessToken })
+		return reply.send({ success: true, friendships: friendships, accessToken: infos.accessToken })
 	} catch (err) {
 		return reply.code(500).send({ error: err.message, accessToken: infos.accessToken })
 	}
 }
 
-export async function createFriendship(request, reply) {
+export async function addFriend(request, reply) {
 	const { friend } = request.body
 	
 	try {
@@ -39,7 +37,16 @@ export async function createFriendship(request, reply) {
 			return reply.code(401).send({ error: "User not found" })
 		const friendExists = usersModel.getUserByUsername(friend)
 		if (!friendExists)
-			return reply.code(404).send({ succes: false, error: `User '${friend}' not found`, accessToken: infos.accessToken })
+			return reply.code(404).send({ success: false, error: `User '${friend}' not found`, accessToken: infos.accessToken })
+
+		const status = friendshipsModel.checkFriendshipStatus(user.userId, friendExists.userId);
+		if (status.requestSent || status.requestReceived) {
+			return reply.code(400).send({ 
+				success: false,
+				message: "Friendship already exists",
+				accessToken: infos.accessToken
+			});
+		}
 
 		friendshipsModel.createFriendship(user.userId, friendExists.userId);
 

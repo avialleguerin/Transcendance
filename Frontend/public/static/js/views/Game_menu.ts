@@ -55,8 +55,8 @@ export default class Game_menu extends AbstractView {
 			<button class="option-in-panel" id="option_btn_remove">
 				<img src="../../../srcs/game/assets/image/menu.svg" alt="leave">
 			</button>
-			<h1>Friend list</h1>
 			<div class="friend_list_container">
+				<h1>FRIENDS LIST</h1>
 				<table class="friend_list_scrollable">
 					<tbody id="friendships-table"></tbody>
 				</table>
@@ -68,45 +68,12 @@ export default class Game_menu extends AbstractView {
 			</div>
 			<div class="game_history_navBar" id="game_history_navBar">
 				<div class="game_history_content_navBar">
-					<div class="game_history_header_navBar">
-						<div class="profile_photo_circle_Game_History_navBar" id="profile_photo_circle_Game_History_navBar"></div>
-						<h1>ILYAN</h1>
-					</div>
 					<h1>GAME HISTORY</h1>
 
-					<div class="game_history_scrollable_navBar">
+					<table class="game_history_scrollable_navBar">
 						<!-- Game 1 -->
-						<div class="game_card_navBar win">
-							<div class="profile_navBar">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username_navBar">You</p>
-							</div>
-							<div class="vs_info_navBar">
-								<p class="score_navBar">5 - 2</p>
-								<p class="result_navBar">Win</p>
-							</div>
-							<div class="opponent_navBar">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username_navBar">Enemy1</p>
-							</div>
-						</div>
-
-						<div class="game_card_navBar lose">
-							<div class="profile_navBar">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username_navBar">You</p>
-							</div>
-							<div class="vs_info_navBar">
-								<p class="score_navBar">2 - 5</p>
-								<p class="result_navBar">lose</p>
-							</div>
-							<div class="opponent_navBar">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username_navBar">Enemy1</p>
-							</div>
-						</div>
-
-					</div>
+						<tbody id="games-table">	</tbody>
+					</table>
 				</div>
 			</div>
 			<button class="deconexion_navBar" id="deconnect_btn_navBar" onclick="logout()">Disconnect</button>

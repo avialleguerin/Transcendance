@@ -3,7 +3,23 @@ import usersModel from '../models/usersModel.js'
 import gamesModel from '../models/gamesModel.js'
 import { getUserFromToken } from './utils.js'
 
-
+export async function getUserGames(request, reply) {
+	try {
+		const infos = await getUserFromToken(request)
+		if (!infos)
+			return reply.code(401).send({ error: "Unauthorized" })
+		const user = infos.user
+		if (!user)
+			return reply.code(401).send({ error: "User not found" })
+		if (!infos.accessToken)
+			return reply.code(401).send({ error: "Unauthorized" })
+		const games = gamesModel.getUserGames(user.userId)
+		console.log("game :", games)
+		return reply.send({ success: true, games: games, accessToken: infos.accessToken })
+	} catch (err) {
+		return reply.code(500).send({ error: err.message })
+	}
+}
 
 export async function createGame(request, reply) {
 	const { user1, user2 } = request.body
@@ -13,13 +29,13 @@ export async function createGame(request, reply) {
 		const user2Exists = usersModel.getUserByUsername(user2)
 
 		if (!user1Exists)
-			return reply.code(404).send({ succes: false, error: `User '${user1}' not found` })
+			return reply.code(404).send({ success: false, error: `User '${user1}' not found` })
 
 		if (!user2Exists)
-			return reply.code(404).send({ succes: false, error: `User '${user2}' not found` })
+			return reply.code(404).send({ success: false, error: `User '${user2}' not found` })
 
 		if (user1 === user2)
-			return reply.code(400).send({ succes: false, error: "Cannot create a game with the same user twice" })
+			return reply.code(400).send({ success: false, error: "Cannot create a game with the same user twice" })
 		console.log("user1 :", user1Exists.userId)
 		console.log("user2 :", user2Exists.userId)
 		gamesModel.createGame(user1Exists.userId, user2Exists.userId)

@@ -216,13 +216,16 @@ async function delete_friendship(friendshipId) {
 			},);
 			const data = await response.json();
 			if (data.success) {
-				console.log('Friendship deleted successfully');
+				notif(data.message, true);
+			}
+			else {
+				notif(data.error, false);
 			}
 		} catch (err) {
 			console.error('Erreur lors de la suppression :', err);
 		}
 	}
-	fetch_games();
+	fetch_friendships();
 }
 
 

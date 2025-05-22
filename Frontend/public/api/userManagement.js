@@ -161,7 +161,7 @@ async function fetchProfile() {
 			const user = data.user;
 			console.log("user", user);
 			document.getElementById("profile_photo_circle").innerHTML = `
-			<img src="./${data.profile_picture}" alt="Profile Photo" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+			<img src="./${data.profile_picture}" alt="${user.username} profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
 			`;
 			const username = document.getElementById("change_username");
 			username.placeholder = user.username;
