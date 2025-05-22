@@ -1,4 +1,4 @@
-import { createUser , deleteAccount, login, logout, updateDoubleAuth, accessProfileInfo, changeProfilePicture, changeProfile, getUserProfile, verifyDoubleAuth, activateDoubleAuth, refreshInfos } from '../controllers/usersController.js';
+import { createUser , deleteAccount, login, logout, updateDoubleAuth, accessProfileInfo, changeProfilePicture, changeProfile, getUserProfile, verifyDoubleAuth, activateDoubleAuth, refreshInfos, exportUserData } from '../controllers/usersController.js';
 import { createGame  } from '../controllers/gamesController.js';
 import { getUserFriendships, createFriendship } from '../controllers/friendshipsController.js';
 import { getAllUsers, deleteUser, getAllGames, deleteGame, getAllFriendships, addFriendship, deleteFriendship } from '../controllers/adminController.js';
@@ -36,6 +36,7 @@ export default async function routes (fastify) {
 	fastify.put('/user/update-profile', changeProfile)
 	fastify.delete('/user/delete-account', deleteAccount)
 	fastify.post('/user/refresh-infos', refreshInfos)
+	fastify.post('/request/user/export-data', exportUserData) // NOTE - new route to export user data
 
 	//friendsController
 	fastify.get('/friendship/get-user-friendships', getUserFriendships)

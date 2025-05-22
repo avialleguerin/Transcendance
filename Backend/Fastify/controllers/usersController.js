@@ -463,3 +463,51 @@ export async function refreshInfos(request, reply) {
 		return reply.code(500).send({ error: err.message })
 	}
 }
+
+// import usersModel from '../../models/usersModel.js';
+import gamesModel from '../models/gamesModel.js'; //NOTE - new
+import friendshipsModel from '../models/friendshipsModel.js'; //NOTE - new
+
+export async function exportUserData(request, reply) {
+      try {
+        const userId = request.user.userId;
+        
+        // Get user data (excluding sensitive fields like password)
+        const userData = await usersModel.getUserById(userId);
+        if (!userData)
+          return reply.code(404).send({ success: false, error: 'User not found' });
+        
+        // Remove sensitive fields
+        delete userData.password;
+        delete userData.doubleAuth_secret;
+        
+        // Get user's games history
+        const games = await gamesModel.getGamesByUserId(userId);
+        
+        // Get user's friendships
+        const friendships = await friendshipsModel.getFriendshipsByUserId(userId);
+        
+        // Compile all data
+        const exportData = {
+          personal_information: {
+            userId: userData.userId,
+            username: userData.username,
+            email: userData.email,
+            profile_picture: userData.profile_picture,
+            created_at: userData.created_at,
+            doubleAuth_status: !!userData.doubleAuth_status
+          },
+          games_history: games,
+          friendships: friendships
+        };
+        
+        // Set headers for file download
+        reply.header('Content-Disposition', 'attachment; filename="user-data-export.json"');
+        reply.type('application/json');
+        
+        return reply.send(JSON.stringify(exportData, null, 2));
+    } catch (error) {
+        console.error('Error exporting user data:', error);
+        return reply.code(500).send({ success: false, error: 'Failed to export user data' });
+    }
+}
