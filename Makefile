@@ -15,7 +15,7 @@ MAGENTA		:=	\e[35m
 CYAN		:=	\e[36m
 
 # Docker Compose
-NO_LOGS 	:= --no-attach redis --no-attach nginx --no-attach tsengine #--no-attach vault --no-attach fastify 
+NO_LOGS 	:= --no-attach redis --no-attach nginx  --no-attach vault #--no-attach tsengine --no-attach fastify 
 
 all:
 	@make build
@@ -33,6 +33,7 @@ build:
 down:
 	@docker compose down
 	@rm -rf ./Frontend/dist
+	@rm -rf ./Security/Nginx/passwd
 
 re:
 	@make down

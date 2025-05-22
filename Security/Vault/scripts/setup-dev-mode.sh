@@ -55,10 +55,11 @@ fi
 echo -e "\n${CYAN}🔐 Génération du fichier .htpasswd pour Nginx...${RESET}"				# Création du fichier .htpasswd à partir du secret Vault
 nginx_user=$(vault kv get -field=username secret/nginx)									# Récupération des infos depuis Vault
 nginx_pass=$(vault kv get -field=password secret/nginx)
-HTPASSWD_PATH="./nginx/.htpasswd"														# Dossier cible
-mkdir -p "$(dirname "$HTPASSWD_PATH")"
-htpasswd -cb "$HTPASSWD_PATH" "$nginx_user" "$nginx_pass"								# Création du fichier .htpasswd avec le mot de passe chiffré
-echo -e "${GREEN}✅ Fichier .htpasswd généré à : $HTPASSWD_PATH${RESET}"
+NGINX_DIR="./nginx/passwd"														# Dossier cible
+HTPASSWD_FILE="$NGINX_DIR/.htpasswd"
+mkdir -p "$(dirname "$NGINX_DIR")"
+htpasswd -cb "$HTPASSWD_FILE" "$nginx_user" "$nginx_pass"								# Création du fichier .htpasswd avec le mot de passe chiffré
+echo -e "${GREEN}✅ Fichier .htpasswd généré à : $HTPASSWD_FILE${RESET}"
 
 
 echo -e "\n${GREEN}✅ Script terminé avec succès en mode Dev !${RESET}"
