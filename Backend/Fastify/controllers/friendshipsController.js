@@ -15,7 +15,7 @@ export async function getUserFriendships(request, reply) {
 			return reply.code(401).send({ error: "Unauthorized" })
 		const friendships = friendshipsModel.getUserFriendships(user.userId)
 		console.log("friendships :", friendships)
-		return reply.send({ success: true, friendships: friendships, accessToken: infos.accessToken })
+		return reply.send({ success: true, friendships: friendships, user: infos.user, accessToken: infos.accessToken })
 	} catch (err) {
 		return reply.code(500).send({ error: err.message, accessToken: infos.accessToken })
 	}
@@ -57,6 +57,74 @@ export async function addFriend(request, reply) {
 		})
 	} catch (err) {
 		console.error("Error creating friendship:", err)
+		return reply.code(500).send({ error: "Internal server error" })
+	}
+}
+
+export async function updateFriendshipSatus(request, reply) {
+	const { friendshipId, change_status } = request.body
+	try {
+		console.log("change_status :", change_status)
+		const infos = await getUserFromToken(request)
+		if (!infos)
+			return reply.code(401).send({ error: "Unauthorized" })
+		const user = infos.user
+		if (!user)
+			return reply.code(401).send({ error: "User not found" })
+		if (!infos.accessToken)
+			return reply.code(401).send({ error: "Unauthorized" })
+		const friendship = friendshipsModel.getFriendshipById(friendshipId)
+		if (!friendship)
+			return reply.code(404).send({ success: false, error: `Friendship '${friendshipId}' not found`, accessToken: infos.accessToken })
+		if (friendship.status !== 'pending')
+			return reply.code(400).send({ success: false, error: `Friendship '${friendshipId}' is not pending`, accessToken: infos.accessToken })
+		if (friendship.friendId !== user.userId)
+			return reply.code(403).send({ success: false, error: `You are not allowed to accept this friendship`, accessToken: infos.accessToken })
+
+		if (change_status === 'reject')
+		{
+			console.log("reject")
+			friendshipsModel.rejectFriendship(friendship.userId, user.userId)
+		} else
+			friendshipsModel.acceptFriendship(friendship.userId, user.userId)
+	
+		return reply.send({ 
+			success: true,
+			message: "Friendship accepted successfully",
+			accessToken: infos.accessToken
+		})
+	} catch (err) {
+		console.error("Error accepting friendship:", err)
+		return reply.code(500).send({ error: "Internal server error" })
+	}
+}
+
+export async function deleteFriend(request, reply) {
+
+	const { friendshipId } = request.body
+	try {
+		const infos = await getUserFromToken(request)
+		if (!infos)
+			return reply.code(401).send({ error: "Unauthorized" })
+		const user = infos.user
+		if (!user)
+			return reply.code(401).send({ error: "User not found" })
+		if (!infos.accessToken)
+			return reply.code(401).send({ error: "Unauthorized" })
+		const friendship = friendshipsModel.getFriendshipById(friendshipId)
+		if (!friendship)
+			return reply.code(404).send({ success: false, error: `Friendship '${friendshipId}' not found`, accessToken: infos.accessToken })
+		if (friendship.friendId !== user.userId)
+			return reply.code(403).send({ success: false, error: `You are not allowed to accept this friendship`, accessToken: infos.accessToken })
+
+		friendshipsModel.deleteFriendship(friendship.userId, user.userId)
+
+		return reply.send({ 
+			success: true,
+			message: "Friendship deleted successfully",
+			accessToken: infos.accessToken
+		})
+	} catch (err) {
 		return reply.code(500).send({ error: "Internal server error" })
 	}
 }

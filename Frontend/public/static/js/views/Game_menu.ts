@@ -264,9 +264,6 @@ export default class Game_menu extends AbstractView {
 					</div>
 				</div>
 
-
-
-
 				<div class="view6" id="view6">
 					<div class="view6-content">
 						<h1 id="custom_ta_game">CUSTOMIZE YOUR GAME</h1>

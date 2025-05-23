@@ -20,9 +20,9 @@ export async function getUserFromToken(request, reply) {
 	const user = usersModel.getUserById(userId)
 	if (!user)
 		return null
-	console.log("🔑 User :", user)
-	console.log("🔑 accessToken :", accessToken)
-	console.log("🔑 accessToken :", request.headers.authorization?.split(' ')[1])
+	// console.log("🔑 User :", user)
+	// console.log("🔑 accessToken :", accessToken)
+	// console.log("🔑 accessToken :", request.headers.authorization?.split(' ')[1])
 	if (expiresInRefresh > 0)
 	{
 		if (accessToken && accessToken !== "undefined" && accessToken !== "null")

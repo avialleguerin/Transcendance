@@ -362,15 +362,15 @@ export async function verifyDoubleAuth(request, reply) {
 			window: 1
 		})
 
-		console.log("🔑 code 2FA :", code)
-		console.log("🔑 Secret récupéré :", user.doubleAuth_secret)
+		// console.log("🔑 code 2FA :", code)
+		// console.log("🔑 Secret récupéré :", user.doubleAuth_secret)
 
 
 		if (isValid) {
 			const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, { expiresIn: '15m' })
 			const refreshToken = fastify.jwt.sign({ userId: user.userId }, { expiresIn: '7d' })
-			console.log("🔑 Access Token created :", accessToken)
-			console.log("🔑 Refresh Token created :", refreshToken)
+			// console.log("🔑 Access Token created :", accessToken)
+			// console.log("🔑 Refresh Token created :", refreshToken)
 			usersModel.updateDoubleAuth_status(user.userId, 1)
 			reply
 			.setCookie('refreshToken', refreshToken, {
@@ -399,15 +399,15 @@ export async function activateDoubleAuth(request, reply) {
 	const user = infos.user
 	if (!user)
 		return reply.code(401).send({ success: false, error: 'User not found' })
-	console.log("🔑 Secret :", user.doubleAuth_secret)
+	// console.log("🔑 Secret :", user.doubleAuth_secret)
 	const isValid = speakeasy.totp.verify({
 		secret: user.doubleAuth_secret,
 		encoding: 'base32',
 		token: code,
 		window: 1
 	})
-	console.log("🔑 isValid :", isValid)
-	console.log("État initial 2FA:", user.doubleAuth_status)
+	// console.log("🔑 isValid :", isValid)
+	// console.log("État initial 2FA:", user.doubleAuth_status)
 	if (isValid) {
 		usersModel.updateDoubleAuth_status(user.userId, 1)
 		return reply.send({ success: true, message: "2FA successfully activated" })
@@ -426,7 +426,7 @@ export async function generateDoubleAuth(userId) {
 	}
 	const secretObj = speakeasy.generateSecret({ length: SECRET_LENGHT })
 	const secret = secretObj.base32
-	console.log("🔑 Secret généré:", secret)
+	// console.log("🔑 Secret généré:", secret)
 	usersModel.updateDoubleAuth_secret(userId, secret)
 
 	const otpauth = speakeasy.otpauthURL({
@@ -446,7 +446,7 @@ export async function generateDoubleAuth(userId) {
 }
 
 export async function refreshInfos(request, reply) {
-	console.log("🔑 refreshing user infos")
+	// console.log("🔑 refreshing user infos")
 
 	try {
 		const infos = await getUserFromToken(request, reply)

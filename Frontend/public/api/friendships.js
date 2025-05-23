@@ -9,8 +9,52 @@ async function addFriend(event) {
 	} catch (err) {
 		console.log("Failed to add friend");
 	}
+	document.getElementById("friend_name_input").value = "";
 	fetch_user_friendships();
 }
+
+async function update_friendship(friendshipId, change_status) {
+	try {
+		console.log("update_friendship: ", change_status);
+		const data = await fetchAPI('/request/friendship/update-status', 'POST', { friendshipId, change_status });
+		if (data.success) {
+			notif("Friendship status updated", true);
+			fetch_user_friendships();
+		} else {
+			notif(data.error, false);
+		}
+	} catch (err) {
+		console.log("Failed to accept friendship");
+	}
+}
+
+async function delete_friendship(friendshipId) {
+	try {
+		const data = await fetchAPI('/request/friendship/delete-friend', 'DELETE', { friendshipId });
+		if (data.success) {
+			notif("Friendship status updated", true);
+			fetch_user_friendships();
+		} else {
+			notif(data.error, false);
+		}
+	} catch (err) {
+		console.log("Failed to accept friendship");
+	}
+}
+
+// async function reject_friendship(friendshipId) {
+// 	try {
+// 		const data = await fetchAPI('/request/friendship/reject-friendship', 'POST', { friendshipId });
+// 		if (data.success) {
+// 			notif("Friendship accepted", true);
+// 			fetch_user_friendships();
+// 		} else {
+// 			notif(data.error, false);
+// 		}
+// 	} catch (err) {
+// 		console.log("Failed to accept friendship");
+// 	}
+// }
 
 async function fetch_user_friendships() {
 	try {
@@ -21,18 +65,22 @@ async function fetch_user_friendships() {
 			return;
 		}
 		const friendships = data.friendships;
+		const user = data.user;
 		if (friendships && friendships.length > 0) {
 			document.getElementById('friendships-table').innerHTML = friendships.map(friendship => /*html*/`
-				<tr>
+				<tr class="friend">
 					<td>
-						<img src="/upload/${friendship.friendProfilePicture}" class="profile_photo_circle_Game_History_navBar" alt="Profile" style="width: 30px; height: 30px; border-radius: 50%;">
+						<img src="/upload/${friendship.friendProfilePicture}" class="friend_photo" alt="Profile">
 					</td>
-					<td>${friendship.friend_username}</td>
+					<td class="friend_name" >${friendship.friend_username}</td>
 					<td>
-						<span class="${friendship.status === 'accepted' ? 'text-green-500' : 
+						${friendship.status === 'pending' && user.userId === friendship.friendId
+						? `<button class="accept-btn" onclick="update_friendship(${friendship.friendshipId}, 'accept')">Accept</button><button class="reject-btn" onclick="update_friendship(${friendship.friendshipId}, 'reject')">Reject</button>`
+						: `<span class="${friendship.status === 'accepted' ? 'text-green-500' : 
 							(friendship.status === 'pending' ? 'text-yellow-500' : 'text-red-500')}">
 							${friendship.status}
-						</span>
+							</span>`
+						}
 					</td>
 					<td>
 						<button class="delete-btn" onclick="delete_friendship(${friendship.friendshipId})">Delete</button>
