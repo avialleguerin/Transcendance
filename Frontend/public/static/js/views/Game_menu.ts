@@ -60,6 +60,14 @@ export default class Game_menu extends AbstractView {
 			<h1>Friend list</h1>
 			<form class="friend_list_container">
 				<div class="friend_list_scrollable">
+					<div class="friend">
+						<div class="friend_photo"></div>
+						<p class="friend_name">Alice</p>
+					</div>
+					<div class="friend">
+						<div class="friend_photo"></div>
+						<p class="friend_name">Bob</p>
+					</div>
 					<!-- injecter le script qui qjoute des ami ici -->
 				</div>
 
@@ -429,6 +437,7 @@ export default class Game_menu extends AbstractView {
 				<label for="code">code</label>
 				<input type="code" id="activate-2fa-code" name="code" placeholder="code" required>
 				<button type="submit" class="btn_valider_qr_code">Validate</button>
+				<button type="button" class="cancel_fa" id="cancel_fa">X</button>
 			</form>
 
 			<div class="game_history" id="game_history">
@@ -1419,6 +1428,7 @@ export default class Game_menu extends AbstractView {
 		// });
 
 		const code_validation_id = document.getElementById('code_validation_id');
+		const cancel_fa = document.getElementById('cancel_fa');
 
 		active_fa.addEventListener('change', () => {
 			if (active_fa.checked) {
@@ -1433,6 +1443,15 @@ export default class Game_menu extends AbstractView {
 
 			}
 		});
+
+		cancel_fa.addEventListener('click', () => {
+			console.log('Cancel FA clicked');
+			code_validation_id.classList.remove('active');
+			fa_selector.classList.add('hidden');
+			active_fa.checked = false;
+		});
+
+
 
 
 		/***********************************************************************/

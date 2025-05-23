@@ -2895,3 +2895,20 @@ to {
 	left: 50%;
 	transform: translate(-50%, -20%);
 }
+
+.cancel_fa {
+	background: transparent;
+	border: none;
+	color: white;
+	font-size: 20px;
+	cursor: pointer;
+	transition: transform 0.2s ease, color 0.2s ease;
+	position: absolute;
+	top: 2%;
+	right: 3%;
+}
+
+.cancel_fa:hover {
+	color: #e53935;
+	transform: scale(1.2);
+}

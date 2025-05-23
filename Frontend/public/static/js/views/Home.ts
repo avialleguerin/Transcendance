@@ -34,8 +34,8 @@ export default class Home extends AbstractView {
 				</div>
 				<div class="login-form" id="loginform_id">
 					<h1 id="login-title">LOGIN</h1>
-					<div class="form-group">
-						<form id="loginForm" onsubmit="login(event)">
+					<div class="form-group"> 
+						<form id="loginForm" class="loginForm" onsubmit="login(event)">
 							<div class="input-container">
 								<label for="email">Email :</label>
 								<input type="email" id="login-email" name="email" placeholder="Your email" required>
@@ -47,7 +47,7 @@ export default class Home extends AbstractView {
 							<button type="submit" class="connexion" id="validate-login">Login</button>
 							<button type="button" class="creer-compte" id="create-Account">Create an account</button>
 						</form>
-						<form id="doubleAuthForm" onsubmit="verify2FA(event)">
+						<form id="doubleAuthForm" class="doubleAuthForm" onsubmit="verify2FA(event)">
 							<div class="input-container">
 								<label for="code">2FA Code :</label>
 								<input type="text" id="verify-2fa-code" name="code" placeholder="123456" required>
@@ -96,6 +96,8 @@ export default class Home extends AbstractView {
 		const createAccountForm = document.getElementById("create_account_id");
 		const createAccountButton = document.getElementById("create-Account");
 		const alreadyHaveAccountButton = document.getElementById("alreadyHaveAccountButton_id");
+		const doubleAuthForm = document.getElementById("doubleAuthForm");
+		const backButton = document.getElementById("back");
 
 		createAccountButton.addEventListener("click", () => {
 			console.log("createAccountForm");

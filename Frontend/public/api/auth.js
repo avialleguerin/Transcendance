@@ -85,8 +85,9 @@ async function login(event) {
 	{
 		sessionStorage.setItem("userId", data.user.userId);
 		document.getElementById("doubleAuthForm").classList.remove("hidden");
-		document.getElementById("loginForm").classList.add("hidden");
+		document.getElementById("loginForm").classList.add("active");
 		document.getElementById("login-title").textContent = "Double Authentication";
+		document.getElementById("doubleAuthForm").classList.add("active");
 	}
 	else if (data.success && data.connection_status === "connected")
 	{
