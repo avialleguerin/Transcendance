@@ -36,8 +36,8 @@ export async function init_game_tournament(scene)
             console.log("Balle chargée avec position :", ball.position);
         }
     
-        loadScoreModel(0, "left", true);
-        loadScoreModel(0, "right", false);
+        loadScoreModel(0, true);
+        loadScoreModel(0, false);
         is_init = true;
         
         return { player_1_tournament, player_2_tournament, ball };

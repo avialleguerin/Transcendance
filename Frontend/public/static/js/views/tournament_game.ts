@@ -5,7 +5,7 @@ import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.
 export default class extends AbstractView {
 	private cooldowns: Record<string, boolean>;
 	private cooldownTimes: Record<string, number>;
-	private gameLoop: NodeJS.Timeout;  // NOTE - or 'any'
+	private gameLoop: number;  // NOTE - or 'any'
 	private boundKeyPressHandler: (event: KeyboardEvent) => void;
 
 	constructor() {

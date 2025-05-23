@@ -27,8 +27,8 @@ export async function init_game_solo(scene) {
             console.log("Balle chargée avec position :", ball.position);
         }
     
-        loadScoreModel(0, "left", true);
-        loadScoreModel(0, "right", false);
+        loadScoreModel(0, true);
+        loadScoreModel(0, false);
         is_init = true;
         
         return { player_1, player_2, ball };
@@ -36,6 +36,8 @@ export async function init_game_solo(scene) {
     else
     {
         already_init();
+        loadScoreModel(0, true);
+        loadScoreModel(0, false);
         reset_player_position(player_1, player_2);
         return { player_1, player_2, ball };
     }
@@ -49,9 +51,9 @@ export function start_game_solo(scene)
 
 function already_init()
 {
-    enable_all_by_metadata(scene, "isPlayerRepere");
-    enable_all_by_metadata(scene, "isPlayer_paddle");
-    enable_all_by_metadata(scene, "isPlayer");
+    enable_all_by_metadata(scene, "isPlayerRepere_1v1");
+    enable_all_by_metadata(scene, "isPlayer_paddle_1v1");
+    enable_all_by_metadata(scene, "isPlayer_1v1");
     init_game(scene);
     init_ball(ball);
 }
@@ -65,9 +67,9 @@ function enable_all_by_metadata(scene, metadataKey) {
 
 export async function destroy_game_solo(scene)
 {
-    destroy_all_by_metadata(scene, "isPlayerRepere");
-    destroy_all_by_metadata(scene, "isPlayer_paddle");
-    destroy_all_by_metadata(scene, "isPlayer");
+    destroy_all_by_metadata(scene, "isPlayerRepere_1v1");
+    destroy_all_by_metadata(scene, "isPlayer_paddle_1v1");
+    destroy_all_by_metadata(scene, "isPlayer_1v1");
     destroy_game(scene);
     destroy_ball(ball);
     destroy_score();
