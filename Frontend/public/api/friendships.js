@@ -56,44 +56,57 @@ async function delete_friendship(friendshipId) {
 // 	}
 // }
 
+
 async function fetch_user_friendships() {
 	try {
 		const data = await fetchAPI('/request/friendship/get-user-friendships', 'GET', null, false);
-		// sessionStorage.setItem('accessToken', data.accessToken);
 		if (!data.success) {
 			notif(data.error, false);
 			return;
 		}
+
 		const friendships = data.friendships;
 		const user = data.user;
-		if (friendships && friendships.length > 0) {
-			document.getElementById('friendships-table').innerHTML = friendships.map(friendship => /*html*/`
-				<tr class="friend">
-					<td>
-						<img src="/upload/${friendship.friendProfilePicture}" class="friend_photo" alt="Profile">
-					</td>
-					<td class="friend_name" >${friendship.friend_username}</td>
-					<td>
-						${friendship.status === 'pending' && user.userId === friendship.friendId
-						? `<button class="accept-btn" onclick="update_friendship(${friendship.friendshipId}, 'accept')">Accept</button><button class="reject-btn" onclick="update_friendship(${friendship.friendshipId}, 'reject')">Reject</button>`
-						: `<span class="${friendship.status === 'accepted' ? 'text-green-500' : 
-							(friendship.status === 'pending' ? 'text-yellow-500' : 'text-red-500')}">
-							${friendship.status}
-							</span>`
-						}
-					</td>
-					<td>
-						<button class="delete-btn" onclick="delete_friendship(${friendship.friendshipId})">Delete</button>
-					</td>
-				</tr>
-			`).join('');
-		} else {
-			document.getElementById('friendships-table').innerHTML = `
-				<tr><td colspan="4" class="text-center">No friends found</td></tr>
-			`;
-		}
+
+		const accepted = friendships.filter(f => f.status === 'accepted');
+		const pending = friendships.filter(f => f.status === 'pending');
+
+		const renderFriend = (friendship, showActions) => `
+			<div class="friend">
+				<div class="friend-info">
+					<img src="/upload/${friendship.friendProfilePicture}" class="friend_photo" alt="Profile">
+					<div class="friend-details">
+						<p class="friend_name">${friendship.friend_username}</p>
+						<div class="friend-status-actions">
+							${
+								showActions
+								? `
+									<div class="friend-actions">
+										<button class="friend-btn accept-btn" onclick="update_friendship(${friendship.friendshipId}, 'accept')">✓</button>
+										<button class="friend-btn reject-btn" onclick="update_friendship(${friendship.friendshipId}, 'reject')">✖</button>
+									</div>
+								`
+								: `
+								`
+							}
+						</div>
+					</div>
+				</div>
+				<button class="friend-btn delete-btn" onclick="delete_friendship(${friendship.friendshipId})">🗑️</button>
+			</div>
+		`;
+
+		document.getElementById('friends-accepted').innerHTML =
+			accepted.map(friend => renderFriend(friend, false)).join('') || `<div class="text-center">No friend found</div>`;
+
+		document.getElementById('friends-pending').innerHTML =
+			pending.map(friend => {
+				const isReceivedRequest = user.userId === friend.friendId;
+				return renderFriend(friend, isReceivedRequest);
+			}).join('') || `<div class="text-center">No request found</div>`;
+
 	} catch (err) {
-		console.error('Erreur lors de la récupération des Jeux :', err);
+		console.error('Erreur lors de la récupération des amis :', err);
 	}
 }
 

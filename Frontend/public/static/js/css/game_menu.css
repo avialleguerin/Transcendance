@@ -412,6 +412,11 @@
 	position: relative;
 }
 
+.skin.hidden {
+	display: none;
+}
+
+
 .skin p {
 	color: white;
 	font-family: 'Black Ops One', sans-serif;
@@ -2283,108 +2288,6 @@ to {
 	color : #ff0000;
 }
 
-.panel_option_navbar h1 {
-	color: #ffffff;
-	text-shadow: 2px 2px 4px rgb(0, 0, 0);
-	text-align: center;
-	font-size: 1.2vw;
-	position: relative;
-	font-family: 'Black Ops One', sans-serif;
-	position: absolute;
-	top: 0%;
-	left: 3%;
-}
-
-.friend_list_container {
-	position: absolute;
-	top: 29%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	width: 260px;
-	height: 400px;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	padding: 25px;
-	background-color: rgb(55 55 55 / 90%);
-	border: 2px solid #767676;
-	border-radius: 10px;
-	box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-	color: white;
-	font-family: 'Black Ops One', sans-serif;
-}
-
-.friend_list_container h2 {
-	margin-bottom: 10px;
-}
-
-.friend_list_scrollable {
-	width: 100%;
-	flex: 1;
-	overflow-y: auto;
-	border: 1px solid #555;
-	border-radius: 5px;
-	padding: 10px;
-	background-color: #2e2e2e;
-}
-
-.friend {
-	display: flex;
-	align-items: center;
-	padding: 8px;
-	background-color: #444;
-	margin-bottom: 8px;
-	border-radius: 5px;
-	transition: background 0.2s;
-}
-
-.friend:hover {
-	background-color: #555;
-}
-
-.friend_photo {
-	width: 40px;
-	height: 40px;
-	background-color: #999;
-	border-radius: 50%;
-	margin-right: 10px;
-}
-
-.friend_name {
-	margin: 0;
-}
-
-.add_friend_section {
-	margin-top: 15px;
-	width: 100%;
-	display: flex;
-	gap: 10px;
-}
-
-#friend_name_input {
-	flex: 1;
-	padding: 8px;
-	border-radius: 5px;
-	border: none;
-	outline: none;
-	background-color: #919191;
-	font-family: 'Black Ops One', sans-serif;
-	font-size: 0.6vw;
-}
-
-#add_friend_btn {
-	padding: 8px 12px;
-	border: none;
-	border-radius: 5px;
-	background-color: #5c88ff;
-	color: white;
-	cursor: pointer;
-	transition: background 0.2s;
-}
-
-#add_friend_btn:hover {
-	background-color: #3a6ce0;
-}
 
 
 
@@ -2605,8 +2508,8 @@ to {
 	font-family: 'Black Ops One', sans-serif;
 	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 	font-size: 0.8vw;
-	margin-left: 85px;
-	margin-top: 65px;
+	margin-left: 0px;
+	margin-top: 35px;
 
 }
 
@@ -2940,3 +2843,257 @@ to {
 	color: #e53935;
 	transform: scale(1.2);
 }
+
+
+.text-center {
+	text-align: center;
+	position: absolute;
+
+	top: 50%;
+	left: 50%;
+
+	transform: translate(-50%, -50%);
+	width: 100%;
+	font-family: 'Black Ops One', sans-serif;
+	font-size: 0.7vw;
+
+	color: #ffffff;
+	text-shadow: 2px 2px 4px rgb(0, 0, 0);
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+.panel_option_navbar h1 {
+	color: #ffffff;
+	text-shadow: 2px 2px 4px rgb(0, 0, 0);
+	text-align: center;
+	font-size: 1vw;
+	position: relative;
+	font-family: 'Black Ops One', sans-serif;
+	position: absolute;
+	top: 0%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 100%;
+}
+
+.friend_list_container {
+	position: absolute;
+	top: 29%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 260px;
+	height: 400px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 25px;
+	background-color: rgb(55 55 55 / 90%);
+	border: 2px solid #767676;
+	border-radius: 10px;
+	box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+	color: white;
+	font-family: 'Black Ops One', sans-serif;
+}
+
+.friend_list_container h2 {
+	margin-bottom: 10px;
+}
+
+.friend_list_scrollable {
+	width: 85%;
+	flex: 1;
+	overflow-y: auto;
+	border: 1px solid #555;
+	border-radius: 5px;
+	padding: 10px;
+	background-color: #2e2e2e;
+	position: absolute;
+	height: 65%;
+	margin-left: -142px;
+}
+
+.friend {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    margin-bottom: 8px;
+    background-color: #444;
+    border-radius: 5px;
+    transition: background 0.2s;
+}
+
+/* Conteneur pour la photo et les infos */
+.friend-info {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 0; /* Important pour permettre la troncature */
+    margin-right: 10px;
+	gap: 20px;
+}
+
+.friend:hover {
+	background-color: #555;
+}
+
+.friend_photo {
+    min-width: 40px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+
+.friend-details {
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* Important pour la troncature */
+}
+
+/* Nom de l'ami */
+.friend_name {
+	margin: 0px 0px -6px 20px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 150px;
+}
+
+.add_friend_section {
+	margin-top: 15px;
+	width: 100%;
+	display: flex;
+	gap: 10px;
+}
+
+#friend_name_input {
+	flex: 1;
+	padding: 8px;
+	border-radius: 5px;
+	border: none;
+	outline: none;
+	background-color: #919191;
+	font-family: 'Black Ops One', sans-serif;
+	font-size: 0.6vw;
+	position: absolute;
+	top: 90%;
+}
+
+#add_friend_btn {
+	padding: 8px 12px;
+	border: none;
+	border-radius: 5px;
+	background-color: #5c88ff;
+	color: white;
+	cursor: pointer;
+	transition: background 0.2s;
+	position: absolute;
+	top: 90%;
+	left: 75%;
+}
+
+#add_friend_btn:hover {
+	background-color: #3a6ce0;
+}
+
+.friend-status-actions {
+    display: flex;
+    align-items: center;
+}
+
+/* Actions (accept/reject) */
+.friend-actions {
+    display: flex;
+    gap: 14px;
+}
+.friend-btn {
+    background: transparent;
+    border: none;
+    font-size: 1vw;
+    cursor: pointer;
+    padding: 2px;
+    min-width: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+
+.accept-btn {
+    color: green;
+}
+
+.reject-btn {
+    color: red;
+}
+
+.delete-btn {
+    color: #999;
+}
+
+/* Effets au survol */
+.accept-btn:hover {
+    color: #4caf50;
+    transform: scale(1.2);
+}
+
+.reject-btn:hover {
+    color: #e53935;
+    transform: scale(1.2);
+}
+
+.delete-btn:hover {
+    color: #ff9800;
+    transform: scale(1.2);
+}
+
+.pending {
+	color : #ff9800;
+}
+
+.friend_tabs {
+	display: flex;
+	justify-content: center;
+	gap: 10px;
+	margin-bottom: 8px;
+	margin-top: 8px;
+}
+
+.tab-btn {
+	background-color: #444;
+	color: #ccc;
+	border: none;
+	padding: 8px 16px;
+	border-radius: 5px;
+	cursor: pointer;
+	font-family: 'Black Ops One', sans-serif;
+	font-size: 0.8vw;
+	transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.tab-btn:hover {
+	background-color: #5c5c5c;
+	color: white;
+}
+
+.tab-btn.active {
+	background-color: #5c88ff;
+	color: white;
+}
+
+
+

@@ -10,6 +10,8 @@ import { init_powerUP_freeze_Team_player, reset_powerUP_freeze_Team_player } fro
 import { getValue_leave_game, setLeaveGameVar } from "../index.js";
 import { enable_skin_perso_player_solo, disable_skin_perso_player_solo, disable_skin_perso_player_solo_and_save, switch_skin_perso_player1_left, switch_skin_perso_player1_right, switch_skin_perso_player2_left, switch_skin_perso_player2_right } from "../../../srcs/game/gameplay/solo/skin/init_skin_perso.js";
 import { enable_skin_multi, disable_skin_and_save_multi, disable_skin_multi, switch_skin_perso_player1_right_multi, switch_skin_perso_player1_left_multi, switch_skin_perso_player2_left_multi, switch_skin_perso_player2_right_multi, switch_skin_perso_player3_left_multi, switch_skin_perso_player3_right_multi, switch_skin_perso_player4_left_multi, switch_skin_perso_player4_right_multi } from "../../../srcs/game/gameplay/multiplayer/init_skin_perso_multi.js";
+import { get_skin_is_init } from "../../../srcs/game/gameplay/solo/skin/init_skin_utils.js";
+
 
 let powerUP_nb = 0;
 let powerUP_nb_multi = 0;
@@ -57,15 +59,30 @@ export default class Game_menu extends AbstractView {
 			</button>
 			<div class="friend_list_container">
 				<h1>FRIENDS LIST</h1>
-				<table class="friend_list_scrollable">
-					<tbody id="friendships-table"></tbody>
-				</table>
 
+				<!-- Boutons de navigation -->
+				<div class="friend_tabs">
+					<button id="tab-accepted" class="tab-btn active">Firend</button>
+					<button id="tab-pending" class="tab-btn">On hold</button>
+				</div>
+
+				<!-- Sections d'amis -->
+				<div class="friend_sections">
+					<div id="section-accepted" class="friend_section">
+						<div id="friends-accepted" class="friend_list_scrollable"></div>
+					</div>
+					<div id="section-pending" class="friend_section" style="display: none;">
+						<div id="friends-pending" class="friend_list_scrollable"></div>
+					</div>
+				</div>
+
+				<!-- Ajouter un ami -->
 				<form class="add_friend_section" onsubmit="addFriend(event)">
 					<input type="text" id="friend_name_input" placeholder="Username..." />
-					<button type="submit" id="add_friend_btn">Ajouter</button>
+					<button type="submit" id="add_friend_btn">Add</button>
 				</form>
 			</div>
+
 			<div class="game_history_navBar" id="game_history_navBar">
 				<div class="game_history_content_navBar">
 					<h1>GAME HISTORY</h1>
@@ -349,7 +366,7 @@ export default class Game_menu extends AbstractView {
 								</div>
 							</div>
 						</div>
-						<div class="skin">
+						<div class="skin" id="skin">
 							<p>Custom Skin: <span id="skin_perso" class="skin_perso"></span></p>
 						</div>
 						<button id="solo_1v1_btn" class="btn">
@@ -720,6 +737,19 @@ export default class Game_menu extends AbstractView {
 				view2.classList.add('active');
 			}
 		});
+
+		let skin = get_skin_is_init();
+		const skin_id = document.getElementById('skin');
+
+		console.log('skin_id', skin);
+
+		if (skin == false) {
+			console.log('skin_idiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii');
+			skin_id.classList.add('hidden');
+		}
+		else {
+			skin_id.classList.remove('hidden');
+		}
 
 
 		/***********************************************************************/
@@ -1509,8 +1539,31 @@ export default class Game_menu extends AbstractView {
 			// console.log("Tournament view started");
 			handleViewTransitions("tournament");
 		});
+
+		const acceptedSection = document.getElementById('section-accepted');
+		const pendingSection = document.getElementById('section-pending');
+
+		const btnAccepted = document.getElementById('tab-accepted');
+		const btnPending = document.getElementById('tab-pending');
+
+		btnAccepted.addEventListener('click', () => {
+			acceptedSection.style.display = 'block';
+			pendingSection.style.display = 'none';
+			btnAccepted.classList.add('active');
+			btnPending.classList.remove('active');
+		});
+
+		btnPending.addEventListener('click', () => {
+			acceptedSection.style.display = 'none';
+			pendingSection.style.display = 'block';
+			btnAccepted.classList.remove('active');
+			btnPending.classList.add('active');
+		});
+
 	}
 }
+
+
 
 
 export function getPowerUP_value() {

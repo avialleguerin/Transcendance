@@ -4,13 +4,13 @@ import { player1Skins_podium, player2Skins_podium } from "./init_skin_player_pod
 import { init_skins_perso_player1_multi_podium, init_skins_perso_player2_multi_podium, init_skins_perso_player3_multi_podium, init_skins_perso_player4_multi_podium } from "../../multiplayer/init_teamPlayer_podium.js";
 import { init_skins_perso_first, init_skins_perso_seconde } from "./init_skin_player_podium.js";
 import { init_skins_perso_player1_multi, init_skins_perso_player2_multi, init_skins_perso_player3_multi, init_skins_perso_player4_multi } from "../../multiplayer/init_skin_perso_multi.js";
+import { get_skin_is_init, set_skin_is_init } from "./init_skin_utils.js";
 
-// import { getScene } from "../../babylon.js";
-// const scene = getScene();
 let currentSkinPlayer1 = 0;
 let currentSkinPlayer2 = 0;
 let defaultSkinPlayer1 = 0;
 let defaultSkinPlayer2 = 0;
+
 
 const skinPaths = [
     { name: "player_skin_1", path: "/srcs/game/assets/player_skin/", file: "player_blanc.glb" },
@@ -199,6 +199,8 @@ export function destroy_all_by_metadata_skin(scene, metadataKey) {
 
 export function init_all_skin(scene)
 {
+    console.log("init_all_skinnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn");
+    set_skin_is_init(true);
     init_skins_perso_player1(scene);
     init_skins_perso_player2(scene);
     init_skins_perso_player1_multi(scene);
@@ -214,6 +216,8 @@ export function init_all_skin(scene)
     init_skins_perso_first(scene);
     init_skins_perso_seconde(scene);
 }
+
+
 
 
 export { currentSkinPlayer1, currentSkinPlayer2 };

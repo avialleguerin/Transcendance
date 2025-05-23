@@ -11,6 +11,12 @@ import { init_game_tournament, destroy_game_solo_tournament } from "./tournament
 import { move_player_tournament } from "./tournament/init_player_tournament.js";
 import { init_all_skin } from "./solo/skin/init_skin_perso.js";
 import { handleViewTransitions } from "./views/camera.js";
+import { get_skin_is_init } from "./solo/skin/init_skin_utils.js";
+import { init_skin_default } from "./solo/skin/init_skin_player_podium.js";
+
+// import { init_skin_default } from "./solo/skin/init_skin_perso.js";
+
+console.log("BABYLON JS");
 
 
 /**************************************************************/
@@ -238,8 +244,14 @@ let fpsHistory = [];
 create_environment_view1(scene);
 create_environment_view3(scene);
 create_environment_view2(scene);
-// init_all_skin(scene);
+console.log("create_environment_view1");
+init_all_skin(scene);
 const skybox = createOptimizedSkybox(scene);
+
+let skin = get_skin_is_init();
+if (skin === false) {
+	init_skin_default(scene);
+}
 
 qualityLevel = detectPerformanceLevel();
 applyQualitySettingsImmediate();
