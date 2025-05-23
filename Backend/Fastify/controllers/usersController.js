@@ -98,7 +98,7 @@ export async function logout(request, reply) {
 export async function updateDoubleAuth(request, reply) {
 	try {
 		const infos = await getUserFromToken(request)
-		console.log("🔑 infos :", infos)
+		// console.log("🔑 infos :", infos)
 		if (!infos)
 			return reply.code(401).send({ success: false, error: 'Unauthorized' })
 		const user = infos.user
@@ -324,8 +324,6 @@ export async function deleteAccount(request, reply) {
 	}
 }
 
-
-
 // export async function refreshAccessToken(request, reply) {
 // 	const { refreshToken } = request.cookies
 
@@ -362,15 +360,15 @@ export async function verifyDoubleAuth(request, reply) {
 			window: 1
 		})
 
-		console.log("🔑 code 2FA :", code)
-		console.log("🔑 Secret récupéré :", user.doubleAuth_secret)
+		// console.log("🔑 code 2FA :", code)
+		// console.log("🔑 Secret récupéré :", user.doubleAuth_secret)
 
 
 		if (isValid) {
 			const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, { expiresIn: '15m' })
 			const refreshToken = fastify.jwt.sign({ userId: user.userId }, { expiresIn: '7d' })
-			console.log("🔑 Access Token created :", accessToken)
-			console.log("🔑 Refresh Token created :", refreshToken)
+			// console.log("🔑 Access Token created :", accessToken)
+			// console.log("🔑 Refresh Token created :", refreshToken)
 			usersModel.updateDoubleAuth_status(user.userId, 1)
 			reply
 			.setCookie('refreshToken', refreshToken, {
@@ -399,14 +397,14 @@ export async function activateDoubleAuth(request, reply) {
 	const user = infos.user
 	if (!user)
 		return reply.code(401).send({ success: false, error: 'User not found' })
-	console.log("🔑 Secret :", user.doubleAuth_secret)
+	// console.log("🔑 Secret :", user.doubleAuth_secret)
 	const isValid = speakeasy.totp.verify({
 		secret: user.doubleAuth_secret,
 		encoding: 'base32',
 		token: code,
 		window: 1
 	})
-	console.log("🔑 isValid :", isValid)
+	// console.log("🔑 isValid :", isValid)
 	console.log("État initial 2FA:", user.doubleAuth_status)
 	if (isValid) {
 		usersModel.updateDoubleAuth_status(user.userId, 1)
@@ -426,7 +424,7 @@ export async function generateDoubleAuth(userId) {
 	}
 	const secretObj = speakeasy.generateSecret({ length: SECRET_LENGHT })
 	const secret = secretObj.base32
-	console.log("🔑 Secret généré:", secret)
+	// console.log("🔑 Secret généré:", secret)
 	usersModel.updateDoubleAuth_secret(userId, secret)
 
 	const otpauth = speakeasy.otpauthURL({
@@ -446,7 +444,7 @@ export async function generateDoubleAuth(userId) {
 }
 
 export async function refreshInfos(request, reply) {
-	console.log("🔑 refreshing user infos")
+	// console.log("🔑 refreshing user infos")
 
 	try {
 		const infos = await getUserFromToken(request, reply)
@@ -470,32 +468,40 @@ import friendshipsModel from '../models/friendshipsModel.js'; //NOTE - new
 
 export async function exportUserData(request, reply) {
       try {
-        const userId = request.user.userId;
+		const infos = await getUserFromToken(request, reply)
+		if (!infos)
+			return reply.code(401).send({ success: false, error: 'Unauthorized' })
+		const user = infos.user
+		const accessToken = infos.accessToken
+		if (!user)
+			return reply.code(401).send({ success: false , error: 'User not found' })
+
+        // const userId = request.user.userId;
         
         // Get user data (excluding sensitive fields like password)
-        const userData = await usersModel.getUserById(userId);
-        if (!userData)
-          return reply.code(404).send({ success: false, error: 'User not found' });
+        // const user = await usersModel.getUserById(user.userId);
+        // if (!user)
+        //   return reply.code(404).send({ success: false, error: 'User not found' });
         
         // Remove sensitive fields
-        delete userData.password;
-        delete userData.doubleAuth_secret;
+        delete user.password;
+        delete user.doubleAuth_secret;
         
         // Get user's games history
-        const games = await gamesModel.getGamesByUserId(userId);
+        const games = await gamesModel.getGamesByUserId(user.userId);
         
         // Get user's friendships
-        const friendships = await friendshipsModel.getFriendshipsByUserId(userId);
+        const friendships = await friendshipsModel.getFriendshipsByUserId(user.userId);
         
         // Compile all data
         const exportData = {
           personal_information: {
-            userId: userData.userId,
-            username: userData.username,
-            email: userData.email,
-            profile_picture: userData.profile_picture,
-            created_at: userData.created_at,
-            doubleAuth_status: !!userData.doubleAuth_status
+            userId: user.userId,
+            username: user.username,
+            email: user.email,
+            profile_picture: user.profile_picture,
+            created_at: user.created_at,
+            doubleAuth_status: !!user.doubleAuth_status
           },
           games_history: games,
           friendships: friendships
@@ -505,7 +511,9 @@ export async function exportUserData(request, reply) {
         reply.header('Content-Disposition', 'attachment; filename="user-data-export.json"');
         reply.type('application/json');
         
-        return reply.send(JSON.stringify(exportData, null, 2));
+        // return reply.code(200).send({success: true, exportData: exportData});
+        return reply.send(JSON.stringify({ success: true, ...exportData }, null, 2));
+        // return reply.code(200).send(JSON.stringify(exportData, null, 2));
     } catch (error) {
         console.error('Error exporting user data:', error);
         return reply.code(500).send({ success: false, error: 'Failed to export user data' });

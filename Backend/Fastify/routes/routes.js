@@ -36,7 +36,7 @@ export default async function routes (fastify) {
 	fastify.put('/user/update-profile', changeProfile)
 	fastify.delete('/user/delete-account', deleteAccount)
 	fastify.post('/user/refresh-infos', refreshInfos)
-	fastify.post('/request/user/export-data', exportUserData) // NOTE - new route to export user data
+	fastify.get('/user/export-data', exportUserData) // NOTE - new route to export user data
 
 	//friendsController
 	fastify.get('/friendship/get-user-friendships', getUserFriendships)

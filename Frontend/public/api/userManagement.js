@@ -85,56 +85,55 @@ async function update_doubleAuth() {
 	}
 }
 
-async function export_data() { //REVIEW - 
+async function export_data() {
 	try {
-	  // Show loading indicator
-	  notif("Preparing your data for download...", true);
-	  
-	  // Fetch user data from the backend
-	//   const response = await fetch('/request/user/export-data', {
-	// 	method: 'GET',
-	// 	headers: {
-	// 	  'Content-Type': 'application/json'
-	// 	},
-	// 	credentials: 'include'
-	//   });
-	  const response = await fetchAPI('/request/user/export-data', 'GET', null, false); //REVIEW - 
-	  
-	  // Check if the response is successful
-	  if (!response.ok) {
-		const errorData = await response.json();
-		throw new Error(errorData.error || 'Failed to export user data');
-	  }
-	  
-	  // Get the data as a blob
-	  const blob = await response.blob(); //NOTE - do research on blob
-	  
-	  // Create a download link
-	  const url = window.URL.createObjectURL(blob);
-	  const a = document.createElement('a');
-	  const date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
-	  
-	  // Set download attributes
-	  a.href = url;
-	  a.download = `transcendance-user-data-${date}.json`;
-	  
-	  // Append to body, click and remove
-	  document.body.appendChild(a);
-	  a.click();
-	  
-	  // Cleanup
-	  window.URL.revokeObjectURL(url);
-	  document.body.removeChild(a);
-	  
-	  notif("Your data has been downloaded successfully!", true);
+		// Show loading indicator
+		notif("Preparing your data for download...", true);
+		// console.log("Preparing your data for download...");
+		
+		const data = await fetchAPI('/request/user/export-data', 'GET', null, false);
+
+		console.log("data success :", data.success);
+		console.log("data ok :", data.ok);
+
+		
+		// Check if the response is successful
+		if (!data.success) {
+			throw new Error(errorData.error || 'Failed to export user data');
+		}
+
+		// Extraire le nom d'utilisateur des données
+		const username = data.personal_information.username;
+		// console.log("username", username);
+		
+		// Get the data as a blob
+		const jsonString = JSON.stringify(data, null, 2);
+		const blob = new Blob([jsonString], { type: 'application/json' });
+		// const blob = await data.blob();
+		
+		// Create a download link
+		const url = window.URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		const date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+		
+		// Set download attributes
+		a.href = url;
+		a.download = `transcendance-${username}-data-${date}.json`;
+		
+		// Append to body, click and remove
+		document.body.appendChild(a);
+		a.click();
+		
+		// Cleanup
+		window.URL.revokeObjectURL(url);
+		document.body.removeChild(a);
+		
+		notif("Your data has been downloaded successfully!", true);
 	} catch (err) {
-	  console.error("Error exporting user data:", err);
-	  notif(`Failed to export data: ${err.message}`, false);
+		console.error("Error exporting user data:", err);
+		notif(`Failed to export data: ${err.message}`, false);
 	}
-  }
-  
-  // Make function available globally
-  window.export_data = export_data; //REVIEW - 
+}
 
 // async function delete_account() {
 // 	if (confirm('Do you really want to delete your account ?')) {
