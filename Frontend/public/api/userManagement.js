@@ -85,6 +85,56 @@ async function update_doubleAuth() {
 	}
 }
 
+async function export_data() {
+	try {
+		// Show loading indicator
+		notif("Preparing your data for download...", true);
+		// console.log("Preparing your data for download...");
+		
+		const data = await fetchAPI('/request/user/export-data', 'GET', null, false);
+
+		console.log("data success :", data.success);
+		console.log("data ok :", data.ok);
+
+		
+		// Check if the response is successful
+		if (!data.success) {
+			throw new Error(errorData.error || 'Failed to export user data');
+		}
+
+		// Extraire le nom d'utilisateur des données
+		const username = data.personal_information.username;
+		// console.log("username", username);
+		
+		// Get the data as a blob
+		const jsonString = JSON.stringify(data, null, 2);
+		const blob = new Blob([jsonString], { type: 'application/json' });
+		// const blob = await data.blob();
+		
+		// Create a download link
+		const url = window.URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		const date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+		
+		// Set download attributes
+		a.href = url;
+		a.download = `transcendance-${username}-data-${date}.json`;
+		
+		// Append to body, click and remove
+		document.body.appendChild(a);
+		a.click();
+		
+		// Cleanup
+		window.URL.revokeObjectURL(url);
+		document.body.removeChild(a);
+		
+		notif("Your data has been downloaded successfully!", true);
+	} catch (err) {
+		console.error("Error exporting user data:", err);
+		notif(`Failed to export data: ${err.message}`, false);
+	}
+}
+
 // async function delete_account() {
 // 	if (confirm('Do you really want to delete your account ?')) {
 // 		try {

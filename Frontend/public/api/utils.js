@@ -52,7 +52,7 @@ async function fetchAPI(url, method, body = null, showNotification = true, formD
 			notif(data.message, true);
 		else if (data.error)
 			notif(data.error, false);
-		console.log("data", data);
+		console.log("fetchAPI: data :", data);
 		return data;
 	} catch (err) {
 		console.error(`Error in API call to ${url}:`, err);

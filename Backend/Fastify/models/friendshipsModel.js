@@ -27,7 +27,8 @@ const friendshipsModel = {
 		const requestSent = db.prepare(` SELECT status FROM friendships WHERE userId = ? AND friendId = ?`).get(userId, friendId);
 		const requestReceived = db.prepare(`SELECT status FROM friendships WHERE userId = ? AND friendId = ?`).get(friendId, userId);
 		return { requestSent, requestReceived };
-	}
+	},
+	getFriendshipsByUserId: (userId) => { return db.prepare("SELECT f.friendshipId, f.status, f.created_at, u1.userId as userId, u1.username as username, u2.userId as friendId, u2.username as friend_username FROM friendships f JOIN users u1 ON f.userId = u1.userId JOIN users u2 ON f.friendId = u2.userId WHERE f.userId = ? OR f.friendId = ?").all(userId, userId); }
 }
 
 export default friendshipsModel;
