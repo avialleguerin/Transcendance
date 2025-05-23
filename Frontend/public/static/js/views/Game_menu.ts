@@ -264,6 +264,71 @@ export default class Game_menu extends AbstractView {
 					</div>
 				</div>
 
+				<div class="choose_your_opponent_1v1" id="choose_your_opponent_1v1_id">
+					<form class="choose_your_opponent_1v1_content" id="choose_your_opponent_1v1_form">
+						<h1>CONNECT YOUR OPPONENT</h1>
+						<div class="player-section">
+						<p>PLAYER 2</p>
+						<div class="input-container">
+							<label for="email2">Email :</label>
+							<input type="email" id="email2" name="email2" placeholder="Player 2 email" required>
+						</div>
+						<div class="input-container">
+							<label for="password2">Password :</label>
+							<input type="password" id="password2" name="password2" placeholder="Player 2 password" required>
+						</div>
+						</div>
+						<button class="valider_opponent_btn_1v1" id="validate-login">Valider</button>
+					</form>
+				</div>
+
+
+				<div class="choose_your_opponent_multi" id="choose_your_opponent_multi_id">
+					<form class="choose_your_opponent_multi_content" id="choose_your_opponent_multi_form">
+						<h1>CONNECT YOUR OPPONENTS</h1>
+
+						<div class="player-section">
+						<p>PLAYER 2</p>
+						<div class="input-container">
+							<label for="email2">Email :</label>
+							<input type="email" id="email2" name="email2" placeholder="Player 2 email" required>
+						</div>
+						<div class="input-container">
+							<label for="password2">Password :</label>
+							<input type="password" id="password2" name="password2" placeholder="Player 2 password" required>
+						</div>
+						</div>
+
+						<div class="player-section">
+						<p>PLAYER 3</p>
+						<div class="input-container">
+							<label for="email3">Email :</label>
+							<input type="email" id="email3" name="email3" placeholder="Player 3 email" required>
+						</div>
+						<div class="input-container">
+							<label for="password3">Password :</label>
+							<input type="password" id="password3" name="password3" placeholder="Player 3 password" required>
+						</div>
+						</div>
+
+						<div class="player-section">
+						<p>PLAYER 4</p>
+						<div class="input-container">
+							<label for="email4">Email :</label>
+							<input type="email" id="email4" name="email4" placeholder="Player 4 email" required>
+						</div>
+						<div class="input-container">
+							<label for="password4">Password :</label>
+							<input type="password" id="password4" name="password4" placeholder="Player 4 password" required>
+						</div>
+						</div>
+
+						<button class="valider_opponent_btn" id="validate_multi_opponent">Valider</button>
+					</form>
+				</div>
+
+
+
 				<div class="view6" id="view6">
 					<div class="view6-content">
 						<h1 id="custom_ta_game">CUSTOMIZE YOUR GAME</h1>
@@ -328,6 +393,7 @@ export default class Game_menu extends AbstractView {
 				<label for="code">code</label>
 				<input type="code" id="activate-2fa-code" name="code" placeholder="code" required>
 				<button type="submit" class="btn_valider_qr_code">Validate</button>
+				<button type="button" class="cancel_fa" id="cancel_fa">X</button>
 			</form>
 
 			<div class="game_history" id="game_history">
@@ -566,29 +632,29 @@ export default class Game_menu extends AbstractView {
 		</div>
 	`;}
 
-	init_solo_game() {
-		document.getElementById("solo_1v1_btn").addEventListener("click", () => {
-			// console.log("Solo 1v1 game started");
-			startGame();
-			handleViewTransitions("vue3", "vue2");
-		});
-	}
+	// init_solo_game() {
+	// 	document.getElementById("solo_1v1_btn").addEventListener("click", () => {
+	// 		console.log("Solo 1v1 game started");
+	// 		startGame();
+	// 		handleViewTransitions("vue3", "vue2");
+	// 	});
+	// }
 
-	initEvents() {
-		document.getElementById("multiplayer_btn").addEventListener("click", () => {
-			// console.log("Multiplayer 2v2 game started");
-			startMultiGame();
-			handleViewTransitions("vue3", "vue2");
-		});
-	}
+	// initEvents() {
+	// 	document.getElementById("multiplayer_btn").addEventListener("click", () => {
+	// 		// console.log("Multiplayer 2v2 game started");
+	// 		startMultiGame();
+	// 		handleViewTransitions("vue3", "vue2");
+	// 	});
+	// }
 
 
-	tournament_view() {
-		document.getElementById("tournament_view").addEventListener("click", () => {
-			// console.log("Tournament view started");
-			handleViewTransitions("tournament");
-		});
-	}
+	// tournament_view() {
+	// 	document.getElementById("tournament_view").addEventListener("click", () => {
+	// 		// console.log("Tournament view started");
+	// 		handleViewTransitions("tournament");
+	// 	});
+	// }
 
 	handleDeconnection() {
 		const deconnect_btn = document.getElementById("deconnect_btn");
@@ -744,19 +810,57 @@ export default class Game_menu extends AbstractView {
 
 		});
 
+		// prepar_game_1v1.addEventListener('click', () => {
+		// 	view3.classList.remove('active');
+		// 	view6.classList.add('active');
+		// 	back_to_select_mode_view6.classList.add('active');
+		// });
+
+		const choose_your_opponent_1v1_form = document.getElementById('choose_your_opponent_1v1_form');
+		const validate_login = document.getElementById('validate-login');
+
 		prepar_game_1v1.addEventListener('click', () => {
+			console.log('Prepar game 1v1 clicked');
 			view3.classList.remove('active');
-			view6.classList.add('active');
+			choose_your_opponent_1v1_form.classList.add('active');
 			back_to_select_mode_view6.classList.add('active');
+			container_menu.classList.add('active');
 		});
 
+		validate_login.addEventListener('click', () => {
+			console.log('Prepar game 1v1 clicked');
+			choose_your_opponent_1v1_form.classList.remove('active');
+			back_to_select_mode_view6.classList.add('active');
+			view6.classList.add('active');
+			container_menu.classList.remove('active');
+		});
+
+
+		// prepar_game_multi.addEventListener('click', () => {
+		// 	view4.classList.remove('active');
+		// 	view8.classList.add('active');
+		// 	back_to_select_mode_view8.classList.add('active');
+		// });
+		
+		const choose_your_opponent_multi_form = document.getElementById('choose_your_opponent_multi_form');
+		const validate_multi_opponent = document.getElementById('validate_multi_opponent');
 
 		prepar_game_multi.addEventListener('click', () => {
 			view4.classList.remove('active');
-			view8.classList.add('active');
+			choose_your_opponent_multi_form.classList.add('active');
 			back_to_select_mode_view8.classList.add('active');
+			container_menu.classList.add('active');
 		});
-		
+
+		validate_multi_opponent.addEventListener('click', () => {
+			console.log('Prepar game multi clicked');
+			choose_your_opponent_multi_form.classList.remove('active');
+			back_to_select_mode_view8.classList.add('active');
+			view8.classList.add('active');
+			container_menu.classList.remove('active');
+		});
+
+
 		/***********************************************************************/
 		/**************************BACK_TO_MENU********************************/
 		/***********************************************************************/
@@ -765,6 +869,13 @@ export default class Game_menu extends AbstractView {
 			view6.classList.remove('active');
 			view3.classList.add('active');
 			back_to_select_mode_view6.classList.remove('active');
+			if (choose_your_opponent_1v1_form.classList.contains('active')) {
+				choose_your_opponent_1v1_form.classList.remove('active');
+				back_to_select_mode_view6.classList.remove('active');
+				view3.classList.add('active');
+				container_menu.classList.remove('active');
+			}
+
             if (skin_perso.classList.contains('checked')) {
 				skin_perso.classList.remove('checked');
                 if (choose_your_skin.classList.contains('active')) {
@@ -831,6 +942,12 @@ export default class Game_menu extends AbstractView {
 			view8.classList.remove('active');
 			view4.classList.add('active');
 			back_to_select_mode_view8.classList.remove('active');
+			if (choose_your_opponent_multi_form.classList.contains('active')) {
+				choose_your_opponent_multi_form.classList.remove('active');
+				back_to_select_mode_view8.classList.remove('active');
+				view4.classList.add('active');
+				container_menu.classList.remove('active');
+			}
             if (skin_perso_game_multi.classList.contains('checked')) {
 				skin_perso_game_multi.classList.remove('checked');
                 if (choose_your_skin_game_multi.classList.contains('active')) {
@@ -1267,6 +1384,7 @@ export default class Game_menu extends AbstractView {
 		// });
 
 		const code_validation_id = document.getElementById('code_validation_id');
+		const cancel_fa = document.getElementById('cancel_fa');
 
 		active_fa.addEventListener('change', () => {
 			if (active_fa.checked) {
@@ -1281,6 +1399,15 @@ export default class Game_menu extends AbstractView {
 
 			}
 		});
+
+		cancel_fa.addEventListener('click', () => {
+			console.log('Cancel FA clicked');
+			code_validation_id.classList.remove('active');
+			fa_selector.classList.add('hidden');
+			active_fa.checked = false;
+		});
+
+
 
 
 		/***********************************************************************/
@@ -1366,7 +1493,22 @@ export default class Game_menu extends AbstractView {
 			view5.classList.add('active');
 		});
 
+		document.getElementById("solo_1v1_btn").addEventListener("click", () => {
+			console.log("Solo 1v1 game started");
+			startGame();
+			handleViewTransitions("vue3", "vue2");
+		});
 
+		document.getElementById("multiplayer_btn").addEventListener("click", () => {
+			// console.log("Multiplayer 2v2 game started");
+			startMultiGame();
+			handleViewTransitions("vue3", "vue2");
+		});
+
+		document.getElementById("tournament_view").addEventListener("click", () => {
+			// console.log("Tournament view started");
+			handleViewTransitions("tournament");
+		});
 	}
 }
 

@@ -1,19 +1,24 @@
-
 .container-EndGame {
     position: absolute;
     top: 68%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 31%;
-    height: 30%;
-    display: flex
-;
+    width: 35%;
+    height: 35%;
+    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    z-index: 1;
-    background-color: #545454;
+    z-index: 10;
+    background: linear-gradient(135deg, #2a2a2a 0%, #404040 50%, #2a2a2a 100%);
     visibility: hidden;
-    border: 2px solid #000000;
+    border: 3px solid #ffffff;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.6), inset 0 0 10px rgba(0, 247, 255, 0.3);
+    border-radius: 10px;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    padding: 20px;
+    backdrop-filter: blur(5px);
 }
 
 .winner {
@@ -21,10 +26,33 @@
     top: 14%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 2vw;
+    font-size: 2.5vw;
     font-family: 'Black Ops One', sans-serif;
-    color: rgb(255, 255, 255);
-    text-shadow: 2px 2px 2px #000000;
+    color: #ffffff;
+    text-shadow: 
+        0 0 5px #ffffff,
+        0 0 10px #ffffff,
+        0 0 20px #ffffff,
+        2px 2px 5px rgba(0, 0, 0, 0.7);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.container-EndGame h1 {
+    font-size: 1.2vw;
+    font-family: 'Black Ops One', sans-serif;
+    color: #ffffff;
+    text-shadow: 
+        2px 2px 5px rgba(0, 0, 0, 0.7),
+        0 0 15px rgba(255, 255, 255, 0.5);
+    margin: 10px 0;
+    letter-spacing: 1px;
+}
+
+.container-EndGame.active {
+    visibility: visible;
+    opacity: 1;
+    animation: pulseGlow 2s infinite alternate;
 }
 
 .looser {
@@ -35,18 +63,6 @@
     font-family: 'Black Ops One', sans-serif;
     color: rgb(255, 255, 255);
     text-shadow: 2px 2px 2px #000000;
-}
-
-.container-EndGame h1 {
-    font-size: 1vw;
-    font-family: 'Black Ops One', sans-serif;
-    color: rgb(255, 255, 255);
-    text-shadow: 2px 2px 2px #000000;
-
-}
-
-.container-EndGame.active {
-    visibility: visible;
 }
 
 @keyframes press_space {
@@ -92,7 +108,6 @@
     border: none;
     border-radius: 10px;
     cursor: pointer;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     transition: all 0.3sease;
     background-image: url("../../../srcs/game/assets/image/boutton.svg");
     background-size: 100% auto;

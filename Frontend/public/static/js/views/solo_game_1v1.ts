@@ -8,13 +8,14 @@ import { disable_skin_perso_player_first_and_seconde } from "../../../srcs/game/
 import { getPlayer_1_win, getPlayer_2_win } from "../../../srcs/game/gameplay/score.js";
 
 let spacePressed = false;
+let bool = false;
 
 export default class solo_game extends AbstractView {
 
 	cooldowns: { [key: string]: boolean };
 	cooldownTimes: { [key: string]: number };
 	boundKeyPressHandler: (event: KeyboardEvent) => void;
-	gameLoop: NodeJS.Timeout | null;
+	gameLoop: number | null;
 
 	constructor() {
 		super();
@@ -35,11 +36,15 @@ export default class solo_game extends AbstractView {
 
 		this.boundKeyPressHandler = this.handleKeyPress.bind(this);
     
-		console.log("solo_game_1v1.js");
-		document.addEventListener("keydown", this.boundKeyPressHandler);
+		
+		if (bool == false) {
+			if (window.location.pathname === "/solo_game_1v1") {
+				console.log("solo_game_1v1.js ////////////////////////////////////////////////////////////////////////////////////////////////////////");
 
-		if (window.location.pathname === "/solo_game_1v1") {
-			this.gameLoop = setInterval(() => { this.checkGameOver(); 1000 });
+				document.addEventListener("keydown", this.boundKeyPressHandler);
+				this.gameLoop = setInterval(() => { this.checkGameOver();}, 1000 );
+				bool = true;
+			}
 		}
 	}
 
@@ -50,17 +55,6 @@ export default class solo_game extends AbstractView {
 			<div class="container">
 				<div class="press_space" >
 					<h1 id="press_space_id">Press SPACE to Start</h1>
-				</div>
-				<div class="container-leave">
-					<button class="option" id="option_btn">
-						<img src="../../../srcs/game/assets/image/menu.svg" alt="leave">
-					</button>
-				</div>
-				<div class="panel" id="panel_id">
-					<button class="option-in-panel" id="option_btn-remove">
-						<img src="../../../srcs/game/assets/image/menu.svg" alt="leave">
-					</button>
-					<button class="leave_game" id="leave_game_id">Leave Game</button>
 				</div>
 
 				<div class="container-Player1" id="container-player1_id">
@@ -133,20 +127,6 @@ export default class solo_game extends AbstractView {
 		clearInterval(this.gameLoop);
 	}
 
-	leave_game() {
-		document.getElementById("leave_game_id").addEventListener("click", () => {
-			
-			this.cleanup();
-			setLeaveGameVar(true);
-			spacePressed = false;
-			handleViewTransitions("vue2", "vue4");
-			setTimeout(() => {
-				window.history.back();
-				leave_Game();
-			}, 1500);
-		});
-	}
-
 	leave_game_2() {
 		document.getElementById("leave_game_2_id").addEventListener("click", () => {
 			
@@ -154,6 +134,7 @@ export default class solo_game extends AbstractView {
 			setLeaveGameVar(true);
 			disable_skin_perso_player_first_and_seconde();
 			spacePressed = false;
+			bool = false;
 			handleViewTransitions("vue2", "vue4");
 			setTimeout(() => {
 				window.history.back();
@@ -207,16 +188,20 @@ export default class solo_game extends AbstractView {
 
 	handleKeyPress(event: KeyboardEvent) { //NOTE - jai ajouter le type event: KeyboardEvent
 		console.log("Key pressed:", event.key);
+		console.log("Current cooldowns state:", this.cooldowns);
 		const key = event.key;
-
-
-
+		
+		
+		
 		
 		// Vérifier si la touche a un cooldown défini
 		if (!(key in this.cooldownTimes)) return;
-	
+		
+		if (this.cooldowns[key]) {
+			console.log(`Key ${key} is in cooldown, ignoring`);
+			return;
+		} // Ignore l'action si en cooldown
 		// Vérifier si la touche est en cooldown
-		if (this.cooldowns[key]) return; // Ignore l'action si en cooldown
 
 		if (key === " ") {
 			const press_space = document.getElementById("press_space_id");
@@ -241,13 +226,13 @@ export default class solo_game extends AbstractView {
 				case "x":
 					elem = document.getElementById("nb-item-teammate-1");
 					break;
-					case "c":
-						elem = document.getElementById("nb-item-autre-1");
-						break;
-						case "1":
-							elem = document.getElementById("nb-item-grenade-2");
-							break;
-							case "2":
+				case "c":
+					elem = document.getElementById("nb-item-autre-1");
+					break;
+				case "1":
+					elem = document.getElementById("nb-item-grenade-2");
+					break;
+				case "2":
 					elem = document.getElementById("nb-item-teammate-2");
 					break;
 				case "3":
@@ -258,11 +243,8 @@ export default class solo_game extends AbstractView {
 			if (elem) {
 				let currentValue = parseInt(elem.innerHTML, 10);
 				if (currentValue > 0) {
-					elem.innerHTML = (currentValue - 1).toString(); //NOTE - jai changer le type pour que ca passe ici
+					elem.innerHTML = (currentValue - 1).toString();
 					
-					console.log(`${key} utilisé, cooldown activé pour ${this.cooldownTimes[key]}ms`);
-					
-					// Mettre en cooldown cette touche
 					this.cooldowns[key] = true;
 					
 					// Ajouter la classe d'animation pour démarrer l'overlay reloading
@@ -319,8 +301,14 @@ export default class solo_game extends AbstractView {
 		
 					// Retirer le cooldown après le délai défini pour cette touche
 					setTimeout(() => {
+						//  vérifiez que this.cooldowns est bien accessible
+						console.log("Timeout executed for key:", key);
+    					console.log("this.cooldowns before:", this.cooldowns);
+						console.log("spacePressed:", spacePressed);
 						// Terminer le cooldown et arrêter l'animation
 						delete this.cooldowns[key];
+
+						console.log("this.cooldowns after:", this.cooldowns);
 						console.log(`${key} cooldown terminé`);
 		
 						// Retirer la classe d'animation après le cooldown
@@ -340,35 +328,15 @@ export default class solo_game extends AbstractView {
 		}
 	}
 
-	event_solo_game() {
-		const option = document.getElementById("option_btn");
-		const panel = document.getElementById("panel_id");
-		const option_remove = document.getElementById("option_btn-remove");
-
-		
-		option.addEventListener("click", () => {
-			console.log("option clicked");
-			panel.classList.add("active");
-			panel.classList.remove("remove");
-			option.classList.add("active");
-		});
-	
-		option_remove.addEventListener("click", () => {
-			console.log("option_remove clicked");
-			panel.classList.add("remove");
-			option.classList.remove("active");
-			setTimeout(() => {
-				panel.classList.remove("active");
-			}, 1100);
-		});
-	}
-
 	checkGameOver() {
 		if (window.location.pathname !== "/solo_game_1v1")
 			return;
 		const winnerContainer = document.querySelector(".container-EndGame");
 		let player_1_win = getPlayer_1_win();
-		let player_2_win = getPlayer_2_win();	
+		let player_2_win = getPlayer_2_win();
+		const container_player1 = document.getElementById("container-player1_id");
+		const container_player2 = document.getElementById("container-player2_id");
+
 		if (!winnerContainer)
 			return;
 		if (isGameFinished()) {
@@ -384,6 +352,10 @@ export default class solo_game extends AbstractView {
 				document.getElementById("winner_id").innerHTML = "Player 2 Win";
 				document.getElementById("looser_id").innerHTML = "Player 1 Loose";
 			}
+			if (container_player1.classList.contains("active"))
+				container_player1.classList.remove("active");
+			if (container_player2.classList.contains("active"))
+				container_player2.classList.remove("active");
 		}
 		else 
 		{

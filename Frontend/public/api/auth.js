@@ -41,8 +41,9 @@ async function login(event) {
 		} else if (data.success && data.connection_status === "partially_connected" && data.user.doubleAuth_status) {
 			sessionStorage.setItem("userId", data.user.userId);
 			document.getElementById("doubleAuthForm").classList.remove("hidden");
-			document.getElementById("loginForm").classList.add("hidden");
+			document.getElementById("loginForm").classList.add("active");
 			document.getElementById("login-title").textContent = "Double Authentication";
+			document.getElementById("doubleAuthForm").classList.add("active");
 		} else if (data.success && data.connection_status === "connected") {
 			notif(data.message, true);
 			console.log("✅ Connected, Token :", sessionStorage.getItem("accessToken"));

@@ -1,9 +1,6 @@
 import Home from "./views/Home.js";
-import jouer from "./views/jouer.js";
-import settings from "./views/settings.js";
 import Game_menu from "./views/Game_menu.js";
 import solo_game_1v1 from "./views/solo_game_1v1.js";
-import duo_game from "./views/duo_game.js";
 import multi_player_game from "./views/multi_player_game.js";
 import tournament from "./views/tournament.js";
 import tournament_game from "./views/tournament_game.js";
@@ -30,19 +27,17 @@ const navigateTo = (url: string): void => {
 const router = async (): Promise<void> => {
 	const routes: Route[] = [
 		{ path: "/", view: Home },
-		// { path: "/", view: platformer },
-		{ path: "/settings", view: settings },
 		{ path: "/Game_menu", view: Game_menu },
 		{ path: "/solo_game_1v1", view: solo_game_1v1 },
-		{ path: "/duo_game", view: duo_game },
 		{ path: "/multi_player_game", view: multi_player_game },
 		{ path: "/tournament", view: tournament },
 		{ path: "/tournament_game", view: tournament_game },
 		{ path: "/PlatformView", view: PlatformView },
-		// { path: "/PlatformView", view: platformer },
 	];
 
 	const potentialMatches: RouteMatch[] = routes.map((route) => {
+		console.log(`Router is running ${route}||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||`);
+
 		return {
 			route: route,
 			isMatch: location.pathname === route.path,
@@ -69,7 +64,6 @@ const router = async (): Promise<void> => {
         app.style.transition = "opacity 0.5s ease-in-out";
         app.style.opacity = "1";
 
-        // Exécute les fonctions si elles existent
         if (typeof view.initEvents === "function") view.initEvents();
         if (typeof view.createAccount === "function") view.createAccount();
         if (typeof view.init_solo_game === "function") view.init_solo_game();
@@ -96,7 +90,7 @@ const router = async (): Promise<void> => {
 		if (typeof view.init_platformer_game === "function") view.init_platformer_game();
         if (typeof view.init_game_platformer === "function") view.init_game_platformer();
         if (typeof view.handleDeconnection === "function") view.handleDeconnection();
-    }, 1500); // Attente de 1,5 seconde avant le changement de page
+    }, 1500);
 };
 
 window.addEventListener("popstate", router);
