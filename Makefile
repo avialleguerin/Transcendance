@@ -17,6 +17,9 @@ CYAN		:=	\e[36m
 # Docker Compose
 NO_LOGS 	:= --no-attach vault --no-attach redis --no-attach nginx # --no-attach fastify #--no-attach tsengine
 
+# Variables BABYLON
+BABYLON_FILE = ./Frontend/public/srcs/game/gameplay/babylon.js
+
 all:
 	@make build
 	@make -j4 up
@@ -51,5 +54,15 @@ reload-nginx:
 	@docker exec nginx nginx -t && docker exec nginx nginx -s reload
 	@echo "${GREEN}✓ Nginx reloaded successfully with updated ModSecurity rules.${RESET}"
 
+#HTML OPTIONS
+normal:
+	@echo "\n${BLUE}Construction de la version normale sans skins...${RESET}"
+	@sed -i 's/^init_all_skin(scene);/\/\/ init_all_skin(scene);/' $(BABYLON_FILE)
+	@echo "${GREEN}✓ Version normale générée avec succès (skins désactivés).${RESET}"
 
-.PHONY: up all down re
+with_skin:
+	@echo "\n${BLUE}Construction de la version avec skins...${RESET}"
+	@sed -i 's/^\/\/ init_all_skin(scene);/init_all_skin(scene);/' $(BABYLON_FILE)
+	@echo "${GREEN}✓ Version avec skins générée avec succès (skins activés).${RESET}"
+
+.PHONY: up all down re fixer reload-nginx normal with_skin
