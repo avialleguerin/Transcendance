@@ -13,10 +13,9 @@ async function addFriend(event) {
 	fetch_user_friendships();
 }
 
-async function update_friendship(friendshipId, change_status) {
+async function accept_friendship(friendshipId) {
 	try {
-		console.log("update_friendship: ", change_status);
-		const data = await fetchAPI('/request/friendship/update-status', 'POST', { friendshipId, change_status });
+		const data = await fetchAPI('/request/friendship/update-status', 'POST', { friendshipId });
 		if (data.success) {
 			notif("Friendship status updated", true);
 			fetch_user_friendships();
@@ -75,7 +74,7 @@ async function fetch_user_friendships() {
 					<td class="friend_name" >${friendship.friend_username}</td>
 					<td>
 						${friendship.status === 'pending' && user.userId === friendship.friendId
-						? `<button class="accept-btn" onclick="update_friendship(${friendship.friendshipId}, 'accept')">Accept</button><button class="reject-btn" onclick="update_friendship(${friendship.friendshipId}, 'reject')">Reject</button>`
+						? `<button class="accept-btn" onclick="accept_friendship(${friendship.friendshipId})">Accept</button><button class="reject-btn" onclick="delete_friendship(${friendship.friendshipId})">Reject</button>`
 						: `<span class="${friendship.status === 'accepted' ? 'text-green-500' : 
 							(friendship.status === 'pending' ? 'text-yellow-500' : 'text-red-500')}">
 							${friendship.status}
@@ -110,7 +109,7 @@ async function fetch_user_games() {
 			document.getElementById('games-table').innerHTML = games.map(game => /*html*/`
 				<tr class="game_card_navBar win">
 					<td class="profile_navBar">
-						<img src="./upload/${game.user1ProfilePicture}" alt="profile" />
+						<img src="/upload/${game.user1ProfilePicture}" alt="profile" />
 						<p class="username_navBar">${game.user1_username}</p>
 					</td>
 					<td class="vs_info_navBar">
@@ -119,7 +118,7 @@ async function fetch_user_games() {
 					</td>
 					<td class="opponent_navBar">
 						<p class="username_navBar">${game.user2_username}</p>
-						<img src="./upload/${game.user2ProfilePicture}" alt="profile" />
+						<img src="/upload/${game.user2ProfilePicture}" alt="profile" />
 					</td>
 				</tr>
 			`).join('');

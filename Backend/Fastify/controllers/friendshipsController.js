@@ -38,7 +38,8 @@ export async function addFriend(request, reply) {
 		const friendExists = usersModel.getUserByUsername(friend)
 		if (!friendExists)
 			return reply.code(404).send({ success: false, error: `User '${friend}' not found`, accessToken: infos.accessToken })
-
+		if (friendExists.userId === user.userId)
+			return reply.code(400).send({success: false, error: `You can't invite yourself`, accessToken: infos.accessToken })
 		const status = friendshipsModel.checkFriendshipStatus(user.userId, friendExists.userId);
 		if (status.requestSent || status.requestReceived) {
 			return reply.code(400).send({ 
@@ -61,10 +62,9 @@ export async function addFriend(request, reply) {
 	}
 }
 
-export async function updateFriendshipSatus(request, reply) {
-	const { friendshipId, change_status } = request.body
+export async function acceptFriend(request, reply) {
+	const { friendshipId } = request.body
 	try {
-		console.log("change_status :", change_status)
 		const infos = await getUserFromToken(request)
 		if (!infos)
 			return reply.code(401).send({ error: "Unauthorized" })
@@ -81,13 +81,8 @@ export async function updateFriendshipSatus(request, reply) {
 		if (friendship.friendId !== user.userId)
 			return reply.code(403).send({ success: false, error: `You are not allowed to accept this friendship`, accessToken: infos.accessToken })
 
-		if (change_status === 'reject')
-		{
-			console.log("reject")
-			friendshipsModel.rejectFriendship(friendship.userId, user.userId)
-		} else
-			friendshipsModel.acceptFriendship(friendship.userId, user.userId)
-	
+		friendshipsModel.acceptFriendship(friendship.userId, user.userId)
+
 		return reply.send({ 
 			success: true,
 			message: "Friendship accepted successfully",

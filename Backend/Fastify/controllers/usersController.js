@@ -74,6 +74,28 @@ export async function login(request, reply) {
 	}
 }
 
+export async function loginOpponent(request, reply) {
+	const { email, password } = request.body
+	try {
+		const infos = await getUserFromToken(request)
+		if (!infos)
+			return reply.code(401).send({ success: false, error: 'Unauthorized' })
+		const user = infos.user
+		const accessToken = infos.accessToken
+		if (!user)
+			return reply.code(401).send({ error: 'Unauthorized' })
+		if (!accessToken)
+			return reply.code(401).send({ error: 'Unauthorized' })
+		const opponent = usersModel.getUserByEmail(email)
+		if (!opponent || !await verifyPassword(opponent.password, password))
+			return reply.code(401).send({ success: false, error: 'Invalid credentials' })
+
+		reply.code(200).send({ success: true, message: 'Opponent logged in', user: user, opponent: opponent, accessToken: accessToken })
+	} catch (err) {
+		return reply.code(500).send({ error: err.message })
+	}
+}
+
 export async function logout(request, reply) {
 	const accessToken = request.headers.authorization?.split(' ')[1]
 	const { refreshToken } = request.cookies
@@ -456,7 +478,7 @@ export async function refreshInfos(request, reply) {
 			return reply.code(401).send({ success: false , error: 'User not found' })
 		if (!user.doubleAuth_status && user.doubleAuth_secret)
 			usersModel.updateDoubleAuth_secret(user.userId, null)
-		return reply.code(200).send({ success: true, accessToken: accessToken, message: 'User infos refreshed' })
+		return reply.code(200).send({ success: true, user: user, accessToken: accessToken, message: 'User infos refreshed' })
 	} catch (err) {
 		return reply.code(500).send({ error: err.message })
 	}

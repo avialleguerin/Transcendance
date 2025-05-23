@@ -110,7 +110,7 @@ async function create_game(event) {
 		return ;
 	}
 
-	const response = await fetch('/request/game/create-game', {
+	const response = await fetch('/request/admin/create-game', {
 		method: 'POST',
 		headers: { 
 			"Content-Type": "application/json",

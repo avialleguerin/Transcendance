@@ -12,12 +12,30 @@ let bool = false;
 
 export default class solo_game extends AbstractView {
 
+	
 	cooldowns: { [key: string]: boolean };
 	cooldownTimes: { [key: string]: number };
 	boundKeyPressHandler: (event: KeyboardEvent) => void;
 	gameLoop: number | null;
 
 	constructor() {
+		const accessToken: string | null = sessionStorage.getItem('accessToken');
+		if (!accessToken || accessToken === undefined) {
+			history.pushState({}, '', '/');
+			import('./Home.js').then((module: any) => {
+				const Home = module.default;
+				const homeInstance = new Home();
+				homeInstance.getHtml().then((html: string) => {
+					const appElement = document.getElementById('app');
+					if (appElement) {
+						appElement.innerHTML = html;
+						if (homeInstance.createAccount && typeof homeInstance.createAccount === 'function') {
+							homeInstance.createAccount();
+						}
+					}
+				});
+			});
+		}
 		super();
 		this.setTitle("solo_game");
 
@@ -58,7 +76,7 @@ export default class solo_game extends AbstractView {
 				</div>
 
 				<div class="container-Player1" id="container-player1_id">
-					<h1>Player 1</h1>
+					<h1 id="player1-username" >Player 1</h1>
 					<div class="container-item_player1">
 						<p id="nb-item-grenade-1"></p>
 						<p class="touch_player1">Z</p>
@@ -84,7 +102,7 @@ export default class solo_game extends AbstractView {
 					</div>
 				</div>
 				<div class="container-Player2" id="container-player2_id">
-					<h1>Player 2</h1>
+					<h1 id="player1-username" >Player 2</h1>
 					<div class="container-item_player2">
 						<p id="nb-item-grenade-2"></p>
 						<p class="touch_player2">1</p>

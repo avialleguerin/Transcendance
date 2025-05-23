@@ -73,6 +73,37 @@ async function login(event) {
 	}
 }
 
+async function loginOpponent(event) {
+	event.preventDefault();
+	const email = document.getElementById("1v1-email2").value;
+	const password = document.getElementById("1v1-password2").value;
+	if (!email || !password) {
+		notif("Please fill in all fields", false);
+		return;
+	}
+
+	try {
+		const data = await fetchAPI('/request/user/login-opponent', 'POST', { email, password }, true, false);
+
+		if (data.success) {
+			notif(data.message, true);
+			localStorage.setItem("Player2", data.opponent.username);
+			view3.classList.remove('active');
+			document.getElementById("choose_your_opponent_1v1_form").classList.remove('active');
+			document.getElementById("back_to_select_mode_view6").classList.add('active');
+			document.getElementById("view6").classList.add('active');
+			document.getElementById("container").classList.remove('active');
+			// document.getElementById("player1-username").innerHTML = data.user.username;
+			document.getElementById("1v1-oponent-username").innerHTML = localStorage.getItem("Player2");
+		} else
+			notif(data.error, false);
+	} catch (err) {
+		console.error("Erreur lors de la connexion :", err);
+		notif("Erreur de connexion", false);
+	}
+	document.getElementById("choose_your_opponent_1v1_form").reset();
+}
+
 async function logout() {
 	try {
 		await fetchAPI('/request/user/logout', 'POST', {});
@@ -131,7 +162,11 @@ async function refreshInfos() {
 		
 		if (!data.accessToken) {
 			sessionStorage.removeItem("accessToken");
+			localStorage.clear();
+			localStorage.removeItem("Player2");
 		} else if (sessionStorage.getItem("accessToken") && sessionStorage.getItem("accessToken") !== "undefined") {
+			localStorage.clear();
+			localStorage.setItem("Player1", data.user.username);
 			history.pushState({}, '', '/Game_menu');
 			import('../static/js/views/Game_menu.js').then(module => {
 				const GameMenu = module.default;

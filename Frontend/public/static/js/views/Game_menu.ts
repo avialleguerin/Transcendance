@@ -265,20 +265,20 @@ export default class Game_menu extends AbstractView {
 				</div>
 
 				<div class="choose_your_opponent_1v1" id="choose_your_opponent_1v1_id">
-					<form class="choose_your_opponent_1v1_content" id="choose_your_opponent_1v1_form">
+					<form class="choose_your_opponent_1v1_content" id="choose_your_opponent_1v1_form" onsubmit="loginOpponent(event)">
 						<h1>CONNECT YOUR OPPONENT</h1>
 						<div class="player-section">
 						<p>PLAYER 2</p>
 						<div class="input-container">
 							<label for="email2">Email :</label>
-							<input type="email" id="email2" name="email2" placeholder="Player 2 email" required>
+							<input type="email" id="1v1-email2" name="email2" placeholder="Player 2 email" required>
 						</div>
 						<div class="input-container">
 							<label for="password2">Password :</label>
-							<input type="password" id="password2" name="password2" placeholder="Player 2 password" required>
+							<input type="password" id="1v1-password2" name="password2" placeholder="Player 2 password" required>
 						</div>
 						</div>
-						<button class="valider_opponent_btn_1v1" id="validate-login">Valider</button>
+						<button type="submit" class="valider_opponent_btn_1v1" id="validate-opponent-login">Valider</button>
 					</form>
 				</div>
 
@@ -291,11 +291,11 @@ export default class Game_menu extends AbstractView {
 						<p>PLAYER 2</p>
 						<div class="input-container">
 							<label for="email2">Email :</label>
-							<input type="email" id="email2" name="email2" placeholder="Player 2 email" required>
+							<input type="email" id="multi-email2" name="email2" placeholder="Player 2 email" required>
 						</div>
 						<div class="input-container">
 							<label for="password2">Password :</label>
-							<input type="password" id="password2" name="password2" placeholder="Player 2 password" required>
+							<input type="password" id="multi-password2" name="password2" placeholder="Player 2 password" required>
 						</div>
 						</div>
 
@@ -303,11 +303,11 @@ export default class Game_menu extends AbstractView {
 						<p>PLAYER 3</p>
 						<div class="input-container">
 							<label for="email3">Email :</label>
-							<input type="email" id="email3" name="email3" placeholder="Player 3 email" required>
+							<input type="email" id="multi-email3" name="email3" placeholder="Player 3 email" required>
 						</div>
 						<div class="input-container">
 							<label for="password3">Password :</label>
-							<input type="password" id="password3" name="password3" placeholder="Player 3 password" required>
+							<input type="password" id="multi-password3" name="password3" placeholder="Player 3 password" required>
 						</div>
 						</div>
 
@@ -315,11 +315,11 @@ export default class Game_menu extends AbstractView {
 						<p>PLAYER 4</p>
 						<div class="input-container">
 							<label for="email4">Email :</label>
-							<input type="email" id="email4" name="email4" placeholder="Player 4 email" required>
+							<input type="email" id="multi-email4" name="email4" placeholder="Player 4 email" required>
 						</div>
 						<div class="input-container">
 							<label for="password4">Password :</label>
-							<input type="password" id="password4" name="password4" placeholder="Player 4 password" required>
+							<input type="password" id="multi-password4" name="password4" placeholder="Player 4 password" required>
 						</div>
 						</div>
 
@@ -536,12 +536,12 @@ export default class Game_menu extends AbstractView {
 				<div class="player1">
 					<button class="switch_skin_left" id="switch_skn_left_id1"></button>
 					<button class="switch_skin_right" id="switch_skn_right_id1"></button>
-					<p>Player 1</p>
+					<p>${localStorage.getItem("Player1") || "Player 1"}</p>
 				</div>
 				<div class="player2">
 					<button class="switch_skin_left" id="switch_skn_left_id2"></button>
 					<button class="switch_skin_right" id="switch_skn_right_id2"></button>
-					<p>Player 2</p>
+					<p id="1v1-oponent-username">Player 2</p>
 				</div>
 				<button id="valide_ton_skin" class="btn">Confirm</button>
 			</div>
@@ -817,7 +817,7 @@ export default class Game_menu extends AbstractView {
 		// });
 
 		const choose_your_opponent_1v1_form = document.getElementById('choose_your_opponent_1v1_form');
-		const validate_login = document.getElementById('validate-login');
+		const validate_login = document.getElementById('validate-opponent-login');
 
 		prepar_game_1v1.addEventListener('click', () => {
 			console.log('Prepar game 1v1 clicked');

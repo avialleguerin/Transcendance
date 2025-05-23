@@ -1,8 +1,9 @@
-import { createUser , deleteAccount, login, logout, updateDoubleAuth, accessProfileInfo, changeProfilePicture, changeProfile, getUserProfile, verifyDoubleAuth, activateDoubleAuth, refreshInfos, exportUserData } from '../controllers/usersController.js';
-import { getUserGames, createGame } from '../controllers/gamesController.js';
-import { getUserFriendships, addFriend, updateFriendshipSatus, deleteFriend } from '../controllers/friendshipsController.js';
-import { getAllUsers, deleteUser, getAllGames, deleteGame, getAllFriendships, addFriendship, deleteFriendship } from '../controllers/adminController.js';
+import { createUser , deleteAccount, login, loginOpponent, logout, updateDoubleAuth, accessProfileInfo, changeProfilePicture, changeProfile, getUserProfile, verifyDoubleAuth, activateDoubleAuth, refreshInfos, exportUserData } from '../controllers/usersController.js';
+import { getUserGames, finishGame } from '../controllers/gamesController.js';
+import { getUserFriendships, addFriend, acceptFriend, deleteFriend } from '../controllers/friendshipsController.js';
+import { getAllUsers, deleteUser, getAllGames, createGame, deleteGame, getAllFriendships, addFriendship, deleteFriendship } from '../controllers/adminController.js';
 import { getSQLiteCreds } from '../utils/vault.js'
+import { create } from 'qrcode';
 
 /**
  * Encapsulates the routes
@@ -18,6 +19,7 @@ export default async function routes (fastify) {
 	fastify.get('/admin/get-all-users', getAllUsers)
 	fastify.delete('/admin/delete-user', deleteUser)
 	fastify.get('/admin/get-all-games', getAllGames)
+	fastify.post('/admin/create-game', createGame)
 	fastify.delete('/admin/delete-game', deleteGame)
 	fastify.get('/admin/get-all-friendships', getAllFriendships)
 	fastify.post('/admin/create-friendship', addFriendship)
@@ -27,6 +29,7 @@ export default async function routes (fastify) {
 	fastify.get('/profile', getUserProfile)
 	fastify.post('/user/create-user', createUser)
 	fastify.post('/user/login', login)
+	fastify.post('/user/login-opponent', loginOpponent)
 	fastify.post('/user/logout', logout)
 	fastify.put('/user/access-profile-infos', accessProfileInfo)
 	fastify.put('/user/update-2fa', updateDoubleAuth)
@@ -41,12 +44,12 @@ export default async function routes (fastify) {
 	//friendsController
 	fastify.get('/friendship/get-user-friendships', getUserFriendships)
 	fastify.post('/friendship/add-friend', addFriend)
-	fastify.post('/friendship/update-status', updateFriendshipSatus)
+	fastify.post('/friendship/accept-friend', acceptFriend)
 	fastify.delete('/friendship/delete-friend', deleteFriend)
 
 	//gamesController
 	fastify.get('/game/get-user-games', getUserGames)
-	fastify.post('/game/create-game', createGame)
+	fastify.post('/game/create-game', finishGame)
 
 	// Tokens
 	// fastify.post('/refresh-token', refreshAccessToken)
