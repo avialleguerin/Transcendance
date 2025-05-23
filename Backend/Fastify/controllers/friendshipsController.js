@@ -114,10 +114,8 @@ export async function deleteFriend(request, reply) {
 		const friendship = friendshipsModel.getFriendshipById(friendshipId)
 		if (!friendship)
 			return reply.code(404).send({ success: false, error: `Friendship '${friendshipId}' not found`, accessToken: infos.accessToken })
-		if (friendship.friendId !== user.userId)
-			return reply.code(403).send({ success: false, error: `You are not allowed to accept this friendship`, accessToken: infos.accessToken })
-
-		friendshipsModel.deleteFriendship(friendship.userId, user.userId)
+		
+		friendshipsModel.deleteFriendship(friendship.userId, friendship.friendId)
 
 		return reply.send({ 
 			success: true,

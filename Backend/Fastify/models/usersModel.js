@@ -5,8 +5,8 @@ export const CREATE_USERS_TABLE = `
 	CREATE TABLE IF NOT EXISTS users (
 		userId INTEGER PRIMARY KEY AUTOINCREMENT,
 		profile_picture TEXT DEFAULT 'default-profile-picture.png',
-		username TEXT UNIQUE NOT NULL,
-		email TEXT UNIQUE NOT NULL,
+		username TEXT UNIQUE NOT NULL CHECK(length(username) <= 10),
+		email TEXT UNIQUE NOT NULL CHECK(length(email) <= 40),
 		password TEXT NOT NULL,
 		doubleAuth_status INTEGER DEFAULT 0 CHECK(doubleAuth_status IN (0, 1)),
 		doubleAuth_secret TEXT,
