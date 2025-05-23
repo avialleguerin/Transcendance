@@ -324,12 +324,12 @@ button:hover {
 	overflow-y: auto;
 	border: 1px solid rgba(255, 255, 255, 0.15);
 	
-	/* Masquer la scrollbar */
-	scrollbar-width: none; /* Pour Firefox */
-	-ms-overflow-style: none; /* Pour IE et Edge */
+	/* Hide Scrollbar */
+	scrollbar-width: none; /* For Firefox */
+	-ms-overflow-style: none; /* For IE and Edge */
 }
 
-/* Masquer la scrollbar pour Chrome, Safari et Opera */
+/* Hide Scrollbar for Chrome, Safari and Opera */
 .cgu-content::-webkit-scrollbar {
 	display: none;
 }
