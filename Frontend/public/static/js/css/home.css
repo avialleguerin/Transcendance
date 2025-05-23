@@ -1,258 +1,400 @@
 .container-login {
-    position: absolute;
-    top: 0%;
-    left: 0%;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1;
-    pointer-events: auto;
+	position: absolute;
+	top: 0%;
+	left: 0%;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1;
+	pointer-events: auto;
 
 
-    background: rgba(0, 0, 0, 0.3); /* Fond semi-transparent */
-    backdrop-filter: blur(3px); /* Flou */
+	background: rgba(0, 0, 0, 0.3); /* Fond semi-transparent */
+	backdrop-filter: blur(3px); /* Flou */
 }
 
 .login-form {
-    position: absolute;
-    top: 50%;
-    left: 20%;
+	position: absolute;
+	top: 50%;
+	left: 20%;
 
-    transform: translateY(-50%);
-    width: 30%;
-    height: 55%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+	transform: translateY(-50%);
+	width: 30%;
+	height: 55%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
 
-    background-image: url("../../../srcs/game/assets/image/homeV2.svg");
-    background-size: 100% auto;
-    background-repeat: no-repeat;
-    background-position: center;
+	background-image: url("../../../srcs/game/assets/image/homeV2.svg");
+	background-size: 100% auto;
+	background-repeat: no-repeat;
+	background-position: center;
 }
 
 
 .register-form {
-    position: absolute;
-    top: 50%;
-    left: 20%;
+	position: absolute;
+	top: 50%;
+	left: 20%;
 
-    transform: translateY(-50%);
-    width: 30%;
-    height: 55%;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+	transform: translateY(-50%);
+	width: 30%;
+	height: 55%;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
 
-    background-image: url("../../../srcs/game/assets/image/homeV2.svg");
-    background-size: 100% auto;
-    background-repeat: no-repeat;
-    background-position: center;
+	background-image: url("../../../srcs/game/assets/image/homeV2.svg");
+	background-size: 100% auto;
+	background-repeat: no-repeat;
+	background-position: center;
 
-    display: none;
+	display: none;
 }
 
 
 
 .login-form h1, .register-form h1 {
-    font-size: 1.2vw;
-    font-family: 'Black Ops One', sans-serif;
-    color: rgb(255, 255, 255);
-    position: absolute;
-    top: 5%;
-    left: 50%;
-    transform: translateX(-50%);
+	font-size: 1.2vw;
+	font-family: 'Black Ops One', sans-serif;
+	color: rgb(255, 255, 255);
+	position: absolute;
+	top: 5%;
+	left: 50%;
+	transform: translateX(-50%);
 
-    display: flex; /* Pour aider au centrage du texte */
-    justify-content: center; /* Centre horizontalement */
-    align-items: center; /* Centre verticalement */
-    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.7); /* Ombre noire douce */
+	display: flex; /* Pour aider au centrage du texte */
+	justify-content: center; /* Centre horizontalement */
+	align-items: center; /* Centre verticalement */
+	text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.7); /* Ombre noire douce */
 }
 
 
 .form-group {
 
-    width: 20vw;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    position: absolute;
-    top: 53%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+	width: 20vw;
+	background: rgba(255, 255, 255, 0.1);
+	backdrop-filter: blur(10px);
+	padding: 20px;
+	border-radius: 15px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	position: absolute;
+	top: 53%;
+	left: 50%;
+	transform: translate(-50%, -50%);
 }
 
 .input-container {
-    display: flex;
-    align-items: center; /* Alignement vertical */
-    gap: 10px; /* Espacement entre le label et l'input */
-    width: 100%;
+	display: flex;
+	align-items: center; /* Alignement vertical */
+	gap: 10px; /* Espacement entre le label et l'input */
+	width: 100%;
 }
 
 .input-container label {
-    color: #fff;
-    font-size: 14px;
-    font-family: "Black Ops One", sans-serif;
-    width: 30%; /* Largeur fixe pour aligner les labels */
-    text-align: right; /* Alignement du texte à droite */
+	color: #fff;
+	font-size: 14px;
+	font-family: "Black Ops One", sans-serif;
+	width: 30%; /* Largeur fixe pour aligner les labels */
+	text-align: right; /* Alignement du texte à droite */
 }
 
 .input-container input {
-    width: 60%; /* Laisse de la place pour le label */
-    padding: 10px;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    outline: none;
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
+	width: 60%; /* Laisse de la place pour le label */
+	padding: 10px;
+	border: none;
+	border-radius: 8px;
+	font-size: 16px;
+	outline: none;
+	background: rgba(255, 255, 255, 0.2);
+	color: white;
 }
 
 .input-container input::placeholder {
-    color: rgba(255, 255, 255, 0.6);
+	color: rgba(255, 255, 255, 0.6);
 }
 
 .input-container input:focus {
-    border: 1px solid #ffffff;
-    box-shadow: 0 0 8px #ffffff;
+	border: 1px solid #ffffff;
+	box-shadow: 0 0 8px #ffffff;
 }
 
 button {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    border-radius: 8px;
-    font-size: 0.6vw;
-    background: #ffffff2b;
-    color: rgb(0, 0, 0);
-    cursor: pointer;
-    margin-top: 10px;
-    transition: 0.3s;
-    font-family: "Black Ops One", sans-serif;
+	width: 100%;
+	padding: 10px;
+	border: none;
+	border-radius: 8px;
+	font-size: 0.6vw;
+	background: #ffffff2b;
+	color: rgb(0, 0, 0);
+	cursor: pointer;
+	margin-top: 10px;
+	transition: 0.3s;
+	font-family: "Black Ops One", sans-serif;
 }
 
 button:hover {
-    color : #ffffff;
-    box-shadow: #ffffff 0px 0px 10px;
+	color : #ffffff;
+	box-shadow: #ffffff 0px 0px 10px;
 }
 
 .form-group-container {
-    display: flex;
-    flex-direction: column; /* Place les formulaires l'un en dessous de l'autre */
-    gap: 20px; /* Espace entre chaque formulaire */
+	display: flex;
+	flex-direction: column; /* Place les formulaires l'un en dessous de l'autre */
+	gap: 20px; /* Espace entre chaque formulaire */
 }
 
 
 .register-form.active {
-    display: flex;
+	display: flex;
 }
 
 .login-form.active {
-    display: none;
+	display: none;
 }
 
 .title h1 {
-    position: absolute;
-    top: 1%;
-    right: 5%;
+	position: absolute;
+	top: 1%;
+	right: 5%;
 
-    font-size: 2.5vw;
-    font-family: 'Black Ops One', sans-serif;
-    color: rgb(255, 255, 255);
-    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.7);
+	font-size: 2.5vw;
+	font-family: 'Black Ops One', sans-serif;
+	color: rgb(255, 255, 255);
+	text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.7);
 }
 
 .notification-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    display: flex;
-    justify-content: center;
-    z-index: 9999;
-    margin-top: 20px;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	display: flex;
+	justify-content: center;
+	z-index: 9999;
+	margin-top: 20px;
   }
   
   .notification-message {
-    padding: 10px 20px;
-    border-radius: 4px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-    font-weight: 500;
-    transition: all 0.3s ease;
-    opacity: 0;
-    transform: translateY(-20px);
+	padding: 10px 20px;
+	border-radius: 4px;
+	box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+	font-weight: 500;
+	transition: all 0.3s ease;
+	opacity: 0;
+	transform: translateY(-20px);
   }
   
   .notification-success {
-    background-color: #48bb78;
-    color: white;
+	background-color: #48bb78;
+	color: white;
   }
   
   .notification-error {
-    background-color: #f56565;
-    color: white;
+	background-color: #f56565;
+	color: white;
   }
   
   .notification-visible {
-    opacity: 1;
-    transform: translateY(0);
+	opacity: 1;
+	transform: translateY(0);
   }
 
 
 .doubleAuthForm {
-    display: none;
+	display: none;
 }
 
 .doubleAuthForm.active {
-    display: flex;;
+	display: flex;;
 }
 
 .loginForm {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 20px;
 }
 
 .loginForm.active {
-    display: none;
+	display: none;
 }
 
 .doubleAuthForm {
-    width: 20vw;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    display: none;
-    flex-direction: column;
-    gap: 20px;
-    position: absolute;
-    top: 53%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+	width: 20vw;
+	background: rgba(255, 255, 255, 0.1);
+	backdrop-filter: blur(10px);
+	padding: 20px;
+	border-radius: 15px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+	display: none;
+	flex-direction: column;
+	gap: 20px;
+	position: absolute;
+	top: 53%;
+	left: 50%;
+	transform: translate(-50%, -50%);
 }
 
 .connexion {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    border-radius: 8px;
-    font-size: 0.6vw;
-    background: #ffffff2b;
-    color: rgb(0, 0, 0);
-    cursor: pointer;
-    margin-top: 10px;
-    transition: 0.3s;
-    font-family: "Black Ops One", sans-serif;
+	width: 100%;
+	padding: 10px;
+	border: none;
+	border-radius: 8px;
+	font-size: 0.6vw;
+	background: #ffffff2b;
+	color: rgb(0, 0, 0);
+	cursor: pointer;
+	margin-top: 10px;
+	transition: 0.3s;
+	font-family: "Black Ops One", sans-serif;
+}
+
+/* CGU Button */
+.cgu-container {
+	display: flex;
+	align-items: flex-start;  /* Aligne les éléments au début */
+	margin: 10px 0;
+	width: 100%;
+}
+
+.cgu-container input[type="checkbox"] {
+	width: auto;  /* Annule la largeur par défaut */
+	flex: 0 0 20px;  /* Largeur fixe pour la checkbox */
+	margin-top: 3px;  /* Alignement vertical avec le texte */
+	margin-right: 10px;
+}
+
+.cgu-container label {
+	flex: 1;  /* Prend tout l'espace restant */
+	text-align: left;  /* Alignement du texte à gauche */
+	font-size: 14px;  /* Taille du texte appropriée */
+	overflow-wrap: break-word;  /* Permet au texte de se casser correctement */
+	white-space: normal;  /* Permet au texte de se casser sur plusieurs lignes */
+}
+
+.cgu-link {
+	color: #75c7ff;
+	text-decoration: underline;
+	transition: color 0.2s;
+}
+
+.cgu-link:hover {
+	color: #ffffff;
+}
+
+/* CGU Modal */
+.cgu-modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.6);
+	display: none;
+	justify-content: center;
+	align-items: center;
+	z-index: 100;
+	overflow-y: auto;
+	backdrop-filter: blur(8px);
+}
+
+.cgu-modal.active {
+	display: flex;
+}
+
+.cgu-content {
+	width: 80%;
+	max-width: 800px;
+	max-height: 80vh;
+	background: rgba(255, 255, 255, 0.1);
+	backdrop-filter: blur(20px);
+	border-radius: 24px;
+	padding: 30px;
+	box-shadow: 
+		0 4px 30px rgba(0, 0, 0, 0.3),
+		inset 0 0 2px rgba(255, 255, 255, 0.3);
+	overflow-y: auto;
+	border: 1px solid rgba(255, 255, 255, 0.15);
+	
+	/* Masquer la scrollbar */
+	scrollbar-width: none; /* Pour Firefox */
+	-ms-overflow-style: none; /* Pour IE et Edge */
+}
+
+/* Masquer la scrollbar pour Chrome, Safari et Opera */
+.cgu-content::-webkit-scrollbar {
+	display: none;
+}
+
+.cgu-content h1 {
+	text-align: center;
+	font-family: "Black Ops One", sans-serif;
+	font-size: 28px;
+	color: #ffffff;
+	margin-bottom: 30px;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+	letter-spacing: 1px;
+}
+
+.cgu-content h2 {
+	font-size: 20px;
+	margin-top: 25px;
+	color: #75c7ff;
+	font-family: "Black Ops One", sans-serif;
+	text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+	letter-spacing: 0.5px;
+}
+
+.cgu-content h3 {
+	font-size: 16px;
+	margin-top: 15px;
+	color: #a0d8ff;
+	font-family: "Black Ops One", sans-serif;
+	margin-left: 10px;
+}
+
+.cgu-text {
+	color: rgba(255, 255, 255, 0.9);
+	line-height: 1.7;
+	margin-bottom: 20px;
+	padding: 0 10px;
+}
+
+.cgu-text ul {
+	margin-left: 20px;
+}
+
+.cgu-text li {
+	margin-bottom: 5px;
+}
+
+.cgu-back-button {
+	display: block;
+	width: 150px;
+	margin: 30px auto 0;
+	padding: 12px 15px;
+	background: rgba(255, 255, 255, 0.15);
+	color: #ffffff;
+	border: none;
+	border-radius: 12px;
+	font-family: "Black Ops One", sans-serif;
+	cursor: pointer;
+	transition: all 0.3s;
+	backdrop-filter: blur(5px);
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	letter-spacing: 1px;
+}
+
+.cgu-back-button:hover {
+	background: rgba(255, 255, 255, 0.25);
+	box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+	transform: translateY(-2px);
 }
