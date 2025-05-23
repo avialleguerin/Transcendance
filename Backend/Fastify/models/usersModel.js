@@ -1,5 +1,6 @@
 //CRUD Model actually and MVC Structure
 import db from "../utils/db.js";
+import { getCurrentCGUVersion } from "../utils/cgu.js";
 
 export const CREATE_USERS_TABLE = `
 	CREATE TABLE IF NOT EXISTS users (
@@ -10,13 +11,16 @@ export const CREATE_USERS_TABLE = `
 		password TEXT NOT NULL,
 		doubleAuth_status INTEGER DEFAULT 0 CHECK(doubleAuth_status IN (0, 1)),
 		doubleAuth_secret TEXT,
+		cgu_accepted DATETIME DEFAULT CURRENT_TIMESTAMP,
+		cgu_version TEXT DEFAULT '1.0',
 		created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 	);
 `;
 
 const usersModel = {
 	createUser: (username, email, password) => {
-		db.prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)").run(username, email, password);
+		const currentCGUVersion = "1.0"; // À définir ailleurs ou en constante
+		db.prepare("INSERT INTO users (username, email, password, cgu_version) VALUES (?, ?, ?, ?)").run(username, email, password, currentCGUVersion);
 		return { username, email };
 	},
 	getAllUsers: () => db.prepare("SELECT * FROM users").all(),
@@ -29,7 +33,17 @@ const usersModel = {
 	updateEmail: (userId, newEmail) => { return db.prepare("UPDATE users SET email = ? WHERE userId = ?").run(newEmail, userId) },
 	updatePassword: (userId, newPassword) => { return db.prepare("UPDATE users SET password = ? WHERE userId = ?").run(newPassword, userId) },
 	updateProfilePicture: (userId, profile_picture) => { return db.prepare("UPDATE users SET profile_picture = ? WHERE userId = ?").run(profile_picture, userId) },
-	delete: (userId) => { return db.prepare("DELETE FROM users WHERE userId = ?").run(userId) }
+	delete: (userId) => { return db.prepare("DELETE FROM users WHERE userId = ?").run(userId) },
+
+	// New methods for CGU management //FIXME - 
+	updateUserCGUVersion: (userId, version) => {
+		return db.prepare("UPDATE users SET cgu_version = ?, cgu_accepted = CURRENT_TIMESTAMP WHERE userId = ?").run(version, userId);
+	},
+	
+	getUsersWithOldCGU: () => {
+		const currentVersion = getCurrentCGUVersion();
+		return db.prepare("SELECT * FROM users WHERE cgu_version != ?").all(currentVersion);
+	}
 }
 
 export default usersModel;

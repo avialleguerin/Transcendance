@@ -3,6 +3,7 @@ import { getUserGames, createGame } from '../controllers/gamesController.js';
 import { getUserFriendships, addFriend, updateFriendshipSatus, deleteFriend } from '../controllers/friendshipsController.js';
 import { getAllUsers, deleteUser, getAllGames, deleteGame, getAllFriendships, addFriendship, deleteFriendship } from '../controllers/adminController.js';
 import { getSQLiteCreds } from '../utils/vault.js'
+// import { acceptCGU, checkCGU } from '../utils/cgu.js';
 
 /**
  * Encapsulates the routes
@@ -14,6 +15,27 @@ export default async function routes (fastify) {
 	fastify.addHook("onRequest", async (request, reply) => {
 		console.log(`\n📡 Requête reçue : [${request.method}] ${request.url}\n`)
 	});
+
+	// Hook d'authentification global // FIXME - A revoir
+	// fastify.addHook("preHandler", async (request, reply) => {
+	// 	// Liste des routes qui ne nécessitent pas d'authentification
+	// 	const publicRoutes = [
+	// 	  '/user/create-user',
+	// 	  '/user/login',
+	// 	  '/user/verify-2fa',
+	// 	  '/db-credentials'
+	// 	  // Ajoutez d'autres routes publiques si nécessaire
+	// 	];
+	
+	// 	// Skip l'authentification pour les routes publiques
+	// 	if (publicRoutes.some(route => request.url.includes(route))) {
+	// 	  return;
+	// 	}
+	
+	// 	// Appliquer l'authentification pour toutes les autres routes
+	// 	await fastify.authenticate(request, reply);
+	// });
+
 	// adminController
 	fastify.get('/admin/get-all-users', getAllUsers)
 	fastify.delete('/admin/delete-user', deleteUser)
@@ -51,4 +73,8 @@ export default async function routes (fastify) {
 	// Tokens
 	// fastify.post('/refresh-token', refreshAccessToken)
 	fastify.get('/db-credentials', getSQLiteCreds)
+
+	// CGU // FIXME - CGU routes
+	// fastify.get('/check-cgu-status', { preValidation: [fastify.authenticate] }, checkCGU)
+	// fastify.get('/accept-cgu', { preValidation: [fastify.authenticate] }, acceptCGU)
 }
