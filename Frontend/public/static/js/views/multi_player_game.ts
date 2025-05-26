@@ -96,7 +96,7 @@ export default class extends AbstractView {
 					<div class="looser">
 						<h1 id="looser_id"></h1>
 					</div>
-					<button class="leave_game_2" id="leave_game_2_id">Quitter la partie</button>
+					<button class="leave_game_2" id="leave_game_2_id" onclick=create_2v2_game(event)>Quitter la partie</button>
 				</div>
 			</div>
 		`;

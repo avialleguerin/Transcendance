@@ -68,7 +68,7 @@ export async function login(request, reply) {
 			sameSite: 'strict',
 			expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
 		})
-		.send({ success:true, message: 'Logged in', connection_status: "connected", doubleAuth_status: user.doubleAuth_status, accessToken: accessToken })
+		.send({ success:true, message: 'Logged in', connection_status: "connected", user: user, doubleAuth_status: user.doubleAuth_status, accessToken: accessToken })
 	} catch (err) {
 		return reply.code(500).send({ error: err.message })
 	}

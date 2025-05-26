@@ -268,15 +268,15 @@ export default class Game_menu extends AbstractView {
 					<form class="choose_your_opponent_1v1_content" id="choose_your_opponent_1v1_form" onsubmit="loginOpponent(event)">
 						<h1>CONNECT YOUR OPPONENT</h1>
 						<div class="player-section">
-						<p>PLAYER 2</p>
-						<div class="input-container">
-							<label for="email2">Email :</label>
-							<input type="email" id="1v1-email2" name="email2" placeholder="Player 2 email" required>
-						</div>
-						<div class="input-container">
-							<label for="password2">Password :</label>
-							<input type="password" id="1v1-password2" name="password2" placeholder="Player 2 password" required>
-						</div>
+							<p>PLAYER 2</p>
+							<div class="input-container">
+								<label for="email2">Email :</label>
+								<input type="email" id="1v1-email2" name="email2" placeholder="Player 2 email" required>
+							</div>
+							<div class="input-container">
+								<label for="password2">Password :</label>
+								<input type="password" id="1v1-password2" name="password2" placeholder="Player 2 password" required>
+							</div>
 						</div>
 						<button type="submit" class="valider_opponent_btn_1v1" id="validate-opponent-login">Valider</button>
 					</form>
@@ -817,7 +817,7 @@ export default class Game_menu extends AbstractView {
 		// });
 
 		const choose_your_opponent_1v1_form = document.getElementById('choose_your_opponent_1v1_form');
-		const validate_login = document.getElementById('validate-opponent-login');
+		// const validate_login = document.getElementById('validate-opponent-login');
 
 		prepar_game_1v1.addEventListener('click', () => {
 			console.log('Prepar game 1v1 clicked');
@@ -827,13 +827,13 @@ export default class Game_menu extends AbstractView {
 			container_menu.classList.add('active');
 		});
 
-		validate_login.addEventListener('click', () => {
-			console.log('Prepar game 1v1 clicked');
-			choose_your_opponent_1v1_form.classList.remove('active');
-			back_to_select_mode_view6.classList.add('active');
-			view6.classList.add('active');
-			container_menu.classList.remove('active');
-		});
+		// validate_login.addEventListener('click', () => {
+		// 	console.log('Prepar game 1v1 clicked');
+		// 	choose_your_opponent_1v1_form.classList.remove('active');
+		// 	back_to_select_mode_view6.classList.add('active');
+		// 	view6.classList.add('active');
+		// 	container_menu.classList.remove('active');
+		// });
 
 
 		// prepar_game_multi.addEventListener('click', () => {

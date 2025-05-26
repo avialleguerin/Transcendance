@@ -21,9 +21,14 @@ export async function getUserGames(request, reply) {
 	}
 }
 
-export async function finishGame(request, reply) {
-	const { user1, user2, score_user1, score_user2, winner } = request.body
+export async function create1v1Game(request, reply) {
+	const { user1, user2, score_left, score_right } = request.body
+	console.log("score_left :", score_left)
+	console.log("score_right :", score_right)
+
 	try {
+		if (!user1 || !user2 || !score_left || !score_right)
+			return reply.code(400).send({ success: false, error: "Missing parameters", accessToken: infos.accessToken })
 		const infos = await getUserFromToken(request)
 		if (!infos)
 			return reply.code(401).send({ error: "Unauthorized" })
@@ -32,11 +37,9 @@ export async function finishGame(request, reply) {
 			return reply.code(401).send({ error: "User not found" })
 		if (!infos.accessToken)
 			return reply.code(401).send({ error: "Unauthorized" })
-		if (!score_user1 || !score_user2 || !winner)
-			return reply.code(400).send({ success: false, error: "Missing parameters", accessToken: infos.accessToken })
-		user1_id = usersModel.getUserByUsername(user1).userId
-		user2_id = usersModel.getUserByUsername(user2).userId
-		gamesModel.finishGame(user1_id, user2_id, score_user1, score_user2, winner)
+		const user1_id = usersModel.getUserByUsername(user1).userId
+		const user2_id = usersModel.getUserByUsername(user2).userId
+		gamesModel.create1v1Game(user1_id, user2_id, score_left, score_right)
 
 		return reply.code(201).send({ 
 			success: true,

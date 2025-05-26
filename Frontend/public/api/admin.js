@@ -35,7 +35,10 @@ async function fetch_games() {
 				<td class="bg-white px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${game.gameId}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.user1_name}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.user2_name}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.winner_name ? `${game.winner_name}` : 'N/A'}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.user3_name}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.user4_name}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.score_left}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.score_right}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.created_at}</td>
 				<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0"><button class="bg-red-200 hover:bg-red-300 m-2 text-red-500 hover:text-red-600 px-4 py-1 rounded-full transition-colors duration-300 ease-in-out" onclick="delete_game(${game.gameId})">Delete</button></td>
 			</tr>
