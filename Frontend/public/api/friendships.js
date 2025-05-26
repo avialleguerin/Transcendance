@@ -106,22 +106,58 @@ async function fetch_user_games() {
 		}
 		const games = data.games;
 		if (games && games.length > 0) {
-			document.getElementById('games-table').innerHTML = games.map(game => /*html*/`
-				<tr class="game_card_navBar win">
-					<td class="profile_navBar">
+			document.getElementById('games-table').innerHTML = games.map(game => {
+				// Vérifier si c'est un match 2v2 (si user3_id existe)
+				const is2v2 = game.user3_id && game.user4_id;
+				console.log("user3_id", game.user3_id);
+				if (is2v2) {
+				  // Format d'affichage pour les matchs 2v2
+				  return /*html*/`
+					<tr class="game_card_navBar">
+					  <td class="profile_navBar team">
+						<div class="team-player">
+						  <img src="/upload/${game.user1ProfilePicture}" alt="profile" />
+						  <p class="username_navBar">${game.user1_username}</p>
+						</div>
+						<div class="team-player">
+						  <img src="/upload/${game.user2ProfilePicture}" alt="profile" />
+						  <p class="username_navBar">${game.user2_username}</p>
+						</div>
+					  </td>
+					  <td class="vs_info_navBar">
+						<p class="score_navBar">${game.score_left} - ${game.score_right}</p>
+					  </td>
+					  <td class="opponent_navBar team">
+						<div class="team-player">
+						  <p class="username_navBar">${game.user3_username}</p>
+						  <img src="/upload/${game.user3ProfilePicture}" alt="profile" />
+						</div>
+						<div class="team-player">
+						  <p class="username_navBar">${game.user4_username}</p>
+						  <img src="/upload/${game.user4ProfilePicture}" alt="profile" />
+						</div>
+					  </td>
+					</tr>
+				  `;
+				} else {
+				  // Format d'affichage pour les matchs 1v1 (existant)
+				  return /*html*/`
+					<tr class="game_card_navBar">
+					  <td class="profile_navBar">
 						<img src="/upload/${game.user1ProfilePicture}" alt="profile" />
 						<p class="username_navBar">${game.user1_username}</p>
-					</td>
-					<td class="vs_info_navBar">
-						<p class="score_navBar">5 - 2</p>
-						<p class="result_navBar">${game.winner_username}</p>
-					</td>
-					<td class="opponent_navBar">
+					  </td>
+					  <td class="vs_info_navBar">
+						<p class="score_navBar">${game.score_left} - ${game.score_right}</p>
+					  </td>
+					  <td class="opponent_navBar">
 						<p class="username_navBar">${game.user2_username}</p>
 						<img src="/upload/${game.user2ProfilePicture}" alt="profile" />
-					</td>
-				</tr>
-			`).join('');
+					  </td>
+					</tr>
+				  `;
+				}
+			  }).join('');
 		} else {
 			document.getElementById('games-table').innerHTML = `
 				<tr><td colspan="4" class="text-center">No Games found</td></tr>

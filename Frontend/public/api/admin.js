@@ -35,8 +35,8 @@ async function fetch_games() {
 				<td class="bg-white px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${game.gameId}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.user1_name}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.user2_name}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.user3_name}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.user4_name}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.user3_name ? `${game.user3_name}` : 'N/A'}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.user4_name ? `${game.user4_name}` : 'N/A'}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.score_left}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.score_right}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.created_at}</td>
@@ -107,6 +107,8 @@ async function create_game(event) {
 
 	const user1 = document.getElementById("addGame-user1").value;
 	const user2 = document.getElementById("addGame-user2").value;
+	const user3 = document.getElementById("addGame-user3").value;
+	const user4 = document.getElementById("addGame-user4").value;
 
 	if (!user1 || !user2) {
 		notif("Please select two users", false);
@@ -118,7 +120,7 @@ async function create_game(event) {
 		headers: { 
 			"Content-Type": "application/json",
 		},
-		body: JSON.stringify({ user1, user2 }),
+		body: JSON.stringify({ user1, user2, user3, user4 }),
 		credentials: 'include',
 	});
 	const data = await response.json();

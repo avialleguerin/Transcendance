@@ -57,12 +57,12 @@ export async function getAllGames(request, reply) {
 }
 
 export async function createGame(request, reply) {
-	const { user1, user2 } = request.body
+	const { user1, user2, user3, user4 } = request.body
 	
 	try {
 		const user1Exists = usersModel.getUserByUsername(user1)
 		const user2Exists = usersModel.getUserByUsername(user2)
-
+		
 		if (!user1Exists)
 			return reply.code(404).send({ success: false, error: `User '${user1}' not found` })
 
@@ -70,10 +70,36 @@ export async function createGame(request, reply) {
 			return reply.code(404).send({ success: false, error: `User '${user2}' not found` })
 
 		if (user1 === user2)
-			return reply.code(400).send({ success: false, error: "Cannot create a game with the same user twice" })
-		console.log("user1 :", user1Exists.userId)
-		console.log("user2 :", user2Exists.userId)
-		gamesModel.createGame(user1Exists.userId, user2Exists.userId)
+			return reply.code(400).send({ success: false, error: "Cannot create a game with duplicate players" })
+		
+		// Vérification pour une partie 2v2
+		if (user3 || user4) {
+			const user3Exists = user3 ? usersModel.getUserByUsername(user3) : null
+			const user4Exists = user4 ? usersModel.getUserByUsername(user4) : null
+			
+			// Vérifier que les joueurs 3 et 4 existent
+			if (user3 && !user3Exists)
+				return reply.code(404).send({ success: false, error: `User '${user3}' not found` })
+				
+			if (user4 && !user4Exists)
+				return reply.code(404).send({ success: false, error: `User '${user4}' not found` })
+			
+			// Vérifier l'unicité de chaque joueur
+			if (user3 && (user1 === user3 || user2 === user3))
+				return reply.code(400).send({ success: false, error: "Cannot create a game with duplicate players" })
+				
+			if (user4 && (user1 === user4 || user2 === user4 || user3 === user4))
+				return reply.code(400).send({ success: false, error: "Cannot create a game with duplicate players" })
+			
+			// Créer une partie 2v2 si les quatre joueurs existent
+			if (user3Exists && user4Exists)
+				gamesModel.create2v2Game(user1Exists.userId, user2Exists.userId, user3Exists.userId, user4Exists.userId, 0, 0)
+			else
+				return reply.code(400).send({ success: false, error: "Both user3 and user4 are required for a 2v2 game" })
+		} else {
+			// Créer une partie 1v1
+			gamesModel.createGame(user1Exists.userId, user2Exists.userId)
+		}
 			
 		return reply.code(201).send({ 
 			success: true,
@@ -84,7 +110,6 @@ export async function createGame(request, reply) {
 		return reply.code(500).send({ error: "Internal server error" })
 	}
 }
-
 
 export async function deleteGame(request, reply) {
 	const { gameId } = request.body

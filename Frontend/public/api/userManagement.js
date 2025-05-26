@@ -87,9 +87,7 @@ async function update_doubleAuth() {
 
 async function export_data() {
 	try {
-		// Show loading indicator
 		notif("Preparing your data for download...", true);
-		// console.log("Preparing your data for download...");
 		
 		const data = await fetchAPI('/request/user/export-data', 'GET', null, false);
 
@@ -97,34 +95,24 @@ async function export_data() {
 		console.log("data ok :", data.ok);
 
 		
-		// Check if the response is successful
-		if (!data.success) {
+		if (!data.success)
 			throw new Error(errorData.error || 'Failed to export user data');
-		}
 
-		// Extraire le nom d'utilisateur des données
 		const username = data.personal_information.username;
-		// console.log("username", username);
 		
-		// Get the data as a blob
 		const jsonString = JSON.stringify(data, null, 2);
 		const blob = new Blob([jsonString], { type: 'application/json' });
-		// const blob = await data.blob();
 		
-		// Create a download link
 		const url = window.URL.createObjectURL(blob);
 		const a = document.createElement('a');
 		const date = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
 		
-		// Set download attributes
 		a.href = url;
 		a.download = `transcendance-${username}-data-${date}.json`;
 		
-		// Append to body, click and remove
 		document.body.appendChild(a);
 		a.click();
 		
-		// Cleanup
 		window.URL.revokeObjectURL(url);
 		document.body.removeChild(a);
 		
@@ -134,44 +122,6 @@ async function export_data() {
 		notif(`Failed to export data: ${err.message}`, false);
 	}
 }
-
-// async function delete_account() {
-// 	if (confirm('Do you really want to delete your account ?')) {
-// 		try {
-// 			const response = await fetch('/request/user/delete-account', { 
-// 				method: 'DELETE',
-// 				headers: {
-// 					"Authorization": `Bearer ${accessToken}`
-// 				},
-// 				credentials: 'include'
-// 			},);
-// 			const data = await response.json();
-// 			if (data.success) {
-// 				sessionStorage.removeItem("accessToken");
-// 				accessToken = null;
-// 				console.log('User deleted successfully');
-// 				notif(data.message, true);
-// 				history.pushState({}, '', '/');
-// 				import('../static/js/views/Home.js').then((module) => {
-// 					console.log("Home module loaded");
-// 					const Home = module.default;
-// 					const homeInstance = new Home();
-// 					homeInstance.getHtml().then((html) => {
-// 						const appElement = document.getElementById('app');
-// 						if (appElement) {
-// 							appElement.innerHTML = html;
-// 							if (homeInstance.createAccount && typeof homeInstance.createAccount === 'function') {
-// 								homeInstance.createAccount();
-// 							}
-// 						}
-// 					});
-// 				});
-// 			}
-// 		} catch (err) {
-// 			notif("Erreur lors de la suppression : " + err, false);
-// 		}
-// 	}
-// }
 
 async function delete_account() {
 	if (confirm('Do you really want to delete your account ?')) {
