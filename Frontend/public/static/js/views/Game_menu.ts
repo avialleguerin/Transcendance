@@ -395,7 +395,7 @@ export default class Game_menu extends AbstractView {
 								</div>
 							</div>
 						</div>
-						<div class="skin">
+						<div class="skin" id="skin_multi">
 							<p>Custom Skin: <span id="skin_perso_game_multi" class="skin_perso"></span></p>
 						</div>
 						<button id="multiplayer_btn" class="btn">
@@ -740,15 +740,18 @@ export default class Game_menu extends AbstractView {
 
 		let skin = get_skin_is_init();
 		const skin_id = document.getElementById('skin');
+		const skin_id_multi = document.getElementById('skin_multi');
 
 		console.log('skin_id', skin);
 
 		if (skin == false) {
 			console.log('skin_idiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii');
 			skin_id.classList.add('hidden');
+			skin_id_multi.classList.add('hidden');
 		}
 		else {
 			skin_id.classList.remove('hidden');
+			skin_id_multi.classList.remove('hidden');
 		}
 
 

@@ -6,9 +6,12 @@ import { setLeaveGameVar } from "../index.js";
 import { isGameFinished } from "../../../srcs/game/gameplay/score.js";
 import { disable_skin_perso_player_first_and_seconde } from "../../../srcs/game/gameplay/solo/skin/init_skin_player_podium.js";
 import { getPlayer_1_win, getPlayer_2_win } from "../../../srcs/game/gameplay/score.js";
+import { disable_skin_perso_player_first_and_seconde_default } from "../../../srcs/game/gameplay/solo/skin/init_skin_player_default.js";
+import { get_skin_is_init } from "../../../srcs/game/gameplay/solo/skin/init_skin_utils.js";
 
 let spacePressed = false;
 let bool = false;
+let is_init = get_skin_is_init();
 
 export default class solo_game extends AbstractView {
 
@@ -132,7 +135,10 @@ export default class solo_game extends AbstractView {
 			
 			this.cleanup();
 			setLeaveGameVar(true);
-			disable_skin_perso_player_first_and_seconde();
+			if (!is_init)
+				disable_skin_perso_player_first_and_seconde_default();
+			else
+				disable_skin_perso_player_first_and_seconde();
 			spacePressed = false;
 			bool = false;
 			handleViewTransitions("vue2", "vue4");
@@ -187,8 +193,6 @@ export default class solo_game extends AbstractView {
 	}
 
 	handleKeyPress(event: KeyboardEvent) { //NOTE - jai ajouter le type event: KeyboardEvent
-		console.log("Key pressed:", event.key);
-		console.log("Current cooldowns state:", this.cooldowns);
 		const key = event.key;
 		
 		
@@ -198,7 +202,6 @@ export default class solo_game extends AbstractView {
 		if (!(key in this.cooldownTimes)) return;
 		
 		if (this.cooldowns[key]) {
-			console.log(`Key ${key} is in cooldown, ignoring`);
 			return;
 		} // Ignore l'action si en cooldown
 		// Vérifier si la touche est en cooldown
@@ -302,14 +305,9 @@ export default class solo_game extends AbstractView {
 					// Retirer le cooldown après le délai défini pour cette touche
 					setTimeout(() => {
 						//  vérifiez que this.cooldowns est bien accessible
-						console.log("Timeout executed for key:", key);
-    					console.log("this.cooldowns before:", this.cooldowns);
-						console.log("spacePressed:", spacePressed);
+
 						// Terminer le cooldown et arrêter l'animation
 						delete this.cooldowns[key];
-
-						console.log("this.cooldowns after:", this.cooldowns);
-						console.log(`${key} cooldown terminé`);
 		
 						// Retirer la classe d'animation après le cooldown
 						if (overlayReloading && currentValue - 1 !== 0) {

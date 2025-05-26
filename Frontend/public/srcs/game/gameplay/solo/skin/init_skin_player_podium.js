@@ -12,23 +12,12 @@ let defaultSkinPlayerSeconde = 0;
 
 
 function getSkinPaths() {
-    let skin = get_skin_is_init();
-    console.log("skinnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn: ", skin);
-
-    if (skin === true) {
-        console.log("je rentre laaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaatrueeeeeeeeeeeeeeeeeeeeeee");
-        return [
-            { name: "player_skin_1", path: "/srcs/game/assets/player_skin/", file: "player_blanc.glb" },
-            { name: "player_skin_2", path: "/srcs/game/assets/player_skin/", file: "player_bleuv2.glb" },
-            { name: "player_skin_3", path: "/srcs/game/assets/player_skin/", file: "player_rougev2.glb" },
-            { name: "player_skin_4", path: "/srcs/game/assets/player_skin/", file: "player_vert.glb" }
-        ];
-    } else {
-        console.log("je rentre laaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-        return [
-            { name: "player_skin_1", path: "/srcs/game/assets/player_skin/", file: "player_blanc.glb" },
-        ];
-    }
+    return [
+        { name: "player_skin_1", path: "/srcs/game/assets/player_skin/", file: "player_blanc.glb" },
+        { name: "player_skin_2", path: "/srcs/game/assets/player_skin/", file: "player_bleuv2.glb" },
+        { name: "player_skin_3", path: "/srcs/game/assets/player_skin/", file: "player_rougev2.glb" },
+        { name: "player_skin_4", path: "/srcs/game/assets/player_skin/", file: "player_vert.glb" }
+    ];
 }
 
 let skinPaths = getSkinPaths();
@@ -130,18 +119,6 @@ export function disable_skin_perso_player_first_and_seconde()
 
     player2Skins_podium[currentSkinPlayerSeconde].setEnabled(false);
 	currentSkinPlayerSeconde = defaultSkinPlayerSeconde;
-}
-
-
-export function init_skin_default(scene)
-{
-    init_skins_perso_player1_multi_podium(scene);
-    init_skins_perso_player2_multi_podium(scene);
-    init_skins_perso_player3_multi_podium(scene);
-    init_skins_perso_player4_multi_podium(scene);
-
-    init_skins_perso_first(scene);
-    init_skins_perso_seconde(scene);
 }
 
 
