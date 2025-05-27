@@ -3,14 +3,13 @@
 
 - ID utilisateur
 - Username
-- Email
 - Rôle (Admin, User, Guest)
 - Date de création
 
 | Catégorie de données | Données spécifiques | Sensibilité | Localisation | Durée de conservation |
 |----------------------|---------------------|-------------|--------------|------------------------|
 | Données d'identification | ID, Username | Normale | Base de données utilisateurs | Durée du compte |
-| Données de contact | Email | Normale | Base de données utilisateurs | Durée du compte |
+| Données de contact | Normale | Base de données utilisateurs | Durée du compte |
 | Données de profil | Rôle (Admin/User/Guest) | Normale | Base de données utilisateurs | Durée du compte |
 | Métadonnées | Date de création | Faible | Base de données utilisateurs | Durée du compte |
 | [Autres données à compléter] | Photo de profil? Préférences? | À déterminer | À déterminer | À déterminer |
@@ -31,8 +30,8 @@ Pour chaque traitement de données, documentez:
 
 | Traitement | Description | Données utilisées | Finalité | Acteurs concernés |
 |------------|-------------|-------------------|----------|-------------------|
-| Gestion des comptes | Administration des utilisateurs | ID, username, email, rôle | Administration | Administrateurs |
-| Authentification | Vérification d'identité | Username, email | Sécurité | Utilisateurs, Système |
+| Gestion des comptes | Administration des utilisateurs | ID, username, rôle | Administration | Administrateurs |
+| Authentification | Vérification d'identité | Username | Sécurité | Utilisateurs, Système |
 | [Autres traitements] | | | | |
 
 # 3. Base juridique

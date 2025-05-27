@@ -1,14 +1,13 @@
 async function updateProfileInfo(event) {
 	event.preventDefault();
 	const newUsername = document.getElementById("change_username").value;
-	const newEmail = document.getElementById("change_email").value;
 	const newPassword = document.getElementById("change_password").value;
 	
-	if (newUsername === "" && newEmail === "" && newPassword === "")
+	if (newUsername === "" && newPassword === "")
 		return notif("Please fill at least one field !", false);
 	
 	try {
-		const data = await fetchAPI('/request/user/update-profile', 'PUT', { newUsername, newEmail, newPassword });
+		const data = await fetchAPI('/request/user/update-profile', 'PUT', { newUsername, newPassword });
 
 		if (data.success) {
 			document.getElementById("updateProfileForm").reset();
@@ -32,6 +31,7 @@ async function changeProfilePicture(event) {
 		if (data.success) {
 			document.getElementById("uploadForm").reset();
 			fetchProfile();
+			fetchProfilePicture();
 		}
 	} catch (err) {
 		console.log("Failed to update profile picture");
@@ -165,8 +165,6 @@ async function fetchProfile() {
 			`;
 			const username = document.getElementById("change_username");
 			username.placeholder = user.username;
-			const email = document.getElementById("change_email");
-			email.placeholder = user.email;
 			const doubleAuth = document.getElementById("active_fa");
 			console.log("doubleAuth", user.doubleAuth_status);
 			if (user.doubleAuth_status)
@@ -200,18 +198,17 @@ async function fetchProfilePicture() {
 async function updateProfileInfo(event) {
 	event.preventDefault();
 	const newUsername = document.getElementById("change_username").value;
-	const newEmail = document.getElementById("change_email").value;
 	const newPassword = document.getElementById("change_password").value;
 	const confirmPassword = document.getElementById("confirm_change_password").value;
 
-	if (newUsername === "" && newEmail === "" && newPassword === "")
+	if (newUsername === "" && newPassword === "")
 		return notif("Veuillez remplir au moins un champ !", false);
 
 	if (newPassword && (!confirmPassword || newPassword !== confirmPassword))
 		return notif("Les mots de passe ne correspondent pas !", false);
 
 	try {
-		const data = await fetchAPI('/request/user/update-profile', 'PUT', { newUsername, newEmail, newPassword });
+		const data = await fetchAPI('/request/user/update-profile', 'PUT', { newUsername, newPassword });
 	
 		if (data.success) {
 			document.getElementById("updateProfileForm").reset();

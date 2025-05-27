@@ -44,30 +44,28 @@ export async function getUserProfilePicture(request, reply) {
 }
 
 export async function createUser(request, reply) {
-	const { username, email, password } = request.body
+	const { username, password } = request.body
 
 	if (!username || !password)
-		return reply.code(400).send({ error: 'Username, Email and Password are required' })
+		return reply.code(400).send({ error: 'Username and Password are required' })
 
 	const sameUsername = usersModel.getUserByUsername(username)
 	if (sameUsername)
 		return reply.code(409).send({ error: "This username is already used" })
-	const sameEmail = usersModel.getUserByEmail(email)
-	if (sameEmail)
-		return reply.code(409).send({ error: "This email is already used" })
 	try {
 		const hashedPassword = await hashPassword(password)
-		const info = usersModel.createUser(username, email, hashedPassword)
-		return reply.code(201).send({ success: true, id: info.lastInsertRowid, username, email, message: 'Account created successfully' })
+		const info = usersModel.createUser(username, hashedPassword)
+		return reply.code(201).send({ success: true, id: info.lastInsertRowid, username, message: 'Account created successfully' })
 	} catch (err) {
 		return reply.code(500).send({ error: err.message })
 	}
 }
 
 export async function login(request, reply) {
-	const { email, password } = request.body
+	const { username, password } = request.body
 	try {
-		const user = usersModel.getUserByEmail(email)
+		console.log("username :", username)
+		const user = usersModel.getUserByUsername(username)
 		if (!user || !await verifyPassword(user.password, password))
 			return reply.code(401).send({ success: false, error: 'Invalid credentials' })
 		if (user.doubleAuth_status)
@@ -92,7 +90,7 @@ export async function login(request, reply) {
 }
 
 export async function loginOpponent(request, reply) {
-	const { email, password } = request.body
+	const { username, password } = request.body
 	try {
 		const infos = await getUserFromToken(request)
 		if (!infos)
@@ -103,7 +101,7 @@ export async function loginOpponent(request, reply) {
 			return reply.code(401).send({ error: 'Unauthorized' })
 		if (!accessToken)
 			return reply.code(401).send({ error: 'Unauthorized' })
-		const opponent = usersModel.getUserByEmail(email)
+		const opponent = usersModel.getUserByUsername(username)
 		if (!opponent || !await verifyPassword(opponent.password, password))
 			return reply.code(401).send({ success: false, error: 'Invalid credentials' })
 
@@ -186,7 +184,7 @@ export async function accessProfileInfo(request, reply) {
 }
 
 export async function changeProfile(request, reply) {
-	const { newUsername, newEmail, newPassword } = request.body
+	const { newUsername, newPassword } = request.body
 	try {
 		const infos = await getUserFromToken(request)
 		if (!infos)
@@ -200,11 +198,6 @@ export async function changeProfile(request, reply) {
 			if (sameUsername)
 				return reply.code(409).send({ error: "This username is already used" })
 			usersModel.updateUsername(user.userId, newUsername)
-		} if (newEmail) {
-			const sameEmail = usersModel.getUserByEmail(newEmail)
-			if (sameEmail)
-				return reply.code(409).send({ error: "This email is already used" })
-			usersModel.updateEmail(user.userId, newEmail)
 		} if (newPassword) {
 			const hashedPassword = await hashPassword(newPassword)
 			usersModel.updatePassword(user.userId, hashedPassword)
@@ -355,7 +348,7 @@ export async function verifyDoubleAuth(request, reply) {
 				sameSite: 'strict',
 				expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
 			})
-			.send({ success:true, message: '2FA validated successfully!', connection_status: "connected", accessToken: accessToken })
+			.send({ success:true, message: '2FA validated successfully!', username: user.username, connection_status: "connected", accessToken: accessToken })
 		} else {
 			usersModel.updateDoubleAuth_secret(userId, null)
 			return reply.code(401).send({ success: false, error: 'Invalid 2FA code' })
@@ -458,7 +451,6 @@ export async function exportUserData(request, reply) {
 			personal_information: {
 				userId: user.userId,
 				username: user.username,
-				email: user.email,
 				profile_picture: user.profile_picture,
 				created_at: user.created_at,
 				doubleAuth_status: !!user.doubleAuth_status

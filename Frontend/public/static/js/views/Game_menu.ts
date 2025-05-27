@@ -226,10 +226,6 @@ export default class Game_menu extends AbstractView {
 									<input type="text" id="change_username" name="username">
 								</div>
 								<div class="input_container">
-									<label for="email">Change email</label>
-									<input type="email" id="change_email" name="email">
-								</div>
-								<div class="input_container">
 									<label for="password">Change password</label>
 									<input type="password" id="change_password" name="password" placeholder="******">
 								</div>
@@ -270,8 +266,8 @@ export default class Game_menu extends AbstractView {
 						<div class="player-section">
 							<p>PLAYER 2</p>
 							<div class="input-container">
-								<label for="email2">Email :</label>
-								<input type="email" id="1v1-email2" name="email2" placeholder="Player 2 email" required>
+								<label for="username2">Username :</label>
+								<input type="text" id="1v1-username2" name="username2" placeholder="Player 2 username" required>
 							</div>
 							<div class="input-container">
 								<label for="password2">Password :</label>
@@ -290,8 +286,8 @@ export default class Game_menu extends AbstractView {
 						<div class="player-section">
 						<p>PLAYER 2</p>
 						<div class="input-container">
-							<label for="email2">Email :</label>
-							<input type="email" id="multi-email2" name="email2" placeholder="Player 2 email" required>
+							<label for="username2">Username :</label>
+							<input type="text" id="multi-username2" name="username2" placeholder="Player 2 username" required>
 						</div>
 						<div class="input-container">
 							<label for="password2">Password :</label>
@@ -302,8 +298,8 @@ export default class Game_menu extends AbstractView {
 						<div class="player-section">
 						<p>PLAYER 3</p>
 						<div class="input-container">
-							<label for="email3">Email :</label>
-							<input type="email" id="multi-email3" name="email3" placeholder="Player 3 email" required>
+							<label for="username3">Username :</label>
+							<input type="text" id="multi-username3" name="username3" placeholder="Player 3 username" required>
 						</div>
 						<div class="input-container">
 							<label for="password3">Password :</label>
@@ -314,8 +310,8 @@ export default class Game_menu extends AbstractView {
 						<div class="player-section">
 						<p>PLAYER 4</p>
 						<div class="input-container">
-							<label for="email4">Email :</label>
-							<input type="email" id="multi-email4" name="email4" placeholder="Player 4 email" required>
+							<label for="username4">Username :</label>
+							<input type="text" id="multi-username4" name="username4" placeholder="Player 4 username" required>
 						</div>
 						<div class="input-container">
 							<label for="password4">Password :</label>

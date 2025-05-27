@@ -208,10 +208,6 @@ export default class extends AbstractView {
 									<input type="text" id="change_username" name="username">
 								</div>
 								<div class="input_container">
-									<label for="email">Change email</label>
-									<input type="email" id="change_email" name="email">
-								</div>
-								<div class="input_container">
 									<label for="password">Change password</label>
 									<input type="password" id="change_password" name="password" placeholder="******">
 								</div>

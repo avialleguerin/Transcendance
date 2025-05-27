@@ -100,18 +100,17 @@ async function activate2FA(event) {
 async function login(event) {
 	event.preventDefault();
 
-	const email = document.getElementById("login-email").value;
+	const username = document.getElementById("login-username").value;
 	const password = document.getElementById("login-password").value;
 	const response = await fetch('/api/users/login', {
 		method: 'PUT',
-		body: JSON.stringify({ email, password }),
+		body: JSON.stringify({ username, password }),
 		headers: { 
 			'Content-Type': 'application/json',
 		},
 		credentials: 'include',
 	});
 	const data = await response.json();
-	// const data = await apiRequest("users/login", "PUT", { email, password }, {})
 	sessionStorage.setItem("accessToken", data.accessToken)
 	accessToken = sessionStorage.getItem("accessToken")
 	userId = getUserIdFromToken(accessToken);
@@ -145,7 +144,7 @@ async function login(event) {
 		
 	} else
 		notif(data.error, false);
-	document.getElementById("login-email").value = "";
+	document.getElementById("login-username").value = "";
 	document.getElementById("login-password").value = "";
 }
 
@@ -183,7 +182,6 @@ async function register(event) {
 	event.preventDefault();
 
 	const username = document.getElementById("add-username").value;
-	const email = document.getElementById("add-email").value;
 	const password = document.getElementById("add-password").value;
 	const confirmPassword = document.getElementById("add-confirm-password").value;
 
@@ -192,7 +190,7 @@ async function register(event) {
 		return ;
 	}
 
-	const result = await apiRequest("users/add", "POST", { username, email, password }, {})
+	const result = await apiRequest("users/add", "POST", { username, password }, {})
 	
 	if (result.success) {
 		notif(result.message, true);
@@ -201,7 +199,6 @@ async function register(event) {
 	} else
 		notif(result.error, false);
 	document.getElementById("add-username").value = ""
-	document.getElementById("add-email").value = ""
 	document.getElementById("add-password").value = ""
 	document.getElementById("add-confirm-password").value = ""
 };

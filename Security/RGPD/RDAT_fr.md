@@ -20,7 +20,6 @@
 ## 4. Catégories de données traitées
 - Données d'identification (ID interne, username, avatar)
 - Données d'authentification OAuth (via Google Sign-In)
-- Coordonnées (email)
 - Données de profil (statut, préférences)
 - Données d'utilisation (historique des parties, scores, classement)
 

@@ -8,9 +8,9 @@ async function verify2FA(event) {
 
 		if (data.success) {
 			sessionStorage.removeItem("userId")
-			localStorage.setItem("Player1", data.user.username);
+			localStorage.setItem("Player1", data.username);
 			console.log("✅ 2FA code valid!");
-
+			fetchProfilePicture();
 			history.pushState({}, '', '/Game_menu');
 			import('../static/js/views/Game_menu.js').then(module => {
 				const GameMenu = module.default;
@@ -31,11 +31,11 @@ async function verify2FA(event) {
 async function login(event) {
 	event.preventDefault();
 
-	const email = document.getElementById("login-email").value;
+	const username = document.getElementById("login-username").value;
 	const password = document.getElementById("login-password").value;
 	
 	try {
-		const data = await fetchAPI('/request/user/login', 'POST', { email, password }, true, false);
+		const data = await fetchAPI('/request/user/login', 'POST', { username, password }, true, false);
 		
 		if (!data.accessToken && !data.success) {
 			notif(data.error, false);
@@ -62,7 +62,6 @@ async function login(event) {
 				});
 			});
 			fetchProfilePicture()
-			document.getElementById("login-email").value = "";
 			document.getElementById("login-password").value = "";
 		} else {
 			notif(data.error, false);
@@ -77,24 +76,22 @@ async function login(event) {
 
 async function loginOpponent(event) {
 	event.preventDefault();
-	const email = document.getElementById("1v1-email2").value;
+	const username = document.getElementById("1v1-username2").value;
 	const password = document.getElementById("1v1-password2").value;
-	if (!email || !password)
+	if (!username || !password)
 		return notif("Please fill in all fields", false);
 
 	try {
-		const data = await fetchAPI('/request/user/login-opponent', 'POST', { email, password }, true, false);
+		const data = await fetchAPI('/request/user/login-opponent', 'POST', { username, password }, true, false);
 		if (data.success) {
 			if (data.opponent.username === localStorage.getItem("Player1"))
 				return notif("You cannot play against yourself", false);
 			notif(data.message, true);
 			localStorage.setItem("Player2", data.opponent.username);
-			// view3.classList.remove('active');
 			document.getElementById("choose_your_opponent_1v1_form").classList.remove('active');
 			document.getElementById("back_to_select_mode_view6").classList.add('active');
 			document.getElementById("view6").classList.add('active');
 			document.getElementById("container").classList.remove('active');
-			// document.getElementById("player1-username").innerHTML = data.user.username;
 			document.getElementById("1v1-oponent-username").innerHTML = localStorage.getItem("Player2");
 		} else
 			notif(data.error, false);
@@ -136,7 +133,6 @@ async function register(event) {
 	event.preventDefault();
 
 	const username = document.getElementById("register-username").value;
-	const email = document.getElementById("register-email").value;
 	const password = document.getElementById("register-password").value;
 	const confirmPassword = document.getElementById("register-confirm-password").value;
 
@@ -146,7 +142,7 @@ async function register(event) {
 	}
 
 	try {
-		const data = await fetchAPI('/request/user/create-user', 'POST', { username, email, password });
+		const data = await fetchAPI('/request/user/create-user', 'POST', { username, password });
 		
 		if (data.success) {
 			document.getElementById("create_account_id").classList.remove("active");

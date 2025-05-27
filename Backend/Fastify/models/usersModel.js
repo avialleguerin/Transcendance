@@ -7,7 +7,6 @@ export const CREATE_USERS_TABLE = `
 		userId INTEGER PRIMARY KEY AUTOINCREMENT,
 		profile_picture TEXT DEFAULT 'default-profile-picture.png',
 		username TEXT UNIQUE NOT NULL CHECK(length(username) <= 10),
-		email TEXT UNIQUE NOT NULL CHECK(length(email) <= 40),
 		password TEXT NOT NULL,
 		doubleAuth_status INTEGER DEFAULT 0 CHECK(doubleAuth_status IN (0, 1)),
 		doubleAuth_secret TEXT,
@@ -18,19 +17,17 @@ export const CREATE_USERS_TABLE = `
 `;
 
 const usersModel = {
-	createUser: (username, email, password) => {
+	createUser: (username, password) => {
 		const currentCGUVersion = "1.0"; // À définir ailleurs ou en constante
-		db.prepare("INSERT INTO users (username, email, password, cgu_version) VALUES (?, ?, ?, ?)").run(username, email, password, currentCGUVersion);
-		return { username, email };
+		db.prepare("INSERT INTO users (username, password, cgu_version) VALUES (?, ?, ?)").run(username, password, currentCGUVersion);
+		return { username };
 	},
 	getAllUsers: () => db.prepare("SELECT * FROM users").all(),
 	getUserById: (userId) => { return db.prepare("SELECT * FROM users WHERE userId = ?").get(userId) },
 	getUserByUsername: (username) => { return db.prepare("SELECT * FROM users WHERE username = ?").get(username) },
-	getUserByEmail: (email) => { return db.prepare("SELECT * FROM users WHERE email = ?").get(email) },
 	updateDoubleAuth_status: (userId, doubleAuth_status) => { return db.prepare("UPDATE users SET doubleAuth_status = ? WHERE userId = ?").run(doubleAuth_status, userId) },
 	updateDoubleAuth_secret: (userId, doubleAuth_secret) => { return db.prepare("UPDATE users SET doubleAuth_secret = ? WHERE userId = ?").run(doubleAuth_secret, userId) },
 	updateUsername: (userId, newUsername) => { return db.prepare("UPDATE users SET username = ? WHERE userId = ?").run(newUsername, userId) },
-	updateEmail: (userId, newEmail) => { return db.prepare("UPDATE users SET email = ? WHERE userId = ?").run(newEmail, userId) },
 	updatePassword: (userId, newPassword) => { return db.prepare("UPDATE users SET password = ? WHERE userId = ?").run(newPassword, userId) },
 	updateProfilePicture: (userId, profile_picture) => { return db.prepare("UPDATE users SET profile_picture = ? WHERE userId = ?").run(profile_picture, userId) },
 	delete: (userId) => { return db.prepare("DELETE FROM users WHERE userId = ?").run(userId) },

@@ -45,8 +45,8 @@ async function fetchAPI(url, method, body = null, showNotification = true, formD
 
 		const response = await fetch(url, options);
 		const data = await response.json();
-
-		sessionStorage.setItem('accessToken', data.accessToken);
+		if (data.accessToken)
+			sessionStorage.setItem('accessToken', data.accessToken);
 
 		if (data.success)
 			notif(data.message, true);

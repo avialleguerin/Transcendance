@@ -69,6 +69,7 @@ export async function acceptFriend(request, reply) {
 		if (!infos)
 			return reply.code(401).send({ error: "Unauthorized" })
 		const user = infos.user
+		console.log("user :", user)
 		if (!user)
 			return reply.code(401).send({ error: "User not found" })
 		if (!infos.accessToken)

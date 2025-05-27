@@ -36,8 +36,8 @@ export default class extends AbstractView {
 					<div class="form-group">
 						<form id="loginForm" onsubmit="login(event)">
 						<div class="input-container">
-							<label for="email">Email :</label>
-								<input type="email" id="login-email" name="email" placeholder="Your email" required>
+							<label for="username">Username :</label>
+							<input type="text" id="login-username" name="username" placeholder="Your username" required>
 						</div>
 
 							<div class="input-container">
@@ -56,11 +56,6 @@ export default class extends AbstractView {
 							<div class="input-container">
 								<label for="username">Username :</label>
 								<input type="text" id="register-username" name="username" placeholder="Your username" required>
-							</div>
-
-							<div class="input-container">
-								<label for="email">Email :</label>
-								<input type="email" id="register-email" name="email" placeholder="Your email" required>
 							</div>
 
 							<div class="input-container">
@@ -94,7 +89,7 @@ export default class extends AbstractView {
 			console.log("createAccountForm");
 			loginForm.classList.add("active");
 			createAccountForm.classList.add("active");
-			document.getElementById("login-email").value = ""
+			document.getElementById("login-username").value = ""
 			document.getElementById("login-password").value = ""
 		});
 

@@ -15,7 +15,7 @@ async function addFriend(event) {
 
 async function accept_friendship(friendshipId) {
 	try {
-		const data = await fetchAPI('/request/friendship/update-status', 'POST', { friendshipId });
+		const data = await fetchAPI('/request/friendship/accept-friend', 'POST', { friendshipId });
 		if (data.success) {
 			notif("Friendship status updated", true);
 			fetch_user_friendships();

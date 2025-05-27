@@ -62,7 +62,6 @@ export default class Home extends AbstractView {
 							<ul>
 								<li>Données d'identification (ID interne, username, avatar)</li>
 								<li>Données d'authentification (via Google Sign-In)</li>
-								<li>Coordonnées (email)</li>
 								<li>Données de profil (statut, préférences)</li>
 								<li>Données d'utilisation (historique des parties, scores, classement)</li>
 							</ul>
@@ -127,8 +126,8 @@ export default class Home extends AbstractView {
 					<div class="form-group"> 
 						<form id="loginForm" class="loginForm" onsubmit="login(event)">
 							<div class="input-container">
-								<label for="email">Email :</label>
-								<input type="email" id="login-email" name="email" placeholder="Your email" required>
+								<label for="username">Username :</label>
+								<input type="text" id="login-username" name="username" placeholder="Your username" required>
 							</div>
 							<div class="input-container">
 								<label for="password">Password :</label>
@@ -153,10 +152,6 @@ export default class Home extends AbstractView {
 							<div class="input-container">
 								<label for="username">Username :</label>
 									<input type="text" id="register-username" name="username" placeholder="Your username" required>
-							</div>
-							<div class="input-container">
-								<label for="email">Email :</label>
-									<input type="email" id="register-email" name="email" placeholder="Your email" required>
 							</div>
 							<div class="input-container">
 								<label for="password">Password :</label>
@@ -212,7 +207,7 @@ export default class Home extends AbstractView {
 			console.log("createAccountForm");
 			loginForm.classList.add("active");
 			createAccountForm.classList.add("active");
-			(document.getElementById("login-email") as HTMLInputElement).value = "";
+			(document.getElementById("login-username") as HTMLInputElement).value = "";
 			(document.getElementById("login-password") as HTMLInputElement).value = "";
 		});
 

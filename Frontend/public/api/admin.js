@@ -1,7 +1,6 @@
 {/* <td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">********</td> */}
 {/* <td class="bg-white px-6 py-4 border border-gray-200 border-r-0 border-l-0"><img class="rounded-lg" style="width: 100%; height: auto; max-height: 50px; object-fit: contain;" src="/uploads/${user.profile_picture}"></td> */}
 
-// <td class="bg-white px-6 py-4 border border-gray-200 border-r-0 border-l-0">${user.email}</td>
 
 async function fetch_users() {
 	try {
@@ -13,7 +12,6 @@ async function fetch_users() {
 			<tr class="border-collapse text-sm hover:shadow-lg hover:rounded-xl hover:-translate-y-1 transition-all duration-200 ease-in-out cursor-pointer">
 				<td class="bg-white px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${user.userId}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.username}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.email.substring(0, 2)}***@${user.email.split('@')[1]}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.doubleAuth_status === 0 ? "Disabled" : "Enabled" }</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.cgu_version || "N/A"}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.created_at}</td>
@@ -74,7 +72,6 @@ async function create_user(event) {
 	event.preventDefault();
 
 	const username = document.getElementById("addUser-username").value;
-	const email = document.getElementById("addUser-email").value;
 	const password = document.getElementById("addUser-password").value;
 	const confirmPassword = document.getElementById("addUser-confirm-password").value;
 
@@ -88,13 +85,13 @@ async function create_user(event) {
 		headers: { 
 			"Content-Type": "application/json",
 		},
-		body: JSON.stringify({ username, email, password }),
+		body: JSON.stringify({ username, password }),
 		credentials: 'include',
 	});
 	const data = await response.json();
 	if (data.success) {
-		notif(`User added : ${data.username} (${data.email})`, true);
-		resultMessage.textContent = `User added : ${data.username} (${data.email})`
+		notif(`User added : ${data.username} `, true);
+		resultMessage.textContent = `User added : ${data.username}`
 		document.getElementById("addUserForm").reset();
 		close_user_modal();
 	} else {

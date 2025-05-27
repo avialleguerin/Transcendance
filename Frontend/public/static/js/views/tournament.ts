@@ -35,8 +35,8 @@ export default class extends AbstractView {
 					<div class="player_section">
 						<p>Player 2</p>
 						<div class="input-container">
-							<label for="player2">Email</label>
-							<input type="text" id="player2" class="input_name_player" placeholder="Email player 2">
+							<label for="player2">Username</label>
+							<input type="text" id="player2" class="input_name_player" placeholder="Username player 2">
 						</div>
 						<div class="input-container">
 							<label for="player2">Password</label>
@@ -46,8 +46,8 @@ export default class extends AbstractView {
 					<div class="player_section">
 						<p>Player 3</p>
 						<div class="input-container">
-							<label for="player3">Email</label>
-							<input type="text" id="player3" class="input_name_player" placeholder="Player namer 3">
+							<label for="player3">Username</label>
+							<input type="text" id="player3" class="input_name_player" placeholder="Username player 3">
 						</div>
 						<div class="input-container">
 							<label for="player3">Password</label>
@@ -57,8 +57,8 @@ export default class extends AbstractView {
 					<div class="player_section">
 						<p>Player 4</p>
 						<div class="input-container">
-							<label for="player4">Email</label>
-							<input type="text" id="player4" class="input_name_player" placeholder="Player namer 4">
+							<label for="player4">Username</label>
+							<input type="text" id="player4" class="input_name_player" placeholder="Username Player 4">
 						</div>
 						<div class="input-container">
 							<label for="player4">Password</label>
