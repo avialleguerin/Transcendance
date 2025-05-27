@@ -6,9 +6,12 @@ import { setLeaveGameVar } from "../index.js";
 import { disable_skin_multi_podium } from "../../../srcs/game/gameplay/multiplayer/init_teamPlayer_podium.js";
 import { isGameFinished } from "../../../srcs/game/gameplay/score.js";
 import { getIsTeam1Win, getIsTeam2Win } from "../../../srcs/game/gameplay/score.js";
+import { disable_skin_multi_podium_default } from "../../../srcs/game/gameplay/multiplayer/init_teamPlayer_podium_default.js";
+import { get_skin_is_init } from "../../../srcs/game/gameplay/solo/skin/init_skin_utils.js";
 
 let space_pressed = false;
 let bool = false;
+let is_init = get_skin_is_init();
 
 export default class extends AbstractView {
 
@@ -37,7 +40,7 @@ export default class extends AbstractView {
 			document.addEventListener("keydown", this.boundKeyPressHandler);
 
 			if (window.location.pathname === "/multi_player_game") {
-				this.gameLoop = setInterval(() => { this.checkGameOver(); 1000 });
+				this.gameLoop = setInterval(() => { this.checkGameOver();}, 1000 );
 			}
 			bool = true;
 		}
@@ -113,7 +116,10 @@ export default class extends AbstractView {
 			this.cleanup();
 
 			setLeaveGameVar(true);
-			disable_skin_multi_podium();
+			if (!is_init)
+				disable_skin_multi_podium_default();
+			else
+				disable_skin_multi_podium();
 			space_pressed = false;
 			bool = false;
 			handleViewTransitions("vue2", "vue4");

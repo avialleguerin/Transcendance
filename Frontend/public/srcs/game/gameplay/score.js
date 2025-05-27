@@ -2,7 +2,9 @@ import { handleViewTransitions } from "./views/camera.js";
 import { enable_skin_perso_player_first_and_second } from "./solo/skin/init_skin_player_podium.js";
 import { getSoloGameStart, getMultiGameStart, getTournamentGameStart } from "./babylon.js";
 import { enable_skin_multi_podium } from "./multiplayer/init_teamPlayer_podium.js";
-
+import { enable_skin_perso_player_first_and_second_default } from "./solo/skin/init_skin_player_default.js";
+import { get_skin_is_init } from "./solo/skin/init_skin_utils.js";
+import { enable_skin_multi_podium_default } from "./multiplayer/init_teamPlayer_podium_default.js";
 
 let scoreLeft = 0;
 let scoreRight = 0;
@@ -90,9 +92,9 @@ export function getNumberWord(number) {
 }
 
 
-
 export function updateScore(side)
 {
+	let skinIsInit = get_skin_is_init();
 	let soloGameStart = getSoloGameStart();
 	let multi_player_game = getMultiGameStart();
 	let tournament_game = getTournamentGameStart();
@@ -124,7 +126,10 @@ export function updateScore(side)
 				isPlayer2_win = true;
 			}
 			handleViewTransitions('winner', true);
-			enable_skin_perso_player_first_and_second();
+			if (!skinIsInit)
+				enable_skin_perso_player_first_and_second_default();
+			else
+				enable_skin_perso_player_first_and_second();
 		}
 	}
 	else if (multi_player_game)
@@ -142,7 +147,10 @@ export function updateScore(side)
 				isTeam2_win = true;
 			}
 			handleViewTransitions('winner', true);
-			enable_skin_multi_podium();
+			if (!skinIsInit)
+				enable_skin_multi_podium_default();
+			else
+				enable_skin_multi_podium();
 		}
 	}
 	else if (tournament_game)
