@@ -1,22 +1,24 @@
-async function updateProfileInfo(event) {
-	event.preventDefault();
-	const newUsername = document.getElementById("change_username").value;
-	const newPassword = document.getElementById("change_password").value;
+// async function updateProfileInfo(event) {
+// 	event.preventDefault();
+// 	const newUsername = document.getElementById("change_username").value;
+// 	const newPassword = document.getElementById("change_password").value;
 	
-	if (newUsername === "" && newPassword === "")
-		return notif("Please fill at least one field !", false);
+// 	if (newUsername === "" && newPassword === "")
+// 		return notif("Please fill at least one field !", false);
 	
-	try {
-		const data = await fetchAPI('/request/user/update-profile', 'PUT', { newUsername, newPassword });
+// 	try {
+// 		const data = await fetchAPI('/request/user/update-profile', 'PUT', { newUsername, newPassword });
 
-		if (data.success) {
-			document.getElementById("updateProfileForm").reset();
-			fetchProfile();
-		}
-	} catch (err) {
-		console.log("Failed to update profile");
-	}
-}
+// 		if (data.success) {
+// 			document.getElementById("updateProfileForm").reset();
+// 			fetchProfile();
+// 			console.log("Profile updated successfully, print pp");
+// 			fetchProfilePicture();
+// 		}
+// 	} catch (err) {
+// 		console.log("Failed to update profile");
+// 	}
+// }
 
 
 async function changeProfilePicture(event) {
@@ -213,6 +215,7 @@ async function updateProfileInfo(event) {
 		if (data.success) {
 			document.getElementById("updateProfileForm").reset();
 			fetchProfile();
+			fetchProfilePicture();
 		}
 	} catch (err) {
 		console.log("Failed to update profile");

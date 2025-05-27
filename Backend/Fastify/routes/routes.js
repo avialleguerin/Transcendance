@@ -1,5 +1,5 @@
-import { getUserProfilePicture, createUser , deleteAccount, login, loginOpponent, logout, updateDoubleAuth, accessProfileInfo, changeProfilePicture, changeProfile, getUserProfile, verifyDoubleAuth, activateDoubleAuth, refreshInfos, exportUserData } from '../controllers/usersController.js';
-import { getUserGames, create1v1Game } from '../controllers/gamesController.js';
+import { getUserProfilePicture, createUser , deleteAccount, login, login1v1, login2v2, logout, updateDoubleAuth, accessProfileInfo, changeProfilePicture, changeProfile, getUserProfile, verifyDoubleAuth, activateDoubleAuth, refreshInfos, exportUserData } from '../controllers/usersController.js';
+import { getUserGames, create1v1Game, create2v2Game } from '../controllers/gamesController.js';
 import { getUserFriendships, addFriend, acceptFriend, deleteFriend } from '../controllers/friendshipsController.js';
 import { getAllUsers, deleteUser, getAllGames, createGame, deleteGame, getAllFriendships, addFriendship, deleteFriendship } from '../controllers/adminController.js';
 import { getSQLiteCreds } from '../utils/vault.js'
@@ -50,7 +50,8 @@ export default async function routes (fastify) {
 	fastify.get('/user/profile-picture', getUserProfilePicture)
 	fastify.post('/user/create-user', createUser)
 	fastify.post('/user/login', login)
-	fastify.post('/user/login-opponent', loginOpponent)
+	fastify.post('/user/login-1v1', login1v1)
+	fastify.post('/user/login-2v2', login2v2)
 	fastify.post('/user/logout', logout)
 	fastify.put('/user/access-profile-infos', accessProfileInfo)
 	fastify.put('/user/update-2fa', updateDoubleAuth)
@@ -70,6 +71,7 @@ export default async function routes (fastify) {
 	//gamesController
 	fastify.get('/game/get-user-games', getUserGames)
 	fastify.post('/game/create-1v1-game', create1v1Game)
+	fastify.post('/game/create-2v2-game', create2v2Game)
 
 	// Tokens
 	// fastify.post('/refresh-token', refreshAccessToken)

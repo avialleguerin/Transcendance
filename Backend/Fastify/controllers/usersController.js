@@ -89,7 +89,7 @@ export async function login(request, reply) {
 	}
 }
 
-export async function loginOpponent(request, reply) {
+export async function login1v1(request, reply) {
 	const { username, password } = request.body
 	try {
 		const infos = await getUserFromToken(request)
@@ -101,11 +101,39 @@ export async function loginOpponent(request, reply) {
 			return reply.code(401).send({ error: 'Unauthorized' })
 		if (!accessToken)
 			return reply.code(401).send({ error: 'Unauthorized' })
-		const opponent = usersModel.getUserByUsername(username)
-		if (!opponent || !await verifyPassword(opponent.password, password))
+		const player2 = usersModel.getUserByUsername(username)
+		if (!player2 || !await verifyPassword(player2.password, password))
 			return reply.code(401).send({ success: false, error: 'Invalid credentials' })
 
-		reply.code(200).send({ success: true, message: 'Opponent logged in', user: user, opponent: opponent, accessToken: accessToken })
+		reply.code(200).send({ success: true, message: 'Opponent logged in', user: user, player2: player2, accessToken: accessToken })
+	} catch (err) {
+		return reply.code(500).send({ error: err.message })
+	}
+}
+
+export async function login2v2(request, reply) {
+	const { username2, password2, username3, password3, username4, password4 } = request.body
+	try {
+		const infos = await getUserFromToken(request)
+		if (!infos)
+			return reply.code(401).send({ success: false, error: 'Unauthorized' })
+		const user = infos.user
+		const accessToken = infos.accessToken
+		if (!user)
+			return reply.code(401).send({ error: 'Unauthorized' })
+		if (!accessToken)
+			return reply.code(401).send({ error: 'Unauthorized' })
+		const player2 = usersModel.getUserByUsername(username2)
+		const player3 = usersModel.getUserByUsername(username3)
+		const player4 = usersModel.getUserByUsername(username4)
+		if (!player2 || !await verifyPassword(player2.password, password2))
+			return reply.code(401).send({ success: false, error: 'Player 2: Invalid credentials' })
+		if (!player3 || !await verifyPassword(player3.password, password3))
+			return reply.code(401).send({ success: false, error: 'Player 3: Invalid credentials' })
+		if (!player4 || !await verifyPassword(player4.password, password4))
+			return reply.code(401).send({ success: false, error: 'Player 4: Invalid credentials' })
+
+		reply.code(200).send({ success: true, message: 'Opponents logged in', player1: user, player2: player2, player3: player3, player4: player4, accessToken: accessToken })
 	} catch (err) {
 		return reply.code(500).send({ error: err.message })
 	}
@@ -349,10 +377,8 @@ export async function verifyDoubleAuth(request, reply) {
 				expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
 			})
 			.send({ success:true, message: '2FA validated successfully!', username: user.username, connection_status: "connected", accessToken: accessToken })
-		} else {
-			usersModel.updateDoubleAuth_secret(userId, null)
+		} else
 			return reply.code(401).send({ success: false, error: 'Invalid 2FA code' })
-		}
 	} catch (err) {
 		console.error(err)
 		return reply.code(500).send({ success: false, error: 'Internal server error' })
