@@ -48,23 +48,28 @@ export default class PlatformerView extends AbstractView {
         // Then initialize the game
         initGame();
         
+        Setgame_started(true);
+        check_verfication = true;
+        console.log("Game started: " + Getgame_started());
+        console.log("Check verification: " + check_verfication);
+        console.log("Game initialized successfully");
+        if (check_verfication === true) {
+            console.log("je suis laaaaaaaaaaaaaaaaaaa");
+            if (window.location.pathname === "/PlatformView") {
+                this.gameLoop = setInterval(() => { this.check_game_is_finish(); }, 1000);
+            }
+        }
     }
     
     async afterRender() {
-        // Cette méthode est appelée après que le HTML a été inséré dans le DOM
-        Setgame_started(true);
         this.init_game_platformer();
-
-        setTimeout(() => {
-            check_verfication = true;
-            console.log("Game is started");
-        }, 5000);
     }
 
     check_game_is_finish() {
         if (window.location.pathname !== "/PlatformView")
             return;
         let game_is_finish = Getgame_started();
+        console.log("Game is finish: " + game_is_finish);
         if (game_is_finish === false)
         {
             console.log("Game is not started yet");

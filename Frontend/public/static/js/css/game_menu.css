@@ -1606,6 +1606,10 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
 	display: none; /* Chrome, Safari, Opera */
 }
 
+.container_menu.hidden {
+	display: none;
+}
+
 .mode_de_jeu_solo_parametre .joueur_touch {
 	display: flex;
 	justify-content: space-between;
@@ -1922,7 +1926,7 @@ input[type="file"] {
 	justify-content: center;
 	align-items: center;
 	position: absolute;
-	top: 100%;
+	top: 65%;
 	left: 50%;
 	transform: translate(-70%, 1070%);
 }
@@ -1950,7 +1954,7 @@ input[type="file"] {
 	justify-content: center;
 	align-items: center;
 	position: absolute;
-	top: 100%;
+	top: 86%;
 	left: 50%;
 	transform: translate(56%, 230%);
 }
@@ -1978,7 +1982,7 @@ input[type="file"] {
     justify-content: center;
     align-items: center;
     position: absolute;
-    top: 100%;
+    top: 60%;
     left: 50%;
     transform: translate(75%, 1100%);
 }
@@ -1992,7 +1996,7 @@ input[type="file"] {
 	font-family: 'Black Ops One', sans-serif;
 	top: 100%;
 	left: 0%;
-	transform: translateY(150%);
+	transform: translateY(250%);
 }
 
 .game_statistics {
@@ -2205,11 +2209,9 @@ input[type="file"] {
 
 @keyframes panel_despawn {
 from {
-	opacity: 1;
 	transform: translateX(0);
 }
 to {
-	opacity: 0;
 	transform: translateX(100%);
 }
 }
@@ -2256,9 +2258,13 @@ to {
 	animation: panel_spawn 1s forwards;
 }
 
-.panel.remove {
+.panel_option_navbar.remove {
+	/* visibility: hidden; */
 	animation: panel_despawn 1s forwards;
 }
+
+
+
 
 .option.active {
 	visibility: hidden;
@@ -2298,11 +2304,11 @@ to {
 .game_history {
 	position: absolute;
 	top: 50%;
-	left: 50%;
+	left: 52%;
 	transform: translate(-50%, -50%);
-	width: 600px;
-	height: 600px;
-	background-color: rgba(30, 30, 30, 0.95);
+	width: 777px;
+	height: 630px;
+	background-color: rgb(30, 30, 30);
 	border: 2px solid #555;
 	border-radius: 12px;
 	color: white;
@@ -2311,6 +2317,7 @@ to {
 	display: none;
 	flex-direction: column;
 	overflow: hidden;
+	z-index: 1750;
 }
 
 
@@ -2549,6 +2556,18 @@ to {
 	font-size: 14px;
 }
 
+.game_card_navBar_team {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background-color: #3a3a3a;
+	border-radius: 6px;
+	padding: 2px 8px;
+	border-left: 4px solid transparent;
+	transition: transform 0.2s;
+	font-size: 14px;
+}
+
 .game_history_header_navBar {
 	display: flex;
 	align-items: center;
@@ -2603,6 +2622,29 @@ to {
 	border-radius: 50%;
 	border: 2px solid #555;
 }
+
+.profile_navBar_team, .opponent_navBar_team {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.profile_navBar_team img, .opponent_navBar_team img {
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	border: 2px solid #555;
+	flex-direction: column;
+	display: flex;
+}
+
+.team-player {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 5px;
+}
+
 
 .username_navBar {
 	font-size: 10px;
@@ -2955,6 +2997,7 @@ to {
     border-radius: 50%;
     margin-right: 10px;
     flex-shrink: 0;
+	cursor: pointer;
 }
 
 .friend-details {
@@ -2965,7 +3008,7 @@ to {
 
 /* Nom de l'ami */
 .friend_name {
-	margin: 0px 0px -6px 20px;
+	margin: 0px 0px -6px 0px;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -3097,3 +3140,4 @@ to {
 
 
 
+.profile_navBar_team 

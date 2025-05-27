@@ -16,6 +16,12 @@ import { get_skin_is_init } from "../../../srcs/game/gameplay/solo/skin/init_ski
 let powerUP_nb = 0;
 let powerUP_nb_multi = 0;
 
+if (localStorage.getItem('historyIsVisible') === null) {
+	localStorage.setItem('historyIsVisible', 'false');
+}
+
+console.log("historyIsVisible:", localStorage.getItem('historyIsVisible'));
+
 
 export default class Game_menu extends AbstractView {
 	constructor() {
@@ -62,7 +68,7 @@ export default class Game_menu extends AbstractView {
 
 				<!-- Boutons de navigation -->
 				<div class="friend_tabs">
-					<button id="tab-accepted" class="tab-btn active">Firend</button>
+					<button id="tab-accepted" class="tab-btn active">Friend</button>
 					<button id="tab-pending" class="tab-btn">On hold</button>
 				</div>
 
@@ -449,82 +455,6 @@ export default class Game_menu extends AbstractView {
 								<p class="username">Enemy2</p>
 							</div>
 						</div>
-						<!-- Game 2 -->
-						<div class="game_card lose">
-							<div class="profile">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">You</p>
-							</div>
-							<div class="vs_info">
-								<p class="score">3 - 5</p>
-								<p class="result">Lose</p>
-							</div>
-							<div class="opponent">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">Enemy2</p>
-							</div>
-						</div>
-						<!-- Game 2 -->
-						<div class="game_card lose">
-							<div class="profile">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">You</p>
-							</div>
-							<div class="vs_info">
-								<p class="score">3 - 5</p>
-								<p class="result">Lose</p>
-							</div>
-							<div class="opponent">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">Enemy2</p>
-							</div>
-						</div>
-						<!-- Game 2 -->
-						<div class="game_card lose">
-							<div class="profile">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">You</p>
-							</div>
-							<div class="vs_info">
-								<p class="score">3 - 5</p>
-								<p class="result">Lose</p>
-							</div>
-							<div class="opponent">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">Enemy2</p>
-							</div>
-						</div>
-						<!-- Game 2 -->
-						<div class="game_card lose">
-							<div class="profile">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">You</p>
-							</div>
-							<div class="vs_info">
-								<p class="score">3 - 5</p>
-								<p class="result">Lose</p>
-							</div>
-							<div class="opponent">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">Enemy2</p>
-							</div>
-						</div>
-						<!-- Game 2 -->
-						<div class="game_card lose">
-							<div class="profile">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">You</p>
-							</div>
-							<div class="vs_info">
-								<p class="score">3 - 5</p>
-								<p class="result">Lose</p>
-							</div>
-							<div class="opponent">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">Enemy2</p>
-							</div>
-						</div>
-
 						<div class="exit_game_history" id="exit_game_history">
 							<button id="exit_game_history_btn" class="exit_game_history_btn">
 								X
@@ -1437,8 +1367,6 @@ export default class Game_menu extends AbstractView {
 		});
 
 
-
-
 		/***********************************************************************/
 		/*************************platformer************************************/
 		/***********************************************************************/
@@ -1486,12 +1414,15 @@ export default class Game_menu extends AbstractView {
 
 		option_btn_navBar.addEventListener('click', () => {
 			console.log('Option deconnect clicked');
-			panel_option_navbar.classList.toggle('active');
+			panel_option_navbar.classList.remove('remove'); // retire l'animation de fermeture
+			void panel_option_navbar.offsetWidth; // force le reflow pour relancer l'animation si besoin
+			panel_option_navbar.classList.add('active');
 		});
 
 		option_btn_remove.addEventListener('click', () => {
 			console.log('Option deconnect back clicked');
-			panel_option_navbar.classList.remove('active');
+			// panel_option_navbar.classList.remove('active'); // retire l'animation d’ouverture
+			panel_option_navbar.classList.add('remove');
 		});
 
 		deconnect_btn_navBar.addEventListener('click', () => {
@@ -1513,6 +1444,7 @@ export default class Game_menu extends AbstractView {
 			view1.classList.remove('active');
 			btn_back_home.classList.remove('active');
 			view5.classList.remove('active');
+			localStorage.setItem("historyIsVisible", "true");
 		});
 
 		exit_game_history_btn.addEventListener('click', () => {
@@ -1520,6 +1452,7 @@ export default class Game_menu extends AbstractView {
 			view1.classList.add('active');
 			btn_back_home.classList.add('active');
 			view5.classList.add('active');
+			localStorage.setItem("historyIsVisible", "false");
 		});
 
 		document.getElementById("solo_1v1_btn").addEventListener("click", () => {

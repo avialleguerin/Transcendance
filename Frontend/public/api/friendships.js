@@ -1,3 +1,9 @@
+let historyIsActive = localStorage.getItem('historyIsVisible') === 'true';
+
+
+
+let bool = false;
+
 async function addFriend(event) {
 	event.preventDefault();
 	const friend = document.getElementById("friend_name_input").value;
@@ -98,6 +104,36 @@ async function fetch_user_friendships() {
 		document.getElementById('friends-accepted').innerHTML =
 			accepted.map(friend => renderFriend(friend, false)).join('') || `<div class="text-center">No friend found</div>`;
 
+		const gameHistory = document.getElementById('game_history');
+		const exit_game_history_btn = document.getElementById('exit_game_history_btn');
+
+		const friendPhotos = document.querySelectorAll('.friend_photo');
+
+		// Only set up click handlers if history toggle is allowed
+		friendPhotos.forEach(photo => {
+			photo.onclick = function() {
+				// Check if history is NOT already visible
+				if (!gameHistory.classList.contains('active')) {
+					console.log("Opening game history view");
+					gameHistory.classList.add('active');
+					exit_game_history_btn.style.display = 'none';
+					localStorage.setItem('historyIsVisible', 'true');
+					historyIsActive = true;
+					bool = true;
+				}
+				else if (bool === true && gameHistory.classList.contains('active')) {
+					console.log("Closing game history view");
+					gameHistory.classList.remove('active');
+					exit_game_history_btn.style.display = 'block';
+					localStorage.setItem('historyIsVisible', 'false');
+					historyIsActive = false;
+					bool = false;
+				}
+
+				// If history is already visible, do nothing
+			};
+		});
+
 		document.getElementById('friends-pending').innerHTML =
 			pending.map(friend => {
 				const isReceivedRequest = user.userId === friend.friendId;
@@ -131,8 +167,8 @@ async function fetch_user_games() {
 				if (is2v2) {
 					// Format d'affichage pour les matchs 2v2
 					return /*html*/`
-					<tr class="game_card_navBar ${result2v2}">
-						<td class="profile_navBar team">
+					<tr class="game_card_navBar team ${result2v2}">
+						<td class="profile_navBar_team">
 							<div class="team-player">
 								<img src="/uploads/${game.user1ProfilePicture}" alt="profile" />
 								<img src="/uploads/${game.user2ProfilePicture}" alt="profile" />
@@ -145,7 +181,7 @@ async function fetch_user_games() {
 						<td class="vs_info_navBar">
 							<p class="score_navBar">${game.score_left} - ${game.score_right}</p>
 						</td>
-						<td class="opponent_navBar team">
+						<td class="opponent_navBar_team">
 							<div class="team-player">
 								<p class="username_navBar">${game.user3_username}</p>
 								<p class="username_navBar">${game.user4_username}</p>

@@ -192,7 +192,7 @@ export default class extends AbstractView {
 		close_message.addEventListener('click', () => {
 			message_id.classList.remove('active');
 			tournament_graphic_id.style.filter = "none";
-			tournament_graphic_id.style.pointerEvents = "auto";
+			tournament_graphic_id.style.pointerEvents = "auto"; 
 		});
 
 		const confirm_leave_tournament = document.getElementById('confirm_leave_tournament');

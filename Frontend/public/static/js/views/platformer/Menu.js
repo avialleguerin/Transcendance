@@ -1,5 +1,5 @@
 import { c, canvas, gameState, GameState } from './constants.js';
-import { Setgame_started } from './PlatformView.js';
+import { Getgame_started, Setgame_started } from './PlatformView.js';
 
 export default class Menu {
 	constructor(Game_History) {
@@ -120,6 +120,8 @@ export default class Menu {
 			gameState.previous = GameState.Menu;
 			gameState.current = GameState.Menu;
 			Setgame_started(false);
+			console.log("Quit game");
+			console.log(Getgame_started());
 			// window.close();
 		}
 
