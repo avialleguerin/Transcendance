@@ -121,6 +121,42 @@ export default class Home extends AbstractView {
 					</div>
 				</div>
 
+				<!-- Politique de Confidentialité Modal -->
+				<div id="privacy-policy-modal" class="cgu-modal">
+					<div class="cgu-content">
+						<h1>Politique de Confidentialité</h1>
+						<div class="cgu-text">
+							<h2>1. Introduction</h2>
+							<p>Bienvenue dans notre Politique de Confidentialité. Elle décrit comment nous collectons, utilisons et protégeons vos données personnelles.</p>
+
+							<h2>2. Données collectées</h2>
+							<p>Nous collectons des données vous concernant lorsque vous utilisez notre service, notamment :</p>
+							<ul>
+								<li>Données d'identification (ID interne, username, avatar)</li>
+								<li>Données d'authentification (via Google Sign-In)</li>
+								<li>Données de profil (statut, préférences)</li>
+								<li>Données d'utilisation (historique des parties, scores, classement)</li>
+							</ul>
+
+							<h2>3. Utilisation des données</h2>
+							<p>Nous utilisons vos données pour :</p>
+							<ul>
+								<li>Fournir et améliorer notre service</li>
+								<li>Administrer votre compte</li>
+								<li>Vous proposer des fonctionnalités sociales (amis)</li>
+								<li>Enregistrer vos statistiques de jeu et classements</li>
+							</ul>
+
+							<h2>4. Vos Droits</h2>
+							<p>Conformément au RGPD, vous disposez des mêmes droits que ceux mentionnés dans les CGU.</p>
+
+							<h2>5. Modifications</h2>
+							<p>Nous nous réservons le droit de modifier cette politique à tout moment. Les utilisateurs seront notifiés des changements importants.</p>
+						</div>
+						<button id="privacy-policy-back-button" class="cgu-back-button">Retour</button>
+					</div>
+				</div>
+
 				<div class="login-form" id="loginform_id">
 					<h1 id="login-title">LOGIN</h1>
 					<div class="form-group"> 
@@ -136,6 +172,7 @@ export default class Home extends AbstractView {
 							<button type="submit" class="connexion" id="validate-login">Login</button>
 							<button type="button" class="creer-compte" id="create-Account">Create an account</button>
 						</form>
+						
 						<form id="doubleAuthForm" class="doubleAuthForm" onsubmit="verify2FA(event)">
 							<div class="input-container">
 								<label for="code">2FA Code :</label>
@@ -164,6 +201,9 @@ export default class Home extends AbstractView {
 							<div class="input-container cgu-container">
 								<input type="checkbox" id="accept-cgu" name="accept-cgu" required>
 								<label for="accept-cgu">J'accepte les <a href="#" id="show-cgu" class="cgu-link">Conditions Générales d'Utilisation</a></label>
+							</div>
+							<div class="privacy-policy-container">
+								<label><a href="#" id="show-privacy-policy" class="cgu-link">Politique de Confidentialité</a></label>
 							</div>
 							<button type="submit" class="connexion">Sign In</button>
 							<button type="button" class="connexion" id="alreadyHaveAccountButton_id">Already have an account ?</button>
@@ -202,6 +242,23 @@ export default class Home extends AbstractView {
 		cguBackButton?.addEventListener("click", () => {
 			cguModal?.classList.remove("active");
 		});
+
+		// Gestion de la Politique de Confidentialité
+        const showPrivacyPolicyLink = document.getElementById("show-privacy-policy");
+        const privacyPolicyModal = document.getElementById("privacy-policy-modal");
+        const privacyPolicyBackButton = document.getElementById("privacy-policy-back-button");
+
+        // Afficher la Politique de Confidentialité quand on clique sur le lien
+        showPrivacyPolicyLink?.addEventListener("click", (e) => {
+            e.preventDefault();
+            privacyPolicyModal?.classList.add("active");
+        });
+
+        // Cacher la Politique de Confidentialité quand on clique sur "Retour"
+        privacyPolicyBackButton?.addEventListener("click", () => {
+            privacyPolicyModal?.classList.remove("active");
+        });
+		
 
 		createAccountButton.addEventListener("click", () => {
 			console.log("createAccountForm");

@@ -3,6 +3,8 @@ import usersModel from '../models/usersModel.js'
 import { hashPassword, verifyPassword } from '../utils/hashUtils.js'
 import { redisModel } from '../models/redisModel.js'
 import { getUserFromToken } from './utils.js'
+import friendshipsModel from '../models/friendshipsModel.js'; //NOTE - new
+import gamesModel from '../models/gamesModel.js'; //NOTE - new
 import speakeasy from 'speakeasy'
 import qrcode from 'qrcode'
 import fs from 'fs/promises';
@@ -279,6 +281,20 @@ export async function deleteAccount(request, reply) {
 		const accessToken = infos.accessToken
 		if (!user)
 			return reply.code(404).send({ error: 'User not found' })
+
+		 // Anonymize user before deletion
+		 try {
+            const anonymizedUsername = `Anonym${user.userId}`;
+            const anonymizedProfilePicture = "default-profile-picture.png";
+            
+            usersModel.updateUsername(user.userId, anonymizedUsername);
+            usersModel.updateProfilePicture(user.userId, anonymizedProfilePicture);
+            console.log(`🔒 User ${user.username} anonymized before deletion`);
+        } catch (anonymizeError) {
+            console.error(`❌ Error anonymizing user before deletion: ${anonymizeError.message}`);
+            // Continue with deletion even if anonymization fails
+        }
+		
 		if (refreshToken && refreshToken !== undefined && refreshToken !== null) {
 			const decodedRefresh = fastify.jwt.decode(refreshToken)
 			const expiresInRefresh = decodedRefresh.exp - Math.floor(Date.now() / 1000)
@@ -427,8 +443,7 @@ export async function refreshInfos(request, reply) {
 	}
 }
 
-import gamesModel from '../models/gamesModel.js'; //NOTE - new
-import friendshipsModel from '../models/friendshipsModel.js'; //NOTE - new
+
 
 export async function exportUserData(request, reply) {
 	  try {
@@ -466,5 +481,29 @@ export async function exportUserData(request, reply) {
 	} catch (error) {
 		console.error('Error exporting user data:', error);
 		return reply.code(500).send({ success: false, error: 'Failed to export user data' });
+	}
+}
+
+export async function anonymizeUser(request, reply) {
+	try {
+		const infos = await getUserFromToken(request, reply)
+		if (!infos)
+			return reply.code(401).send({ success: false, error: 'Unauthorized' })
+		const user = infos.user
+		if (!user)
+			return reply.code(401).send({ success: false , error: 'User not found' })
+		
+		const anonymizedUsername = `Anonym${user.userId}`;
+		const anonymizedProfilePicture = "default-profile-picture.png";
+		
+		usersModel.updateUsername(user.userId, anonymizedUsername);
+		usersModel.updateProfilePicture(user.userId, anonymizedProfilePicture);
+		
+		return reply.code(200).send({ success: true, message: 'User account anonymized successfully' });
+	} catch (error) {
+		// ADD color in log
+		console.error(`\x1b[31mError anonymizing user account: ${error.message}\x1b[0m`);
+		// console.error( 'Error anonymizing user account:', error);
+		return reply.code(500).send({ success: false, error: 'Failed to anonymize user account : ' + error.message });
 	}
 }

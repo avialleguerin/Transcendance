@@ -1,4 +1,4 @@
-import { getUserProfilePicture, createUser , deleteAccount, login, loginOpponent, logout, updateDoubleAuth, accessProfileInfo, changeProfilePicture, changeProfile, getUserProfile, verifyDoubleAuth, activateDoubleAuth, refreshInfos, exportUserData } from '../controllers/usersController.js';
+import { getUserProfilePicture, createUser , deleteAccount, login, loginOpponent, logout, updateDoubleAuth, accessProfileInfo, changeProfilePicture, changeProfile, getUserProfile, verifyDoubleAuth, activateDoubleAuth, refreshInfos, exportUserData, anonymizeUser } from '../controllers/usersController.js';
 import { getUserGames, create1v1Game } from '../controllers/gamesController.js';
 import { getUserFriendships, addFriend, acceptFriend, deleteFriend } from '../controllers/friendshipsController.js';
 import { getAllUsers, deleteUser, getAllGames, createGame, deleteGame, getAllFriendships, addFriendship, deleteFriendship } from '../controllers/adminController.js';
@@ -75,7 +75,6 @@ export default async function routes (fastify) {
 	// fastify.post('/refresh-token', refreshAccessToken)
 	fastify.get('/db-credentials', getSQLiteCreds)
 
-	// CGU // FIXME - CGU routes
-	// fastify.get('/check-cgu-status', { preValidation: [fastify.authenticate] }, checkCGU)
-	// fastify.get('/accept-cgu', { preValidation: [fastify.authenticate] }, acceptCGU)
+	// Anonymising route
+	fastify.put('/user/anonymize-account', anonymizeUser)
 }

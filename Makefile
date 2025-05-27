@@ -37,6 +37,7 @@ down:
 	@docker compose down
 	@rm -rf ./Frontend/dist
 	@rm -rf ./Security/Nginx/passwd
+	@rm -rf ./Data/sqlite_data/database.sqlite
 
 re:
 	@make down

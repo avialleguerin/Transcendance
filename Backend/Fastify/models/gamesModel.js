@@ -16,7 +16,7 @@ export const CREATE_GAMES_TABLE = `
 		FOREIGN KEY (user3_id) REFERENCES users(userId) ON DELETE CASCADE,
 		FOREIGN KEY (user4_id) REFERENCES users(userId) ON DELETE CASCADE
 	);
-`;
+`; // TODO - need to delete "on cascade"
 
 const gamesModel = {
 	createGame: (user1_id, user2_id) => {
