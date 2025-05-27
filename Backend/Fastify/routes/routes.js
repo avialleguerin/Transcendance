@@ -1,4 +1,4 @@
-import { createUser , deleteAccount, login, loginOpponent, logout, updateDoubleAuth, accessProfileInfo, changeProfilePicture, changeProfile, getUserProfile, verifyDoubleAuth, activateDoubleAuth, refreshInfos, exportUserData } from '../controllers/usersController.js';
+import { getUserProfilePicture, createUser , deleteAccount, login, loginOpponent, logout, updateDoubleAuth, accessProfileInfo, changeProfilePicture, changeProfile, getUserProfile, verifyDoubleAuth, activateDoubleAuth, refreshInfos, exportUserData } from '../controllers/usersController.js';
 import { getUserGames, create1v1Game } from '../controllers/gamesController.js';
 import { getUserFriendships, addFriend, acceptFriend, deleteFriend } from '../controllers/friendshipsController.js';
 import { getAllUsers, deleteUser, getAllGames, createGame, deleteGame, getAllFriendships, addFriendship, deleteFriendship } from '../controllers/adminController.js';
@@ -27,6 +27,7 @@ export default async function routes (fastify) {
 
 	//usersController
 	fastify.get('/profile', getUserProfile)
+	fastify.get('/user/profile-picture', getUserProfilePicture)
 	fastify.post('/user/create-user', createUser)
 	fastify.post('/user/login', login)
 	fastify.post('/user/login-opponent', loginOpponent)
@@ -40,7 +41,6 @@ export default async function routes (fastify) {
 	fastify.delete('/user/delete-account', deleteAccount)
 	fastify.post('/user/refresh-infos', refreshInfos)
 	fastify.get('/user/export-data', exportUserData) // NOTE - new route to export user data
-
 	//friendsController
 	fastify.get('/friendship/get-user-friendships', getUserFriendships)
 	fastify.post('/friendship/add-friend', addFriend)

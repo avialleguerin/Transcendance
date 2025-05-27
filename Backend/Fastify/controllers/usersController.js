@@ -21,7 +21,23 @@ export async function getUserProfile(request, reply) {
 		if (!user)
 			return reply.code(401).send({ error: 'Unauthorized' })
 		const imgUrl = `uploads/${user.profile_picture}`
-		return reply.send({ user: user, accessToken: accessToken, profile_picture: imgUrl })
+		return reply.code(200).send({ success: true, user: user, accessToken: accessToken, profile_picture: imgUrl })
+	} catch (error) {
+		reply.code(500).send({ error: 'Internal Server Error' })
+	}
+}
+
+export async function getUserProfilePicture(request, reply) {
+	try {
+		const infos = await getUserFromToken(request)
+		if (!infos)
+			return reply.code(401).send({ success: false, error: 'Unauthorized' })
+		const user = infos.user
+		const accessToken = infos.accessToken
+		if (!user)
+			return reply.code(401).send({ error: 'Unauthorized' })
+		const imgUrl = `uploads/${user.profile_picture}`
+		return reply.code(200).send({ success: true, username: user.username, accessToken: accessToken, profile_picture: imgUrl })
 	} catch (error) {
 		reply.code(500).send({ error: 'Internal Server Error' })
 	}
@@ -68,7 +84,8 @@ export async function login(request, reply) {
 			sameSite: 'strict',
 			expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
 		})
-		.send({ success:true, message: 'Logged in', connection_status: "connected", user: user, doubleAuth_status: user.doubleAuth_status, accessToken: accessToken })
+		.code(200)
+		.send({ success: true, message: 'Logged in', connection_status: "connected", user: user, doubleAuth_status: user.doubleAuth_status, accessToken: accessToken })
 	} catch (err) {
 		return reply.code(500).send({ error: err.message })
 	}
@@ -114,7 +131,7 @@ export async function logout(request, reply) {
 			redisModel.addToBlacklist(refreshToken, expiresIn)
 		reply.clearCookie('refreshToken', { path: '/' })
 	}
-	reply.send({ success: true, message: 'Logged out' })
+	reply.code(200).send({ success: true, message: 'Logged out' })
 }
 
 export async function updateDoubleAuth(request, reply) {
@@ -138,52 +155,16 @@ export async function updateDoubleAuth(request, reply) {
 		// console.log("Double Auth secret", (await doubleAuthData).secret)
 
 		return reply.code(200).send({
+			success: true,
 			doubleAuth_status: true,
 			message: 'Double authentication waiting for activation',
 			secret: (await doubleAuthData).secret,
-			qrCode: (await doubleAuthData).qrCode,
-			success: true
+			qrCode: (await doubleAuthData).qrCode
 		})
 	} catch (err) {
 		return reply.code(500).send({ error: err.message })
 	}
 }
-
-// export async function disableDoubleAuth(request, reply) {
-// 	try {
-// 		const infos = await getUserFromToken(request)
-// 		console.log("🔑 infos :", infos)
-// 		if (!infos)
-// 			return reply.code(401).send({ success: false, error: 'Unauthorized' })
-// 		const user = infos.user
-// 		if (!user)
-// 			return reply.code(404).send({ success: false, error: 'User not found' })
-// 		if (user.doubleAuth_status || user.doubleAuth_secret !== null)
-// 		{
-// 			usersModel.updateDoubleAuth_status(user.userId, 0)
-// 			usersModel.updateDoubleAuth_secret(user.userId, null)
-// 			// console.log("Double Auth disabled")
-// 			return reply.code(200).send({message: "Double Auth disabled"})
-// 		}
-// 		const doubleAuthData = generateDoubleAuth(user.userId)
-// 		// console.log("Double Auth qrCode", (await doubleAuthData).qrCode)
-// 		// console.log("Double Auth secret", (await doubleAuthData).secret)
-
-// 		return reply.code(200).send({
-// 			userId: user.userId,
-// 			username: user.username,
-// 			email: user.email,
-// 			message: 'Double authentication waiting for activation',
-// 			doubleAuth_status: true,
-// 			secret: (await doubleAuthData).secret,
-// 			qrCode: (await doubleAuthData).qrCode,
-// 			success: true
-// 		})
-// 	} catch (err) {
-// 		return reply.code(500).send({ error: err.message })
-// 	}
-// }
-
 
 export async function accessProfileInfo(request, reply) {
 	try {
@@ -346,26 +327,6 @@ export async function deleteAccount(request, reply) {
 	}
 }
 
-// export async function refreshAccessToken(request, reply) {
-// 	const { refreshToken } = request.cookies
-
-// 	if (!refreshToken || refreshToken === "undefined")
-// 		return reply.code(401).send({ error: 'Refresh token is missing'})
-// 	try {
-// 		if (await redisModel.isTokenBlacklisted(refreshToken))
-// 			return reply.code(401).send({ error: 'Refresh token is blacklisted' })
-
-// 		const payload = fastify.jwt.verify(refreshToken)
-// 		console.log("payload :", payload)
-
-// 		const newAccessToken = fastify.jwt.sign({ userId: payload.userId }, { expiresIn: '15m' })
-// 		console.log("newAccessToken :", newAccessToken)
-// 		return newAccessToken
-// 	} catch (err) {
-// 		return reply.code(403).send({ success: false, error: 'Invalid refresh token' })
-// 	}
-// }
-
 export async function verifyDoubleAuth(request, reply) {
 	const { userId, code } = request.body
 	try {
@@ -382,15 +343,9 @@ export async function verifyDoubleAuth(request, reply) {
 			window: 1
 		})
 
-		// console.log("🔑 code 2FA :", code)
-		// console.log("🔑 Secret récupéré :", user.doubleAuth_secret)
-
-
 		if (isValid) {
 			const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, { expiresIn: '15m' })
 			const refreshToken = fastify.jwt.sign({ userId: user.userId }, { expiresIn: '7d' })
-			// console.log("🔑 Access Token created :", accessToken)
-			// console.log("🔑 Refresh Token created :", refreshToken)
 			usersModel.updateDoubleAuth_status(user.userId, 1)
 			reply
 			.setCookie('refreshToken', refreshToken, {
@@ -419,15 +374,12 @@ export async function activateDoubleAuth(request, reply) {
 	const user = infos.user
 	if (!user)
 		return reply.code(401).send({ success: false, error: 'User not found' })
-	// console.log("🔑 Secret :", user.doubleAuth_secret)
 	const isValid = speakeasy.totp.verify({
 		secret: user.doubleAuth_secret,
 		encoding: 'base32',
 		token: code,
 		window: 1
 	})
-	// console.log("🔑 isValid :", isValid)
-	// console.log("État initial 2FA:", user.doubleAuth_status)
 	if (isValid) {
 		usersModel.updateDoubleAuth_status(user.userId, 1)
 		return reply.send({ success: true, message: "2FA successfully activated" })
@@ -446,7 +398,6 @@ export async function generateDoubleAuth(userId) {
 	}
 	const secretObj = speakeasy.generateSecret({ length: SECRET_LENGHT })
 	const secret = secretObj.base32
-	// console.log("🔑 Secret généré:", secret)
 	usersModel.updateDoubleAuth_secret(userId, secret)
 
 	const otpauth = speakeasy.otpauthURL({
@@ -466,7 +417,6 @@ export async function generateDoubleAuth(userId) {
 }
 
 export async function refreshInfos(request, reply) {
-	// console.log("🔑 refreshing user infos")
 
 	try {
 		const infos = await getUserFromToken(request, reply)
@@ -484,12 +434,11 @@ export async function refreshInfos(request, reply) {
 	}
 }
 
-// import usersModel from '../../models/usersModel.js';
 import gamesModel from '../models/gamesModel.js'; //NOTE - new
 import friendshipsModel from '../models/friendshipsModel.js'; //NOTE - new
 
 export async function exportUserData(request, reply) {
-      try {
+	  try {
 		const infos = await getUserFromToken(request, reply)
 		if (!infos)
 			return reply.code(401).send({ success: false, error: 'Unauthorized' })
@@ -498,46 +447,32 @@ export async function exportUserData(request, reply) {
 		if (!user)
 			return reply.code(401).send({ success: false , error: 'User not found' })
 
-        // const userId = request.user.userId;
-        
-        // Get user data (excluding sensitive fields like password)
-        // const user = await usersModel.getUserById(user.userId);
-        // if (!user)
-        //   return reply.code(404).send({ success: false, error: 'User not found' });
-        
-        // Remove sensitive fields
-        delete user.password;
-        delete user.doubleAuth_secret;
-        
-        // Get user's games history
-        const games = await gamesModel.getGamesByUserId(user.userId);
-        
-        // Get user's friendships
-        const friendships = await friendshipsModel.getFriendshipsByUserId(user.userId);
-        
-        // Compile all data
-        const exportData = {
-          personal_information: {
-            userId: user.userId,
-            username: user.username,
-            email: user.email,
-            profile_picture: user.profile_picture,
-            created_at: user.created_at,
-            doubleAuth_status: !!user.doubleAuth_status
-          },
-          games_history: games,
-          friendships: friendships
-        };
-        
-        // Set headers for file download
-        reply.header('Content-Disposition', 'attachment; filename="user-data-export.json"');
-        reply.type('application/json');
-        
-        // return reply.code(200).send({success: true, exportData: exportData});
-        return reply.send(JSON.stringify({ success: true, ...exportData }, null, 2));
-        // return reply.code(200).send(JSON.stringify(exportData, null, 2));
-    } catch (error) {
-        console.error('Error exporting user data:', error);
-        return reply.code(500).send({ success: false, error: 'Failed to export user data' });
-    }
+		delete user.password;
+		delete user.doubleAuth_secret;
+		
+		const games = await gamesModel.getGamesByUserId(user.userId);
+		
+		const friendships = await friendshipsModel.getFriendshipsByUserId(user.userId);
+		
+		const exportData = {
+			personal_information: {
+				userId: user.userId,
+				username: user.username,
+				email: user.email,
+				profile_picture: user.profile_picture,
+				created_at: user.created_at,
+				doubleAuth_status: !!user.doubleAuth_status
+			},
+			games_history: games,
+			friendships: friendships
+		};
+		
+		reply.header('Content-Disposition', 'attachment; filename="user-data-export.json"');
+		reply.type('application/json');
+		
+		return reply.code(200).send(JSON.stringify({ success: true, ...exportData }, null, 2));
+	} catch (error) {
+		console.error('Error exporting user data:', error);
+		return reply.code(500).send({ success: false, error: 'Failed to export user data' });
+	}
 }

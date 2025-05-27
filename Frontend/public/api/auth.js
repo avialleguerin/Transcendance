@@ -61,7 +61,7 @@ async function login(event) {
 					}
 				});
 			});
-			
+			fetchProfilePicture()
 			document.getElementById("login-email").value = "";
 			document.getElementById("login-password").value = "";
 		} else {
@@ -169,6 +169,7 @@ async function refreshInfos() {
 			localStorage.clear();
 			localStorage.setItem("Player1", data.user.username);
 			history.pushState({}, '', '/Game_menu');
+			fetchProfilePicture()
 			import('../static/js/views/Game_menu.js').then(module => {
 				const GameMenu = module.default;
 				const gameMenuInstance = new GameMenu();
@@ -180,7 +181,7 @@ async function refreshInfos() {
 				});
 			});
 		}
-		
+
 		if (data.success) {
 			console.log("Infos refreshed successfully");
 		} else {

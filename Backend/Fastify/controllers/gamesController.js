@@ -15,7 +15,7 @@ export async function getUserGames(request, reply) {
 			return reply.code(401).send({ error: "Unauthorized" })
 		const games = gamesModel.getUserGames(user.userId)
 		console.log("game :", games)
-		return reply.send({ success: true, games: games, accessToken: infos.accessToken })
+		return reply.send({ success: true, user: user, games: games, accessToken: infos.accessToken })
 	} catch (err) {
 		return reply.code(500).send({ error: err.message })
 	}

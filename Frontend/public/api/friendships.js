@@ -69,7 +69,7 @@ async function fetch_user_friendships() {
 			document.getElementById('friendships-table').innerHTML = friendships.map(friendship => /*html*/`
 				<tr class="friend">
 					<td>
-						<img src="/upload/${friendship.friendProfilePicture}" class="friend_photo" alt="Profile">
+						<img src="/uploads/${friendship.friendProfilePicture}" class="friend_photo" alt="Profile">
 					</td>
 					<td class="friend_name" >${friendship.friend_username}</td>
 					<td>
@@ -105,46 +105,50 @@ async function fetch_user_games() {
 			return;
 		}
 		const games = data.games;
+		const userId = data.user.userId;
 		if (games && games.length > 0) {
 			document.getElementById('games-table').innerHTML = games.map(game => {
 				// Vérifier si c'est un match 2v2 (si user3_id existe)
 				const is2v2 = game.user3_id && game.user4_id;
+				const leftWin = (game.score_left - game.score_right) > 0;
+				const result1v1 = leftWin && userId == game.user1_id ? 'win' : 'lose';
+				const result2v2 = leftWin && (userId == game.user1_id || userId == game.user2_id) ? 'win' : 'lose';
+
 				console.log("user3_id", game.user3_id);
 				if (is2v2) {
-				  // Format d'affichage pour les matchs 2v2
-				  return /*html*/`
-					<tr class="game_card_navBar">
-					  <td class="profile_navBar team">
-						<div class="team-player">
-						  <img src="/upload/${game.user1ProfilePicture}" alt="profile" />
-						  <p class="username_navBar">${game.user1_username}</p>
-						</div>
-						<div class="team-player">
-						  <img src="/upload/${game.user2ProfilePicture}" alt="profile" />
-						  <p class="username_navBar">${game.user2_username}</p>
-						</div>
-					  </td>
-					  <td class="vs_info_navBar">
-						<p class="score_navBar">${game.score_left} - ${game.score_right}</p>
-					  </td>
-					  <td class="opponent_navBar team">
-						<div class="team-player">
-						  <p class="username_navBar">${game.user3_username}</p>
-						  <img src="/upload/${game.user3ProfilePicture}" alt="profile" />
-						</div>
-						<div class="team-player">
-						  <p class="username_navBar">${game.user4_username}</p>
-						  <img src="/upload/${game.user4ProfilePicture}" alt="profile" />
-						</div>
-					  </td>
-					</tr>
-				  `;
+					// Format d'affichage pour les matchs 2v2
+					return /*html*/`
+					<tr class="game_card_navBar ${result2v2}">
+						<td class="profile_navBar team">
+							<div class="team-player">
+								<img src="/uploads/${game.user1ProfilePicture}" alt="profile" />
+								<img src="/uploads/${game.user2ProfilePicture}" alt="profile" />
+							</div>
+							<div class="team-player">
+								<p class="username_navBar">${game.user1_username}</p>
+								<p class="username_navBar">${game.user2_username}</p>
+							</div>
+						</td>
+						<td class="vs_info_navBar">
+							<p class="score_navBar">${game.score_left} - ${game.score_right}</p>
+						</td>
+						<td class="opponent_navBar team">
+							<div class="team-player">
+								<p class="username_navBar">${game.user3_username}</p>
+								<p class="username_navBar">${game.user4_username}</p>
+							</div>
+							<div class="team-player">
+								<img src="/uploads/${game.user3ProfilePicture}" alt="profile" />
+								<img src="/uploads/${game.user4ProfilePicture}" alt="profile" />
+							</div>
+						</td>
+					</tr>`;
 				} else {
 				  // Format d'affichage pour les matchs 1v1 (existant)
 				  return /*html*/`
-					<tr class="game_card_navBar">
+					<tr class="game_card_navBar ${result1v1}">
 					  <td class="profile_navBar">
-						<img src="/upload/${game.user1ProfilePicture}" alt="profile" />
+						<img src="/uploads/${game.user1ProfilePicture}" alt="profile" />
 						<p class="username_navBar">${game.user1_username}</p>
 					  </td>
 					  <td class="vs_info_navBar">
@@ -152,7 +156,7 @@ async function fetch_user_games() {
 					  </td>
 					  <td class="opponent_navBar">
 						<p class="username_navBar">${game.user2_username}</p>
-						<img src="/upload/${game.user2ProfilePicture}" alt="profile" />
+						<img src="/uploads/${game.user2ProfilePicture}" alt="profile" />
 					  </td>
 					</tr>
 				  `;
