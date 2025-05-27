@@ -161,6 +161,8 @@ export function updateScore(side)
 			}
 		}
 	}
+	localStorage.setItem("score_left", scoreLeft);
+	localStorage.setItem("score_right", scoreRight);
 }
 
 export function resetScore() {

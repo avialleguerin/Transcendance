@@ -13,10 +13,9 @@ async function addFriend(event) {
 	fetch_user_friendships();
 }
 
-async function update_friendship(friendshipId, change_status) {
+async function accept_friendship(friendshipId) {
 	try {
-		console.log("update_friendship: ", change_status);
-		const data = await fetchAPI('/request/friendship/update-status', 'POST', { friendshipId, change_status });
+		const data = await fetchAPI('/request/friendship/update-status', 'POST', { friendshipId });
 		if (data.success) {
 			notif("Friendship status updated", true);
 			fetch_user_friendships();
@@ -70,12 +69,12 @@ async function fetch_user_friendships() {
 			document.getElementById('friendships-table').innerHTML = friendships.map(friendship => /*html*/`
 				<tr class="friend">
 					<td>
-						<img src="/upload/${friendship.friendProfilePicture}" class="friend_photo" alt="Profile">
+						<img src="/uploads/${friendship.friendProfilePicture}" class="friend_photo" alt="Profile">
 					</td>
 					<td class="friend_name" >${friendship.friend_username}</td>
 					<td>
 						${friendship.status === 'pending' && user.userId === friendship.friendId
-						? `<button class="accept-btn" onclick="update_friendship(${friendship.friendshipId}, 'accept')">Accept</button><button class="reject-btn" onclick="update_friendship(${friendship.friendshipId}, 'reject')">Reject</button>`
+						? `<button class="accept-btn" onclick="accept_friendship(${friendship.friendshipId})">Accept</button><button class="reject-btn" onclick="delete_friendship(${friendship.friendshipId})">Reject</button>`
 						: `<span class="${friendship.status === 'accepted' ? 'text-green-500' : 
 							(friendship.status === 'pending' ? 'text-yellow-500' : 'text-red-500')}">
 							${friendship.status}
@@ -106,23 +105,63 @@ async function fetch_user_games() {
 			return;
 		}
 		const games = data.games;
+		const userId = data.user.userId;
 		if (games && games.length > 0) {
-			document.getElementById('games-table').innerHTML = games.map(game => /*html*/`
-				<tr class="game_card_navBar win">
-					<td class="profile_navBar">
-						<img src="./upload/${game.user1ProfilePicture}" alt="profile" />
+			document.getElementById('games-table').innerHTML = games.map(game => {
+				// Vérifier si c'est un match 2v2 (si user3_id existe)
+				const is2v2 = game.user3_id && game.user4_id;
+				const leftWin = (game.score_left - game.score_right) > 0;
+				const result1v1 = leftWin && userId == game.user1_id ? 'win' : 'lose';
+				const result2v2 = leftWin && (userId == game.user1_id || userId == game.user2_id) ? 'win' : 'lose';
+
+				console.log("user3_id", game.user3_id);
+				if (is2v2) {
+					// Format d'affichage pour les matchs 2v2
+					return /*html*/`
+					<tr class="game_card_navBar ${result2v2}">
+						<td class="profile_navBar team">
+							<div class="team-player">
+								<img src="/uploads/${game.user1ProfilePicture}" alt="profile" />
+								<img src="/uploads/${game.user2ProfilePicture}" alt="profile" />
+							</div>
+							<div class="team-player">
+								<p class="username_navBar">${game.user1_username}</p>
+								<p class="username_navBar">${game.user2_username}</p>
+							</div>
+						</td>
+						<td class="vs_info_navBar">
+							<p class="score_navBar">${game.score_left} - ${game.score_right}</p>
+						</td>
+						<td class="opponent_navBar team">
+							<div class="team-player">
+								<p class="username_navBar">${game.user3_username}</p>
+								<p class="username_navBar">${game.user4_username}</p>
+							</div>
+							<div class="team-player">
+								<img src="/uploads/${game.user3ProfilePicture}" alt="profile" />
+								<img src="/uploads/${game.user4ProfilePicture}" alt="profile" />
+							</div>
+						</td>
+					</tr>`;
+				} else {
+				  // Format d'affichage pour les matchs 1v1 (existant)
+				  return /*html*/`
+					<tr class="game_card_navBar ${result1v1}">
+					  <td class="profile_navBar">
+						<img src="/uploads/${game.user1ProfilePicture}" alt="profile" />
 						<p class="username_navBar">${game.user1_username}</p>
-					</td>
-					<td class="vs_info_navBar">
-						<p class="score_navBar">5 - 2</p>
-						<p class="result_navBar">${game.winner_username}</p>
-					</td>
-					<td class="opponent_navBar">
+					  </td>
+					  <td class="vs_info_navBar">
+						<p class="score_navBar">${game.score_left} - ${game.score_right}</p>
+					  </td>
+					  <td class="opponent_navBar">
 						<p class="username_navBar">${game.user2_username}</p>
-						<img src="./upload/${game.user2ProfilePicture}" alt="profile" />
-					</td>
-				</tr>
-			`).join('');
+						<img src="/uploads/${game.user2ProfilePicture}" alt="profile" />
+					  </td>
+					</tr>
+				  `;
+				}
+			  }).join('');
 		} else {
 			document.getElementById('games-table').innerHTML = `
 				<tr><td colspan="4" class="text-center">No Games found</td></tr>
