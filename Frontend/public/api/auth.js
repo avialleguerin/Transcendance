@@ -74,7 +74,7 @@ async function login(event) {
 	}
 }
 
-async function loginOpponent(event) {
+async function login1v1(event) {
 	event.preventDefault();
 	const username = document.getElementById("1v1-username2").value;
 	const password = document.getElementById("1v1-password2").value;
@@ -82,17 +82,59 @@ async function loginOpponent(event) {
 		return notif("Please fill in all fields", false);
 
 	try {
-		const data = await fetchAPI('/request/user/login-opponent', 'POST', { username, password }, true, false);
+		const data = await fetchAPI('/request/user/login-1v1', 'POST', { username, password }, true, false);
 		if (data.success) {
-			if (data.opponent.username === localStorage.getItem("Player1"))
+			if (data.player2.username === localStorage.getItem("Player1"))
 				return notif("You cannot play against yourself", false);
 			notif(data.message, true);
-			localStorage.setItem("Player2", data.opponent.username);
+			localStorage.setItem("Player2", data.player2.username);
 			document.getElementById("choose_your_opponent_1v1_form").classList.remove('active');
 			document.getElementById("back_to_select_mode_view6").classList.add('active');
 			document.getElementById("view6").classList.add('active');
 			document.getElementById("container").classList.remove('active');
-			document.getElementById("1v1-oponent-username").innerHTML = localStorage.getItem("Player2");
+			document.getElementById("1v1-oponent-username1").innerHTML = localStorage.getItem("Player1");
+			document.getElementById("1v1-oponent-username2").innerHTML = localStorage.getItem("Player2");
+		} else
+			notif(data.error, false);
+	} catch (err) {
+		console.error("Erreur lors de la connexion :", err);
+		notif("Erreur de connexion", false);
+	}
+	document.getElementById("choose_your_opponent_1v1_form").reset();
+}
+
+async function login2v2(event) {
+	event.preventDefault();
+	const username1 = localStorage.getItem("Player1");
+	const username2 = document.getElementById("2v2-username2").value;
+	const username3 = document.getElementById("2v2-username3").value;
+	const username4 = document.getElementById("2v2-username4").value;
+
+	const password2 = document.getElementById("2v2-password2").value;
+	const password3 = document.getElementById("2v2-password3").value;
+	const password4 = document.getElementById("2v2-password4").value;
+
+	if (!username2 || !password2 || !username3 || !password3 || !username4 || !password4)
+		return notif("Please fill in all fields", false);
+
+	try {
+		const data = await fetchAPI('/request/user/login-2v2', 'POST', { username2, password2, username3, password3, username4, password4 }, true, false);
+		if (data.success) {
+			if (username1 === username2 || username1 === username3 || username1 === username4 ||
+				username2 === username3 || username2 === username4 || username3 === username4)
+				return notif("There can't be the same player 2 times", false);
+			notif(data.message, true);
+			localStorage.setItem("Player2", data.player2.username);
+			localStorage.setItem("Player3", data.player3.username);
+			localStorage.setItem("Player4", data.player4.username);
+			document.getElementById("choose_your_opponent_multi_form").classList.remove('active');
+			document.getElementById("back_to_select_mode_view8").classList.add('active');
+			document.getElementById("view8").classList.add('active');
+			document.getElementById("container").classList.remove('active');
+			document.getElementById("2v2-oponent-username1").innerHTML = localStorage.getItem("Player1");
+			document.getElementById("2v2-oponent-username2").innerHTML = localStorage.getItem("Player2");
+			document.getElementById("2v2-oponent-username3").innerHTML = localStorage.getItem("Player3");
+			document.getElementById("2v2-oponent-username4").innerHTML = localStorage.getItem("Player4");
 		} else
 			notif(data.error, false);
 	} catch (err) {
@@ -156,16 +198,14 @@ async function register(event) {
 async function refreshInfos() {
 	try {
 		const data = await fetchAPI('/request/user/refresh-infos', 'POST', {}, true, false);
-		
+
 		if (!data.accessToken) {
 			sessionStorage.removeItem("accessToken");
 			localStorage.clear();
-			localStorage.removeItem("Player2");
 		} else if (sessionStorage.getItem("accessToken") && sessionStorage.getItem("accessToken") !== "undefined") {
 			localStorage.clear();
 			localStorage.setItem("Player1", data.user.username);
 			history.pushState({}, '', '/Game_menu');
-			fetchProfilePicture()
 			import('../static/js/views/Game_menu.js').then(module => {
 				const GameMenu = module.default;
 				const gameMenuInstance = new GameMenu();
@@ -176,6 +216,7 @@ async function refreshInfos() {
 					}
 				});
 			});
+			fetchProfilePicture()
 		}
 
 		if (data.success) {

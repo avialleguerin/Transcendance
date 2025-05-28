@@ -15,8 +15,6 @@ import { get_skin_is_init } from "../../../srcs/game/gameplay/solo/skin/init_ski
 
 let powerUP_nb = 0;
 let powerUP_nb_multi = 0;
-
-
 export default class Game_menu extends AbstractView {
 	constructor() {
 		super();
@@ -47,7 +45,7 @@ export default class Game_menu extends AbstractView {
 		<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 		<div class="navbar_menu">
 			<div class="profile_photo_circle_nav_bar" id="profile_photo_circle_nav_bar"></div>
-			<h1 class="player_name">ILYAN</h1>
+			<h1 class="player_name"></h1>
 			<button class="option_navBar" id="option_btn_navBar" onclick="togglePanel(event)">
 				<img src="../../../srcs/game/assets/image/menu.svg" alt="leave">
 			</button>
@@ -89,7 +87,7 @@ export default class Game_menu extends AbstractView {
 
 					<table class="game_history_scrollable_navBar">
 						<!-- Game 1 -->
-						<tbody id="games-table">	</tbody>
+						<tbody id="games-table"></tbody>
 					</table>
 				</div>
 			</div>
@@ -147,7 +145,7 @@ export default class Game_menu extends AbstractView {
 						<div id="select_parametres" class="select_parametres">
 							<button id="profile_parrametre_btn" class="btn">PROFILE</button>
 							<button id="parrametre_jeux_btn" class="btn">GAME</button>
-							<button id="Game_History_btn" class="btn">GAME HISTORY</button>
+							<button id="Game_History_btn" class="btn" onclick="fetch_user_games_big('${localStorage.getItem('Player1')}')">GAME HISTORY</button>
 						</div>
 					</div>
 				</div>
@@ -278,7 +276,7 @@ export default class Game_menu extends AbstractView {
 				</div>
 
 				<div class="choose_your_opponent_1v1" id="choose_your_opponent_1v1_id">
-					<form class="choose_your_opponent_1v1_content" id="choose_your_opponent_1v1_form" onsubmit="loginOpponent(event)">
+					<form class="choose_your_opponent_1v1_content" id="choose_your_opponent_1v1_form" onsubmit="login1v1(event)">
 						<h1>CONNECT YOUR OPPONENT</h1>
 						<div class="player-section">
 							<p>PLAYER 2</p>
@@ -297,18 +295,18 @@ export default class Game_menu extends AbstractView {
 
 
 				<div class="choose_your_opponent_multi" id="choose_your_opponent_multi_id">
-					<form class="choose_your_opponent_multi_content" id="choose_your_opponent_multi_form">
+					<form class="choose_your_opponent_multi_content" id="choose_your_opponent_multi_form" onclick="login2v2(event)">
 						<h1>CONNECT YOUR OPPONENTS</h1>
 
 						<div class="player-section">
 						<p>PLAYER 2</p>
 						<div class="input-container">
 							<label for="username2">Username :</label>
-							<input type="text" id="multi-username2" name="username2" placeholder="Player 2 username" required>
+							<input type="text" id="2v2-username2" name="username2" placeholder="Player 2 username" required>
 						</div>
 						<div class="input-container">
 							<label for="password2">Password :</label>
-							<input type="password" id="multi-password2" name="password2" placeholder="Player 2 password" required>
+							<input type="password" id="2v2-password2" name="password2" placeholder="Player 2 password" required>
 						</div>
 						</div>
 
@@ -316,11 +314,11 @@ export default class Game_menu extends AbstractView {
 						<p>PLAYER 3</p>
 						<div class="input-container">
 							<label for="username3">Username :</label>
-							<input type="text" id="multi-username3" name="username3" placeholder="Player 3 username" required>
+							<input type="text" id="2v2-username3" name="username3" placeholder="Player 3 username" required>
 						</div>
 						<div class="input-container">
 							<label for="password3">Password :</label>
-							<input type="password" id="multi-password3" name="password3" placeholder="Player 3 password" required>
+							<input type="password" id="2v2-password3" name="password3" placeholder="Player 3 password" required>
 						</div>
 						</div>
 
@@ -328,15 +326,15 @@ export default class Game_menu extends AbstractView {
 						<p>PLAYER 4</p>
 						<div class="input-container">
 							<label for="username4">Username :</label>
-							<input type="text" id="multi-username4" name="username4" placeholder="Player 4 username" required>
+							<input type="text" id="2v2-username4" name="username4" placeholder="Player 4 username" required>
 						</div>
 						<div class="input-container">
 							<label for="password4">Password :</label>
-							<input type="password" id="multi-password4" name="password4" placeholder="Player 4 password" required>
+							<input type="password" id="2v2-password4" name="password4" placeholder="Player 4 password" required>
 						</div>
 						</div>
 
-						<button class="valider_opponent_btn" id="validate_multi_opponent">Valider</button>
+						<button type="submit" class="valider_opponent_btn" id="validate_multi_opponent">Valider</button>
 					</form>
 				</div>
 
@@ -413,123 +411,20 @@ export default class Game_menu extends AbstractView {
 				<div class="game_history_content">
 					<div class="game_history_header">
 						<div class="profile_photo_circle_Game_History" id="profile_photo_circle_Game_History"></div>
-						<h1>ILYAN</h1>
+						<h1 id="game_history_username"></h1>
 					</div>
 					<h1>GAME HISTORY</h1>
-
-					<div class="game_history_scrollable">
+					
+					<table class="game_history_scrollable">
 						<!-- Game 1 -->
-						<div class="game_card win">
-							<div class="profile">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">You</p>
-							</div>
-							<div class="vs_info">
-								<p class="score">5 - 2</p>
-								<p class="result">Win</p>
-							</div>
-							<div class="opponent">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">Enemy1</p>
-							</div>
-						</div>
+						<tbody id="games-table-big">
+						</tbody>
+					</table>
 
-						<!-- Game 2 -->
-						<div class="game_card lose">
-							<div class="profile">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">You</p>
-							</div>
-							<div class="vs_info">
-								<p class="score">3 - 5</p>
-								<p class="result">Lose</p>
-							</div>
-							<div class="opponent">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">Enemy2</p>
-							</div>
-						</div>
-						<!-- Game 2 -->
-						<div class="game_card lose">
-							<div class="profile">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">You</p>
-							</div>
-							<div class="vs_info">
-								<p class="score">3 - 5</p>
-								<p class="result">Lose</p>
-							</div>
-							<div class="opponent">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">Enemy2</p>
-							</div>
-						</div>
-						<!-- Game 2 -->
-						<div class="game_card lose">
-							<div class="profile">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">You</p>
-							</div>
-							<div class="vs_info">
-								<p class="score">3 - 5</p>
-								<p class="result">Lose</p>
-							</div>
-							<div class="opponent">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">Enemy2</p>
-							</div>
-						</div>
-						<!-- Game 2 -->
-						<div class="game_card lose">
-							<div class="profile">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">You</p>
-							</div>
-							<div class="vs_info">
-								<p class="score">3 - 5</p>
-								<p class="result">Lose</p>
-							</div>
-							<div class="opponent">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">Enemy2</p>
-							</div>
-						</div>
-						<!-- Game 2 -->
-						<div class="game_card lose">
-							<div class="profile">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">You</p>
-							</div>
-							<div class="vs_info">
-								<p class="score">3 - 5</p>
-								<p class="result">Lose</p>
-							</div>
-							<div class="opponent">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">Enemy2</p>
-							</div>
-						</div>
-						<!-- Game 2 -->
-						<div class="game_card lose">
-							<div class="profile">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">You</p>
-							</div>
-							<div class="vs_info">
-								<p class="score">3 - 5</p>
-								<p class="result">Lose</p>
-							</div>
-							<div class="opponent">
-								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
-								<p class="username">Enemy2</p>
-							</div>
-						</div>
-
-						<div class="exit_game_history" id="exit_game_history">
-							<button id="exit_game_history_btn" class="exit_game_history_btn">
-								X
-							</button>
-						</div>
+					<div class="exit_game_history" id="exit_game_history">
+						<button id="exit_game_history_btn" class="exit_game_history_btn">
+							X
+						</button>
 					</div>
 				</div>
 			</div>
@@ -549,12 +444,12 @@ export default class Game_menu extends AbstractView {
 				<div class="player1">
 					<button class="switch_skin_left" id="switch_skn_left_id1"></button>
 					<button class="switch_skin_right" id="switch_skn_right_id1"></button>
-					<p>${localStorage.getItem("Player1") || "Player 1"}</p>
+					<p id="1v1-oponent-username1"></p>
 				</div>
 				<div class="player2">
 					<button class="switch_skin_left" id="switch_skn_left_id2"></button>
 					<button class="switch_skin_right" id="switch_skn_right_id2"></button>
-					<p id="1v1-oponent-username">Player 2</p>
+					<p id="1v1-oponent-username2">Player 2</p>
 				</div>
 				<button id="valide_ton_skin" class="btn">Confirm</button>
 			</div>
@@ -564,22 +459,22 @@ export default class Game_menu extends AbstractView {
 				<div class="player1_game_multi">
 					<button class="switch_skin_left" id="switch_skn_left_id1_game_multi"></button>
 					<button class="switch_skin_right" id="switch_skn_right_id1_game_multi"></button>
-					<p>Player 1</p>
+					<p id="2v2-oponent-username1">Player 1</p>
 				</div>
 				<div class="player2_game_multi">
 					<button class="switch_skin_left" id="switch_skn_left_id2_game_multi"></button>
 					<button class="switch_skin_right" id="switch_skn_right_id2_game_multi"></button>
-					<p>Player 2</p>
+					<p id="2v2-oponent-username2">Player 2</p>
 				</div>
 				<div class="player3_game_multi">
 					<button class="switch_skin_left" id="switch_skn_left_id3_game_multi"></button>
 					<button class="switch_skin_right" id="switch_skn_right_id3_game_multi"></button>
-					<p>Player 3</p>
+					<p id="2v2-oponent-username3">Player 3</p>
 				</div>
 				<div class="player4_game_multi">
 					<button class="switch_skin_left" id="switch_skn_left_id4_game_multi"></button>
 					<button class="switch_skin_right" id="switch_skn_right_id4_game_multi"></button>
-					<p>Player 4</p>
+					<p id="2v2-oponent-username4">Player 4</p>
 				</div>
 				<button id="valide_ton_skin_game_multi" class="btn">Confirm</button>
 			</div>
@@ -881,13 +776,13 @@ export default class Game_menu extends AbstractView {
 			container_menu.classList.add('active');
 		});
 
-		validate_multi_opponent.addEventListener('click', () => {
-			console.log('Prepar game multi clicked');
-			choose_your_opponent_multi_form.classList.remove('active');
-			back_to_select_mode_view8.classList.add('active');
-			view8.classList.add('active');
-			container_menu.classList.remove('active');
-		});
+		// validate_multi_opponent.addEventListener('click', () => {
+		// 	console.log('Prepar game multi clicked');
+		// 	choose_your_opponent_multi_form.classList.remove('active');
+		// 	back_to_select_mode_view8.classList.add('active');
+		// 	view8.classList.add('active');
+		// 	container_menu.classList.remove('active');
+		// });
 
 
 		/***********************************************************************/
