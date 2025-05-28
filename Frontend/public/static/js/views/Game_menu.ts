@@ -15,6 +15,13 @@ import { get_skin_is_init } from "../../../srcs/game/gameplay/solo/skin/init_ski
 
 let powerUP_nb = 0;
 let powerUP_nb_multi = 0;
+
+if (localStorage.getItem('historyIsVisible') === null) {
+	localStorage.setItem('historyIsVisible', 'false');
+}
+
+console.log("historyIsVisible:", localStorage.getItem('historyIsVisible'));
+
 export default class Game_menu extends AbstractView {
 	constructor() {
 		super();
@@ -60,7 +67,7 @@ export default class Game_menu extends AbstractView {
 
 				<!-- Boutons de navigation -->
 				<div class="friend_tabs">
-					<button id="tab-accepted" class="tab-btn active">Firend</button>
+					<button id="tab-accepted" class="tab-btn active">Friend</button>
 					<button id="tab-pending" class="tab-btn">On hold</button>
 				</div>
 
@@ -413,7 +420,27 @@ export default class Game_menu extends AbstractView {
 						<div class="profile_photo_circle_Game_History" id="profile_photo_circle_Game_History"></div>
 						<h1 id="game_history_username"></h1>
 					</div>
-					<h1>GAME HISTORY</h1>
+
+					<div class="game_statistics_history">
+						<h1>GAME STATISTICS</h1>
+					</div>
+					<div class="game_statistics_content_history">
+						<div class="game_statistics_info_group">
+							<div class="game_statistics_info_block">
+								<p>Games Won : <span id="games_won_history" class="games_won_history text-shadow-green">25</span></p>
+								<p>Games Lost : <span id="games_lost_history" class="games_lost_history text-shadow-red">15</span></p>
+							</div>
+							<div class="game_statistics_info_block">
+								<p>Games Played : <span id="games_lost_history" class="games_lost_history">15</span></p>
+								<p>Win Rate : <span id="win_rate_history" class="win_rate_history text-shadow-orange">50%</span></p>
+							</div>
+						</div>
+					</div>
+
+					
+					<div class="game_history_info">
+						<h1>GAME HISTORY</h1>
+					</div>
 					
 					<table class="game_history_scrollable">
 						<!-- Game 1 -->
@@ -1332,8 +1359,6 @@ export default class Game_menu extends AbstractView {
 		});
 
 
-
-
 		/***********************************************************************/
 		/*************************platformer************************************/
 		/***********************************************************************/
@@ -1381,12 +1406,15 @@ export default class Game_menu extends AbstractView {
 
 		option_btn_navBar.addEventListener('click', () => {
 			console.log('Option deconnect clicked');
-			panel_option_navbar.classList.toggle('active');
+			panel_option_navbar.classList.remove('remove'); // retire l'animation de fermeture
+			void panel_option_navbar.offsetWidth; // force le reflow pour relancer l'animation si besoin
+			panel_option_navbar.classList.add('active');
 		});
 
 		option_btn_remove.addEventListener('click', () => {
 			console.log('Option deconnect back clicked');
-			panel_option_navbar.classList.remove('active');
+			// panel_option_navbar.classList.remove('active'); // retire l'animation d’ouverture
+			panel_option_navbar.classList.add('remove');
 		});
 
 		deconnect_btn_navBar.addEventListener('click', () => {
@@ -1408,6 +1436,7 @@ export default class Game_menu extends AbstractView {
 			view1.classList.remove('active');
 			btn_back_home.classList.remove('active');
 			view5.classList.remove('active');
+			localStorage.setItem("historyIsVisible", "true");
 		});
 
 		exit_game_history_btn.addEventListener('click', () => {
@@ -1415,6 +1444,7 @@ export default class Game_menu extends AbstractView {
 			view1.classList.add('active');
 			btn_back_home.classList.add('active');
 			view5.classList.add('active');
+			localStorage.setItem("historyIsVisible", "false");
 		});
 
 		document.getElementById("solo_1v1_btn").addEventListener("click", () => {
