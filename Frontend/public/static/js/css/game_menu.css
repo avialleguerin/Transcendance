@@ -2307,7 +2307,7 @@ to {
 	left: 52%;
 	transform: translate(-50%, -50%);
 	width: 777px;
-	height: 630px;
+	height: 715px;
 	background-color: rgb(30, 30, 30);
 	border: 2px solid #555;
 	border-radius: 12px;
@@ -2333,12 +2333,18 @@ to {
 	height: 100%;
 }
 
-.game_history_content h1 {
+.game_history_info h1 {
 	text-align: center;
 	margin-bottom: 15px;
 	letter-spacing: 1px;
 	font-family: 'Black Ops One', sans-serif;
 	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+	position: absolute;
+	top: 48%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	font-size: 1.7vw;
+
 
 }
 
@@ -2352,6 +2358,13 @@ to {
 	scrollbar-width: thin;
 	scrollbar-color: #888 #222;
 	margin-bottom: 30px;
+	height: 103%;
+	position: absolute;
+	top: 77%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 90%;
+	height: 40%;
 }
 
 .game_history_scrollable::-webkit-scrollbar {
@@ -2453,6 +2466,7 @@ to {
 	color: #fff;
 	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 	text-align: left;
+	font-family: 'Black Ops One', sans-serif;
 }
 
 .profile_photo_circle_Game_History {
@@ -2468,6 +2482,75 @@ to {
 	background-size: cover;
 	background-position: center;
 	background-repeat: no-repeat;
+}
+
+.game_statistics_content_history {
+	font-size: 24px;
+	font-weight: bold;
+	color: #fff;
+	text-shadow: 2px 2px 4px rgb(0, 0, 0);
+	text-align: left;
+	font-family: 'Black Ops One', sans-serif;
+	background: #3a3a3a;
+	padding: 30px;
+	border-radius: 20px;
+	max-width: 900px;
+	margin: 60px auto;
+	box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+	width: 90%;
+}
+
+.game_statistics_title {
+	text-align: center;
+	margin-bottom: 25px;
+	letter-spacing: 1px;
+	font-size: 1.7vw;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.game_statistics_info_group {
+	display: flex;
+	justify-content: space-between;
+	gap: 100px;
+	flex-direction: row;
+	width: 100%;
+}
+
+.game_statistics_info_block {
+	flex: 1 1 300px;
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+
+.game_statistics_content_history p {
+	margin: 0;
+}
+
+
+.game_statistics_history h1 {
+	text-align: center;
+	margin-bottom: 15px;
+	letter-spacing: 1px;
+	font-family: 'Black Ops One', sans-serif;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+	position: absolute;
+	top: 15%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	font-size: 1.7vw;
+}
+
+.text-shadow-green {
+	text-shadow: 2px 2px 6px rgba(0, 255, 0, 0.8);
+}
+
+.text-shadow-red {
+	text-shadow: 2px 2px 6px rgba(255, 0, 0, 0.8);
+}
+
+.text-shadow-orange {
+	text-shadow: 2px 2px 6px rgba(255, 215, 0);
 }
 
 
@@ -3138,6 +3221,3 @@ to {
 	color: white;
 }
 
-
-
-.profile_navBar_team 

@@ -421,7 +421,27 @@ export default class Game_menu extends AbstractView {
 						<div class="profile_photo_circle_Game_History" id="profile_photo_circle_Game_History"></div>
 						<h1>ILYAN</h1>
 					</div>
-					<h1>GAME HISTORY</h1>
+
+					<div class="game_statistics_history">
+						<h1>GAME STATISTICS</h1>
+					</div>
+					<div class="game_statistics_content_history">
+						<div class="game_statistics_info_group">
+							<div class="game_statistics_info_block">
+								<p>Games Won : <span id="games_won_history" class="games_won_history text-shadow-green">25</span></p>
+								<p>Games Lost : <span id="games_lost_history" class="games_lost_history text-shadow-red">15</span></p>
+							</div>
+							<div class="game_statistics_info_block">
+								<p>Games Played : <span id="games_lost_history" class="games_lost_history">15</span></p>
+								<p>Win Rate : <span id="win_rate_history" class="win_rate_history text-shadow-orange">50%</span></p>
+							</div>
+						</div>
+					</div>
+
+					
+					<div class="game_history_info">
+						<h1>GAME HISTORY</h1>
+					</div>
 
 					<div class="game_history_scrollable">
 						<!-- Game 1 -->
@@ -455,11 +475,26 @@ export default class Game_menu extends AbstractView {
 								<p class="username">Enemy2</p>
 							</div>
 						</div>
-						<div class="exit_game_history" id="exit_game_history">
-							<button id="exit_game_history_btn" class="exit_game_history_btn">
-								X
-							</button>
+						<!-- Game 2 -->
+						<div class="game_card lose">
+							<div class="profile">
+								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
+								<p class="username">You</p>
+							</div>
+							<div class="vs_info">
+								<p class="score">3 - 5</p>
+								<p class="result">Lose</p>
+							</div>
+							<div class="opponent">
+								<img src="../../../srcs/game/assets/image/menu.svg" alt="profile" />
+								<p class="username">Enemy2</p>
+							</div>
 						</div>
+					</div>
+					<div class="exit_game_history" id="exit_game_history">
+						<button id="exit_game_history_btn" class="exit_game_history_btn">
+							X
+						</button>
 					</div>
 				</div>
 			</div>
