@@ -79,7 +79,7 @@ export default class solo_game extends AbstractView {
 				</div>
 
 				<div class="container-Player1" id="container-player1_id">
-					<h1 id="player1-username" >Player 1</h1>
+					<h1 id="player1-username" >${localStorage.getItem('Player1')}</h1>
 					<div class="container-item_player1">
 						<p id="nb-item-grenade-1"></p>
 						<p class="touch_player1">Z</p>
@@ -105,7 +105,7 @@ export default class solo_game extends AbstractView {
 					</div>
 				</div>
 				<div class="container-Player2" id="container-player2_id">
-					<h1 id="player1-username" >Player 2</h1>
+					<h1 id="player1-username" >${localStorage.getItem('Player2')}</h1>
 					<div class="container-item_player2">
 						<p id="nb-item-grenade-2"></p>
 						<p class="touch_player2">1</p>
@@ -360,13 +360,13 @@ export default class solo_game extends AbstractView {
 			clearInterval(this.gameLoop); // Arrête la boucle quand la partie est finie
 			if (player_1_win)
 			{
-				document.getElementById("winner_id").innerHTML = "Player 1 Win";
-				document.getElementById("looser_id").innerHTML = "Player 2 Loose";
+				document.getElementById("winner_id").innerHTML = `${localStorage.getItem("Player1")}`;
+				document.getElementById("looser_id").innerHTML = `${localStorage.getItem("Player2")}`;
 			}
 			else if (player_2_win)
 			{
-				document.getElementById("winner_id").innerHTML = "Player 2 Win";
-				document.getElementById("looser_id").innerHTML = "Player 1 Loose";
+				document.getElementById("winner_id").innerHTML = `${localStorage.getItem("Player2")}`;
+				document.getElementById("looser_id").innerHTML = `${localStorage.getItem("Player1")}`;
 			}
 			if (container_player1.classList.contains("active"))
 				container_player1.classList.remove("active");

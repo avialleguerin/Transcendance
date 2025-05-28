@@ -38,7 +38,7 @@ export default class extends AbstractView {
 			<div class="winner">
 				<h1 id="winner_id"></h1>
 			</div>
-			<button class="leave_game_2" id="leave_game_2_id">Quitter la partie</button>
+			<button class="leave_game_2" id="leave_game_2_id" onclick="create_tournament()">Quitter la partie</button>
 		</div>
 	</div>
 	`;
