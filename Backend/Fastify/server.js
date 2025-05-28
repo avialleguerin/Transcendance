@@ -9,9 +9,22 @@ import fastifyMultipart from '@fastify/multipart';
 import routes from "./routes/routes.js"
 import { redisClient } from './utils/redis.js';
 import { redisModel } from './models/redisModel.js';
+
+
 // setting up the server
 await redisClient.connect();
-export const fastify = Fastify({ logger: true })
+export const fastify = Fastify({ 
+	logger: {
+		transport: {
+			target: 'pino-pretty',
+			options: {
+				translateTime: 'SYS:HH:MM',
+				colorize: true,
+				ignore: 'pid,hostname'
+			}
+		}
+	}
+});
 // registering plugins
 await fastify.register(fastifyMultipart, { attachFieldsToBody: true, limits: { fileSize: 5 * 1024 * 1024 } });
 await fastify.register(jwt, { secret: 'supersecretkey', cookie: { cookieName: 'token', signed: false } });

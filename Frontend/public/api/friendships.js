@@ -69,7 +69,9 @@ async function fetch_user_friendships() {
 			document.getElementById('friendships-table').innerHTML = friendships.map(friendship => /*html*/`
 				<tr class="friend">
 					<td>
-						<img src="/uploads/${friendship.friendProfilePicture}" class="friend_photo" alt="Profile">
+						${friendship.status === 'accepted'
+							? `<button onclick="fetch_user_games_big('${friendship.friend_username}')"><img src="/uploads/${friendship.friendProfilePicture}" class="friend_photo" alt="Profile"></button>`
+							: '' }
 					</td>
 					<td class="friend_name" >${friendship.friend_username}</td>
 					<td>
@@ -204,10 +206,10 @@ async function fetch_user_games() {
 	}
 }
 
-async function fetch_user_games_big() {
+async function fetch_user_games_big(username) {
 	try {
 		console.log("fetch_user_games");
-		const data = await fetchAPI('/request/game/get-user-games', 'GET', null, false);
+		const data = await fetchAPI('/request/game/get-friend-games', 'POST', { username }, null, false);
 		if (!data.success) {
 			notif(data.error, false);
 			return;
@@ -216,6 +218,8 @@ async function fetch_user_games_big() {
 		document.getElementById("view1").classList.remove('active');
 		document.getElementById("btn_back_home").classList.remove('active');
 		document.getElementById("view5").classList.remove('active');
+		document.getElementById("profile_photo_circle_Game_History").innerHTML = `<img src="/uploads/${data.user.profile_picture}" alt="${data.username} profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+		document.getElementById("game_history_username").innerHTML = `${data.user.username}`;
 		const games = data.games;
 		const userId = data.user.userId;
 		if (games && games.length > 0) {

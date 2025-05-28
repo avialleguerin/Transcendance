@@ -70,6 +70,7 @@ export default async function routes (fastify) {
 
 	//gamesController
 	fastify.get('/game/get-user-games', getUserGames)
+	fastify.post('/game/get-friend-games', getUserGames)
 	fastify.post('/game/create-1v1-game', create1v1Game)
 	fastify.post('/game/create-2v2-game', create2v2Game)
 

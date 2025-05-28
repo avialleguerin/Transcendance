@@ -128,7 +128,7 @@ export default class Game_menu extends AbstractView {
 						<div id="select_parametres" class="select_parametres">
 							<button id="profile_parrametre_btn" class="btn">PROFILE</button>
 							<button id="parrametre_jeux_btn" class="btn">GAME</button>
-							<button id="Game_History_btn" class="btn" onclick="fetch_user_games_big()">GAME HISTORY</button>
+							<button id="Game_History_btn" class="btn" onclick="fetch_user_games_big('${localStorage.getItem('Player1')}')">GAME HISTORY</button>
 						</div>
 					</div>
 				</div>
@@ -394,7 +394,7 @@ export default class Game_menu extends AbstractView {
 				<div class="game_history_content">
 					<div class="game_history_header">
 						<div class="profile_photo_circle_Game_History" id="profile_photo_circle_Game_History"></div>
-						<h1>ILYAN</h1>
+						<h1 id="game_history_username"></h1>
 					</div>
 					<h1>GAME HISTORY</h1>
 					
@@ -1370,12 +1370,12 @@ export default class Game_menu extends AbstractView {
 		const game_history = document.getElementById('game_history');
 		const exit_game_history_btn = document.getElementById('exit_game_history_btn');	
 
-		// Game_History_btn.addEventListener('click', () => {
-		// 	game_history.classList.add('active');
-		// 	view1.classList.remove('active');
-		// 	btn_back_home.classList.remove('active');
-		// 	view5.classList.remove('active');
-		// });
+		Game_History_btn.addEventListener('click', () => {
+			game_history.classList.add('active');
+			view1.classList.remove('active');
+			btn_back_home.classList.remove('active');
+			view5.classList.remove('active');
+		});
 
 		exit_game_history_btn.addEventListener('click', () => {
 			game_history.classList.remove('active');

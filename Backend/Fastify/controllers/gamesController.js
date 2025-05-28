@@ -4,15 +4,20 @@ import gamesModel from '../models/gamesModel.js'
 import { getUserFromToken } from './utils.js'
 
 export async function getUserGames(request, reply) {
+	let username = null
+	if (request.body)
+		username = request.body.username
 	try {
 		const infos = await getUserFromToken(request)
 		if (!infos)
 			return reply.code(401).send({ error: "Unauthorized" })
-		const user = infos.user
+		let user = infos.user
 		if (!user)
 			return reply.code(401).send({ error: "User not found" })
 		if (!infos.accessToken)
 			return reply.code(401).send({ error: "Unauthorized" })
+		if (username)
+			user = usersModel.getUserByUsername(username)
 		const games = gamesModel.getUserGames(user.userId)
 		console.log("game :", games)
 		return reply.send({ success: true, user: user, games: games, accessToken: infos.accessToken })
