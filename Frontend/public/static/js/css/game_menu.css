@@ -2988,7 +2988,23 @@ to {
 }
 
 
-
+.text-center-big {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 20%;
+	font-family: 'Black Ops One', sans-serif;
+	font-size: 0.7vw;
+	color: #ffffff;
+	text-shadow: 2px 2px 4px rgb(0, 0, 0);
+	height: 15%;
+	justify-content: center;
+	align-items: center;
+	display: flex;
+	background-color: #3a3a3a;
+	border-radius: 20px;
+}
 
 
 
@@ -3074,13 +3090,14 @@ to {
 }
 
 .friend_photo {
-    min-width: 40px;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 10px;
-    flex-shrink: 0;
+	min-width: 40px;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	margin-right: 10px;
+	flex-shrink: 0;
 	cursor: pointer;
+	border: 2px dashed white;
 }
 
 .friend-details {

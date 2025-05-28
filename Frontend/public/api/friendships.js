@@ -115,6 +115,7 @@ async function fetch_user_friendships() {
 				// Check if history is NOT already visible
 				if (!gameHistory.classList.contains('active')) {
 					console.log("Opening game history view");
+					fetch_user_games_big(this.nextElementSibling.querySelector('.friend_name').textContent);
 					gameHistory.classList.add('active');
 					exit_game_history_btn.style.display = 'none';
 					localStorage.setItem('historyIsVisible', 'true');
@@ -261,10 +262,6 @@ async function fetch_user_games_big(username) {
 			notif(data.error, false);
 			return;
 		}
-		document.getElementById("game_history").classList.add('active');
-		document.getElementById("view1").classList.remove('active');
-		document.getElementById("btn_back_home").classList.remove('active');
-		document.getElementById("view5").classList.remove('active');
 		document.getElementById("profile_photo_circle_Game_History").innerHTML = `<img src="/uploads/${data.user.profile_picture}" alt="${data.username} profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
 		document.getElementById("game_history_username").innerHTML = `${data.user.username}`;
 		const games = data.games;
@@ -358,8 +355,8 @@ async function fetch_user_games_big(username) {
 				}
 			}).join('');
 		} else {
-			document.getElementById('games-table').innerHTML = `
-				<tr><td colspan="4" class="text-center">No Games found</td></tr>
+			document.getElementById('games-table-big').innerHTML = `
+				<tr><td colspan="4" class="text-center-big">No Games found</td></tr>
 			`;
 		}
 	} catch (err) {

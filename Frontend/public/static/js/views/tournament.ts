@@ -8,6 +8,8 @@ let tournamentStarted = false;
 let tournament_finished = false;
 let tournament_leave = false;
 
+let secondeChance = false; // Variable pour la seconde chance
+
 
 export default class extends AbstractView {
 	private gameLoop: number;  // NOTE - or 'any'
@@ -114,47 +116,69 @@ export default class extends AbstractView {
 		});
 	}
 
-	start_tournament_game()
-	{
+	start_tournament_game() {
 		document.getElementById('start_game').addEventListener('click', () => {
-			console.log('Start game clicked');
 			handleViewTransitions('tournament_game_start', 'tournament');
 			startTournamentGame();
 			count = parseInt(localStorage.getItem('tournamentCount')) || 0;
 			count++;
 			localStorage.setItem('tournamentCount', count.toString());
-			if (count >= 6)
-			{
-				const finiched_game = document.getElementById('finiched_game');
-				finiched_game.style.display = 'block';
+
+			console.log(`Match ${count} terminé.`);
+			
+			// Récupérer les éléments joueurs pour updateTournamentState
+			const joueur1_id = document.getElementById('joueur1_id');
+			const joueur2_id = document.getElementById('joueur2_id');
+			const joueur3_id = document.getElementById('joueur3_id');
+			const joueur4_id = document.getElementById('joueur4_id');
+			
+			// Mettre à jour l'état du tournoi AVANT de vérifier la fin
+			updateTournamentState(count, joueur1_id, joueur2_id, joueur3_id, joueur4_id);
+			
+			// Maintenant récupérer l'état de la seconde chance (potentiellement mis à jour)
+			secondeChance = localStorage.getItem('secondChance') === 'true';
+			
+			// Vérifier si le tournoi est marqué comme terminé
+			const tournamentFinishedFlag = localStorage.getItem('tournament_finished') === 'true';
+			
+			console.log(`SecondChance: ${secondeChance}, TournamentFinished: ${tournamentFinishedFlag}`);
+			
+			// Afficher la fin du tournoi seulement si explicitement marqué comme terminé
+			if (tournamentFinishedFlag) {
+				document.getElementById('finiched_game').style.display = 'block';
 				tournament_finished = true;
+				// Réinitialiser la seconde chance après le tournoi
+				localStorage.removeItem('secondChance');
+				secondeChance = false;
 			}
 		});
 	}
 
-	init_tournament()
-	{
+	// Fonction d'initialisation du tournoi
+	init_tournament() {
 		const joueur1_id = document.getElementById('joueur1_id');
 		const joueur2_id = document.getElementById('joueur2_id');
 		const joueur3_id = document.getElementById('joueur3_id');
 		const joueur4_id = document.getElementById('joueur4_id');
 
+		// Récupérer l'état depuis localStorage
+		secondeChance = localStorage.getItem('secondChance') === 'true';
+		count = parseInt(localStorage.getItem('tournamentCount')) || 0;
+		
+		console.log(`Init tournament - Count: ${count}, SecondChance: ${secondeChance}`);
+		
 		updateTournamentState(count, joueur1_id, joueur2_id, joueur3_id, joueur4_id);
 
-		const countFromStorage = parseInt(localStorage.getItem('tournamentCount')) || 0;
-		console.log('Tournament count:', count);
-		console.log('Tournament started:', tournamentStarted);
-		console.log('Tournament count from storage:', countFromStorage);
-
-		if (countFromStorage >= 6) {
-			const endTournamentContainer = document.getElementById('container_endTournament');
-			const tournament_graphic_id = document.getElementById('tournament_graphic_id');
-
-			console.log('Tournament count:', count);
-			endTournamentContainer.classList.add('active');
-			tournament_graphic_id.classList.remove('active');
-			console.log("tournament removed");
-
+		const maxCount = secondeChance ? 7 : 6;
+		if (count >= maxCount) {
+			const endContainer = document.getElementById('container_endTournament');
+			const graphic = document.getElementById('tournament_graphic_id');
+			if (endContainer && graphic) {
+				endContainer.classList.add('active');
+				graphic.classList.remove('active');
+			}
+			tournament_finished = true;
+			localStorage.setItem('tournament_finished', 'true');
 		}
 	}
 
@@ -343,6 +367,7 @@ function resetTournamentState(joueur1_id: PlayerElement, joueur2_id: PlayerEleme
     // Réinitialiser l'état du tournoi
     localStorage.removeItem("tournamentStarted");
     localStorage.removeItem("tournament_finished");
+	localStorage.removeItem("secondChance");
     
     // Réinitialiser les positions des joueurs
     joueurs.forEach(joueur => {
@@ -380,7 +405,9 @@ function updateTournamentState(
 		match5_winner: PlayerElement | undefined,
 		match5_loser: PlayerElement | undefined,
 		match6_winner: PlayerElement | undefined,
-		match6_loser: PlayerElement | undefined;
+		match6_loser: PlayerElement | undefined,
+		match7_winner: PlayerElement | undefined,
+		match7_loser: PlayerElement | undefined;
 
 	if (count >= 0) {
 		const players: PlayerElement[] = [joueur1_id, joueur2_id, joueur3_id, joueur4_id];
@@ -557,11 +584,79 @@ function updateTournamentState(
 		}
 
 		if (match6_winner && match6_loser) {
-			match6_winner.style.top = POSITIONS.grande_final.winner.top;
-			match6_winner.style.left = POSITIONS.grande_final.winner.left;
+			if (match6_winner.id === match5_winner.id) {
+				console.log("Le joueur du losers bracket a gagné ! Seconde chance activée !");
+				secondeChance = true;
+				localStorage.setItem('secondChance', 'true');
+				localStorage.removeItem('tournament_finished');
+				tournament_finished = false;
 
-			match6_loser.style.color = 'red';
-			console.log("Tournoi terminé !");
+				match6_winner.style.top = POSITIONS.demi_loser.winner.top;
+				match6_winner.style.left = POSITIONS.demi_loser.winner.left;
+				match6_loser.style.top = POSITIONS.demi_winer.winner.top;
+				match6_loser.style.left = POSITIONS.demi_winer.winner.left;
+				
+				highlightNextPlayers(match6_loser, match6_winner);
+			}
+			else if (match6_winner.id === match4_winner.id) {
+				console.log("Le joueur du winners bracket a gagné ! Tournoi terminé !");
+				match6_winner.style.top = POSITIONS.grande_final.winner.top;
+				match6_winner.style.left = POSITIONS.grande_final.winner.left;
+				match6_loser.style.color = 'red';
+				
+				tournament_finished = true;
+				localStorage.setItem('tournament_finished', 'true');
+				secondeChance = false;
+				localStorage.removeItem('secondChance');
+			}
+		}
+	}
+
+	// Match 7 - Grande finale (bracket reset)
+	if (count >= 7 && secondeChance && match4_winner && match5_winner) {
+		console.log("Match 7 - Grande finale avec bracket reset");
+		
+		// Récupérer les joueurs depuis les résultats précédents
+		const match4_result = localStorage.getItem("match4_result");
+		const match5_result = localStorage.getItem("match5_result");
+		
+		if (match4_result && match5_result) {
+			const match4_data = JSON.parse(match4_result);
+			const match5_data = JSON.parse(match5_result);
+			
+			const finalMatch4Winner = document.getElementById(match4_data.winner) as PlayerElement;
+			const finalMatch5Winner = document.getElementById(match5_data.winner) as PlayerElement;
+			
+			resetHighlight([finalMatch4Winner, finalMatch5Winner]);
+			
+			const match7_result = localStorage.getItem("match7_result");
+
+			if (match7_result) {
+				const { winner, loser } = JSON.parse(match7_result);
+				match7_winner = document.getElementById(winner) as PlayerElement;
+				match7_loser = document.getElementById(loser) as PlayerElement;
+			} else {
+				const winnerIsFirst = getPlayer_1_win();
+				match7_winner = winnerIsFirst ? finalMatch4Winner : finalMatch5Winner;
+				match7_loser = winnerIsFirst ? finalMatch5Winner : finalMatch4Winner;
+
+				localStorage.setItem("match7_result", JSON.stringify({
+					winner: match7_winner.id,
+					loser: match7_loser.id
+				}));
+			}
+
+			if (match7_winner && match7_loser) {
+				match7_winner.style.top = POSITIONS.grande_final.winner.top;
+				match7_winner.style.left = POSITIONS.grande_final.winner.left;
+				match7_loser.style.color = 'red';
+				
+				console.log("Tournoi terminé après le match 7 !");
+				tournament_finished = true;
+				localStorage.setItem('tournament_finished', 'true');
+				secondeChance = false;
+				localStorage.removeItem('secondChance');
+			}
 		}
 	}
 }
