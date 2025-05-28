@@ -23,9 +23,9 @@ services:
     depends_on:
       - redis
       - vault
-    volumes:
+    volumes: # TODO - Changer "app" -> "Fatsify" pour ques les nodes modules s'installe efficacement
       - ./Backend/Fastify:/app
-      - /app/node_modules    # Preserve the modules installed in the container
+      - /app/node_modules    # Preserve the modules installed in the container 
       - ./Data/vault_data:/app/vault/data
       - ./Data/sqlite_data:/app/Data/db
       - ./Data/uploads:/usr/share/nginx/uploads
@@ -66,8 +66,11 @@ services:
     image: node:20-alpine
     container_name: tsengine
     working_dir: /app
+    environment:
+    - TZ=Europe/Paris
     command: >
-      sh -c "npm i -g typescript && npm i &&
+      sh -c "apk add --no-cache tzdata &&
+              npm i -g typescript && npm i &&
               mkdir -p /app/dist &&
               tsc --project /app/tsconfig.json --watch"
     volumes:

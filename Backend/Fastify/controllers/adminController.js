@@ -4,6 +4,7 @@ import gamesModel from '../models/gamesModel.js'
 import friendshipsModel from '../models/friendshipsModel.js'
 
 export async function getAllUsers(request, reply) {
+	// fastify.log.debug("getAllUsers called")
 	try {
 		const users = usersModel.getAllUsers()
 		return users
@@ -13,12 +14,16 @@ export async function getAllUsers(request, reply) {
 }
 
 export async function deleteUser(request, reply) {
+	fastify.log.debug("deleteUser called")
+	console.log("request :", request)
 	const { userId } = request.body
 	try {
 		const user = usersModel.getUserById(userId)
-		console.log("user :", user)
+		fastify.log.debug("userId :", userId)
+		fastify.log.debug("user :", user)
 		if (!user)
 			return reply.code(404).send({ error: 'User not found' })
+
 		const oldProfilePicture = user.profile_picture;
 		if (oldProfilePicture !== "default-profile-picture.png") {
 			try {
@@ -28,21 +33,31 @@ export async function deleteUser(request, reply) {
 				.catch(() => false);
 				
 				if (fileExists) {
-					console.log(`🗑️ deleting old profile picture: ${oldFilePath}`);
+					fastify.log.debug(`🗑️ deleting old profile picture: ${oldFilePath}`);
 					await fs.unlink(oldFilePath);
 				} else {
-					console.log(`⚠️ Old profile picture doesn't exist: ${oldFilePath}`);
+					fastify.log.warn(`⚠️ Old profile picture doesn't exist: ${oldFilePath}`);
 				}
 			} catch (deleteErr) {
-				console.error(`❌ Error deleting old profile picture: ${deleteErr.message}`);
+				fastify.error.error(`❌ Error deleting old profile picture: ${deleteErr.message}`);
 			}
 		}
+
+		// NOTE - new :  Anonymiser les jeux avant suppression
+        // try {
+        //     const anonymizedUserId = `Anonym${user.userId}`;
+        //     gamesModel.anonymizeUserGames(user.userId, anonymizedUserId);
+        //     fastify.log.info(`🔒 Games anonymized for user ${user.username}`);
+        // } catch (anonymizeError) {
+        //     fastify.error.error(`❌ Error anonymizing games: ${anonymizeError.message}`);
+        // }
+
 		const info = usersModel.delete(userId)
 		if (info.changes === 0)
 			return reply.code(404).send({ error: "User not found" })
 		return reply.send({ success: true, message: "User deleted successfully"})
 	} catch (err) {
-		fastify.log.error(err)
+		fastify.log.error("ctach deletUser: " + err.message)
 		return reply.code(500).send({ error: err.message })
 	}
 }
@@ -106,7 +121,7 @@ export async function createGame(request, reply) {
 			message: "Game created successfully",
 		})
 	} catch (err) {
-		console.error("Error creating game:", err)
+		fastify.error.info("Error creating game:", err)
 		return reply.code(500).send({ error: "Internal server error" })
 	}
 }
@@ -148,7 +163,7 @@ export async function addFriendship(request, reply) {
 			return reply.code(404).send({ success: false, error: `User '${friend_username}' not found` })
 
 		const status = friendshipsModel.checkFriendshipStatus(user.userId, friend.userId);
-		console.log("status :", status.requestSent || status.requestReceived)
+		fastify.log.debug("status :", status.requestSent || status.requestReceived)
 		if (status.requestSent || status.requestReceived) {
 			return reply.code(400).send({ 
 				success: false,
@@ -163,7 +178,7 @@ export async function addFriendship(request, reply) {
 			message: "Friendship created successfully",
 		})
 	} catch (err) {
-		console.error("Error creating friendship:", err)
+		fastify.error.info("Error creating friendship:", err)
 		return reply.code(500).send({ error: "Internal server error" })
 	}
 }
@@ -174,9 +189,9 @@ export async function deleteFriendship(request, reply) {
 		const friendship = friendshipsModel.getFriendshipById(friendshipId)
 		if (!friendship)
 			return reply.code(404).send({ error: 'Friendship not found' })
-		console.log("friendshipId :", friendshipId)
-		console.log("userId :", friendship.userId)
-		console.log("friendId :", friendship.friendId)
+		fastify.log.debug("friendshipId :", friendshipId)
+		fastify.log.debug("userId :", friendship.userId)
+		fastify.log.debug("friendId :", friendship.friendId)
 		const info = friendshipsModel.deleteFriendship(friendship.userId, friendship.friendId)
 		if (info.changes === 0)
 			return reply.code(404).send({ error: "Friendship not found" })

@@ -16,9 +16,9 @@ const vault = Vault({
 // 		});
 
 // 		vault.token = response.auth.client_token;
-// 		console.log("Authenticated with Vault, token acquired.");
+// 		fastify.log.info("Authenticated with Vault, token acquired.");
 // 	} catch (error) {
-// 		console.error("Vault authentication failed:", error);
+// 		fastify.log.error("Vault authentication failed:", error);
 // 	}
 // }
 
@@ -26,13 +26,13 @@ export async function getSQLiteCreds() {
 	try {
 		const secret = await vault.read("secret/data/sqlite").then(res => res.data)
 
-		// console.log(secret)
+		// fastify.log.info(secret)
 		return {
 			user: secret.data.username,
 			pass: secret.data.password
 		}
 	} catch (err) {
-		console.error("Error retrieving Vault secret :\n", err)
+		fastify.log.error("Error retrieving Vault secret :\n", err)
 		throw Error("Could not fetch credentials from Vault");
 	}
 }
@@ -42,7 +42,7 @@ export async function getSQLiteCreds() {
 // 		const secret = await vault.read("secret/data/jwt")
 // 		return secret.data.secret
 // 	} catch (err) {
-// 		console.error("Error retrieving Vault secret :\n", err)
+// 		fastify.log.error("Error retrieving Vault secret :\n", err)
 // 		return reply.status(500).send({ error: "Error retrieving Vault secret :", err })
 // 	}
 // }

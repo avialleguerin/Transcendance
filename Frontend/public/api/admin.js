@@ -1,4 +1,4 @@
-{/* <td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">********</td> */}
+	{/* <td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">********</td> */}
 {/* <td class="bg-white px-6 py-4 border border-gray-200 border-r-0 border-l-0"><img class="rounded-lg" style="width: 100%; height: auto; max-height: 50px; object-fit: contain;" src="/uploads/${user.profile_picture}"></td> */}
 
 
@@ -13,7 +13,7 @@ async function fetch_users() {
 				<td class="bg-white px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${user.userId}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.username}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.doubleAuth_status === 0 ? "Disabled" : "Enabled" }</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.cgu_version || "N/A"}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.cgu_version || "—"}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.created_at}</td>
 				<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0"><button class="bg-red-200 hover:bg-red-300 m-2 text-red-500 hover:text-red-600 px-4 py-1 rounded-full transition-colors duration-300 ease-in-out" onclick="delete_user(${user.userId})">Delete</button></td>
 			</tr>
@@ -23,28 +23,73 @@ async function fetch_users() {
 	}
 }
 
+//// async function fetch_games() {
+//// 	try {
+//// 		const response = await fetch('/request/admin/get-all-games', {
+//// 			method: 'GET',
+//// 		});
+//// 		const games = await response.json();
+//// 		document.getElementById('games-table').innerHTML = games.map(game => /*html*/`
+//// 			<tr class="border-collapse text-sm hover:shadow-lg hover:rounded-xl hover:-translate-y-1 transition-all duration-200 ease-in-out cursor-pointer">
+//// 				<td class="bg-white px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${game.gameId}</td>
+//// 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.user1_name}</td>
+//// 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.user2_name}</td>
+//// 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.user3_name ? `${game.user3_name}` : '—'}</td>
+//// 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.user4_name ? `${game.user4_name}` : '—'}</td>
+//// 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.score_left}</td>
+//// 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.score_right}</td>
+//// 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.created_at}</td>
+//// 				<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0"><button class="bg-red-200 hover:bg-red-300 m-2 text-red-500 hover:text-red-600 px-4 py-1 rounded-full transition-colors duration-300 ease-in-out" onclick="delete_game(${game.gameId})">Delete</button></td>
+//// 			</tr>
+//// 		`).join('');
+//// 	} catch (err) {
+//// 		console.error('Erreur lors de la récupération des Jeux :', err);
+//// 	}
+//// }
+
 async function fetch_games() {
-	try {
-		const response = await fetch('/request/admin/get-all-games', {
-			method: 'GET',
-		});
-		const games = await response.json();
-		document.getElementById('games-table').innerHTML = games.map(game => /*html*/`
-			<tr class="border-collapse text-sm hover:shadow-lg hover:rounded-xl hover:-translate-y-1 transition-all duration-200 ease-in-out cursor-pointer">
-				<td class="bg-white px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${game.gameId}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.user1_name}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.user2_name}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.user3_name ? `${game.user3_name}` : 'N/A'}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.user4_name ? `${game.user4_name}` : 'N/A'}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.score_left}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.score_right}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.created_at}</td>
-				<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0"><button class="bg-red-200 hover:bg-red-300 m-2 text-red-500 hover:text-red-600 px-4 py-1 rounded-full transition-colors duration-300 ease-in-out" onclick="delete_game(${game.gameId})">Delete</button></td>
-			</tr>
-		`).join('');
-	} catch (err) {
-		console.error('Erreur lors de la récupération des Jeux :', err);
-	}
+    try {
+        const response = await fetch('/request/admin/get-all-games', {
+            method: 'GET',
+        });
+        const games = await response.json();
+
+        document.getElementById('games-table').innerHTML = games.map(game => {
+            // Vérifier si c'est un 1v1 ou un 2v2
+            const is1v1 = !game.user3_name || game.user3_name === '—' || !game.user4_name || game.user4_name === '—';
+            
+            let teamLeftDisplay, teamRightDisplay;
+            
+            if (is1v1) {
+                // 1v1: user1 à gauche, user2 à droite
+                teamLeftDisplay = game.user1_name || 'Utilisateur supprimé';
+                teamRightDisplay = game.user2_name || 'Utilisateur supprimé';
+            } else {
+                // 2v2: (user1 & user3) vs (user2 & user4)
+                const teamLeft = [game.user1_name, game.user2_name].filter(name => name && name !== '—');
+                const teamRight = [game.user3_name, game.user4_name].filter(name => name && name !== '—');
+                
+                teamLeftDisplay = teamLeft.length > 0 ? teamLeft.join(' & ') : 'Équipe incomplète';
+                teamRightDisplay = teamRight.length > 0 ? teamRight.join(' & ') : 'Équipe incomplète';
+            }
+
+            return /*html*/`
+            <tr class="border-collapse text-sm hover:shadow-lg hover:rounded-xl hover:-translate-y-1 transition-all duration-200 ease-in-out cursor-pointer">
+                <td class="bg-white px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${game.gameId}</td>
+                <td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0 font-semibold text-gray-800">${teamLeftDisplay}</td>
+                <td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0 text-center font-bold text-blue-600">${game.score_left}</td>
+                <td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0 text-center font-bold text-red-600">${game.score_right}</td>
+                <td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0 font-semibold text-gray-800">${teamRightDisplay}</td>
+                <td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0 text-gray-500">${game.created_at}</td>
+                <td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0">
+                    <button class="bg-red-200 hover:bg-red-300 m-2 text-red-500 hover:text-red-600 px-4 py-1 rounded-full transition-colors duration-300 ease-in-out" onclick="delete_game(${game.gameId})">Delete</button>
+                </td>
+            </tr>
+            `;
+        }).join('');
+    } catch (err) {
+        console.error('Erreur lors de la récupération des Jeux :', err);
+    }
 }
 
 async function fetch_friendships() {
@@ -165,6 +210,7 @@ async function create_friendship(event) {
 async function delete_user(userId) {
 	if (confirm('Do you really want to delete this account ?')) {
 		try {
+			console.log('Try to delete user with ID:', userId);
 			const response = await fetch('/request/admin/delete-user', { 
 				method: 'DELETE',
 				headers: {
@@ -174,11 +220,16 @@ async function delete_user(userId) {
 				credentials: 'include'
 			},);
 			const data = await response.json();
+			console.log('Response from server:', data);
 			if (data.success) {
 				console.log('User deleted successfully');
-			}
+			} else {
+                console.error('Delete failed:', data.error);
+                notif(data.error || 'Failed to delete user', false);
+            }
 		} catch (err) {
-			console.error('Erreur lors de la suppression :', err);
+			console.error('Erreur lors de la suppression :', err.message);
+			notif('Failed to delete user' + err.message, false);
 		}
 	}
 	fetch_users();

@@ -14,7 +14,7 @@ export async function getUserGames(request, reply) {
 		if (!infos.accessToken)
 			return reply.code(401).send({ error: "Unauthorized" })
 		const games = gamesModel.getUserGames(user.userId)
-		console.log("game :", games)
+		fastify.log.debug("game :", games)
 		return reply.send({ success: true, user: user, games: games, accessToken: infos.accessToken })
 	} catch (err) {
 		return reply.code(500).send({ error: err.message })
@@ -23,8 +23,8 @@ export async function getUserGames(request, reply) {
 
 export async function create1v1Game(request, reply) {
 	const { user1, user2, score_left, score_right } = request.body
-	console.log("score_left :", score_left)
-	console.log("score_right :", score_right)
+	fastify.log.debug("score_left :", score_left)
+	fastify.log.debug("score_right :", score_right)
 
 	try {
 		if (!user1 || !user2 || !score_left || !score_right)
@@ -47,7 +47,7 @@ export async function create1v1Game(request, reply) {
 			accessToken: infos.accessToken
 		})
 	} catch (err) {
-		console.error("Error finishing game:", err)
+		fastify.log.error("Error finishing game :", err)
 		return reply.code(500).send({ error: err.message })
 	}
 }
