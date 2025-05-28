@@ -9,8 +9,8 @@ async function verify2FA(event) {
 		if (data.success) {
 			sessionStorage.removeItem("userId")
 			localStorage.setItem("Player1", data.username);
+			localStorage.setItem("profile_picture", data.profile_picture);
 			console.log("✅ 2FA code valid!");
-			fetchProfilePicture();
 			history.pushState({}, '', '/Game_menu');
 			import('../static/js/views/Game_menu.js').then(module => {
 				const GameMenu = module.default;
@@ -48,6 +48,7 @@ async function login(event) {
 		} else if (data.success && data.connection_status === "connected") {
 			notif(data.message, true);
 			localStorage.setItem("Player1", data.user.username);
+			localStorage.setItem("profile_picture", data.user.profile_picture);
 			console.log("✅ Connected, Token :", sessionStorage.getItem("accessToken"));
 			
 			history.pushState({}, '', '/Game_menu');
@@ -61,7 +62,6 @@ async function login(event) {
 					}
 				});
 			});
-			fetchProfilePicture()
 			document.getElementById("login-password").value = "";
 		} else {
 			notif(data.error, false);
@@ -148,9 +148,9 @@ async function logout() {
 	try {
 		await fetchAPI('/request/user/logout', 'POST', {});
 		
-		sessionStorage.removeItem("accessToken");
+		sessionStorage.clear();
+		localStorage.clear();
 		console.log("✅ Logged out successfully !");
-		
 		history.pushState({}, '', '/');
 		import('../static/js/views/Home.js').then((module) => {
 			console.log("Home module loaded");
@@ -202,9 +202,26 @@ async function refreshInfos() {
 		if (!data.accessToken) {
 			sessionStorage.removeItem("accessToken");
 			localStorage.clear();
+			history.pushState({}, '', '/');
+			import('../static/js/views/Home.js').then((module) => {
+				console.log("Home module loaded");
+				const Home = module.default;
+				const homeInstance = new Home();
+				homeInstance.getHtml().then((html) => {
+					const appElement = document.getElementById('app');
+					if (appElement) {
+						appElement.innerHTML = html;
+						if (homeInstance.createAccount && typeof homeInstance.createAccount === 'function') {
+							homeInstance.createAccount();
+						}
+					}
+				});
+			});
+			notif("Session expired, please log in again", false);
 		} else if (sessionStorage.getItem("accessToken") && sessionStorage.getItem("accessToken") !== "undefined") {
 			localStorage.clear();
 			localStorage.setItem("Player1", data.user.username);
+			localStorage.setItem("profile_picture", data.user.profile_picture);
 			history.pushState({}, '', '/Game_menu');
 			import('../static/js/views/Game_menu.js').then(module => {
 				const GameMenu = module.default;
@@ -216,7 +233,6 @@ async function refreshInfos() {
 					}
 				});
 			});
-			fetchProfilePicture()
 		}
 
 		if (data.success) {

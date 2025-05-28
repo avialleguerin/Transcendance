@@ -115,6 +115,7 @@ async function fetch_user_friendships() {
 				// Check if history is NOT already visible
 				if (!gameHistory.classList.contains('active')) {
 					console.log("Opening game history view");
+					fetch_user_games_big(this.nextElementSibling.querySelector('.friend_name').textContent);
 					gameHistory.classList.add('active');
 					exit_game_history_btn.style.display = 'none';
 					localStorage.setItem('historyIsVisible', 'true');
@@ -261,20 +262,26 @@ async function fetch_user_games_big(username) {
 			notif(data.error, false);
 			return;
 		}
+		const games = data.games;
+		const userId = data.user.userId;
+		const user = data.user;
 		document.getElementById("game_history").classList.add('active');
 		document.getElementById("view1").classList.remove('active');
 		document.getElementById("btn_back_home").classList.remove('active');
 		document.getElementById("view5").classList.remove('active');
 		document.getElementById("profile_photo_circle_Game_History").innerHTML = `<img src="/uploads/${data.user.profile_picture}" alt="${data.username} profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
 		document.getElementById("game_history_username").innerHTML = `${data.user.username}`;
-		const games = data.games;
-		const userId = data.user.userId;
+		document.getElementById("games_won_history").innerHTML = `${user.games_won}`;
+		document.getElementById("games_lost_history").innerHTML = `${user.games_lost}`;
+		document.getElementById("games_played_history").innerHTML = `${user.games_lost + user.games_won}`;
+		document.getElementById("win_rate_history").innerHTML = `${(user.games_won + user.games_lost) > 0 ? Math.round((user.games_won / (user.games_won + user.games_lost)) * 100) : 0} %`;
 		if (games && games.length > 0) {
 			document.getElementById('games-table-big').innerHTML = games.map(game => {
 				// Calcul initial du score
 				let dispScoreLeft = game.score_left;
 				let dispScoreRight = game.score_right;
 				const leftWinOriginal = (game.score_left - game.score_right) > 0;
+
 
 				// Si match 2v2
 				const is2v2 = game.user3_id && game.user4_id;

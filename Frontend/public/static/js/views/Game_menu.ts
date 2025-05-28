@@ -26,7 +26,6 @@ export default class Game_menu extends AbstractView {
 	constructor() {
 		super();
 		this.setTitle("Game_menu");
-	
 		const accessToken: string | null = sessionStorage.getItem('accessToken');
 		if (!accessToken || accessToken === undefined) {
 			history.pushState({}, '', '/');
@@ -51,8 +50,8 @@ export default class Game_menu extends AbstractView {
 		<link rel="stylesheet" href="./static/js/css/game_menu.css">
 		<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 		<div class="navbar_menu">
-			<div class="profile_photo_circle_nav_bar" id="profile_photo_circle_nav_bar"></div>
-			<h1 class="player_name"></h1>
+			<div class="profile_photo_circle_nav_bar" id="profile_photo_circle_nav_bar"><img src="./uploads/${localStorage.getItem('profile_picture')}" alt="profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;"></div>
+			<h1 class="player_name">${localStorage.getItem('Player1')}</h1>
 			<button class="option_navBar" id="option_btn_navBar" onclick="togglePanel(event)">
 				<img src="../../../srcs/game/assets/image/menu.svg" alt="leave">
 			</button>
@@ -427,12 +426,12 @@ export default class Game_menu extends AbstractView {
 					<div class="game_statistics_content_history">
 						<div class="game_statistics_info_group">
 							<div class="game_statistics_info_block">
-								<p>Games Won : <span id="games_won_history" class="games_won_history text-shadow-green">25</span></p>
-								<p>Games Lost : <span id="games_lost_history" class="games_lost_history text-shadow-red">15</span></p>
+								<p>Games Won : <span id="games_won_history" class="games_won_history text-shadow-green"></span></p>
+								<p>Games Lost : <span id="games_lost_history" class="games_lost_history text-shadow-red"></span></p>
 							</div>
 							<div class="game_statistics_info_block">
-								<p>Games Played : <span id="games_lost_history" class="games_lost_history">15</span></p>
-								<p>Win Rate : <span id="win_rate_history" class="win_rate_history text-shadow-orange">50%</span></p>
+								<p>Games Played : <span id="games_played_history" class="games_lost_history"></span></p>
+								<p>Win Rate : <span id="win_rate_history" class="win_rate_history text-shadow-orange"></span></p>
 							</div>
 						</div>
 					</div>

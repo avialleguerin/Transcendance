@@ -23,7 +23,6 @@ async function create_1v1_game(event) {
 	if (!data.success)
 		notif(data.error, false);
 	localStorage.removeItem("Player2");
-	fetchProfilePicture()
 };
 
 async function create_2v2_game(event) {
@@ -55,6 +54,5 @@ async function create_2v2_game(event) {
 	localStorage.removeItem("Player2");
 	localStorage.removeItem("Player3");
 	localStorage.removeItem("Player4");
-	fetchProfilePicture()
 };
 

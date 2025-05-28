@@ -13,7 +13,6 @@
 // 			document.getElementById("updateProfileForm").reset();
 // 			fetchProfile();
 // 			console.log("Profile updated successfully, print pp");
-// 			fetchProfilePicture();
 // 		}
 // 	} catch (err) {
 // 		console.log("Failed to update profile");
@@ -33,7 +32,6 @@ async function changeProfilePicture(event) {
 		if (data.success) {
 			document.getElementById("uploadForm").reset();
 			fetchProfile();
-			fetchProfilePicture();
 		}
 	} catch (err) {
 		console.log("Failed to update profile picture");
@@ -182,21 +180,6 @@ async function fetchProfile() {
 	}
 }
 
-async function fetchProfilePicture() {
-	try {
-		const data = await fetchAPI('/request/user/profile-picture', 'GET', null, false);
-		console.log("fetchProfilePicture data :", data);
-		if (data.username) {
-			document.getElementById("profile_photo_circle_nav_bar").innerHTML = `
-			<img src="./${data.profile_picture}" alt="${data.username} profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
-			`;
-			document.querySelector(".player_name").innerHTML = `${data.username}`;
-		}
-	} catch (err) {
-		console.log("Error: ", err);
-	}
-}
-
 async function updateProfileInfo(event) {
 	event.preventDefault();
 	const newUsername = document.getElementById("change_username").value;
@@ -215,7 +198,6 @@ async function updateProfileInfo(event) {
 		if (data.success) {
 			document.getElementById("updateProfileForm").reset();
 			fetchProfile();
-			fetchProfilePicture();
 		}
 	} catch (err) {
 		console.log("Failed to update profile");

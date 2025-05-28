@@ -249,7 +249,6 @@ async function refreshInfos() {
 		sessionStorage.setItem("accessToken", data.accessToken);
 		accessToken = sessionStorage.getItem("accessToken");
 		history.pushState({}, '', '/Game_menu');
-		// handleViewTransitions("vue2", "vue1");
 		import('../static/js/views/Game_menu.js').then(module => {
 			const GameMenu = module.default;
 			const gameMenuInstance = new GameMenu();

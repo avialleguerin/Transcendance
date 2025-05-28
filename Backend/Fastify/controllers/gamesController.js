@@ -45,6 +45,13 @@ export async function create1v1Game(request, reply) {
 		const player1_id = usersModel.getUserByUsername(player1).userId
 		const player2_id = usersModel.getUserByUsername(player2).userId
 		gamesModel.create1v1Game(player1_id, player2_id, score_left, score_right)
+		if (score_left < score_right) {
+			usersModel.updateGamesLost(player1_id)
+			usersModel.updateGamesWon(player2_id)
+		} else {
+			usersModel.updateGamesWon(player1_id)
+			usersModel.updateGamesLost(player2_id)
+		}
 
 		return reply.code(201).send({ 
 			success: true,
@@ -78,6 +85,18 @@ export async function create2v2Game(request, reply) {
 		const player3_id = usersModel.getUserByUsername(player3).userId
 		const player4_id = usersModel.getUserByUsername(player4).userId
 		gamesModel.create2v2Game(player1_id, player2_id, player3_id, player4_id, score_left, score_right)
+
+		if (score_left < score_right) {
+			usersModel.updateGamesLost(player1_id)
+			usersModel.updateGamesLost(player2_id)
+			usersModel.updateGamesWon(player3_id)
+			usersModel.updateGamesWon(player4_id)
+		} else {
+			usersModel.updateGamesWon(player1_id)
+			usersModel.updateGamesWon(player2_id)
+			usersModel.updateGamesLost(player3_id)
+			usersModel.updateGamesLost(player4_id)
+		}
 
 		return reply.code(201).send({ 
 			success: true,

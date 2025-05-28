@@ -74,6 +74,7 @@ export async function login(request, reply) {
 		const refreshToken = fastify.jwt.sign({ userId: user.userId }, {expiresIn: '7d' })
 		if (!accessToken || !refreshToken)
 			return reply.code(500).send({ error: 'Internal Server Error' })
+		usersModel.updateLastConnection(user.userId)
 		reply
 		.setCookie('refreshToken', refreshToken, {
 			path: '/',
@@ -104,7 +105,7 @@ export async function login1v1(request, reply) {
 		const player2 = usersModel.getUserByUsername(username)
 		if (!player2 || !await verifyPassword(player2.password, password))
 			return reply.code(401).send({ success: false, error: 'Invalid credentials' })
-
+		usersModel.updateLastConnection(player2.userId)
 		reply.code(200).send({ success: true, message: 'Opponent logged in', user: user, player2: player2, accessToken: accessToken })
 	} catch (err) {
 		return reply.code(500).send({ error: err.message })
@@ -132,7 +133,9 @@ export async function login2v2(request, reply) {
 			return reply.code(401).send({ success: false, error: 'Player 3: Invalid credentials' })
 		if (!player4 || !await verifyPassword(player4.password, password4))
 			return reply.code(401).send({ success: false, error: 'Player 4: Invalid credentials' })
-
+		usersModel.updateLastConnection(player2.userId)
+		usersModel.updateLastConnection(player3.userId)
+		usersModel.updateLastConnection(player4.userId)
 		reply.code(200).send({ success: true, message: 'Opponents logged in', player1: user, player2: player2, player3: player3, player4: player4, accessToken: accessToken })
 	} catch (err) {
 		return reply.code(500).send({ error: err.message })
@@ -368,6 +371,7 @@ export async function verifyDoubleAuth(request, reply) {
 			const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, { expiresIn: '15m' })
 			const refreshToken = fastify.jwt.sign({ userId: user.userId }, { expiresIn: '7d' })
 			usersModel.updateDoubleAuth_status(user.userId, 1)
+			usersModel.updateLastConnection(user.userId)
 			reply
 			.setCookie('refreshToken', refreshToken, {
 				path: '/',
@@ -376,7 +380,7 @@ export async function verifyDoubleAuth(request, reply) {
 				sameSite: 'strict',
 				expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
 			})
-			.send({ success:true, message: '2FA validated successfully!', username: user.username, connection_status: "connected", accessToken: accessToken })
+			.send({ success:true, message: '2FA validated successfully!', username: user.username, profile_picture: user.profile_picture, connection_status: "connected", accessToken: accessToken })
 		} else
 			return reply.code(401).send({ success: false, error: 'Invalid 2FA code' })
 	} catch (err) {

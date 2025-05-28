@@ -9,7 +9,7 @@ import fastifyMultipart from '@fastify/multipart';
 import routes from "./routes/routes.js"
 import { redisClient } from './utils/redis.js';
 import { redisModel } from './models/redisModel.js';
-
+import cron from 'node-cron';
 
 // setting up the server
 await redisClient.connect();
@@ -56,6 +56,12 @@ fastify.decorate('authenticate', async function (request, reply) {
 		console.error("❌ Erreur d'authentification :", err);
 		reply.code(401).send({ error: 'You are not authorized' });
 	}
+});
+
+cron.schedule('0 0 * * *', () => {
+	console.log('Clean inactive users...');
+	const result = usersModel.deleteInactiveUsers();
+	console.log(`Number of supressed accounts : ${result.changes}`);
 });
 
 // fastify.decorate('checkCGU', async function (request, reply) {  //REVIEW - Vérification CGU decoration
