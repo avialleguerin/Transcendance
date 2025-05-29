@@ -45,6 +45,8 @@ export async function init_game_tournament(scene)
     else
     {
         already_init();
+        loadScoreModel(0, true);
+        loadScoreModel(0, false);
         reset_player_position(player_1_tournament, player_2_tournament);
         return { player_1_tournament, player_2_tournament, ball };
     }
