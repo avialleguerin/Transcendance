@@ -2,6 +2,7 @@ import { fastify } from '../server.js'
 import usersModel from '../models/usersModel.js'
 import gamesModel from '../models/gamesModel.js'
 import friendshipsModel from '../models/friendshipsModel.js'
+import { anonymizeUser } from './usersController.js' //NOTE -
 
 export async function getAllUsers(request, reply) {
 	// fastify.log.debug("getAllUsers called")
@@ -15,12 +16,10 @@ export async function getAllUsers(request, reply) {
 
 export async function deleteUser(request, reply) {
 	fastify.log.debug("deleteUser called")
-	console.log("request :", request)
 	const { userId } = request.body
+	fastify.log.debug("userId found: " + userId)
 	try {
 		const user = usersModel.getUserById(userId)
-		fastify.log.debug("userId :", userId)
-		fastify.log.debug("user :", user)
 		if (!user)
 			return reply.code(404).send({ error: 'User not found' })
 
@@ -39,7 +38,7 @@ export async function deleteUser(request, reply) {
 					fastify.log.warn(`⚠️ Old profile picture doesn't exist: ${oldFilePath}`);
 				}
 			} catch (deleteErr) {
-				fastify.error.error(`❌ Error deleting old profile picture: ${deleteErr.message}`);
+				fastify.log.error(`❌ Error deleting old profile picture: ${deleteErr.message}`);
 			}
 		}
 
@@ -49,7 +48,7 @@ export async function deleteUser(request, reply) {
         //     gamesModel.anonymizeUserGames(user.userId, anonymizedUserId);
         //     fastify.log.info(`🔒 Games anonymized for user ${user.username}`);
         // } catch (anonymizeError) {
-        //     fastify.error.error(`❌ Error anonymizing games: ${anonymizeError.message}`);
+        //     fastify.log.error(`❌ Error anonymizing games: ${anonymizeError.message}`);
         // }
 
 		const info = usersModel.delete(userId)
