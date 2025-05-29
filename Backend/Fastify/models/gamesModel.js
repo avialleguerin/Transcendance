@@ -11,12 +11,12 @@ export const CREATE_GAMES_TABLE = `
 		score_left INTEGER DEFAULT 0,
 		score_right INTEGER DEFAULT 0,
 		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-		FOREIGN KEY (user1_id) REFERENCES users(userId) ON DELETE CASCADE,
-		FOREIGN KEY (user2_id) REFERENCES users(userId) ON DELETE CASCADE,
-		FOREIGN KEY (user3_id) REFERENCES users(userId) ON DELETE CASCADE,
-		FOREIGN KEY (user4_id) REFERENCES users(userId) ON DELETE CASCADE
+		FOREIGN KEY (user1_id) REFERENCES users(userId),
+		FOREIGN KEY (user2_id) REFERENCES users(userId),
+		FOREIGN KEY (user3_id) REFERENCES users(userId),
+		FOREIGN KEY (user4_id) REFERENCES users(userId)
 	);
-`; // TODO - need to delete "on cascade"
+`;
 
 const gamesModel = {
 	createGame: (user1_id, user2_id) => {

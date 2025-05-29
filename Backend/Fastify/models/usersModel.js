@@ -12,7 +12,8 @@ export const CREATE_USERS_TABLE = `
 		doubleAuth_secret TEXT,
 		cgu_accepted DATETIME DEFAULT CURRENT_TIMESTAMP,
 		cgu_version TEXT DEFAULT '1.0',
-		created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+		anonymized_at DATETIME DEFAULT NULL
 	);
 `;
 
@@ -31,16 +32,52 @@ const usersModel = {
 	updatePassword: (userId, newPassword) => { return db.prepare("UPDATE users SET password = ? WHERE userId = ?").run(newPassword, userId) },
 	updateProfilePicture: (userId, profile_picture) => { return db.prepare("UPDATE users SET profile_picture = ? WHERE userId = ?").run(profile_picture, userId) },
 	delete: (userId) => { return db.prepare("DELETE FROM users WHERE userId = ?").run(userId) },
-
-	// New methods for CGU management //FIXME - 
-	updateUserCGUVersion: (userId, version) => {
-		return db.prepare("UPDATE users SET cgu_version = ?, cgu_accepted = CURRENT_TIMESTAMP WHERE userId = ?").run(version, userId);
+	anonymizeUser: (userId) => {
+		const anonymizedUsername = `del_${userId}`;
+		const anonymizedPassword = 'DELETED_ACCOUNT';
+		const defaultProfilePicture = 'default-profile-picture.png';
+		
+		return db.prepare(`
+			UPDATE users
+			SET username = ?,
+				password = ?,
+				profile_picture = ?,
+				doubleAuth_status = 0,
+				doubleAuth_secret = ?,
+				anonymized_at = CURRENT_TIMESTAMP
+			WHERE userId = ?
+		`).run(anonymizedUsername, anonymizedPassword, defaultProfilePicture, null, userId);
 	},
-	
+	updateGameWinned: (userId) => { return db.prepare("UPDATE users SET game_winned = game_winned + 1 WHERE userId = ?").run(userId) },
+	updateGameLosed: (userId) => { return db.prepare("UPDATE users SET game_losed = game_losed + 1 WHERE userId = ?").run(userId) },
+	updateUserCGUVersion: (userId, version) => { return db.prepare("UPDATE users SET cgu_version = ?, cgu_accepted = CURRENT_TIMESTAMP WHERE userId = ?").run(version, userId) },
 	getUsersWithOldCGU: () => {
 		const currentVersion = getCurrentCGUVersion();
 		return db.prepare("SELECT * FROM users WHERE cgu_version != ?").all(currentVersion);
-	}
+	},
+	getAnonymizedUsers: () => {
+		return db.prepare("SELECT userId, username, anonymized_at FROM users WHERE anonymized_at IS NOT NULL ORDER BY anonymized_at DESC").all();
+	},
+	getActiveUsers: () => {
+		return db.prepare("SELECT * FROM users WHERE anonymized_at IS NULL").all();
+	},
+	forceDeleteUser: (userId) => {
+		// Utiliser une transaction pour supprimer toutes les références
+		const transaction = db.transaction(() => {
+			// Supprimer toutes les parties où l'utilisateur est impliqué
+			db.prepare("DELETE FROM games WHERE user1_id = ? OR user2_id = ? OR user3_id = ? OR user4_id = ?")
+				.run(userId, userId, userId, userId);
+			
+			// Supprimer toutes les amitiés de l'utilisateur
+			db.prepare("DELETE FROM friendships WHERE userId = ? OR friendId = ?")
+				.run(userId, userId);
+			
+			// Supprimer l'utilisateur
+			return db.prepare("DELETE FROM users WHERE userId = ?").run(userId);
+		});
+		
+		return transaction();
+	},
 }
 
 export default usersModel;

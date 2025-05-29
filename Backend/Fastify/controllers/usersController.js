@@ -66,16 +66,34 @@ export async function createUser(request, reply) {
 export async function login(request, reply) {
 	const { username, password } = request.body
 	try {
-		fastify.log.info("username :", username)
+		fastify.log.info("username : " + username)
 		const user = usersModel.getUserByUsername(username)
-		if (!user || !await verifyPassword(user.password, password))
+		
+		// Vérifier si l'utilisateur existe
+		if (!user) {
 			return reply.code(401).send({ success: false, error: 'Invalid credentials' })
+		}
+		
+		// Vérifier si l'utilisateur a été anonymisé
+		if (user.anonymized_at) {
+			fastify.log.warn(`Tentative de connexion d'un utilisateur anonymisé: ${username}`)
+			return reply.code(401).send({ success: false, error: 'This account has been deleted' })
+		}
+		
+		// Vérifier le mot de passe
+		if (!await verifyPassword(user.password, password)) {
+			return reply.code(401).send({ success: false, error: 'Invalid credentials' })
+		}
+		
 		if (user.doubleAuth_status)
 			return reply.code(200).send({success: true, connection_status: "partially_connected", message: 'Double authentication required', user: user})
+		
 		const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, {expiresIn: '15m' })
 		const refreshToken = fastify.jwt.sign({ userId: user.userId }, {expiresIn: '7d' })
+		
 		if (!accessToken || !refreshToken)
 			return reply.code(500).send({ error: 'Internal Server Error' })
+		
 		reply
 		.setCookie('refreshToken', refreshToken, {
 			path: '/',
@@ -87,6 +105,7 @@ export async function login(request, reply) {
 		.code(200)
 		.send({ success: true, message: 'Logged in', connection_status: "connected", user: user, doubleAuth_status: user.doubleAuth_status, accessToken: accessToken })
 	} catch (err) {
+		fastify.log.error("Error during login : " + err.message)
 		return reply.code(500).send({ error: err.message })
 	}
 }
@@ -103,9 +122,23 @@ export async function loginOpponent(request, reply) {
 			return reply.code(401).send({ error: 'Unauthorized' })
 		if (!accessToken)
 			return reply.code(401).send({ error: 'Unauthorized' })
+		
 		const opponent = usersModel.getUserByUsername(username)
-		if (!opponent || !await verifyPassword(opponent.password, password))
+		
+		// Vérifier si l'adversaire existe
+		if (!opponent) {
 			return reply.code(401).send({ success: false, error: 'Invalid credentials' })
+		}
+		
+		// Vérifier si l'adversaire a été anonymisé
+		if (opponent.anonymized_at) {
+			return reply.code(401).send({ success: false, error: 'This account has been deleted' })
+		}
+		
+		// Vérifier le mot de passe
+		if (!await verifyPassword(opponent.password, password)) {
+			return reply.code(401).send({ success: false, error: 'Invalid credentials' })
+		}
 
 		reply.code(200).send({ success: true, message: 'Opponent logged in', user: user, opponent: opponent, accessToken: accessToken })
 	} catch (err) {
@@ -274,29 +307,13 @@ export async function deleteAccount(request, reply) {
 	try {
 		const { refreshToken } = request.cookies
 		const infos = await getUserFromToken(request)
-		fastify.log.info("infos :", infos)
+		fastify.log.info("infos :" + infos)
 		if (!infos)
 			return reply.code(401).send({ success: false, error: 'Unauthorized' })
 		const user = infos.user
 		const accessToken = infos.accessToken
 		if (!user)
 			return reply.code(404).send({ error: 'User not found' })
-
-		 // NOTE - new : Anonymize user before deletion
-		 try {
-            const anonymizedUsername = `Anonym${user.userId}`;
-            const anonymizedProfilePicture = "default-profile-picture.png";
-            
-            usersModel.updateUsername(user.userId, anonymizedUsername);
-            usersModel.updateProfilePicture(user.userId, anonymizedProfilePicture);
-			gamesModel.anonymizeUserGames(user.userId, anonymizedUserId);
-            fastify.log.info(`🔒 Games anonymized for user ${user.username}`);
-            fastify.log.info(`🔒 User ${user.username} anonymized before deletion`);
-        } catch (anonymizeError) {
-            fastify.log.error(`❌ Error anonymizing user before deletion: ${anonymizeError.message}`);
-            // Continue with deletion even if anonymization fails
-        }
-		
 		if (refreshToken && refreshToken !== undefined && refreshToken !== null) {
 			const decodedRefresh = fastify.jwt.decode(refreshToken)
 			const expiresInRefresh = decodedRefresh.exp - Math.floor(Date.now() / 1000)
@@ -328,10 +345,15 @@ export async function deleteAccount(request, reply) {
 				fastify.log.error(`❌ Error deleting old profile picture: ${deleteErr.message}`);
 			}
 		}
-		const info = usersModel.delete(user.userId)
+		// const info = usersModel.delete(user.userId)
+		const info = usersModel.anonymizeUser(user.userId) // Anonymiser l'utilisateur au lieu de le supprimer complètement // Cela préserve les références dans les parties
+			
+			
 		if (info.changes === 0)
 			return reply.code(404).send({ error: "User not found" })
-		return reply.send({ success: true, message: "User deleted successfully"})
+		// return reply.send({ success: true, message: "User deleted successfully"})
+		console.log(`🔒 User ${user.username} (ID: ${user.userId}) has been anonymized`)
+		return reply.send({ success: true, message: "Account anonymized successfully"})
 	} catch (err) {
 		fastify.log.error(err)
 		return reply.code(500).send({ error: err.message })
@@ -503,9 +525,7 @@ export async function anonymizeUser(request, reply) {
 		
 		return reply.code(200).send({ success: true, message: 'User account anonymized successfully' });
 	} catch (error) {
-		// ADD color in log
 		fastify.log.error(`\x1b[31mError anonymizing user account: ${error.message}\x1b[0m`);
-		// fastify.log.error( 'Error anonymizing user account:', error);
 		return reply.code(500).send({ success: false, error: 'Failed to anonymize user account : ' + error.message });
 	}
 }

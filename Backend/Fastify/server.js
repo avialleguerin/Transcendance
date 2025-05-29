@@ -9,6 +9,7 @@ import fastifyMultipart from '@fastify/multipart';
 import routes from "./routes/routes.js"
 import { redisClient, setupRedisLogging } from './utils/redis.js';
 import { redisModel } from './models/redisModel.js';
+import colorLoggerPlugin from './utils/logger.js' // NOTE - bonus: Colorized logger plugin
 
 // setting up the server
 export const fastify = Fastify({
@@ -33,34 +34,39 @@ await redisClient.connect();
 await fastify.register(fastifyMultipart, { attachFieldsToBody: true, limits: { fileSize: 5 * 1024 * 1024 } });
 await fastify.register(jwt, { secret: 'supersecretkey', cookie: { cookieName: 'token', signed: false } });
 await fastify.register(cookie);
-fastify.register(routes, { prefix: '/request' })
-// database initialization
-initDb();
-// decoration
-fastify.decorate('redis', redisClient);
-// fastify.decorate('authenticate', async function (request, reply) { // REVIEW this code is not used
-// 	try {
-// 		const accessToken = request.headers.authorization?.split(" ")[1];
-// 		const { refreshToken } = request.cookies;
-// 		// fastify.log.error("🔑 Access Token reçu :", accessToken);
-// 		// fastify.log.warn("🔑 Refresh Token reçu :", refreshToken);
-// 		if (!refreshToken || refreshToken === "undefined" || refreshToken === "null")
-// 			return reply.code(401).send({ error: 'Token de rafraîchissement manquant' });
-// 		if (!accessToken || accessToken === "undefined" || accessToken === "null")
-// 			return reply.code(401).send({ error: 'Token d\'accès manquant' });
-// 		if (await redisModel.isTokenBlacklisted(accessToken))
-// 			return reply.code(401).send({ error: 'Token d\'accès invalide (blacklisté)' });
-// 		if (await redisModel.isTokenBlacklisted(refreshToken))
-// 			return reply.code(401).send({ error: 'Token de rafraîchissement invalide (blacklisté)' });
-// 		await request.jwtVerify();
+await fastify.register(colorLoggerPlugin) //optionnel - colorized logger plugin
 
-// 		if (!request.user?.userId)
-// 			return reply.code(401).send({ error: "Unauthorized: invalid payload" });
-// 	} catch (err) {
-// 		fastify.log.error("❌ Erreur d'authentification :", err);
-// 		reply.code(401).send({ error: 'You are not authorized' });
-// 	}
-// });
+// Exporter le logger pour utilisation globale
+export const log = fastify.logger; // Votre logger colorisé
+
+
+fastify.register(routes, { prefix: '/request' })
+initDb();
+fastify.decorate('redis', redisClient);
+
+//// fastify.decorate('authenticate', async function (request, reply) { // REVIEW this code is not used
+//// 	try {
+//// 		const accessToken = request.headers.authorization?.split(" ")[1];
+//// 		const { refreshToken } = request.cookies;
+//// 		// fastify.log.error("🔑 Access Token reçu :", accessToken);
+//// 		// fastify.log.warn("🔑 Refresh Token reçu :", refreshToken);
+//// 		if (!refreshToken || refreshToken === "undefined" || refreshToken === "null")
+//// 			return reply.code(401).send({ error: 'Token de rafraîchissement manquant' });
+//// 		if (!accessToken || accessToken === "undefined" || accessToken === "null")
+//// 			return reply.code(401).send({ error: 'Token d\'accès manquant' });
+//// 		if (await redisModel.isTokenBlacklisted(accessToken))
+//// 			return reply.code(401).send({ error: 'Token d\'accès invalide (blacklisté)' });
+//// 		if (await redisModel.isTokenBlacklisted(refreshToken))
+//// 			return reply.code(401).send({ error: 'Token de rafraîchissement invalide (blacklisté)' });
+//// 		await request.jwtVerify();
+//
+//// 		if (!request.user?.userId)
+//// 			return reply.code(401).send({ error: "Unauthorized: invalid payload" });
+//// 	} catch (err) {
+//// 		fastify.log.error("❌ Erreur d'authentification :", err);
+//// 		reply.code(401).send({ error: 'You are not authorized' });
+//// 	}
+//// });
 
 /**
  * Main function for run the server

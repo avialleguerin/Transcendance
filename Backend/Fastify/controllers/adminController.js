@@ -1,23 +1,35 @@
-import { fastify } from '../server.js'
+import { fastify, log } from '../server.js'
 import usersModel from '../models/usersModel.js'
 import gamesModel from '../models/gamesModel.js'
 import friendshipsModel from '../models/friendshipsModel.js'
-import { anonymizeUser } from './usersController.js' //NOTE -
+import fs from 'fs/promises'
+import path from 'path'
+
+const uploadDir = '/usr/share/nginx/uploads'
 
 export async function getAllUsers(request, reply) {
-	// fastify.log.debug("getAllUsers called")
+	// log.debug("getAllUsers called")
 	try {
-		const users = usersModel.getAllUsers()
+		const users = usersModel.getActiveUsers() // Ne retourner que les utilisateurs actifs
 		return users
 	} catch (err) {
 		return reply.code(500).send({ error: err.message })
 	}
 }
 
+export async function getAnonymizedUsers(request, reply) {
+	try {
+		const anonymizedUsers = usersModel.getAnonymizedUsers()
+		return reply.code(200).send({ success: true, users: anonymizedUsers })
+	} catch (err) {
+		return reply.code(500).send({ error: err.message })
+	}
+}
+
 export async function deleteUser(request, reply) {
-	fastify.log.debug("deleteUser called")
+	log.debug("deleteUser called")
 	const { userId } = request.body
-	fastify.log.debug("userId found: " + userId)
+	log.debug("userId found: " + userId)
 	try {
 		const user = usersModel.getUserById(userId)
 		if (!user)
@@ -32,31 +44,70 @@ export async function deleteUser(request, reply) {
 				.catch(() => false);
 				
 				if (fileExists) {
-					fastify.log.debug(`🗑️ deleting old profile picture: ${oldFilePath}`);
+					log.debug(`🗑️ deleting old profile picture: ${oldFilePath}`);
 					await fs.unlink(oldFilePath);
 				} else {
-					fastify.log.warn(`⚠️ Old profile picture doesn't exist: ${oldFilePath}`);
+					log.warn(`⚠️ Old profile picture doesn't exist: ${oldFilePath}`);
 				}
 			} catch (deleteErr) {
-				fastify.log.error(`❌ Error deleting old profile picture: ${deleteErr.message}`);
+				log.error(`❌ Error deleting old profile picture: ${deleteErr.message}`);
 			}
 		}
 
-		// NOTE - new :  Anonymiser les jeux avant suppression
-        // try {
-        //     const anonymizedUserId = `Anonym${user.userId}`;
-        //     gamesModel.anonymizeUserGames(user.userId, anonymizedUserId);
-        //     fastify.log.info(`🔒 Games anonymized for user ${user.username}`);
-        // } catch (anonymizeError) {
-        //     fastify.log.error(`❌ Error anonymizing games: ${anonymizeError.message}`);
-        // }
-
-		const info = usersModel.delete(userId)
+		// Anonymiser l'utilisateur au lieu de le supprimer complètement
+		// Cela préserve les références dans les parties
+		// const info = usersModel.delete(userId)
+		const info = usersModel.anonymizeUser(userId)
 		if (info.changes === 0)
 			return reply.code(404).send({ error: "User not found" })
-		return reply.send({ success: true, message: "User deleted successfully"})
+		
+		log.info(`🔒 User ${user.username} (ID: ${userId}) has been anonymized`)
+		return reply.send({ success: true, message: "User anonymized successfully"}) // was "delete"
 	} catch (err) {
-		fastify.log.error("ctach deletUser: " + err.message)
+		log.error("catch deleteUser: " + err.message)
+		return reply.code(500).send({ error: err.message })
+	}
+}
+
+export async function forceDeleteUser(request, reply) {
+	log.debug("forceDeleteUser called")
+	const { userId } = request.body
+	log.debug("userId found: " + userId)
+	try {
+		const user = usersModel.getUserById(userId)
+		if (!user)
+			return reply.code(404).send({ error: 'User not found' })
+
+		// Supprimer la photo de profil si elle existe
+		const oldProfilePicture = user.profile_picture;
+		if (oldProfilePicture !== "default-profile-picture.png") {
+			try {
+				const oldFilePath = path.join(uploadDir, oldProfilePicture);
+				const fileExists = await fs.access(oldFilePath)
+				.then(() => true)
+				.catch(() => false);
+				
+				if (fileExists) {
+					log.debug(`🗑️ deleting old profile picture: ${oldFilePath}`);
+					await fs.unlink(oldFilePath);
+				} else {
+					log.warn(`⚠️ Old profile picture doesn't exist: ${oldFilePath}`);
+				}
+			} catch (deleteErr) {
+				log.error(`❌ Error deleting old profile picture: ${deleteErr.message}`);
+			}
+		}
+
+		// Suppression forcée définitive de l'utilisateur
+		// ⚠️ ATTENTION: Cela cassera les références dans les parties!
+		const info = usersModel.forceDeleteUser(userId)
+		if (info.changes === 0)
+			return reply.code(404).send({ error: "User not found" })
+		
+		log.warn(`💀 User ${user.username} (ID: ${userId}) has been PERMANENTLY DELETED`)
+		return reply.send({ success: true, message: "User permanently deleted"})
+	} catch (err) {
+		log.error("catch forceDeleteUser: " + err.message)
 		return reply.code(500).send({ error: err.message })
 	}
 }
@@ -136,7 +187,7 @@ export async function deleteGame(request, reply) {
 			return reply.code(404).send({ error: "Game not found" })
 		return reply.send({ success: true, message: "Game deleted successfully"})
 	} catch (err) {
-		fastify.log.error(err)
+		log.error(err)
 		return reply.code(500).send({ error: err.message })
 	}
 }
@@ -162,7 +213,7 @@ export async function addFriendship(request, reply) {
 			return reply.code(404).send({ success: false, error: `User '${friend_username}' not found` })
 
 		const status = friendshipsModel.checkFriendshipStatus(user.userId, friend.userId);
-		fastify.log.debug("status :", status.requestSent || status.requestReceived)
+		log.debug("status :", status.requestSent || status.requestReceived)
 		if (status.requestSent || status.requestReceived) {
 			return reply.code(400).send({ 
 				success: false,
@@ -188,15 +239,15 @@ export async function deleteFriendship(request, reply) {
 		const friendship = friendshipsModel.getFriendshipById(friendshipId)
 		if (!friendship)
 			return reply.code(404).send({ error: 'Friendship not found' })
-		fastify.log.debug("friendshipId :", friendshipId)
-		fastify.log.debug("userId :", friendship.userId)
-		fastify.log.debug("friendId :", friendship.friendId)
+		log.debug("friendshipId :", friendshipId)
+		log.debug("userId :", friendship.userId)
+		log.debug("friendId :", friendship.friendId)
 		const info = friendshipsModel.deleteFriendship(friendship.userId, friendship.friendId)
 		if (info.changes === 0)
 			return reply.code(404).send({ error: "Friendship not found" })
 		return reply.send({ success: true, message: "Friendship deleted successfully"})
 	} catch (err) {
-		fastify.log.error(err)
+		log.error(err)
 		return reply.code(500).send({ error: err.message })
 	}
 }

@@ -1,7 +1,7 @@
 import { getUserProfilePicture, createUser , deleteAccount, login, loginOpponent, logout, updateDoubleAuth, accessProfileInfo, changeProfilePicture, changeProfile, getUserProfile, verifyDoubleAuth, activateDoubleAuth, refreshInfos, exportUserData, anonymizeUser } from '../controllers/usersController.js';
 import { getUserGames, create1v1Game } from '../controllers/gamesController.js';
 import { getUserFriendships, addFriend, acceptFriend, deleteFriend } from '../controllers/friendshipsController.js';
-import { getAllUsers, deleteUser, getAllGames, createGame, deleteGame, getAllFriendships, addFriendship, deleteFriendship } from '../controllers/adminController.js';
+import { getAllUsers, getAnonymizedUsers, deleteUser, forceDeleteUser, getAllGames, createGame, deleteGame, getAllFriendships, addFriendship, deleteFriendship } from '../controllers/adminController.js';
 import { getSQLiteCreds } from '../utils/vault.js'
 
 /**
@@ -26,6 +26,7 @@ export default async function routes (fastify) {
 		};
 		const description = getRouteDescription(request.method, request.url);
 		fastify.log.info(`${description} → ${request.url}`);
+		// fastify.colorLogger.info(`${description} → ${request.url}`);
 	});
 
 
@@ -49,7 +50,9 @@ export default async function routes (fastify) {
 
 	//* ADMIN
 	fastify.get('/admin/get-all-users', getAllUsers)
+	fastify.get('/admin/get-anonymized-users', getAnonymizedUsers)
 	fastify.delete('/admin/delete-user', deleteUser)
+	fastify.delete('/admin/force-delete-user', forceDeleteUser)
 	fastify.get('/admin/get-all-games', getAllGames)
 	fastify.post('/admin/create-game', createGame)
 	fastify.delete('/admin/delete-game', deleteGame)
