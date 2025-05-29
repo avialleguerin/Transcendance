@@ -608,6 +608,10 @@ function updateTournamentState(
 				localStorage.setItem('tournament_finished', 'true');
 				secondeChance = false;
 				localStorage.removeItem('secondChance');
+
+				document.getElementById('first_place_name_id')!.textContent = match6_winner.id;
+				document.getElementById('second_place_name_id')!.textContent = match6_loser.id;
+				document.getElementById('third_place_name_id')!.textContent = match5_loser.id;
 			}
 		}
 	}
@@ -656,6 +660,10 @@ function updateTournamentState(
 				localStorage.setItem('tournament_finished', 'true');
 				secondeChance = false;
 				localStorage.removeItem('secondChance');
+
+				document.getElementById('first_place_name_id')!.textContent = match7_winner.id;
+				document.getElementById('second_place_name_id')!.textContent = match7_loser.id;
+				document.getElementById('third_place_name_id')!.textContent = match5_loser.id;
 			}
 		}
 	}

@@ -1926,9 +1926,9 @@ input[type="file"] {
 	justify-content: center;
 	align-items: center;
 	position: absolute;
-	top: 65%;
-	left: 50%;
-	transform: translate(-70%, 1070%);
+	top: 100%;
+	left: 48.5%;
+	transform: translate(-70%, 265%);
 }
 
 .btn_delete_btn {
@@ -1981,10 +1981,10 @@ input[type="file"] {
 ;
     justify-content: center;
     align-items: center;
-    position: absolute;
-    top: 60%;
-    left: 50%;
-    transform: translate(75%, 1100%);
+	position: absolute;
+	top: 100%;
+	left: 46.5%;
+	transform: translate(75%, 265%);
 }
 
 .profile_param_unlocked h1 {

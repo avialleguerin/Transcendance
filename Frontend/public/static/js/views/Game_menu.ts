@@ -269,15 +269,6 @@ export default class Game_menu extends AbstractView {
 							<div class="export_btn">
 								<button id="export_btn" class="btn_export_btn" onclick="export_data()">Export data</button>
 							</div>
-							<h1>GAME STATISTICS</h1>
-							<div class="game_statistics">
-								<div class="statistics">
-									<p>Games Played: <span id="games_played" class="games_played"></span></p>
-									<p>Games Won: <span id="games_won" class="games_won"></span></p>
-									<p>Games Lost: <span id="games_lost" class="games_lost"></span></p>
-									<p>Win Rate: <span id="win_rate" class="win_rate"></span></p>
-								</div>
-							</div>
 						</div>
 					</div>
 				</div>
