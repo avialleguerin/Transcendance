@@ -168,12 +168,12 @@ async function login_tournament(event) {
 			localStorage.setItem("Player2", data.player2.username);
 			localStorage.setItem("Player3", data.player3.username);
 			localStorage.setItem("Player4", data.player4.username);
-			document.getElementById("joueur1_id").innerHTML = localStorage.getItem("Player1");
-			document.getElementById("joueur2_id").innerHTML = localStorage.getItem("Player2");
-			document.getElementById("joueur3_id").innerHTML = localStorage.getItem("Player3");
-			document.getElementById("joueur4_id").innerHTML = localStorage.getItem("Player4");
+			document.getElementById("Player1").innerHTML = localStorage.getItem("Player1");
+			document.getElementById("Player2").innerHTML = localStorage.getItem("Player2");
+			document.getElementById("Player3").innerHTML = localStorage.getItem("Player3");
+			document.getElementById("Player4").innerHTML = localStorage.getItem("Player4");
 			localStorage.setItem("current_player1", localStorage.getItem("Player1"));
-			localStorage.setItem("current_player2", localStorage.getItem("Player2"));	
+			localStorage.setItem("current_player2", localStorage.getItem("Player2"));
 			const tournamentStarted = true;
 			localStorage.setItem('tournamentStarted', tournamentStarted.toString());
 			document.getElementById("container_name_player").classList.add('hidden');

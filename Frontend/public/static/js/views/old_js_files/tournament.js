@@ -45,10 +45,10 @@ export default class extends AbstractView {
 				<div class="tournament_graphic" id="tournament_graphic_id">
 					<p class="winnerBracket" id="winnerBracket_id">Winner Bracket</p>
 					<p class="loserBracket" id="loserBracket_id">Loser Bracket</p>
-					<p class="joueur1" id="joueur1_id">joueur 1</p>
-					<p class="joueur2" id="joueur2_id">joueur 2</p>
-					<p class="joueur3" id="joueur3_id">joueur 3</p>
-					<p class="joueur4" id="joueur4_id">joueur 4</p>
+					<p class="joueur1" id="Player1">joueur 1</p>
+					<p class="joueur2" id="Player2">joueur 2</p>
+					<p class="joueur3" id="Player3">joueur 3</p>
+					<p class="joueur4" id="Player4">joueur 4</p>
 					<img src="../../../srcs/game/assets/image/tournament_with_bracket.svg" alt="tournament">
 					<button id="start_game" class="btn_start_game">
 						<a href="/tournament_game" class="nav-link" data-link>JOUER</a>
@@ -77,7 +77,7 @@ export default class extends AbstractView {
             handleViewTransitions('tournament_game_start', 'tournament');
             startTournamentGame();
             count = parseInt(localStorage.getItem('tournamentCount')) || 0;
-            count++;
+            // count++;
             localStorage.setItem('tournamentCount', count.toString());
             if (count >= 6) {
                 const start_game = document.getElementById('start_game');
@@ -88,11 +88,11 @@ export default class extends AbstractView {
         });
     }
     init_tournament() {
-        const joueur1_id = document.getElementById('joueur1_id');
-        const joueur2_id = document.getElementById('joueur2_id');
-        const joueur3_id = document.getElementById('joueur3_id');
-        const joueur4_id = document.getElementById('joueur4_id');
-        updateTournamentState(count, joueur1_id, joueur2_id, joueur3_id, joueur4_id);
+        const Player1 = document.getElementById('Player1');
+        const Player2 = document.getElementById('Player2');
+        const Player3 = document.getElementById('Player3');
+        const Player4 = document.getElementById('Player4');
+        updateTournamentState(count, Player1, Player2, Player3, Player4);
         const countFromStorage = parseInt(localStorage.getItem('tournamentCount')) || 0;
         console.log('Tournament count:', count);
         console.log('Tournament started:', tournamentStarted);
@@ -140,10 +140,10 @@ export default class extends AbstractView {
         });
         const confirm_leave_tournament = document.getElementById('confirm_leave_tournament');
         // Get the player elements
-        const joueur1_id = document.getElementById('joueur1_id');
-        const joueur2_id = document.getElementById('joueur2_id');
-        const joueur3_id = document.getElementById('joueur3_id');
-        const joueur4_id = document.getElementById('joueur4_id');
+        const Player1 = document.getElementById('Player1');
+        const Player2 = document.getElementById('Player2');
+        const Player3 = document.getElementById('Player3');
+        const Player4 = document.getElementById('Player4');
         confirm_leave_tournament.addEventListener('click', () => {
             message_id.classList.remove('active');
             tournament_graphic_id.style.filter = "none";
@@ -152,7 +152,7 @@ export default class extends AbstractView {
             container_name_player.classList.remove('hidden');
             tournamentStarted = false;
             localStorage.setItem('tournamentStarted', tournamentStarted.toString());
-            resetTournamentState(joueur1_id, joueur2_id, joueur3_id, joueur4_id);
+            resetTournamentState(Player1, Player2, Player3, Player4);
             back_to_menu_view_tournament.style.display = 'block';
             start_tournament.style.display = 'block';
         });
@@ -161,7 +161,7 @@ export default class extends AbstractView {
             container_name_player.classList.remove('hidden');
             tournamentStarted = false;
             localStorage.setItem('tournamentStarted', tournamentStarted.toString());
-            resetTournamentState(joueur1_id, joueur2_id, joueur3_id, joueur4_id);
+            resetTournamentState(Player1, Player2, Player3, Player4);
             back_to_menu_view_tournament.style.display = 'block';
             start_tournament.style.display = 'block';
             count = 0;
@@ -223,63 +223,63 @@ const POSITIONS = {
         winner: { top: '38%', left: '72%' },
     },
 };
-function resetTournamentState(joueur1_id, joueur2_id, joueur3_id, joueur4_id) {
+function resetTournamentState(Player1, Player2, Player3, Player4) {
     // count = 0;
     localStorage.setItem('tournamentCount', count.toString());
-    const joueurs = [joueur1_id, joueur2_id, joueur3_id, joueur4_id];
+    const joueurs = [Player1, Player2, Player3, Player4];
     joueurs.forEach(joueur => {
         joueur.style.top = '';
         joueur.style.left = '';
         joueur.style.color = 'white';
     });
 }
-function updateTournamentState(count, joueur1_id, joueur2_id, joueur3_id, joueur4_id) {
-    resetTournamentState(joueur1_id, joueur2_id, joueur3_id, joueur4_id);
+function updateTournamentState(count, Player1, Player2, Player3, Player4) {
+    resetTournamentState(Player1, Player2, Player3, Player4);
     console.log('Count:', count);
     let match1_winner, match1_loser, match2_winner, match2_loser, match3_winner, match3_loser, match4_winner, match4_loser, match5_winner, match5_loser, match6_winner, match6_loser;
     if (count >= 0) {
-        const players = [joueur1_id, joueur2_id, joueur3_id, joueur4_id];
+        const players = [Player1, Player2, Player3, Player4];
         const positions = Object.values(POSITIONS.round1);
         players.forEach((joueur, index) => {
             joueur.style.top = positions[index].top;
             joueur.style.left = positions[index].left;
             joueur.style.color = 'white';
-            highlightNextPlayers(joueur1_id, joueur2_id);
+            highlightNextPlayers(Player1, Player2);
         });
     }
     if (count >= 1) {
-        resetHighlight([joueur1_id, joueur2_id]);
+        resetHighlight([Player1, Player2]);
         console.log('Match 1');
         console.log("round1");
         const player1_wins = getPlayer_1_win();
         if (player1_wins) {
-            match1_winner = joueur1_id;
-            match1_loser = joueur2_id;
+            match1_winner = Player1;
+            match1_loser = Player2;
         }
         else {
-            match1_winner = joueur2_id;
-            match1_loser = joueur1_id;
+            match1_winner = Player2;
+            match1_loser = Player1;
         }
         match1_winner.style.top = POSITIONS.quart_winner.winner1_2.top;
         match1_winner.style.left = POSITIONS.quart_winner.winner1_2.left;
         match1_loser.style.top = POSITIONS.quart_winner.loser1_2.top;
         match1_loser.style.left = POSITIONS.quart_winner.loser1_2.left;
-        highlightNextPlayers(joueur3_id, joueur4_id);
-        localStorage.setItem('current_player1', joueur3_id.textContent);
-        localStorage.setItem('current_player2', joueur4_id.textContent);
+        highlightNextPlayers(Player3, Player4);
+        localStorage.setItem('current_player1', Player3.textContent);
+        localStorage.setItem('current_player2', Player4.textContent);
     }
     if (count >= 2) {
-        resetHighlight([joueur3_id, joueur4_id]);
+        resetHighlight([Player3, Player4]);
         console.log('Match 2');
         console.log("round2");
         const player1_wins = getPlayer_1_win();
         if (player1_wins) {
-            match2_winner = joueur3_id;
-            match2_loser = joueur4_id;
+            match2_winner = Player3;
+            match2_loser = Player4;
         }
         else {
-            match2_winner = joueur4_id;
-            match2_loser = joueur3_id;
+            match2_winner = Player4;
+            match2_loser = Player3;
         }
         match2_winner.style.top = POSITIONS.quart_winner.winner3_4.top;
         match2_winner.style.left = POSITIONS.quart_winner.winner3_4.left;
