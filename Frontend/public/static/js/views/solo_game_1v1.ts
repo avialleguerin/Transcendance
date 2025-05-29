@@ -360,13 +360,13 @@ export default class solo_game extends AbstractView {
 			clearInterval(this.gameLoop); // Arrête la boucle quand la partie est finie
 			if (player_1_win)
 			{
-				document.getElementById("winner_id").innerHTML = `${localStorage.getItem("Player1")} won !`;
-				document.getElementById("looser_id").innerHTML = `${localStorage.getItem("Player2")} lost !`;
+				document.getElementById("winner_id").innerHTML = `${localStorage.getItem("Player1")}`;
+				document.getElementById("looser_id").innerHTML = `${localStorage.getItem("Player2")}`;
 			}
 			else if (player_2_win)
 			{
-				document.getElementById("winner_id").innerHTML = `${localStorage.getItem("Player2")} won !`;
-				document.getElementById("looser_id").innerHTML = `${localStorage.getItem("Player1")} lose !`;
+				document.getElementById("winner_id").innerHTML = `${localStorage.getItem("Player2")}`;
+				document.getElementById("looser_id").innerHTML = `${localStorage.getItem("Player1")}`;
 			}
 			if (container_player1.classList.contains("active"))
 				container_player1.classList.remove("active");
