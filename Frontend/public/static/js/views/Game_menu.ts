@@ -268,15 +268,6 @@ export default class Game_menu extends AbstractView {
 							<div class="export_btn">
 								<button id="export_btn" class="btn_export_btn" onclick="export_data()">Export data</button>
 							</div>
-							<h1>GAME STATISTICS</h1>
-							<div class="game_statistics">
-								<div class="statistics">
-									<p>Games Played: <span id="games_played" class="games_played"></span></p>
-									<p>Games Won: <span id="games_won" class="games_won"></span></p>
-									<p>Games Lost: <span id="games_lost" class="games_lost"></span></p>
-									<p>Win Rate: <span id="win_rate" class="win_rate"></span></p>
-								</div>
-							</div>
 						</div>
 					</div>
 				</div>
@@ -775,6 +766,7 @@ export default class Game_menu extends AbstractView {
 			choose_your_opponent_1v1_form.classList.add('active');
 			back_to_select_mode_view6.classList.add('active');
 			container_menu.classList.add('active');
+			container_menu.scrollTop = 0; // Reset scroll position to the top
 		});
 
 		// validate_login.addEventListener('click', () => {
@@ -800,6 +792,7 @@ export default class Game_menu extends AbstractView {
 			choose_your_opponent_multi_form.classList.add('active');
 			back_to_select_mode_view8.classList.add('active');
 			container_menu.classList.add('active');
+			container_menu.scrollTop = 0;
 		});
 
 		// validate_multi_opponent.addEventListener('click', () => {
@@ -824,6 +817,7 @@ export default class Game_menu extends AbstractView {
 				back_to_select_mode_view6.classList.remove('active');
 				view3.classList.add('active');
 				container_menu.classList.remove('active');
+				container_menu.scrollTop = 0;
 			}
 
             if (skin_perso.classList.contains('checked')) {
@@ -897,6 +891,7 @@ export default class Game_menu extends AbstractView {
 				back_to_select_mode_view8.classList.remove('active');
 				view4.classList.add('active');
 				container_menu.classList.remove('active');
+				container_menu.scrollTop = 0;
 			}
             if (skin_perso_game_multi.classList.contains('checked')) {
 				skin_perso_game_multi.classList.remove('checked');
@@ -1270,6 +1265,8 @@ export default class Game_menu extends AbstractView {
 			view1.classList.remove('active');
 			container_menu.classList.add('active');
 			btn_back_home.classList.add('active');
+			container_menu.scrollTop = 0;
+
 		});
 		
 		parametre_profile.addEventListener('click', () => {
@@ -1280,6 +1277,8 @@ export default class Game_menu extends AbstractView {
 			view1.classList.remove('active');
 			btn_back_home.classList.add('active');
 			container_menu.classList.add('active');
+			container_menu.scrollTop = 0;
+
 		});
 
 
@@ -1290,6 +1289,8 @@ export default class Game_menu extends AbstractView {
 				// btn_back_home.classList.remove('active');
 				view1.classList.add('active');
 				container_menu.classList.remove('active');
+				container_menu.scrollTop = 0;
+
 			}
 			if (parametre_profile_view.classList.contains('active')) {
 				parametre_profile_view.classList.remove('active');
@@ -1297,6 +1298,8 @@ export default class Game_menu extends AbstractView {
 				// btn_back_home.classList.remove('active');
 				view1.classList.add('active');
 				container_menu.classList.remove('active');
+				container_menu.scrollTop = 0;
+
 			}
 		});
 

@@ -1,8 +1,8 @@
 import { c, canvas } from "./constants.js";
 import { gameState, GameState } from "./constants.js";
 
-export default class EndGameSecondeGame{
-	constructor ({gameCanvas, player, coins, EndGame_FirstGame, historyGame, MapMenu}) {
+export default class EndGameSecondeGame {
+	constructor({gameCanvas, player, coins, EndGame_FirstGame, historyGame, MapMenu}) {
 		this.nb_player_play_game = 0;
 		this.seconde_game_finished = false;
 		this.gameCanvas = gameCanvas;
@@ -39,46 +39,74 @@ export default class EndGameSecondeGame{
 		this.option5font = "15px 'Press Start 2P', Black Ops One";
 		this.option6font = "20px 'Press Start 2P', Black Ops One";
 
-
-		this.keyPressed = {};
-		this.boundKeyDown = this.handleKeyDown.bind(this);
-		this.boundKeyUp = this.handleKeyUp.bind(this);
-
-
+		// Ajouter les propriétés pour la gestion de la souris
+		this.hoveredOption = -1;  // -1 signifie qu'aucune option n'est survolée
+		this.boundMouseMove = this.handleMouseMove.bind(this);
+		this.boundMouseClick = this.handleMouseClick.bind(this);
+		
+		// Définir les zones de clic pour chaque option
+		this.buttonAreas = [
+			{ option: "Menu", x: 880, y: 530, width: 100, height: 30 },
+			{ option: "Restart", x: 880, y: 500, width: 120, height: 30 }
+		];
 	}
 
 	enableControls() {
-		window.addEventListener("keydown", this.boundKeyDown);
-		window.addEventListener("keyup", this.boundKeyUp);
+		window.addEventListener("mousemove", this.boundMouseMove);
+		window.addEventListener("click", this.boundMouseClick);
 	}
 
 	disableControls() {
-		window.removeEventListener("keydown", this.boundKeyDown);
-		window.removeEventListener("keyup", this.boundKeyUp);
+
+		window.removeEventListener("mousemove", this.boundMouseMove);
+		window.removeEventListener("click", this.boundMouseClick);
 	}
-
-	handleKeyDown(event) {
-		const key = event.key;
-		// if (this.keyPressed[key]) return;
-		this.keyPressed[key] = true;
-
-		switch (key) {
-			case "ArrowUp":
-			case "w":
-				this.selectedOption = (this.selectedOption - 1 + this.options.length) % this.options.length;
+	
+	handleMouseMove(event) {
+		// Obtenir la position de la souris relative au canvas
+		const rect = canvas.getBoundingClientRect();
+		const x = event.clientX - rect.left;
+		const y = event.clientY - rect.top;
+		
+		// Réinitialiser la valeur de hoveredOption
+		this.hoveredOption = -1;
+		
+		// Vérifier si la souris est sur un bouton
+		for (let i = 0; i < this.buttonAreas.length; i++) {
+			const button = this.buttonAreas[i];
+			if (x >= button.x && x <= button.x + button.width &&
+				y >= button.y && y <= button.y + button.height) {
+				this.hoveredOption = i;
+				canvas.style.cursor = 'pointer';  // Changer le curseur en main
 				break;
-			case "ArrowDown":
-			case "s":
-				this.selectedOption = (this.selectedOption + 1) % this.options.length;
-				break;
-			case "Enter":
-				this.handleSelect();
-				break;
+			}
+		}
+		
+		// Si aucun bouton n'est survolé, remettre le curseur par défaut
+		if (this.hoveredOption === -1) {
+			canvas.style.cursor = 'default';
 		}
 	}
 
-	handleKeyUp(event) {
-		this.keyPressed[event.key] = false;
+	// Nouvelle méthode pour gérer les clics de souris
+	handleMouseClick(event) {
+		// Obtenir la position du clic relative au canvas
+		const rect = canvas.getBoundingClientRect();
+		const x = event.clientX - rect.left;
+		const y = event.clientY - rect.top;
+		
+		// Vérifier si le clic est sur un bouton
+		for (let i = 0; i < this.buttonAreas.length; i++) {
+			const button = this.buttonAreas[i];
+			if (x >= button.x && x <= button.x + button.width &&
+				y >= button.y && y <= button.y + button.height) {
+				// Définir l'option sélectionnée sur celle qui a été cliquée
+				this.selectedOption = i;
+				// Exécuter l'action associée à cette option
+				this.handleSelect();
+				break;
+			}
+		}
 	}
 
 	handleSelect()
@@ -88,13 +116,7 @@ export default class EndGameSecondeGame{
 		console.log("selected =", selected);
 		if (selected === "Menu")
 		{
-			// 🔁 Reset le joueur
 			this.EndGame_FirstGame.first_game_finished = false;
-			console.log("Resetting player...");
-			console.log("this.winner =", this.winner);
-			console.log("this.Score =", this.Score);
-			console.log("this.gameCanvas.timer =", this.gameCanvas.timer);
-			console.log("this.nbGame =", this.MapMenu.nb_game_started);
 
 			if (this.Score > this.EndGame_FirstGame.Score)
 			{
@@ -126,15 +148,12 @@ export default class EndGameSecondeGame{
 					}
 				});
 			}
-			
-			// 🔁 Change l’état du jeu
 			this.disableControls();
 			gameState.previous = gameState.current;
 			gameState.current = GameState.MapMenu;
 		}
 
 		if (selected === "Restart") {
-			// 🔁 Reset le joueur
 			this.EndGame_FirstGame.first_game_finished = false;
 			if (this.player && typeof this.player.reset_Game === "function") {
 				this.player.reset_Game();
@@ -164,7 +183,8 @@ export default class EndGameSecondeGame{
 		}
 	}
 
-	draw() {
+	draw()
+	{
 		this.enableControls();
 		this.CoinCollected = "Coin Collected : " + this.gameCanvas.nb_coin_text;
 		this.time_endGame = "Time : " + this.gameCanvas.timer + " seconds";
@@ -181,26 +201,20 @@ export default class EndGameSecondeGame{
 		{
 			this.winner = "Player 2";
 		}
-
 		this.option7 = this.winner;
-
 
 		c.fillStyle = "rgba(0, 0, 0, 0.75)";
 		c.fillRect(0, 0, canvas.width, canvas.height);
 		c.font = this.titleFont;
 		c.textAlign = "left";
-		c.fillStyle = "#FFD700"; // doré
+		c.fillStyle = "#FFD700";
 		c.shadowColor = "#000";
 		c.shadowBlur = 10;
 		c.fillText(this.title, 350, 50);
 
-		//coin text
-
 		c.fillStyle = "white";
 		c.font = this.gameCanvasFont;
 		c.fillText(this.CoinCollected, 100, 150);
-
-		//time text
 
 		c.fillStyle = "white";
 		c.font = this.gameCanvasFont;
@@ -238,22 +252,55 @@ export default class EndGameSecondeGame{
 		c.font = this.option6font;
 		c.fillStyle = "green";
 		c.fillText(this.option7, 200, 450);
-		c.shadowBlur = 0; // reset
+		c.shadowBlur = 0;
 		
 		const optionPositions = [
-			{x : 900, y : 550}, // position de "Menu"
-			{x : 900, y : 520}, // position de "Restart"
+			{x: 900, y: 550},
+			{x: 900, y: 520},
 		];
+
+		this.buttonAreas[0] = { 
+			option: "Menu", 
+			x: optionPositions[0].x - 20, 
+			y: optionPositions[0].y - 20, 
+			width: 100, 
+			height: 30 
+		};
+		this.buttonAreas[1] = { 
+			option: "Restart", 
+			x: optionPositions[1].x - 20, 
+			y: optionPositions[1].y - 20, 
+			width: 120, 
+			height: 30 
+		};
 
 		this.options.forEach((option, index) => {
 			const pos = optionPositions[index];
-			if (index === this.selectedOption) {
-				c.fillStyle = "#00FFFF"; // Bleu si autre option sélectionnée
-			} else {
-				c.fillStyle = "white"; // Sinon blanc
+			
+			if (index === this.hoveredOption)
+				c.fillStyle = "#88CCFF";
+			else
+				c.fillStyle = "white";
+
+			if (index === this.hoveredOption)
+			{
+				c.shadowColor = "#88CCFF";
+				c.shadowBlur = 15;
+				c.font = "22px 'Press Start 2P', Black Ops One";
 			}
+			else
+			{
+				c.shadowColor = "transparent";
+				c.shadowBlur = 0;
+				c.font = this.optionFont;
+			}
+
 			c.fillText(option, pos.x, pos.y);
+			if (index === this.hoveredOption) {
+				c.strokeStyle = "#88CCFF";
+			}
+			c.shadowColor = "transparent";
+			c.shadowBlur = 0;
 		});
-		
 	}
 }

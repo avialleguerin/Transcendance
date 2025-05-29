@@ -258,7 +258,8 @@ export function initGame()
 		coins: Coins,
 	});
 
-	const historyDBInstance = new HistoryDatabase()
+	const historyDBInstance = new HistoryDatabase();
+	historyDBInstance.loadFromLocalStorage(); // Charger l'historique depuis le localStorage
 
 	const gameHistory = new GameHistory({
 		historyDB: historyDBInstance,

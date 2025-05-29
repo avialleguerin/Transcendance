@@ -18,26 +18,84 @@ export default class Menu {
 		}
 		this.Game_History = Game_History;
 
-		this.keyPressed = {};
-		this.boundKeyDown = this.handleKeyDown.bind(this);
-		this.boundKeyUp = this.handleKeyUp.bind(this);
+		// this.keyPressed = {};
+		// this.boundKeyDown = this.handleKeyDown.bind(this);
+		// this.boundKeyUp = this.handleKeyUp.bind(this);
 		this.optionStart = 0;
 		this.optionOptions = 1;
 		this.optionHistory = 2;
 		this.optionQuit = 3;
 
+		this.boundMouseClick = this.handleMouseClick.bind(this);
 		
+		// Définir les zones de clic pour chaque option
+		this.buttonAreas = [
+			{ option: "▶ Start", x: canvas.width / 2 - 100, y: canvas.height / 2 - 20, width: 200, height: 40 },
+			{ option: "⚙ Options", x: canvas.width / 2 - 100, y: canvas.height / 2 + 40, width: 200, height: 40 },
+			{ option: "☷ History", x: canvas.width / 2 - 100, y: canvas.height / 2 + 100, width: 200, height: 40 },
+			{ option: "✖ Quit", x: canvas.width / 2 - 100, y: canvas.height / 2 + 160, width: 200, height: 40 }
+		];
+		
+		// Pour suivre quelle option est survolée
+		this.hoveredOption = -1;  // -1 signifie qu'aucune option n'est survolée
+		
+		// Ajouter le gestionnaire d'événements pour le mouvement de la souris
+		this.boundMouseMove = this.handleMouseMove.bind(this);
 	}
 
-	enableControls() {
-
-		window.addEventListener("keydown", this.boundKeyDown);
-		window.addEventListener("keyup", this.boundKeyUp);
+	enableControls()
+	{
+		window.addEventListener("click", this.boundMouseClick);
+		window.addEventListener("mousemove", this.boundMouseMove);
 	}
 
-	disableControls() {
-		window.removeEventListener("keydown", this.boundKeyDown);
-		window.removeEventListener("keyup", this.boundKeyUp);
+	disableControls()
+	{
+		window.removeEventListener("click", this.boundMouseClick);
+		window.removeEventListener("mousemove", this.boundMouseMove);
+	}
+	
+	handleMouseMove(event) {
+		const rect = canvas.getBoundingClientRect();
+		const x = event.clientX - rect.left;
+		const y = event.clientY - rect.top;
+		
+		this.hoveredOption = -1;
+		
+		for (let i = 0; i < this.buttonAreas.length; i++) {
+			const button = this.buttonAreas[i];
+			if (x >= button.x && x <= button.x + button.width &&
+				y >= button.y && y <= button.y + button.height) {
+				this.hoveredOption = i;
+				canvas.style.cursor = 'pointer';
+				break;
+			}
+		}
+		
+		// Si aucun bouton n'est survolé, remettre le curseur par défaut
+		if (this.hoveredOption === -1) {
+			canvas.style.cursor = 'default';
+		}
+	}
+
+	handleMouseClick(event) {
+		// Obtenir la position du clic relative au canvas
+		const rect = canvas.getBoundingClientRect();
+		const x = event.clientX - rect.left;
+		const y = event.clientY - rect.top;
+		
+		// Vérifier si le clic est sur un bouton
+		for (let i = 0; i < this.buttonAreas.length; i++) {
+			const button = this.buttonAreas[i];
+			if (x >= button.x && x <= button.x + button.width &&
+				y >= button.y && y <= button.y + button.height) {
+				// Définir l'option sélectionnée sur celle qui a été cliquée
+				this.selectedOption = i;
+				// Exécuter l'action associée à cette option
+				this.handleSelect();
+				break;
+			}
+		}
 	}
 
 	draw() {
@@ -60,44 +118,44 @@ export default class Menu {
 
 		c.font = this.optionFont;
 		this.options.forEach((option, index) => {
-			if (option === "✖ Quit" && index === this.selectedOption) {
-				c.fillStyle = "red"; // Rouge si "Retour" est sélectionné
-			} else if (index === this.selectedOption) {
-				c.fillStyle = "#00FFFF"; // Bleu si autre option sélectionnée
-			} else {
-				c.fillStyle = "white"; // Sinon blanc
+			// Déterminer le style en fonction de la sélection ET du hover
+			if (option === "✖ Quit" && (index === this.hoveredOption))
+				c.fillStyle = "red";
+			else if (index === this.hoveredOption)
+				c.fillStyle = "#88CCFF";
+			else 
+				c.fillStyle = "white";
+
+			if (index === this.hoveredOption)
+			{
+				c.shadowColor = "#88CCFF";
+				c.shadowBlur = 15;
+				c.font = "32px 'Press Start 2P', Black Ops One";
+			}
+			else
+			{
+				c.shadowColor = "transparent";
+				c.shadowBlur = 0;
+				c.font = this.optionFont;
 			}
 			c.fillText(option, canvas.width / 2, canvas.height / 2 + index * this.optionSpacing);
+
+			const y = canvas.height / 2 + index * this.optionSpacing;
+			this.buttonAreas[index] = { 
+				option: option, 
+				x: canvas.width / 2 - 100, 
+				y: y - 20, 
+				width: 200, 
+				height: 40 
+			};
+			
+			if (index === this.hoveredOption) {
+				c.strokeStyle = "#88CCFF";
+			}
+
+			c.shadowColor = "transparent";
+			c.shadowBlur = 0;
 		});
-	}
-
-	handleKeyDown(event) {
-		const key = event.key;
-		if (this.keyPressed[key]) return;
-		this.keyPressed[key] = true;
-
-		if (gameState.current !== GameState.Menu) return;
-		console.log("selectedOption = ", this.selectedOption);
-		console.log("options = ", this.options);
-		console.log("option.index = ", this.options.indexOf(this.options[this.selectedOption]));
-
-		switch (key) {
-			case "ArrowUp":
-			case "w":
-				this.selectedOption = (this.selectedOption - 1 + this.options.length) % this.options.length;
-				break;
-			case "ArrowDown":
-			case "s":
-				this.selectedOption = (this.selectedOption + 1) % this.options.length;
-				break;
-			case "Enter":
-				this.handleSelect();
-				break;
-		}
-	}
-
-	handleKeyUp(event) {
-		this.keyPressed[event.key] = false;
 	}
 
 	handleSelect() {

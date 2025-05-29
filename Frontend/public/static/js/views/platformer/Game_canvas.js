@@ -17,7 +17,7 @@ export default class GameCanvas extends Sprite {
 		};
 
 		this.nb_coin = 0;
-		this.nb_coin_text = this.nb_coin + " / 3";
+		this.nb_coin_text = this.nb_coin + " / 7";
 
 
 		this.position = position;
@@ -53,23 +53,67 @@ export default class GameCanvas extends Sprite {
 		this.boundKeyDown = this.handleKeyDown.bind(this);
 		this.boundKeyUp = this.handleKeyUp.bind(this);
 		this.player = player;
+
+		this.boundMouseClick = this.handleMouseClick.bind(this);
+
+		this.menuButtonArea = { x: 880, y: 530, width: 100, height: 40 };
+
+		this.isMenuHovered = false;
+		this.boundMouseMove = this.handleMouseMove.bind(this);
 	}
 
 	enableControls() {
 		window.addEventListener("keydown", this.boundKeyDown);
 		window.addEventListener("keyup", this.boundKeyUp);
+		window.addEventListener("click", this.boundMouseClick);
+		window.addEventListener("mousemove", this.boundMouseMove);
 	}
 
 	disableControls() {
 		window.removeEventListener("keydown", this.boundKeyDown);
 		window.removeEventListener("keyup", this.boundKeyUp);
+		window.removeEventListener("click", this.boundMouseClick);
+		window.removeEventListener("mousemove", this.boundMouseMove);
+	}
+
+	handleMouseClick(event) {
+		if (!this.GameIsPaused) return;
+		
+		const rect = canvas.getBoundingClientRect();
+		const x = event.clientX - rect.left;
+		const y = event.clientY - rect.top;
+		
+		if (x >= this.menuButtonArea.x && x <= this.menuButtonArea.x + this.menuButtonArea.width &&
+			y >= this.menuButtonArea.y && y <= this.menuButtonArea.y + this.menuButtonArea.height) {
+			this.handleSelect();
+		}
+	}
+
+	handleMouseMove(event) {
+		const rect = canvas.getBoundingClientRect();
+		const x = event.clientX - rect.left;
+		const y = event.clientY - rect.top;
+
+		if (x >= this.menuButtonArea.x && x <= this.menuButtonArea.x + this.menuButtonArea.width &&
+			y >= this.menuButtonArea.y && y <= this.menuButtonArea.y + this.menuButtonArea.height)
+		{
+			this.isMenuHovered = true;
+			canvas.style.cursor = 'pointer';
+		}
+		else
+		{
+			this.isMenuHovered = false;
+			canvas.style.cursor = 'default';
+		}
 	}
 
 	changeSprite()
 	{
-		if (this.frames % this.frameSpeed === 0) {
+		if (this.frames % this.frameSpeed === 0)
+		{
 			this.currentSprite++;
-			if (this.currentSprite >= this.totalSprites) {
+			if (this.currentSprite >= this.totalSprites)
+			{
 				this.currentSprite = 0;
 			}
 			let newImg = new Image();
@@ -80,17 +124,19 @@ export default class GameCanvas extends Sprite {
 	}
 
 
-	update() {
+	update()
+	{
 		const now = Date.now();
-		if (now - this.lastTime >= 1000 && this.timer < 300 && !this.GameIsPaused) { // ⏱️ une seconde est passée, et max 5 min (300 s)
+		if (now - this.lastTime >= 1000 && this.timer < 300 && !this.GameIsPaused)
+		{
 			this.timer++;
 			this.lastTime = now;
 			console.log("Timer:", this.timer);
 
 			if (this.timer >= 290)
-				this.end_come = true; // ⏱️ fin du timer
+				this.end_come = true;
 			else
-				this.end_come = false; // ⏱️ fin du timer
+				this.end_come = false;
 
 			if (this.timer >= 300) {
 				console.log("Timer finished");
@@ -107,13 +153,6 @@ export default class GameCanvas extends Sprite {
 	}
 
 	draw_canvas() {
-		// if (this.coin_icon_loaded && !this.coin_icon_error) {
-		// 	c.drawImage(this.coin_icon, 8, 8, 30, 30);
-		// } else {
-		// 	console.error("Coin icon not loaded");
-		// }
-		// console.log("Coin icon loaded:", this.coin_icon_loaded);
-		// console.log("nb_coin:", this.nb_coin);
 		this.enableControls();
 		if (this.timer_icon_loaded && !this.timer_icon_error) {
 			c.drawImage(this.timer_icon, 3, 50, 40, 40);
@@ -123,7 +162,7 @@ export default class GameCanvas extends Sprite {
 		}
 
 
-		this.nb_coin_text = this.nb_coin + " / 3";
+		this.nb_coin_text = this.nb_coin + " / 7";
 
 		c.fillStyle = "gold";
 		c.font = "20px 'Press Start 2P', Black Ops One";
@@ -141,7 +180,7 @@ export default class GameCanvas extends Sprite {
 	}
 
 	draw_menu_pause() {
-		c.save(); // 🔥 Sauvegarde l'état actuel du canvas
+		c.save();
 		c.fillStyle = "rgba(0, 0, 0, 0.5)";
 		c.fillRect(0, 0, canvas.width, canvas.height);
 		c.font = "20px 'Press Start 2P', Black Ops One";
@@ -151,16 +190,34 @@ export default class GameCanvas extends Sprite {
 		c.shadowBlur = 10;
 		c.fillText("Pause", 480, 50);
 
-		c.fillStyle = "red";
-		c.font = "20px 'Press Start 2P', Black Ops One";
-		c.fillText("Menu", 900, 550);
+		if (this.isMenuHovered)
+		{
+			c.fillStyle = "#88CCFF";
+			c.font = "22px 'Press Start 2P', Black Ops One";
+			c.shadowColor = "#88CCFF";
+			c.shadowBlur = 15;
+		}
+		else
+		{
+			c.fillStyle = "white";
+			c.font = "20px 'Press Start 2P', Black Ops One";
+			c.shadowColor = "transparent";
+			c.shadowBlur = 5;
+		}
+
+		c.fillText("Menu", this.menuButtonArea.x + 20, this.menuButtonArea.y + 20);
+		
+		if (this.isMenuHovered) {
+			c.fillStyle = "#88CCFF";
+		}
+		
 		c.fillStyle = "white";
-		c.restore(); // 🔥 Restaure l'état du canvas
+		c.restore();
 	}
 
 	resetGame() {
 		this.nb_coin = 0;
-		this.nb_coin_text = this.nb_coin + " / 3";
+		this.nb_coin_text = this.nb_coin + " / 7";
 		this.timer = 0;
 		this.timer_text = this.timer;
 		this.lastTime = Date.now(); // ⏱️ init du timer
@@ -174,19 +231,6 @@ export default class GameCanvas extends Sprite {
 		this.keyPressed[key] = true;
 
 		switch (key) {
-			case "ArrowUp":
-			case "w":
-				this.selectedOption = (this.selectedOption - 1 + this.options.length) % this.options.length;
-				break;
-			case "ArrowDown":
-			case "s":
-				this.selectedOption = (this.selectedOption + 1) % this.options.length;
-				break;
-			case "Enter":
-				if (this.GameIsPaused) {
-					this.handleSelect();
-				}
-				break;
 			case "Escape":
 				if (gameState.current === GameState.Play) {
 					this.GameIsPaused = !this.GameIsPaused;
