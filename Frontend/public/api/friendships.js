@@ -262,6 +262,9 @@ async function fetch_user_games_big(username) {
 			notif(data.error, false);
 			return;
 		}
+		const user = data.user;
+		const userId = user.userId;
+		const games = data.games;
 		document.getElementById("profile_photo_circle_Game_History").innerHTML = `<img src="/uploads/${data.user.profile_picture}" alt="${data.username} profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
 		document.getElementById("game_history_username").innerHTML = `${data.user.username}`;
 		document.getElementById("games_won_history").innerHTML = `${user.games_won}`;
