@@ -278,12 +278,12 @@ export default class extends AbstractView {
             winnerContainer.classList.add("active");
             clearInterval(this.gameLoop); // Arrête la boucle quand la partie est finie
             if (team_player1_win) {
-                document.getElementById("Winner_id").innerHTML = "Player 1 - Player 2 Win";
-                document.getElementById("looser_id").innerHTML = "Player 3 - Player 4 Loose";
+                document.getElementById("Winner_id").innerHTML = localStorage.getItem("Player1") + "-" + localStorage.getItem("Player2");
+                document.getElementById("looser_id").innerHTML = localStorage.getItem("Player3") + "-" + localStorage.getItem("Player4");
             }
             else if (team_player2_win) {
-                document.getElementById("Winner_id").innerHTML = "Player 3 - Player 4 Win";
-                document.getElementById("looser_id").innerHTML = "Player 1 - Player 2 Loose";
+                document.getElementById("Winner_id").innerHTML = localStorage.getItem("Player3") + "-" + localStorage.getItem("Player4");
+                document.getElementById("looser_id").innerHTML = localStorage.getItem("Player1") + "-" + localStorage.getItem("Player2");
             }
         }
         else {

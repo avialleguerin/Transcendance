@@ -282,7 +282,7 @@ export default class Game_menu extends AbstractView {
 				</div>
 
 				<div class="choose_your_opponent_1v1" id="choose_your_opponent_1v1_id">
-					<form class="choose_your_opponent_1v1_content" id="choose_your_opponent_1v1_form" onsubmit="login1v1(event)">
+					<form class="choose_your_opponent_1v1_content" id="choose_your_opponent_1v1_form" onsubmit="login_1v1(event)">
 						<h1>CONNECT YOUR OPPONENT</h1>
 						<div class="player-section">
 							<p>PLAYER 2</p>
@@ -301,7 +301,7 @@ export default class Game_menu extends AbstractView {
 
 
 				<div class="choose_your_opponent_multi" id="choose_your_opponent_multi_id">
-					<form class="choose_your_opponent_multi_content" id="choose_your_opponent_multi_form" onclick="login2v2(event)">
+					<form class="choose_your_opponent_multi_content" id="choose_your_opponent_multi_form" onclick="login_2v2(event)">
 						<h1>CONNECT YOUR OPPONENTS</h1>
 
 						<div class="player-section">
@@ -470,12 +470,12 @@ export default class Game_menu extends AbstractView {
 				<div class="player1">
 					<button class="switch_skin_left" id="switch_skn_left_id1"></button>
 					<button class="switch_skin_right" id="switch_skn_right_id1"></button>
-					<p id="1v1-oponent-username1"></p>
+					<p id="1v1-oponent-username1">${localStorage.getItem('Player1')}</p>
 				</div>
 				<div class="player2">
 					<button class="switch_skin_left" id="switch_skn_left_id2"></button>
 					<button class="switch_skin_right" id="switch_skn_right_id2"></button>
-					<p id="1v1-oponent-username2">Player 2</p>
+					<p id="1v1-oponent-username2">${localStorage.getItem('Player2')}</p>
 				</div>
 				<button id="valide_ton_skin" class="btn">Confirm</button>
 			</div>
@@ -485,22 +485,22 @@ export default class Game_menu extends AbstractView {
 				<div class="player1_game_multi">
 					<button class="switch_skin_left" id="switch_skn_left_id1_game_multi"></button>
 					<button class="switch_skin_right" id="switch_skn_right_id1_game_multi"></button>
-					<p id="2v2-oponent-username1">Player 1</p>
+					<p id="2v2-oponent-username1">${localStorage.getItem('Player1')}</p>
 				</div>
 				<div class="player2_game_multi">
 					<button class="switch_skin_left" id="switch_skn_left_id2_game_multi"></button>
 					<button class="switch_skin_right" id="switch_skn_right_id2_game_multi"></button>
-					<p id="2v2-oponent-username2">Player 2</p>
+					<p id="2v2-oponent-username2">${localStorage.getItem('Player2')}</p>
 				</div>
 				<div class="player3_game_multi">
 					<button class="switch_skin_left" id="switch_skn_left_id3_game_multi"></button>
 					<button class="switch_skin_right" id="switch_skn_right_id3_game_multi"></button>
-					<p id="2v2-oponent-username3">Player 3</p>
+					<p id="2v2-oponent-username3">${localStorage.getItem('Player3')}</p>
 				</div>
 				<div class="player4_game_multi">
 					<button class="switch_skin_left" id="switch_skn_left_id4_game_multi"></button>
 					<button class="switch_skin_right" id="switch_skn_right_id4_game_multi"></button>
-					<p id="2v2-oponent-username4">Player 4</p>
+					<p id="2v2-oponent-username4">${localStorage.getItem('Player4')}</p>
 				</div>
 				<button id="valide_ton_skin_game_multi" class="btn">Confirm</button>
 			</div>

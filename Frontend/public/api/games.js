@@ -1,8 +1,8 @@
-async function create_1v1_game(event) {
+async function create_1v1_game(event, player1, player2) {
 	event.preventDefault();
 
-	const player1 = localStorage.getItem("Player1");
-	const player2 = localStorage.getItem("Player2");
+	// const player1 = localStorage.getItem("Player1");
+	// const player2 = localStorage.getItem("Player2");
 	const score_left = localStorage.getItem("score_left");
 	const score_right = localStorage.getItem("score_right");
 
@@ -22,7 +22,8 @@ async function create_1v1_game(event) {
 	const data = await response.json();
 	if (!data.success)
 		notif(data.error, false);
-	localStorage.removeItem("Player2");
+	if (!localStorage.getItem("tournamentStarted"))
+		localStorage.removeItem("Player2");
 };
 
 async function create_2v2_game(event) {

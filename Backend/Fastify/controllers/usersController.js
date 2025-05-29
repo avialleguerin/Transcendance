@@ -48,7 +48,12 @@ export async function createUser(request, reply) {
 
 	if (!username || !password)
 		return reply.code(400).send({ error: 'Username and Password are required' })
-
+	const usernameRegex = /^[A-Za-z0-9._-]+$/;
+	if (!usernameRegex.test(username))
+		return reply.code(400).send({ error: 'Username can only contain letters, numbers, dots, underscores, and hyphens' })
+	// const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+	// if (!passwordRegex.test(password))
+	// 	return reply.code(400).send({ error: 'Your password doesn\'t respect the conditions' })
 	const sameUsername = usersModel.getUserByUsername(username)
 	if (sameUsername)
 		return reply.code(409).send({ error: "This username is already used" })

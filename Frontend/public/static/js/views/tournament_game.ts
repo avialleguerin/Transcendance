@@ -25,6 +25,23 @@ export default class extends AbstractView {
 		if (window.location.pathname === "/tournament_game") {
 			this.gameLoop = setInterval(() => { this.checkGameOver_tournament(); 1000 });
 		}
+		const accessToken: string | null = sessionStorage.getItem('accessToken');
+		if (!accessToken || accessToken === undefined) {
+			history.pushState({}, '', '/');
+			import('./Home.js').then((module: any) => {
+				const Home = module.default;
+				const homeInstance = new Home();
+				homeInstance.getHtml().then((html: string) => {
+					const appElement = document.getElementById('app');
+					if (appElement) {
+						appElement.innerHTML = html;
+						if (homeInstance.createAccount && typeof homeInstance.createAccount === 'function') {
+							homeInstance.createAccount();
+						}
+					}
+				});
+			});
+		}
 	}
 
 	async getHtml() {
@@ -38,7 +55,7 @@ export default class extends AbstractView {
 			<div class="winner">
 				<h1 id="winner_id"></h1>
 			</div>
-			<button class="leave_game_2" id="leave_game_2_id" onclick="create_tournament()">Quitter la partie</button>
+			<button class="leave_game_2" id="leave_game_2_id" onclick="create_1v1_game(event, '${localStorage.getItem('current_player1')}', '${localStorage.getItem('current_player2')}')">Quitter la partie</button>
 		</div>
 	</div>
 	`;
@@ -73,13 +90,9 @@ export default class extends AbstractView {
 			winnerContainer.classList.add("active");
 			clearInterval(this.gameLoop); // Arrête la boucle quand la partie est finie
 			if (player_1_win)
-			{
-				document.getElementById("winner_id").innerHTML = "Player 1 Win";
-			}
+				document.getElementById("winner_id").innerHTML = localStorage.getItem("current_player1") + " won !";
 			else if (player_2_win)
-			{
-				document.getElementById("winner_id").innerHTML = "Player 2 Win";
-			}
+				document.getElementById("winner_id").innerHTML = localStorage.getItem("current_player2") + " won !";
 		}
 		else 
 		{

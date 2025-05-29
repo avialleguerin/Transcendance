@@ -44,6 +44,23 @@ export default class extends AbstractView {
 			}
 			bool = true;
 		}
+		const accessToken: string | null = sessionStorage.getItem('accessToken');
+		if (!accessToken || accessToken === undefined) {
+			history.pushState({}, '', '/');
+			import('./Home.js').then((module: any) => {
+				const Home = module.default;
+				const homeInstance = new Home();
+				homeInstance.getHtml().then((html: string) => {
+					const appElement = document.getElementById('app');
+					if (appElement) {
+						appElement.innerHTML = html;
+						if (homeInstance.createAccount && typeof homeInstance.createAccount === 'function') {
+							homeInstance.createAccount();
+						}
+					}
+				});
+			});
+		}
 	}
 
 	async getHtml() {
@@ -55,7 +72,7 @@ export default class extends AbstractView {
 					<h1 id="press_space_id">Press SPACE to Start</h1>
 				</div>
 				<div class="container-Player1" id="container-player1-id">
-					<h1>Player 1 - Player 2</h1>
+					<h1>${localStorage.getItem("Player1")} - ${localStorage.getItem("Player2")}</h1>
 					<div class="container-item_player1">
 						<p id="nb-item-grenade-1"></p>
 						<p class="touch_player1">Z</p>
@@ -74,7 +91,7 @@ export default class extends AbstractView {
 					</div>
 				</div>
 				<div class="container-Player2" id="container-player2-id">
-					<h1>Player 3 - Player 4</h1>
+					<h1>${localStorage.getItem("Player3")} - ${localStorage.getItem("Player4")}</h1>
 					<div class="container-item_player2">
 						<p id="nb-item-grenade-2"></p>
 						<p class="touch_player2">1</p>
@@ -290,12 +307,12 @@ export default class extends AbstractView {
 			winnerContainer.classList.add("active");
 			clearInterval(this.gameLoop); // Arrête la boucle quand la partie est finie
             if (team_player1_win) {
-				document.getElementById("Winner_id").innerHTML = "Player 1 - Player 2 Win";
-				document.getElementById("looser_id").innerHTML = "Player 3 - Player 4 Loose";
+				document.getElementById("Winner_id").innerHTML = localStorage.getItem("Player1") + " - " + localStorage.getItem("Player2");
+				document.getElementById("looser_id").innerHTML = localStorage.getItem("Player3") + " - " + localStorage.getItem("Player4");
 			}
             else if (team_player2_win) {
-				document.getElementById("Winner_id").innerHTML = "Player 3 - Player 4 Win";
-				document.getElementById("looser_id").innerHTML = "Player 1 - Player 2 Loose";
+				document.getElementById("Winner_id").innerHTML = localStorage.getItem("Player3") + " - " + localStorage.getItem("Player4");
+				document.getElementById("looser_id").innerHTML = localStorage.getItem("Player1") + " - " + localStorage.getItem("Player2");
 			}
 			container_player1.style.visibility = "hidden";
 			container_player2.style.visibility = "hidden";

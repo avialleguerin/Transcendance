@@ -14,9 +14,25 @@ export default class extends AbstractView {
     constructor() {
         super();
         this.setTitle("Tournament");
-
 		if (window.location.pathname === "/tournament") {
 			this.gameLoop = setInterval(() => this.checktournamentstart(), 1000);
+		}
+		const accessToken: string | null = sessionStorage.getItem('accessToken');
+		if (!accessToken || accessToken === undefined) {
+			history.pushState({}, '', '/');
+			import('./Home.js').then((module: any) => {
+				const Home = module.default;
+				const homeInstance = new Home();
+				homeInstance.getHtml().then((html: string) => {
+					const appElement = document.getElementById('app');
+					if (appElement) {
+						appElement.innerHTML = html;
+						if (homeInstance.createAccount && typeof homeInstance.createAccount === 'function') {
+							homeInstance.createAccount();
+						}
+					}
+				});
+			});
 		}
 		// tournamentStarted = localStorage.getItem('tournamentStarted') === 'true';
     }
@@ -28,52 +44,51 @@ export default class extends AbstractView {
 		<div class="tournament_view" id="tournament_view">
 			<div class="tournament_view-content">
 				<h1>TOURNAMENT</h1>
-				<button id="start_tournament" class="btn_start_tournament">START</button>
+				<button id="start_tournament" form="container_name_player" class="btn_start_tournament">START</button>
 				<button id="back_to_menu_view_tournament" class="btn_back_tournament">BACK</button>
-				<div class="container_name_player" id="container_name_player">
+				<form class="container_name_player" id="container_name_player" onsubmit="login_tournament(event)">
 					<h1>Connect your opponents</h1>
 					<div class="player_section">
 						<p>Player 2</p>
 						<div class="input-container">
 							<label for="player2">Username</label>
-							<input type="text" id="player2" class="input_name_player" placeholder="Username player 2">
+							<input type="text" id="tournament-username2" class="input_name_player" placeholder="Username player 2">
 						</div>
 						<div class="input-container">
 							<label for="player2">Password</label>
-							<input type="password" id="player2" class="input_name_player" placeholder="Password player 2">
+							<input type="password" id="tournament-password2" class="input_name_player" placeholder="Password player 2">
 						</div>
 					</div>
 					<div class="player_section">
 						<p>Player 3</p>
 						<div class="input-container">
 							<label for="player3">Username</label>
-							<input type="text" id="player3" class="input_name_player" placeholder="Username player 3">
+							<input type="text" id="tournament-username3" class="input_name_player" placeholder="Username player 3">
 						</div>
 						<div class="input-container">
 							<label for="player3">Password</label>
-							<input type="password" id="player3" class="input_name_player" placeholder="Password player 3">
+							<input type="password" id="tournament-password3" class="input_name_player" placeholder="Password player 3">
 						</div>
 					</div>
 					<div class="player_section">
 						<p>Player 4</p>
 						<div class="input-container">
 							<label for="player4">Username</label>
-							<input type="text" id="player4" class="input_name_player" placeholder="Username Player 4">
+							<input type="text" id="tournament-username4" class="input_name_player" placeholder="Username Player 4">
 						</div>
 						<div class="input-container">
 							<label for="player4">Password</label>
-							<input type="password" id="player4" class="input_name_player" placeholder="Password player 4">
+							<input type="password" id="tournament-password4" class="input_name_player" placeholder="Password player 4">
 						</div>
 					</div>
-					<button id="continue" class="continue_btn">OK</button>
-				</div>
+				</form>
 				<div class="tournament_graphic" id="tournament_graphic_id">
 					<p class="winnerBracket" id="winnerBracket_id">Winner Bracket</p>
 					<p class="loserBracket" id="loserBracket_id">Loser Bracket</p>
-					<p class="joueur1" id="joueur1_id">joueur 1</p>
-					<p class="joueur2" id="joueur2_id">joueur 2</p>
-					<p class="joueur3" id="joueur3_id">joueur 3</p>
-					<p class="joueur4" id="joueur4_id">joueur 4</p>
+					<p class="joueur1" id="joueur1_id">${localStorage.getItem('Player1')}</p>
+					<p class="joueur2" id="joueur2_id">${localStorage.getItem('Player2')}</p>
+					<p class="joueur3" id="joueur3_id">${localStorage.getItem('Player3')}</p>
+					<p class="joueur4" id="joueur4_id">${localStorage.getItem('Player4')}</p>
 					<img src="../../../srcs/game/assets/image/tournament_with_bracket.svg" alt="tournament">
 					<button id="start_game" class="btn_start_game">
 						<a href="/tournament_game" class="nav-link" data-link>JOUER</a>
@@ -139,6 +154,8 @@ export default class extends AbstractView {
 		const joueur3_id = document.getElementById('joueur3_id');
 		const joueur4_id = document.getElementById('joueur4_id');
 
+		console.log("player2:", joueur2_id.textContent);
+
 		updateTournamentState(count, joueur1_id, joueur2_id, joueur3_id, joueur4_id);
 
 		const countFromStorage = parseInt(localStorage.getItem('tournamentCount')) || 0;
@@ -167,15 +184,21 @@ export default class extends AbstractView {
 		const finish_tournament = document.getElementById('finiched_game');
 
 		start_tournament.addEventListener('click', () => {
-			tournamentStarted = true;
-			localStorage.setItem('tournamentStarted', tournamentStarted.toString());
-			container_name_player.classList.add('hidden');
-			tournament_graphic_id.classList.add('active');
-			start_tournament.style.display = 'none';
-			back_to_menu_view_tournament.style.display = 'none';
+			// tournamentStarted = true;
+			// localStorage.setItem('tournamentStarted', tournamentStarted.toString());
+			// container_name_player.classList.add('hidden');
+			// tournament_graphic_id.classList.add('active');
+			// start_tournament.style.display = 'none';
+			// back_to_menu_view_tournament.style.display = 'none';
 
 			// Mettre en surbrillance les joueurs initiaux
-			highlightNextPlayers(joueur1_id, joueur2_id);
+			if (localStorage.getItem("tournamentStarted") === 'true') {
+				highlightNextPlayers(joueur1_id, joueur2_id);
+				localStorage.setItem("current_player1", localStorage.getItem('Player1'));
+				localStorage.setItem("current_player2", localStorage.getItem('Player2'));
+			}
+			// localStorage.setItem("current_player1", localStorage.getItem('Player1'));
+			// localStorage.setItem("current_player2", localStorage.getItem('Player2'));
 		});
 
 		const leave_tournament = document.getElementById('leave_tournament');
@@ -210,7 +233,7 @@ export default class extends AbstractView {
 			tournament_graphic_id.classList.remove('active');
 			container_name_player.classList.remove('hidden');
 			tournamentStarted = false;
-
+			localStorage.setItem('tournamentStarted', tournamentStarted.toString());
 			// Réinitialiser les styles des joueurs
 			resetHighlight([joueur1_id, joueur2_id, joueur3_id, joueur4_id]);
 
@@ -223,12 +246,18 @@ export default class extends AbstractView {
 
 		finish_tournament.addEventListener('click', () => {
 			tournament_graphic_id.classList.remove('active');
+			const player1 = localStorage.getItem('Player1');
+			const profile_picture = localStorage.getItem('profile_picture');
+			localStorage.clear()
+			localStorage.setItem('Player1', player1);
+			localStorage.setItem('profile_picture', profile_picture);
 			container_name_player.classList.remove('hidden');
 			const container_endTournament = document.getElementById('container_endTournament');
 			container_endTournament.classList.remove('active');
 			tournamentStarted = false;
 			tournament_finished = false;
 			tournament_leave = true;
+			localStorage.setItem('tournamentStarted', tournamentStarted.toString());
 
 			// Réinitialiser les styles des joueurs
 			resetHighlight([joueur1_id, joueur2_id, joueur3_id, joueur4_id]);
@@ -237,7 +266,6 @@ export default class extends AbstractView {
 			back_to_menu_view_tournament.style.display = 'block';
 			start_tournament.style.display = 'block';
 			count = 0;
-			localStorage.setItem('tournamentCount', count.toString());
 		});
     }
 
@@ -256,13 +284,13 @@ export default class extends AbstractView {
 				return; // Sortir de la fonction si un élément est manquant
 			}
 			
-			if (tournamentStarted == true && tournament_finished == false) {
+			if (localStorage.getItem("tournamentStarted") == 'true' && tournament_finished == false) {
 				container_name_player.classList.add('hidden');
 				tournament_graphic_id.classList.add('active');
 				start_tournament.style.display = 'none';
 				back_to_menu_view_tournament.style.display = 'none';
 			}
-			else if (tournament_finished == true) {
+			if (tournament_finished == true) {
 				container_name_player.classList.add('hidden');
 				tournament_graphic_id.classList.remove('active');
 				start_tournament.style.display = 'none';
@@ -393,6 +421,8 @@ function updateTournamentState(
 		});
 
 		highlightNextPlayers(joueur1_id, joueur2_id);
+		localStorage.setItem("current_player1", joueur1_id.textContent);
+		localStorage.setItem("current_player2", joueur2_id.textContent);
 	}
 
 	if (count >= 1) {
@@ -420,6 +450,8 @@ function updateTournamentState(
 			match1_loser.style.top = POSITIONS.quart_winner.loser1_2.top;
 			match1_loser.style.left = POSITIONS.quart_winner.loser1_2.left;
 			highlightNextPlayers(joueur3_id, joueur4_id);
+			localStorage.setItem("current_player1", joueur3_id.textContent);
+			localStorage.setItem("current_player2", joueur4_id.textContent);
 		}
 	}
 
@@ -448,7 +480,9 @@ function updateTournamentState(
 			match2_loser.style.top = POSITIONS.quart_winner.loser3_4.top;
 			match2_loser.style.left = POSITIONS.quart_winner.loser3_4.left;
 
-			highlightNextPlayers(match1_loser!, match2_loser);
+			highlightNextPlayers(match1_loser, match2_loser);
+			localStorage.setItem("current_player1", match1_loser.textContent);
+			localStorage.setItem("current_player2", match2_loser.textContent);
 		}
 	}
 
@@ -475,7 +509,9 @@ function updateTournamentState(
 			match3_winner.style.top = POSITIONS.quart_loser.winner.top;
 			match3_winner.style.left = POSITIONS.quart_loser.winner.left;
 			match3_loser.style.color = 'red';
-			highlightNextPlayers(match1_winner!, match2_winner!);
+			highlightNextPlayers(match1_winner, match2_winner);
+			localStorage.setItem("current_player1", match1_winner.textContent);
+			localStorage.setItem("current_player2", match2_winner.textContent);
 		}
 	}
 
@@ -505,7 +541,9 @@ function updateTournamentState(
 			match4_loser.style.top = POSITIONS.demi_winer.loser.top;
 			match4_loser.style.left = POSITIONS.demi_winer.loser.left;
 
-			highlightNextPlayers(match3_winner!, match4_loser);
+			highlightNextPlayers(match3_winner, match4_loser);
+			localStorage.setItem("current_player1", match3_winner.textContent);
+			localStorage.setItem("current_player2", match4_loser.textContent);
 		}
 	}
 
@@ -533,7 +571,9 @@ function updateTournamentState(
 			match5_winner.style.left = POSITIONS.demi_loser.winner.left;
 
 			match5_loser.style.color = 'red';
-			highlightNextPlayers(match4_winner!, match5_winner);
+			highlightNextPlayers(match4_winner, match5_winner);
+			localStorage.setItem("current_player1", match4_winner.textContent);
+			localStorage.setItem("current_player2", match5_winner.textContent);
 		}
 	}
 

@@ -159,8 +159,9 @@ export default class Home extends AbstractView {
 							</div>
 							<div class="input-container">
 								<label for="confirm-password">Confirm password :</label>
-									<input type="password" id="register-confirm-password" name="password" placeholder="Confirm your password" required>
+								<input type="password" id="register-confirm-password" name="password" placeholder="Confirm your password" required>
 							</div>
+							<p style="color:red; font-size:12px" >Your password must contain at least 8 characters, including one uppercase letter, one lowercase letter, one number, and one special character.</p>
 							<div class="input-container cgu-container">
 								<input type="checkbox" id="accept-cgu" name="accept-cgu" required>
 								<label for="accept-cgu">J'accepte les <a href="#" id="show-cgu" class="cgu-link">Conditions Générales d'Utilisation</a></label>

@@ -151,6 +151,7 @@ export default class extends AbstractView {
             tournament_graphic_id.classList.remove('active');
             container_name_player.classList.remove('hidden');
             tournamentStarted = false;
+            localStorage.setItem('tournamentStarted', tournamentStarted.toString());
             resetTournamentState(joueur1_id, joueur2_id, joueur3_id, joueur4_id);
             back_to_menu_view_tournament.style.display = 'block';
             start_tournament.style.display = 'block';
@@ -159,6 +160,7 @@ export default class extends AbstractView {
             tournament_graphic_id.classList.remove('active');
             container_name_player.classList.remove('hidden');
             tournamentStarted = false;
+            localStorage.setItem('tournamentStarted', tournamentStarted.toString());
             resetTournamentState(joueur1_id, joueur2_id, joueur3_id, joueur4_id);
             back_to_menu_view_tournament.style.display = 'block';
             start_tournament.style.display = 'block';
@@ -177,7 +179,7 @@ export default class extends AbstractView {
             if (!container_name_player || !tournament_graphic_id || !start_tournament || !back_to_menu_view_tournament) {
                 return; // Sortir de la fonction si un élément est manquant
             }
-            if (tournamentStarted == true) {
+            if (localStorage.getItem("tournamentStarted") == 'true') {
                 container_name_player.classList.add('hidden');
                 tournament_graphic_id.classList.add('active');
                 start_tournament.style.display = 'none';
@@ -263,6 +265,8 @@ function updateTournamentState(count, joueur1_id, joueur2_id, joueur3_id, joueur
         match1_loser.style.top = POSITIONS.quart_winner.loser1_2.top;
         match1_loser.style.left = POSITIONS.quart_winner.loser1_2.left;
         highlightNextPlayers(joueur3_id, joueur4_id);
+        localStorage.setItem('current_player1', joueur3_id.textContent);
+        localStorage.setItem('current_player2', joueur4_id.textContent);
     }
     if (count >= 2) {
         resetHighlight([joueur3_id, joueur4_id]);

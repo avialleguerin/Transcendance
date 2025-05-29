@@ -74,7 +74,7 @@ async function login(event) {
 	}
 }
 
-async function login1v1(event) {
+async function login_1v1(event) {
 	event.preventDefault();
 	const username = document.getElementById("1v1-username2").value;
 	const password = document.getElementById("1v1-password2").value;
@@ -103,7 +103,7 @@ async function login1v1(event) {
 	document.getElementById("choose_your_opponent_1v1_form").reset();
 }
 
-async function login2v2(event) {
+async function login_2v2(event) {
 	event.preventDefault();
 	const username1 = localStorage.getItem("Player1");
 	const username2 = document.getElementById("2v2-username2").value;
@@ -142,6 +142,52 @@ async function login2v2(event) {
 		notif("Erreur de connexion", false);
 	}
 	document.getElementById("choose_your_opponent_1v1_form").reset();
+}
+
+async function login_tournament(event) {
+	event.preventDefault();
+	const username1 = localStorage.getItem("Player1");
+	const username2 = document.getElementById("tournament-username2").value;
+	const username3 = document.getElementById("tournament-username3").value;
+	const username4 = document.getElementById("tournament-username4").value;
+
+	const password2 = document.getElementById("tournament-password2").value;
+	const password3 = document.getElementById("tournament-password3").value;
+	const password4 = document.getElementById("tournament-password4").value;
+
+	if (!username2 || !password2 || !username3 || !password3 || !username4 || !password4)
+		return notif("Please fill in all fields", false);
+
+	try {
+		const data = await fetchAPI('/request/user/login-2v2', 'POST', { username2, password2, username3, password3, username4, password4 }, true, false);
+		if (data.success) {
+			if (username1 === username2 || username1 === username3 || username1 === username4 ||
+				username2 === username3 || username2 === username4 || username3 === username4)
+				return notif("There can't be the same player 2 times", false);
+			notif(data.message, true);
+			localStorage.setItem("Player2", data.player2.username);
+			localStorage.setItem("Player3", data.player3.username);
+			localStorage.setItem("Player4", data.player4.username);
+			document.getElementById("joueur1_id").innerHTML = localStorage.getItem("Player1");
+			document.getElementById("joueur2_id").innerHTML = localStorage.getItem("Player2");
+			document.getElementById("joueur3_id").innerHTML = localStorage.getItem("Player3");
+			document.getElementById("joueur4_id").innerHTML = localStorage.getItem("Player4");
+			localStorage.setItem("current_player1", localStorage.getItem("Player1"));
+			localStorage.setItem("current_player2", localStorage.getItem("Player2"));	
+			const tournamentStarted = true;
+			localStorage.setItem('tournamentStarted', tournamentStarted.toString());
+			document.getElementById("container_name_player").classList.add('hidden');
+			document.getElementById("tournament_graphic_id").classList.add('active');
+			document.getElementById("start_tournament").style.display = 'none';
+			document.getElementById("back_to_menu_view_tournament").style.display = 'none';
+			
+			// Mettre en surbrillance les joueurs initiaux
+		} else
+			notif(data.error, false);
+	} catch (err) {
+		console.error("Erreur lors de la connexion :", err);
+		notif("Erreur de connexion", false);
+	}
 }
 
 async function logout() {
