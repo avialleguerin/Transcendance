@@ -3,6 +3,7 @@ import { getSQLiteCreds } from './vault.js';
 import { CREATE_USERS_TABLE } from '../models/usersModel.js';
 import { CREATE_GAMES_TABLE } from '../models/gamesModel.js';
 import { CREATE_FRIENDSHIPS_TABLE } from '../models/friendshipsModel.js';
+import { CREATE_PLATFORMERS_TABLE } from '../models/platformersModel.js';
 
 const dbFile = "Data/db/database.sqlite";
 
@@ -27,6 +28,7 @@ export function initDb() {
 	db.prepare(CREATE_USERS_TABLE).run();
 	db.prepare(CREATE_GAMES_TABLE).run();
 	db.prepare(CREATE_FRIENDSHIPS_TABLE).run();
+	db.prepare(CREATE_PLATFORMERS_TABLE).run();
 	console.log("\n✅ Bases de données initialisée !");
 }
 

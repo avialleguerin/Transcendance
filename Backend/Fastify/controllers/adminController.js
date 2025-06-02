@@ -1,6 +1,7 @@
 import { fastify } from '../server.js'
 import usersModel from '../models/usersModel.js'
 import gamesModel from '../models/gamesModel.js'
+import platformersModel from '../models/platformersModel.js'
 import friendshipsModel from '../models/friendshipsModel.js'
 
 export async function getAllUsers(request, reply) {
@@ -181,6 +182,54 @@ export async function deleteFriendship(request, reply) {
 		if (info.changes === 0)
 			return reply.code(404).send({ error: "Friendship not found" })
 		return reply.send({ success: true, message: "Friendship deleted successfully"})
+	} catch (err) {
+		fastify.log.error(err)
+		return reply.code(500).send({ error: err.message })
+	}
+}
+
+export async function getAllPlatformers(request, reply) {
+	try {
+		const platformers = platformersModel.getAllPlatformers()
+		return platformers
+	} catch (err) {
+		return reply.code(500).send({ error: err.message })
+	}
+}
+
+export async function addPlatformer(request, reply) {
+	const { username, chrono } = request.body
+
+	try {
+		console.log("username :", username)
+		console.log("chrono :", chrono)
+		if (!username || !chrono)
+			return reply.code(400).send({ success: false, error: "Missing parameters" })
+		const user = usersModel.getUserByUsername(username)
+		if (!user)
+			return reply.code(404).send({ success: false, error: `User '${username}' not found` })
+		platformersModel.createPlatformer(user.userId, chrono)
+
+		return reply.code(201).send({ 
+			success: true,
+			message: "Platformer finished successfully",
+		})
+	} catch (err) {
+		console.error("Error creating platformer game:", err)
+		return reply.code(500).send({ error: err.message })
+	}
+}
+
+export async function deletePlatformer(request, reply) {
+	const { platformerId } = request.body
+	try {
+		const platformer = platformersModel.getPlatformerById(platformerId)
+		if (!platformer)
+			return reply.code(404).send({ error: 'Platformer not found' })
+		const info = platformersModel.deletePlatformer(platformerId)
+		if (info.changes === 0)
+			return reply.code(404).send({ error: "Platformer not found" })
+		return reply.send({ success: true, message: "Platformer deleted successfully"})
 	} catch (err) {
 		fastify.log.error(err)
 		return reply.code(500).send({ error: err.message })

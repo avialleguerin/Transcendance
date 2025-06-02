@@ -1,7 +1,8 @@
 import { getUserProfilePicture, createUser , deleteAccount, login, login1v1, login2v2, logout, updateDoubleAuth, accessProfileInfo, changeProfilePicture, changeProfile, getUserProfile, verifyDoubleAuth, activateDoubleAuth, refreshInfos, exportUserData } from '../controllers/usersController.js';
 import { getUserGames, create1v1Game, create2v2Game } from '../controllers/gamesController.js';
+import { getUserPlatformer, createPlatformer } from '../controllers/platformerController.js';
 import { getUserFriendships, addFriend, acceptFriend, deleteFriend } from '../controllers/friendshipsController.js';
-import { getAllUsers, deleteUser, getAllGames, createGame, deleteGame, getAllFriendships, addFriendship, deleteFriendship } from '../controllers/adminController.js';
+import { getAllUsers, deleteUser, getAllGames, createGame, deleteGame, getAllPlatformers, addPlatformer, deletePlatformer, getAllFriendships, addFriendship, deleteFriendship } from '../controllers/adminController.js';
 import { getSQLiteCreds } from '../utils/vault.js'
 
 /**
@@ -41,6 +42,9 @@ export default async function routes (fastify) {
 	fastify.get('/admin/get-all-games', getAllGames)
 	fastify.post('/admin/create-game', createGame)
 	fastify.delete('/admin/delete-game', deleteGame)
+	fastify.get('/admin/get-all-platformers', getAllPlatformers)
+	fastify.post('/admin/create-platformer', addPlatformer)
+	fastify.delete('/admin/delete-platformer', deletePlatformer)
 	fastify.get('/admin/get-all-friendships', getAllFriendships)
 	fastify.post('/admin/create-friendship', addFriendship)
 	fastify.delete('/admin/delete-friendship', deleteFriendship)
@@ -73,6 +77,10 @@ export default async function routes (fastify) {
 	fastify.post('/game/get-friend-games', getUserGames)
 	fastify.post('/game/create-1v1-game', create1v1Game)
 	fastify.post('/game/create-2v2-game', create2v2Game)
+
+	//platformerController
+	fastify.get('/platformer/get-user-platformer', getUserPlatformer)
+	fastify.post('/platformer/create-platformer', createPlatformer)
 
 	// Tokens
 	// fastify.post('/refresh-token', refreshAccessToken)

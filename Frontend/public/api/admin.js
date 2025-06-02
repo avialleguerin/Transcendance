@@ -50,6 +50,26 @@ async function fetch_games() {
 	}
 }
 
+async function fetch_platformers() {
+	try {
+		const response = await fetch('/request/admin/get-all-platformers', {
+			method: 'GET',
+		});
+		const platformers = await response.json();
+		document.getElementById('platformers-table').innerHTML = platformers.map(platformer => /*html*/`
+			<tr class="border-collapse text-sm hover:shadow-lg hover:rounded-xl hover:-translate-y-1 transition-all duration-200 ease-in-out cursor-pointer">
+				<td class="bg-white px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${platformer.platformerId}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.username}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.chrono}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.created_at}</td>
+				<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0"><button class="bg-red-200 hover:bg-red-300 m-2 text-red-500 hover:text-red-600 px-4 py-1 rounded-full transition-colors duration-300 ease-in-out" onclick="delete_platformer(${platformer.platformerId})">Delete</button></td>
+			</tr>
+		`).join('');
+	} catch (err) {
+		console.error('Erreur lors de la récupération des Jeux :', err);
+	}
+}
+
 async function fetch_friendships() {
 	try {
 		const response = await fetch('/request/admin/get-all-friendships', {
@@ -135,6 +155,37 @@ async function create_game(event) {
 	fetch_games();
 };
 
+async function create_platformer(event) {
+	event.preventDefault();
+
+	const username = document.getElementById("addPlatformer-user").value;
+	const chrono = document.getElementById("addPlatformer-chrono").value;
+
+	if (!username || !chrono) {
+		notif("Please select the user and the chrono", false);
+		return ;
+	}
+
+	const response = await fetch('/request/admin/create-platformer', {
+		method: 'POST',
+		headers: { 
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({ username, chrono }),
+		credentials: 'include',
+	});
+	const data = await response.json();
+	if (data.success) {
+		notif(`Platformer added : ${data.username} in ${data.chrono}s`, true);
+		close_platformer_modal();
+	} else {
+		notif(data.error, false);
+	}
+	document.getElementById("addPlatformerForm").reset();
+	fetch_platformers();
+};
+
+
 async function create_friendship(event) {
 	event.preventDefault();
 
@@ -209,6 +260,28 @@ async function delete_game(gameId) {
 	fetch_games();
 }
 
+async function delete_platformer(platformerId) {
+	if (confirm('Do you really want to delete this platformer ?')) {
+		try {
+			const response = await fetch('/request/admin/delete-platformer', { 
+				method: 'DELETE',
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ platformerId }),
+				credentials: 'include'
+			},);
+			const data = await response.json();
+			if (data.success) {
+				console.log('Game deleted successfully');
+			}
+		} catch (err) {
+			console.error('Erreur lors de la suppression :', err);
+		}
+	}
+	fetch_platformers();
+}
+
 async function delete_friendship(friendshipId) {
 	if (confirm('Do you really want to delete this friendship ?')) {
 		try {
@@ -247,6 +320,12 @@ async function add_game_modal() {
 	document.getElementById("addGameModal").classList.remove("hidden");
 }
 
+async function add_platformer_modal() {
+	if (!document.getElementById("addPlatformerModal").classList.contains("hidden"))
+		document.getElementById("addPlatformerModal").classList.add("hidden")
+	document.getElementById("addPlatformerModal").classList.remove("hidden");
+}
+
 async function add_friendship_modal() {
 	if (!document.getElementById("addFriendshipModal").classList.contains("hidden"))
 		document.getElementById("addFriendshipModal").classList.add("hidden")
@@ -263,6 +342,11 @@ async function close_game_modal() {
 	document.getElementById("addGameModal").classList.add("hidden");
 }
 
+async function close_platformer_modal() {
+	document.getElementById("addPlatformerForm").reset();
+	document.getElementById("addPlatformerModal").classList.add("hidden");
+}
+
 async function close_friendship_modal() {
 	document.getElementById("addFriendshipForm").reset();
 	document.getElementById("addFriendshipModal").classList.add("hidden");
@@ -271,5 +355,6 @@ async function close_friendship_modal() {
 window.addEventListener('DOMContentLoaded', () => {
 	fetch_users();
 	fetch_games();
+	fetch_platformers();
 	fetch_friendships();
 });

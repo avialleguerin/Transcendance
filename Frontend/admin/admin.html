@@ -32,7 +32,12 @@
 				</div>
 				<span class="ml-3">Games</span>
 			</button>
-			
+			<button onclick="showTab('platformer-tab')" class="text-gray-700 tab-btn group w-full flex items-center py-3 px-4 rounded-lg hover:bg-violet-600 hover:text-white transition-colors" id="plaftormer-tab-btn">
+				<div class="w-6 text-center">
+					<i class="text-gray-700 fas fa-gamepad group-hover:text-white"></i>
+				</div>
+				<span class="ml-3">Platformer</span>
+			</button>
 			<button onclick="showTab('rgpd-tab')" class="text-gray-700 tab-btn group w-full flex items-center py-3 px-4 rounded-lg hover:bg-violet-600 hover:text-white transition-colors" id="rgpd-tab-btn">
 				<div class="w-6 text-center">
 					<i class="text-gray-700 fas fa-shield-alt group-hover:text-white"></i>
@@ -188,6 +193,45 @@
 				</div>
 				<button type="submit" class="w-full bg-violet-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-violet-600 transition">Add</button>
 				<button type="button" class="mt-4 w-full border border-violet-500 text-violet-500 font-bold py-2 px-4 rounded-lg hover:bg-violet-500 hover:text-white transition" onclick="close_game_modal()">Cancel</button>
+			</form>
+		</div>
+
+		<div id="platformer-tab" class="tab-content hidden container m-6 mx-auto">
+			<div class="px-4 md:px-8 container mx-auto">
+				<h2 class="text-xl font-semibold mb-6 mt-4">List of Platformer</h2>
+				<div class="bg-white">
+					<table class="py-4 my-4 md:py-8 min-w-full border-separate border-spacing-y-3">
+						<thead>
+							<tr>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider rounded-l-xl">Platformer ID</th>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">User</th>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Chrono</th>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Date</th>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider rounded-r-xl">Action</th>
+							</tr>
+						</thead>
+						<tbody class="bg-white" id="platformers-table">
+							 <!-- Data will be injected here by JavaScript -->
+						</tbody>
+					</table>
+				</div>
+				<button class="bg-violet-500 text-white font-bold py-2 px-4 m-6 mx-auto block w-auto rounded-lg hover:bg-violet-600 transition" onclick="add_platformer_modal()">Add Platformer</button>
+			</div>
+		</div>
+		
+		<div id="addPlatformerModal" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 hidden w-[400px]">
+			<form id="addPlatformerForm" class="mx-auto bg-white p-6 rounded-lg shadow-lg" onsubmit="create_platformer(event)">
+				<h2 class="text-2xl font-semibold text-center mb-2">Add Platformer</h2>
+				<div class="mb-2">
+					<label for="username" class="block text-gray-700 font-medium">User :</label>
+					<input type="text" id="addPlatformer-user" name="username" placeholder="Username" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
+				</div>
+				<div class="mb-2">
+					<label for="chrono" class="block text-gray-700 font-medium">User :</label>
+					<input type="number" id="addPlatformer-chrono" name="chrono" placeholder="Chrono" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
+				</div>
+				<button type="submit" class="w-full bg-violet-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-violet-600 transition">Add</button>
+				<button type="button" class="mt-4 w-full border border-violet-500 text-violet-500 font-bold py-2 px-4 rounded-lg hover:bg-violet-500 hover:text-white transition" onclick="close_platformer_modal()">Cancel</button>
 			</form>
 		</div>
 
@@ -387,8 +431,9 @@
 		function showTab(tabId) {
 			const tabNames = {
 				'users-tab': 'Users',
-				'games-tab': 'Games',
 				'friendships-tab': 'Friendships',
+				'games-tab': 'Games',
+				'platformer-tab': 'Platformer',
 				'rgpd-tab': 'RGPD'
 			};
 			
