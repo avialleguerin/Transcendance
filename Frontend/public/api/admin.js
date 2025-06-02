@@ -8,6 +8,7 @@ async function fetch_users() {
 			method: 'GET',
 		});
 		const users = await response.json();
+		console.log('Users fetched:', users);
 		document.getElementById('users-table').innerHTML = users.map(user => /*html*/`
 			<tr class="border-collapse text-sm hover:shadow-lg hover:rounded-xl hover:-translate-y-1 transition-all duration-200 ease-in-out cursor-pointer">
 				<td class="bg-white px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${user.userId}</td>

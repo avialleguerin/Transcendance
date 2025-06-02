@@ -133,12 +133,12 @@ export async function login1v1(request, reply) {
 		
 		
 		// Vérifier si l'adversaire a été anonymisé
-		if (opponent.anonymized_at) {
+		if (player2.anonymized_at) {
 			return reply.code(401).send({ success: false, error: 'This account has been deleted' })
 		}
 		
 		// Vérifier le mot de passe
-		if (!await verifyPassword(opponent.password, password)) {
+		if (!await verifyPassword(player2.password, password)) {
 			return reply.code(401).send({ success: false, error: 'Invalid credentials' })
 		}
 		usersModel.updateLastConnection(player2.userId)
