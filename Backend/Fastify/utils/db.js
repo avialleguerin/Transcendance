@@ -4,6 +4,7 @@ import { CREATE_USERS_TABLE } from '../models/usersModel.js';
 import { CREATE_GAMES_TABLE } from '../models/gamesModel.js';
 import { CREATE_FRIENDSHIPS_TABLE } from '../models/friendshipsModel.js';
 import { CREATE_PLATFORMERS_TABLE } from '../models/platformersModel.js';
+import {fastify} from '../server.js'; // Import Fastify instance
 
 const dbFile = "Data/db/database.sqlite";
 
@@ -19,7 +20,7 @@ async function setupDatabase() {
 		db.pragma(`key = '${pass}'`)
 		return db
 	} catch (err) {
-		console.error("Error config of SQLite:", err)
+		fastify.log.error("Error config of SQLite:", err)
 		throw err
 	}
 }
@@ -29,7 +30,8 @@ export function initDb() {
 	db.prepare(CREATE_GAMES_TABLE).run();
 	db.prepare(CREATE_FRIENDSHIPS_TABLE).run();
 	db.prepare(CREATE_PLATFORMERS_TABLE).run();
-	console.log("\n✅ Bases de données initialisée !");
+	fastify.log.info("Bases de données initialisée");
+	
 }
 
 const db = await setupDatabase();

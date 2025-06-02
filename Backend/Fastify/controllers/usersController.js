@@ -3,6 +3,8 @@ import usersModel from '../models/usersModel.js'
 import { hashPassword, verifyPassword } from '../utils/hashUtils.js'
 import { redisModel } from '../models/redisModel.js'
 import { getUserFromToken } from './utils.js'
+import friendshipsModel from '../models/friendshipsModel.js'; //NOTE - new
+import gamesModel from '../models/gamesModel.js'; //NOTE - new
 import speakeasy from 'speakeasy'
 import qrcode from 'qrcode'
 import fs from 'fs/promises';
@@ -69,14 +71,31 @@ export async function createUser(request, reply) {
 export async function login(request, reply) {
 	const { username, password } = request.body
 	try {
-		console.log("username :", username)
+		fastify.log.info("username : " + username)
 		const user = usersModel.getUserByUsername(username)
-		if (!user || !await verifyPassword(user.password, password))
+		
+		// Vérifier si l'utilisateur existe
+		if (!user) {
 			return reply.code(401).send({ success: false, error: 'Invalid credentials' })
+		}
+		
+		// Vérifier si l'utilisateur a été anonymisé
+		if (user.anonymized_at) {
+			fastify.log.warn(`Tentative de connexion d'un utilisateur anonymisé: ${username}`)
+			return reply.code(401).send({ success: false, error: 'This account has been deleted' })
+		}
+		
+		// Vérifier le mot de passe
+		if (!await verifyPassword(user.password, password)) {
+			return reply.code(401).send({ success: false, error: 'Invalid credentials' })
+		}
+		
 		if (user.doubleAuth_status)
 			return reply.code(200).send({success: true, connection_status: "partially_connected", message: 'Double authentication required', user: user})
+		
 		const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, {expiresIn: '15m' })
 		const refreshToken = fastify.jwt.sign({ userId: user.userId }, {expiresIn: '7d' })
+		
 		if (!accessToken || !refreshToken)
 			return reply.code(500).send({ error: 'Internal Server Error' })
 		usersModel.updateLastConnection(user.userId)
@@ -91,6 +110,7 @@ export async function login(request, reply) {
 		.code(200)
 		.send({ success: true, message: 'Logged in', connection_status: "connected", user: user, doubleAuth_status: user.doubleAuth_status, accessToken: accessToken })
 	} catch (err) {
+		fastify.log.error("Error during login : " + err.message)
 		return reply.code(500).send({ error: err.message })
 	}
 }
@@ -110,6 +130,17 @@ export async function login1v1(request, reply) {
 		const player2 = usersModel.getUserByUsername(username)
 		if (!player2 || !await verifyPassword(player2.password, password))
 			return reply.code(401).send({ success: false, error: 'Invalid credentials' })
+		
+		
+		// Vérifier si l'adversaire a été anonymisé
+		if (player2.anonymized_at) {
+			return reply.code(401).send({ success: false, error: 'This account has been deleted' })
+		}
+		
+		// Vérifier le mot de passe
+		if (!await verifyPassword(player2.password, password)) {
+			return reply.code(401).send({ success: false, error: 'Invalid credentials' })
+		}
 		usersModel.updateLastConnection(player2.userId)
 		reply.code(200).send({ success: true, message: 'Opponent logged in', user: user, player2: player2, accessToken: accessToken })
 	} catch (err) {
@@ -171,7 +202,7 @@ export async function logout(request, reply) {
 export async function updateDoubleAuth(request, reply) {
 	try {
 		const infos = await getUserFromToken(request)
-		// console.log("🔑 infos :", infos)
+		// fastify.log.info("🔑 infos :", infos)
 		if (!infos)
 			return reply.code(401).send({ success: false, error: 'Unauthorized' })
 		const user = infos.user
@@ -181,12 +212,12 @@ export async function updateDoubleAuth(request, reply) {
 		{
 			usersModel.updateDoubleAuth_status(user.userId, 0)
 			usersModel.updateDoubleAuth_secret(user.userId, null)
-			// console.log("Double Auth disabled")
+			// fastify.log.info("Double Auth disabled")
 			return reply.code(200).send({success: true, message: "2FA disabled successfully!", doubleAuth_secret: false})
 		}
 		const doubleAuthData = generateDoubleAuth(user.userId)
-		// console.log("Double Auth qrCode", (await doubleAuthData).qrCode)
-		// console.log("Double Auth secret", (await doubleAuthData).secret)
+		// fastify.log.info("Double Auth qrCode", (await doubleAuthData).qrCode)
+		// fastify.log.info("Double Auth secret", (await doubleAuthData).secret)
 
 		return reply.code(200).send({
 			success: true,
@@ -280,13 +311,13 @@ export async function changeProfilePicture(request, reply) {
 				.catch(() => false);
 				
 				if (fileExists) {
-					console.log(`🗑️ Deleting old profile picture: ${oldFilePath}`);
+					fastify.log.info(`🗑️ Deleting old profile picture: ${oldFilePath}`);
 					await fs.unlink(oldFilePath);
 				} else {
-					console.log(`⚠️ Old profile picture doesn't exist: ${oldFilePath}`);
+					fastify.log.info(`⚠️ Old profile picture doesn't exist: ${oldFilePath}`);
 				}
 			} catch (deleteErr) {
-				console.error(`❌ Error deleting old profile picture: ${deleteErr.message}`);
+				fastify.log.error(`❌ Error deleting old profile picture: ${deleteErr.message}`);
 			}
 		}
 
@@ -299,7 +330,7 @@ export async function changeProfilePicture(request, reply) {
 			path: `/uploads/${filename}`
 		});
 	} catch (err) {
-		console.error("❌ Error uploading new profile picture :", err);
+		fastify.log.error("❌ Error uploading new profile picture :", err);
 		return reply.code(500).send({ error: err.message });
 	}
 }
@@ -308,7 +339,7 @@ export async function deleteAccount(request, reply) {
 	try {
 		const { refreshToken } = request.cookies
 		const infos = await getUserFromToken(request)
-		console.log("infos :", infos)
+		fastify.log.info("infos :" + infos)
 		if (!infos)
 			return reply.code(401).send({ success: false, error: 'Unauthorized' })
 		const user = infos.user
@@ -337,19 +368,24 @@ export async function deleteAccount(request, reply) {
 				.catch(() => false);
 				
 				if (fileExists) {
-					console.log(`🗑️ deleting old profile picture: ${oldFilePath}`);
+					fastify.log.info(`🗑️ deleting old profile picture: ${oldFilePath}`);
 					await fs.unlink(oldFilePath);
 				} else {
-					console.log(`⚠️ Old profile picture doesn't exist: ${oldFilePath}`);
+					fastify.log.info(`⚠️ Old profile picture doesn't exist: ${oldFilePath}`);
 				}
 			} catch (deleteErr) {
-				console.error(`❌ Error deleting old profile picture: ${deleteErr.message}`);
+				fastify.log.error(`❌ Error deleting old profile picture: ${deleteErr.message}`);
 			}
 		}
-		const info = usersModel.delete(user.userId)
+		// const info = usersModel.delete(user.userId)
+		const info = usersModel.anonymizeUser(user.userId) // Anonymiser l'utilisateur au lieu de le supprimer complètement // Cela préserve les références dans les parties
+			
+			
 		if (info.changes === 0)
 			return reply.code(404).send({ error: "User not found" })
-		return reply.send({ success: true, message: "User deleted successfully"})
+		// return reply.send({ success: true, message: "User deleted successfully"})
+		console.log(`🔒 User ${user.username} (ID: ${user.userId}) has been anonymized`)
+		return reply.send({ success: true, message: "Account anonymized successfully"})
 	} catch (err) {
 		fastify.log.error(err)
 		return reply.code(500).send({ error: err.message })
@@ -389,7 +425,7 @@ export async function verifyDoubleAuth(request, reply) {
 		} else
 			return reply.code(401).send({ success: false, error: 'Invalid 2FA code' })
 	} catch (err) {
-		console.error(err)
+		fastify.log.error(err)
 		return reply.code(500).send({ success: false, error: 'Internal server error' })
 	}
 }
@@ -462,8 +498,7 @@ export async function refreshInfos(request, reply) {
 	}
 }
 
-import gamesModel from '../models/gamesModel.js'; //NOTE - new
-import friendshipsModel from '../models/friendshipsModel.js'; //NOTE - new
+
 
 export async function exportUserData(request, reply) {
 	  try {
@@ -499,7 +534,29 @@ export async function exportUserData(request, reply) {
 		
 		return reply.code(200).send(JSON.stringify({ success: true, ...exportData }, null, 2));
 	} catch (error) {
-		console.error('Error exporting user data:', error);
+		fastify.log.error('Error exporting user data:', error);
 		return reply.code(500).send({ success: false, error: 'Failed to export user data' });
+	}
+}
+
+export async function anonymizeUser(request, reply) {
+	try {
+		const infos = await getUserFromToken(request, reply)
+		if (!infos)
+			return reply.code(401).send({ success: false, error: 'Unauthorized' })
+		const user = infos.user
+		if (!user)
+			return reply.code(401).send({ success: false , error: 'User not found' })
+		
+		const anonymizedUsername = `Anonym${user.userId}`;
+		const anonymizedProfilePicture = "default-profile-picture.png";
+		
+		usersModel.updateUsername(user.userId, anonymizedUsername);
+		usersModel.updateProfilePicture(user.userId, anonymizedProfilePicture);
+		
+		return reply.code(200).send({ success: true, message: 'User account anonymized successfully' });
+	} catch (error) {
+		fastify.log.error(`\x1b[31mError anonymizing user account: ${error.message}\x1b[0m`);
+		return reply.code(500).send({ success: false, error: 'Failed to anonymize user account : ' + error.message });
 	}
 }

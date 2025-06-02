@@ -14,7 +14,7 @@ export async function getUserFriendships(request, reply) {
 		if (!infos.accessToken)
 			return reply.code(401).send({ error: "Unauthorized" })
 		const friendships = friendshipsModel.getUserFriendships(user.userId)
-		console.log("friendships :", friendships)
+		fastify.log.debug("friendships :", friendships)
 		return reply.send({ success: true, friendships: friendships, user: infos.user, accessToken: infos.accessToken })
 	} catch (err) {
 		return reply.code(500).send({ error: err.message, accessToken: infos.accessToken })
@@ -25,12 +25,12 @@ export async function addFriend(request, reply) {
 	const { friend } = request.body
 	
 	try {
-		console.log("friend :", friend)
+		fastify.log.debug("friend :", friend)
 		const infos = await getUserFromToken(request)
 		if (!infos)
 			return reply.code(401).send({ error: "Unauthorized" })
 		const user = infos.user
-		console.log("user :", user)
+		fastify.log.debug("user :", user)
 		if (!infos.accessToken)
 			return reply.code(401).send({ error: "Unauthorized" })
 		if (!user)
@@ -57,7 +57,7 @@ export async function addFriend(request, reply) {
 			accessToken: infos.accessToken
 		})
 	} catch (err) {
-		console.error("Error creating friendship:", err)
+		fastify.log.error("Error creating friendship:", err)
 		return reply.code(500).send({ error: "Internal server error" })
 	}
 }
@@ -69,7 +69,7 @@ export async function acceptFriend(request, reply) {
 		if (!infos)
 			return reply.code(401).send({ error: "Unauthorized" })
 		const user = infos.user
-		console.log("user :", user)
+		fastify.log.info("user :", user)
 		if (!user)
 			return reply.code(401).send({ error: "User not found" })
 		if (!infos.accessToken)
@@ -90,7 +90,7 @@ export async function acceptFriend(request, reply) {
 			accessToken: infos.accessToken
 		})
 	} catch (err) {
-		console.error("Error accepting friendship:", err)
+		fastify.log.error("Error accepting friendship:", err)
 		return reply.code(500).send({ error: "Internal server error" })
 	}
 }

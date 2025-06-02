@@ -2,13 +2,12 @@ function notif(message, success = true) {
 	const notification = document.getElementById('resultMessage');
 	
 	if (notification) {
-		if (success) {
-			notification.innerHTML = "<div style='display:flex; align-items:center;'><img src='../srcs/game/assets/image/success.png' style='width:20px; height:20px; margin-right:5px;'><span>" + message + "</span></div>";
-			notification.className = "py-2 px-4 rounded shadow-lg bg-green-500 text-white font-medium"
-		} else {
-			notification.innerHTML = "<div style='display:flex; align-items:center;'><img src='../srcs/game/assets/image/failure.png' style='width:20px; height:20px; margin-right:5px;'><span>" + message + "</span></div>";
-			notification.className = "py-2 px-4 rounded shadow-lg bg-red-500 text-white font-medium";
-		}
+		const icon = success ?
+			`<img src='./assets/image/success.png' style='width:20px; height:20px; margin-right:5px;'>` :
+			`<img src='./assets/image/failure.png' style='width:20px; height:20px; margin-right:5px;'>`;
+   
+        notification.innerHTML = `<div style='display:flex; align-items:center;'>${icon}<span>${message}</span></div>`;
+        notification.className = `py-2 px-4 rounded shadow-lg ${success ? 'bg-green-500' : 'bg-red-500'} text-white font-medium`;
 
 		setTimeout(() => {
 			notification.classList.add('opacity-100');
@@ -52,10 +51,10 @@ async function fetchAPI(url, method, body = null, showNotification = true, formD
 			notif(data.message, true);
 		else if (data.error)
 			notif(data.error, false);
-		console.log("fetchAPI: data :", data);
+		console.log("fetchAPI: data:", data.error ? data.error : data);
 		return data;
 	} catch (err) {
-		console.error(`Error in API call to ${url}:`, err);
+		console.error(`Error in API call to ${url}:`, err.message);
 		if (showNotification)
 			notif("Une erreur s'est produite lors de la communication avec le serveur", false);
 		throw err;

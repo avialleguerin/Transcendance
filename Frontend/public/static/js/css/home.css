@@ -398,3 +398,26 @@ button:hover {
 	box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
 	transform: translateY(-2px);
 }
+
+.privacy-policy-container {
+    display: flex;
+    justify-content: center; /* Centre horizontalement */
+    margin-top: 20px; /* Ajoute un espace au-dessus */
+}
+
+.privacy-policy-container label {
+    text-align: center; /* Centre le texte */
+    font-size: 14px;
+    font-family: "Black Ops One", sans-serif;
+    color: #75c7ff;
+}
+
+.privacy-policy-container .cgu-link {
+    color: #75c7ff;
+    text-decoration: underline;
+    transition: color 0.2s;
+}
+
+.privacy-policy-container .cgu-link:hover {
+    color: #ffffff;
+}
