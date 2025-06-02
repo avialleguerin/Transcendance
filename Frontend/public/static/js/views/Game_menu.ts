@@ -57,6 +57,157 @@ export default class Game_menu extends AbstractView {
 			</button>
 			
 		</div>
+
+
+		<div id="cgu-modal" class="cgu-modal">
+			<div class="cgu-content">
+				<h1>Conditions Générales d'Utilisation</h1>
+				<div class="cgu-text">
+					<h2>1. Introduction</h2>
+					<p>Bienvenue sur Transcendance. En utilisant notre application, vous acceptez les présentes conditions générales d'utilisation.</p>
+					<p>Responsable du traitement: Équipe projet Transcendance - École 42<br>
+					Contact: ozasahin@student.42lyon.fr<br>
+					Délégué à la Protection des Données (DPO): M. SAHIN O.</p>
+					
+					<h2>2. Description du Service</h2>
+					<p>Transcendance est une plateforme de jeu en ligne permettant aux utilisateurs de jouer à Pong et d'autres jeux, de communiquer et d'interagir avec d'autres utilisateurs.</p>
+					
+					<h2>3. Inscription et Compte</h2>
+					<p>Pour utiliser notre service, vous devez créer un compte avec des informations exactes et à jour. Nous collectons uniquement les données nécessaires à la fourniture de nos services.</p>
+					
+					<h2>4. Comportement des Utilisateurs</h2>
+					<p>Les utilisateurs s'engagent à respecter les autres membres et à ne pas publier de contenu offensant ou illégal.</p>
+					
+					<h2>5. Propriété Intellectuelle</h2>
+					<p>Tous les droits de propriété intellectuelle liés à Transcendance appartiennent à leurs propriétaires respectifs.</p>
+					
+					<h2>6. Protection des Données</h2>
+					<p>Nous nous engageons à protéger vos données personnelles conformément au Règlement Général sur la Protection des Données (RGPD).</p>
+					<h3>6.1 Données collectées</h3>
+					<p>Nous collectons les catégories de données suivantes:
+					<ul>
+						<li>Données d'identification (ID interne, username, avatar)</li>
+						<li>Données d'authentification (via Google Sign-In)</li>
+						<li>Données de profil (statut, préférences)</li>
+						<li>Données d'utilisation (historique des parties, scores, classement)</li>
+					</ul>
+					</p>
+					<h3>6.2 Finalités du traitement</h3>
+					<p>Vos données sont traitées pour les finalités suivantes:
+					<ul>
+						<li>Fourniture du service de jeu en ligne Transcendance</li>
+						<li>Administration des comptes utilisateurs</li>
+						<li>Fonctionnalités sociales (amis)</li>
+						<li>Enregistrement des statistiques de jeu et classements</li>
+					</ul>
+					</p>
+					<h3>6.3 Durée de conservation</h3>
+					<p>Vos données sont conservées pendant la durée du projet et jusqu'à 1 mois après l'évaluation finale.</p>
+					<h3>6.4 Destinataires des données</h3>
+					<p>Vos données peuvent être accessibles aux:
+					<ul>
+						<li>Membres de l'équipe projet</li>
+						<li>Corps enseignant et évaluateurs de l'école 42</li>
+						<li>Autres utilisateurs (uniquement pour les données publiques de profil)</li>
+					</ul>
+					</p>
+					<h3>6.5 Vos droits</h3>
+					<p>Conformément au RGPD, vous disposez des droits suivants:
+					<ul>
+						<li>Droit d'accès à vos données</li>
+						<li>Droit de rectification</li>
+						<li>Droit à l'effacement ("droit à l'oubli")</li>
+						<li>Droit à la limitation du traitement</li>
+						<li>Droit à la portabilité des données</li>
+						<li>Droit d'opposition</li>
+					</ul>
+					Pour exercer ces droits, contactez-nous à: ozasahin@student.42lyon.fr
+					</p>
+					<h3>6.6 Mesures de sécurité</h3>
+					<p>Nous mettons en œuvre les mesures techniques et organisationnelles suivantes:
+					<ul>
+						<li>Chiffrement des mots de passe et données sensibles</li>
+						<li>Authentification sécurisée (Google Sign-In)</li>
+						<li>Double authentification (2FA)</li>
+						<li>Sessions sécurisées avec expiration (JWT)</li>
+						<li>Protection contre les vulnérabilités web courantes</li>
+					</ul>
+					</p>
+					
+					<h2>7. Modification des CGU</h2>
+					<p>Nous nous réservons le droit de modifier ces conditions à tout moment. Les utilisateurs seront notifiés des changements importants.</p>
+					
+					<h2>8. Durée et Résiliation</h2>
+					<p>L'accès à notre service peut être suspendu ou résilié en cas de non-respect des présentes conditions.</p>
+					
+					<h2>9. Transferts de données</h2>
+					<p>Aucun transfert de données personnelles n'est effectué en dehors de l'Union Européenne. Toutes les données sont hébergées sur des serveurs situés dans l'UE.</p>
+				</div>
+				<button id="cgu-back-button" class="cgu-back-button">Retour</button>
+			</div>
+		</div>
+
+		<div id="privacy-policy-modal" class="cgu-modal">
+			<div class="cgu-content">
+				<h1>Politique de Confidentialité</h1>
+				<div class="cgu-text">
+					<h2>1. Introduction</h2>
+					<p>Bienvenue dans notre Politique de Confidentialité. Elle décrit comment nous collectons, utilisons et protégeons vos données personnelles.</p>
+					<p>Responsable du traitement: Équipe projet Transcendance - École 42<br>
+					Contact: ozasahin@student.42lyon.fr<br>
+					Délégué à la Protection des Données (DPO): M. SAHIN O.</p>
+					
+					<h2>2. Données collectées</h2>
+					<p>Nous collectons des données vous concernant lorsque vous utilisez notre service, notamment:</p>
+					<ul>
+						<li>Données d'identification (ID interne, username, avatar)</li>
+						<li>Données d'authentification (via Google Sign-In)</li>
+						<li>Données de profil (statut, préférences)</li>
+						<li>Données d'utilisation (historique des parties, scores, classement)</li>
+					</ul>
+					
+					<h2>3. Utilisation des données</h2>
+					<p>Nous utilisons vos données pour:</p>
+					<ul>
+						<li>Fournir et améliorer notre service</li>
+						<li>Administrer votre compte</li>
+						<li>Vous proposer des fonctionnalités sociales (amis)</li>
+						<li>Enregistrer vos statistiques de jeu et classements</li>
+					</ul>
+					
+					<h2>4. Partage des données</h2>
+					<p>Nous ne vendons pas vos données personnelles. Nous pouvons être amenés à partager vos données avec:</p>
+					<ul>
+						<li>Membres de l'équipe projet</li>
+						<li>Corps enseignant et évaluateurs de l'école 42</li>
+						<li>Autres utilisateurs (uniquement pour les données publiques de profil)</li>
+					</ul>
+					
+					<h2>5. Sécurité des données</h2>
+					<p>Nous mettons en œuvre des mesures de sécurité pour protéger vos données contre tout accès non autorisé, divulgation, altération ou destruction.</p>
+					
+					<h2>6. Vos droits</h2>
+					<p>Conformément au RGPD, vous disposez des droits suivants concernant vos données personnelles:</p>
+					<ul>
+						<li>Droit d'accès</li>
+						<li>Droit de rectification</li>
+						<li>Droit à l'effacement</li>
+						<li>Droit à la limitation du traitement</li>
+						<li>Droit à la portabilité des données</li>
+						<li>Droit d'opposition</li>
+					</ul>
+					<p>Pour exercer ces droits, contactez-nous à: ozasahin@student.42lyon.fr</p>
+					
+					<h2>7. Modifications de la Politique de Confidentialité</h2>
+					<p>Nous nous réservons le droit de modifier cette politique à tout moment. Les utilisateurs seront notifiés des changements importants.</p>
+					
+					<h2>8. Contact</h2>
+					<p>Pour toute question concernant cette Politique de Confidentialité, veuillez nous contacter à: ozasahin@student.42lyon.fr</p>
+				</div>
+				<button id="privacy-policy-back-button" class="cgu-back-button">Retour</button>
+			</div>
+		</div>
+
 		<div class="panel_option_navbar" id="panel_option_navbar">
 			<button class="option-in-panel" id="option_btn_remove">
 				<img src="../../../srcs/game/assets/image/menu.svg" alt="leave">
@@ -268,6 +419,16 @@ export default class Game_menu extends AbstractView {
 							<div class="export_btn">
 								<button id="export_btn" class="btn_export_btn" onclick="export_data()">Export data</button>
 							</div>
+							<div class="anonymize_btn">
+								<button id="anonymize_btn" class="btn_anonymize_btn" onclick="anonymize_user()">Anonymize me</button>
+							</div>
+							<div class="cgu-container">
+                                <label for="accept-cgu"><a href="#" id="show-cgu" class="cgu-link">Conditions Générales d'Utilisation</a></label>
+                            </div>
+                            <div class="privacy-policy-container">
+                                <label for="accept-privacy-policy"><a href="#" id="show-privacy-policy" class="cgu-link">Politique de Confidentialité</a></label>
+                            </div>
+							
 						</div>
 					</div>
 				</div>
@@ -625,6 +786,67 @@ export default class Game_menu extends AbstractView {
 		const back_to_select_mode_view8 = document.getElementById('back_to_select_mode_view8');
 
 		// const back_to_menu_view_tournament = document.getElementById('back_to_menu_view_tournament');
+
+
+
+
+		// Gestion des CGU
+		const showCguLink = document.getElementById("show-cgu");
+		const cguModal = document.getElementById("cgu-modal");
+		const cguBackButton = document.getElementById("cgu-back-button");
+		
+		// Modifier l'event listener d'ouverture des CGU
+		showCguLink?.addEventListener("click", (e) => {
+			e.preventDefault();
+			cguModal?.classList.add("active");
+			// Ajouter cette ligne pour empêcher le scroll du contenu derrière
+			document.body.style.overflow = "hidden";
+		});
+
+		// Modifier les listeners de fermeture aussi
+		cguBackButton?.addEventListener("click", () => {
+			cguModal?.classList.remove("active");
+			// Réactiver le scroll quand on ferme
+			document.body.style.overflow = "";
+		});
+
+		// Ajout : fermer le modal en cliquant à l'extérieur
+		cguModal?.addEventListener("click", (event) => {
+			if (event.target === cguModal) {
+				cguModal?.classList.remove("active");
+				// Réactiver le scroll quand on ferme
+				document.body.style.overflow = "";
+			}
+		});
+
+		// Gestion de la Politique de Confidentialité
+        const showPrivacyPolicyLink = document.getElementById("show-privacy-policy");
+        const privacyPolicyModal = document.getElementById("privacy-policy-modal");
+        const privacyPolicyBackButton = document.getElementById("privacy-policy-back-button");
+
+        // Modifier l'event listener d'ouverture de la Politique de Confidentialité
+        showPrivacyPolicyLink?.addEventListener("click", (e) => {
+            e.preventDefault();
+            privacyPolicyModal?.classList.add("active");
+            // Ajouter cette ligne pour empêcher le scroll du contenu derrière
+            document.body.style.overflow = "hidden";
+        });
+
+        // Modifier les listeners de fermeture aussi
+        privacyPolicyBackButton?.addEventListener("click", () => {
+            privacyPolicyModal?.classList.remove("active");
+            // Réactiver le scroll quand on ferme
+            document.body.style.overflow = "";
+        });
+
+        // Ajout : fermer le modal en cliquant à l'extérieur
+        privacyPolicyModal?.addEventListener("click", (event) => {
+            if (event.target === privacyPolicyModal) {
+                privacyPolicyModal?.classList.remove("active");
+                // Réactiver le scroll quand on ferme
+                document.body.style.overflow = "";
+            }
+        });
 
 		btn_jouer.addEventListener('click', () => {
 			console.log('JOUER button clicked');
@@ -1202,7 +1424,6 @@ export default class Game_menu extends AbstractView {
 			console.log('Switch skin right id4 clicked');
 			switch_skin_perso_player4_right_multi();
 		});
-
 
 
 		/***********************************************************************/

@@ -7,32 +7,43 @@ import cookie from "@fastify/cookie";
 import fastifyMultipart from '@fastify/multipart';
 // Pages
 import routes from "./routes/routes.js"
-import { redisClient } from './utils/redis.js';
+import { redisClient, setupRedisLogging } from './utils/redis.js';
 import { redisModel } from './models/redisModel.js';
 import cron from 'node-cron';
 
+import colorLoggerPlugin from './utils/logger.js' // NOTE - bonus: Colorized logger plugin
+
 // setting up the server
-await redisClient.connect();
-export const fastify = Fastify({ 
-	logger: {
+export const fastify = Fastify({
+	logger: { // trace - debug - info - warn - error - fatal
+		level: 'debug',
 		transport: {
 			target: 'pino-pretty',
 			options: {
-				translateTime: 'SYS:HH:MM',
 				colorize: true,
-				ignore: 'pid,hostname'
+				translateTime: 'SYS:H:MM',
+				ignore: 'pid,hostname',
 			}
 		}
-	}
-});
+	},
+	disableRequestLogging: true
+})
+
+setupRedisLogging(fastify); // Setup Redis logging with Fastify
+await redisClient.connect();
+
 // registering plugins
 await fastify.register(fastifyMultipart, { attachFieldsToBody: true, limits: { fileSize: 5 * 1024 * 1024 } });
 await fastify.register(jwt, { secret: 'supersecretkey', cookie: { cookieName: 'token', signed: false } });
 await fastify.register(cookie);
+await fastify.register(colorLoggerPlugin) //optionnel - colorized logger plugin
+
+// Exporter le logger pour utilisation globale
+export const log = fastify.logger; // Votre logger colorisé
+
+
 fastify.register(routes, { prefix: '/request' })
-// database initialization
 initDb();
-// decoration
 fastify.decorate('redis', redisClient);
 fastify.decorate('authenticate', async function (request, reply) {
 	try {
@@ -57,6 +68,7 @@ fastify.decorate('authenticate', async function (request, reply) {
 		reply.code(401).send({ error: 'You are not authorized' });
 	}
 });
+
 
 cron.schedule('0 0 * * *', () => {
 	console.log('Clean inactive users...');

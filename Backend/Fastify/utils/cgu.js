@@ -44,7 +44,7 @@ export const needsCGUUpdate = (userVersion) => {
 		
 // 		return reply.send({ success: true, message: "CGU acceptées avec succès" });
 // 	} catch (error) {
-// 		console.error("Erreur lors de l'acceptation des CGU:", error);
+// 		fastify.log.error("Erreur lors de l'acceptation des CGU:", error);
 // 		return reply.code(500).send({ error: "Erreur serveur" });
 // 	}
 // };
@@ -64,7 +64,7 @@ export const needsCGUUpdate = (userVersion) => {
 		
 // 		return reply.send({ status: "up-to-date" });
 // 	} catch (error) {
-// 		console.error("Erreur lors de la vérification des CGU:", error);
+// 		fastify.log.error("Erreur lors de la vérification des CGU:", error);
 // 		return reply.code(500).send({ error: "Erreur serveur" });
 // 	}
 // };

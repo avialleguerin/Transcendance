@@ -39,6 +39,13 @@
 				</div>
 				<span class="ml-3">RGPD</span>
 			</button>
+			
+			<button onclick="showTab('anonymized-tab')" class="text-gray-700 tab-btn group w-full flex items-center py-3 px-4 rounded-lg hover:bg-violet-600 hover:text-white transition-colors" id="anonymized-tab-btn">
+				<div class="w-6 text-center">
+					<i class="text-gray-700 fas fa-user-slash group-hover:text-white"></i>
+				</div>
+				<span class="ml-3">Anonymized Users</span>
+			</button>
 		</nav>
 	</aside>>
 
@@ -65,7 +72,7 @@
 								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Game Winned</th>
 								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Game Losed</th>
 								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">2FA</th>
-								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">CGU Version</th>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">CGU</th>
 								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Last Connection</th>
 								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Date</th>
 								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider rounded-r-xl">Action</th>
@@ -147,19 +154,17 @@
 					<table class="py-4 my-4 md:py-8 min-w-full border-separate border-spacing-y-3">
 						<thead>
 							<tr>
-								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider rounded-l-xl">Game ID</th>
-								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Player 1</th>
-								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Player 2</th>
-								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Player 3</th>
-								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Player 4</th>
-								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Score Team 1</th>
-								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Score Team 2</th>
-								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Date</th>
-								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider rounded-r-xl">Action</th>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 tracking-wider rounded-l-xl">Game ID</th>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 tracking-wider">Équipe Gauche</th>
+								<th class="bg-gray-100 px-6 py-4 text-center text-md font-medium text-gray-800 tracking-wider">Score Gauche</th>
+								<th class="bg-gray-100 px-6 py-4 text-center text-md font-medium text-gray-800 tracking-wider">Score Droit</th>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 tracking-wider">Équipe Droite</th>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 tracking-wider">Date</th>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 tracking-wider rounded-r-xl">Action</th>
 							</tr>
 						</thead>
 						<tbody class="bg-white" id="games-table">
-							 <!-- Data will be injected here by JavaScript -->
+							<!-- Data will be injected here by JavaScript -->
 						</tbody>
 					</table>
 				</div>
@@ -379,6 +384,28 @@
 			  </div>
 		</div>
 
+		<div id="anonymized-tab" class="tab-content hidden container mx-auto my-6 p-6 bg-white rounded-lg">
+			<h2 class="text-xl font-semibold mb-4">Anonymized Users</h2>
+			<div class="mb-8">
+				<h3 class="text-lg font-semibold text-violet-600 mb-2">List of Anonymized Users</h3>
+				<p class="text-gray-600 mb-4">Ces utilisateurs ont été anonymisés conformément au RGPD. Leurs données personnelles ont été supprimées mais leurs références dans les parties sont préservées.</p>
+				<div class="overflow-x-auto mb-4">
+					<table class="min-w-full bg-white border-separate border-spacing-y-3">
+						<thead>
+							<tr>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 tracking-wider rounded-l-xl">User ID</th>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 tracking-wider">Anonymized Username</th>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 tracking-wider rounded-r-xl">Date of Anonymization</th>
+							</tr>
+						</thead>
+						<tbody id="anonymized-users-table">
+							<!-- Data will be injected here by JavaScript -->
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
 	</main>
 
 	<script src="./api/admin.js"></script>
@@ -389,7 +416,8 @@
 				'users-tab': 'Users',
 				'games-tab': 'Games',
 				'friendships-tab': 'Friendships',
-				'rgpd-tab': 'RGPD'
+				'rgpd-tab': 'RGPD',
+				'anonymized-tab': 'Anonymized Users'
 			};
 			
 			// Stock the active tab in localStorage

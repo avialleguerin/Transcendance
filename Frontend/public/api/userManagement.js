@@ -123,6 +123,23 @@ async function export_data() {
 	}
 }
 
+async function anonymize_user() {
+	if (confirm('Do you really want to anonymize your account ?')) {
+		try {
+			const data = await fetchAPI('/request/user/anonymize-account', 'PUT');
+			console.log("data", data);
+			if (data.success) {
+				console.log('User anonymized successfully');
+				fetchProfile();
+				fetchProfilePicture();
+			}
+		} catch (err) {
+			notif("Erreur lors de l'anonymisation : " + err, false);
+			console.error("anonymize_user(): Error anonymizing user:", err);
+		}
+	}
+}
+
 async function delete_account() {
 	if (confirm('Do you really want to delete your account ?')) {
 		try {
