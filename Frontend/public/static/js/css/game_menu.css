@@ -2635,8 +2635,11 @@ to {
 	border-radius: 6px;
 	padding: 2px 8px;
 	border-left: 4px solid transparent;
+	border-left-color: transparent;
 	transition: transform 0.2s;
 	font-size: 14px;
+	margin-bottom: 5px;
+	height: 12%;
 }
 
 .game_card_navBar_team {
@@ -2700,8 +2703,8 @@ to {
 }
 
 .profile_navBar img, .opponent_navBar img {
-	width: 30px;
-	height: 30px;
+	width: 40px;
+	height: 40px;
 	border-radius: 50%;
 	border: 2px solid #555;
 }
@@ -3098,6 +3101,7 @@ to {
 	flex-shrink: 0;
 	cursor: pointer;
 	border: 2px dashed white;
+	margin-left: 10px;
 }
 
 .friend-details {
@@ -3134,6 +3138,20 @@ to {
 	position: absolute;
 	top: 90%;
 }
+
+.friend_online_status {
+	width: 10px;
+	height: 60px;
+	margin-right: 10px;
+	/* flex-shrink: 0; */
+	background-color: #03bf03;
+	position: absolute;
+	top: 3.3%;
+	left: 2%;
+	border-radius: 2px;
+	/* background-color: #ff1a1a; */
+}
+
 
 #add_friend_btn {
 	padding: 8px 12px;
