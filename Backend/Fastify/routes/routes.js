@@ -2,6 +2,7 @@ import { getUserProfilePicture, createUser , deleteAccount, login, login1v1, log
 import { getUserGames, create1v1Game, create2v2Game } from '../controllers/gamesController.js';
 import { getUserFriendships, addFriend, acceptFriend, deleteFriend } from '../controllers/friendshipsController.js';
 import { getAllUsers, getAnonymizedUsers, deleteUser, forceDeleteUser, getAllGames, createGame, deleteGame, getAllFriendships, addFriendship, deleteFriendship } from '../controllers/adminController.js';
+import { googleSignIn } from '../controllers/googleAuthController.js';
 import { getSQLiteCreds } from '../utils/vault.js'
 
 /**
@@ -78,6 +79,7 @@ export default async function routes (fastify) {
 	fastify.post('/user/refresh-infos', refreshInfos)
 	fastify.get('/user/export-data', exportUserData) // NOTE - new route to export user data
 	fastify.put('/user/anonymize-account', anonymizeUser) //NOTE - new route to anonymize user account
+	fastify.post('/user/google-sign-in', googleSignIn) // NOTE - new route for Google Sign-In
 
 	//* FRIENDS
 	fastify.get('/friendship/get-user-friendships', getUserFriendships)
