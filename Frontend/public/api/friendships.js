@@ -95,7 +95,7 @@ async function fetch_user_friendships() {
 								`
 							}
 						</div>
-						<div class="friend_online_status"></div>
+						<div class="friend_online_status ${friendship.friendOnlineStatus ? 'online' : 'offline'}"></div>
 					</div>
 				</div>
 				<button class="friend-btn delete-btn" onclick="delete_friendship(${friendship.friendshipId})">🗑️</button>

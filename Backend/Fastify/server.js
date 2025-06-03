@@ -10,6 +10,8 @@ import routes from "./routes/routes.js"
 import { redisClient, setupRedisLogging } from './utils/redis.js';
 import { redisModel } from './models/redisModel.js';
 import cron from 'node-cron';
+// Models
+import usersModel from './models/usersModel.js';
 
 import colorLoggerPlugin from './utils/logger.js' // NOTE - bonus: Colorized logger plugin
 
@@ -69,6 +71,12 @@ fastify.decorate('authenticate', async function (request, reply) {
 	}
 });
 
+cron.schedule('* * * * *', () => {
+	// Marquer comme hors ligne les utilisateurs inactifs depuis plus de 2 minutes
+	const twoMinutesAgo = new Date(Date.now() - 2 * 60 * 1000).toISOString();
+	console.log(`Marking users inactive if offline since: ${twoMinutesAgo}`);
+	usersModel.setInactiveUsersOffline(twoMinutesAgo);
+});
 
 cron.schedule('0 0 * * *', () => {
 	console.log('Clean inactive users...');

@@ -3201,7 +3201,7 @@ to {
 	height: 60px;
 	margin-right: 10px;
 	/* flex-shrink: 0; */
-	background-color: #03bf03;
+	
 	position: absolute;
 	top: 3.3%;
 	left: 2%;
@@ -3209,6 +3209,13 @@ to {
 	/* background-color: #ff1a1a; */
 }
 
+.friend_online_status.online {
+	background-color: #03bf03;
+}
+
+.friend_online_status.offline {
+	background-color: red;
+}
 
 #add_friend_btn {
 	padding: 8px 12px;

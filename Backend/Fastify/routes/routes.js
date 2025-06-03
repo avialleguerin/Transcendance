@@ -1,4 +1,4 @@
-import { getUserProfilePicture, createUser , deleteAccount, login, login1v1, login2v2, logout, updateDoubleAuth, accessProfileInfo, changeProfilePicture, changeProfile, getUserProfile, verifyDoubleAuth, activateDoubleAuth, refreshInfos, exportUserData, anonymizeUser } from '../controllers/usersController.js';
+import { getUserProfilePicture, createUser , deleteAccount, login, login1v1, login2v2, logout, updateDoubleAuth, accessProfileInfo, changeProfilePicture, changeProfile, getUserProfile, verifyDoubleAuth, activateDoubleAuth, refreshInfos, exportUserData, anonymizeUser, setOffline } from '../controllers/usersController.js';
 import { getUserGames, create1v1Game, create2v2Game } from '../controllers/gamesController.js';
 import { getUserPlatformer, createPlatformer } from '../controllers/platformerController.js';
 import { getUserFriendships, addFriend, acceptFriend, deleteFriend } from '../controllers/friendshipsController.js';
@@ -82,6 +82,7 @@ export default async function routes (fastify) {
 	fastify.post('/user/refresh-infos', refreshInfos)
 	fastify.get('/user/export-data', exportUserData) // NOTE - new route to export user data
 	fastify.put('/user/anonymize-account', anonymizeUser) //NOTE - new route to anonymize user account
+	fastify.put('/user/set-offline', setOffline) //NOTE - new route to anonymize user account
 
 	//* FRIENDS
 	fastify.get('/friendship/get-user-friendships', getUserFriendships)

@@ -14,7 +14,7 @@ export const CREATE_USERS_TABLE = `
 		games_lost INTEGER DEFAULT 0,
 		cgu_accepted DATETIME DEFAULT CURRENT_TIMESTAMP,
 		cgu_version TEXT DEFAULT '1.0',
-		connection_status BOOL DEFAULT 0 CHECK(connection_status IN (0, 1)),
+		online_status BOOL DEFAULT 0 CHECK(online_status IN (0, 1)),
 		last_connection DATETIME DEFAULT CURRENT_TIMESTAMP,
 		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 		anonymized_at DATETIME DEFAULT NULL
@@ -34,7 +34,8 @@ const usersModel = {
 	updateDoubleAuth_secret: (userId, doubleAuth_secret) => { return db.prepare("UPDATE users SET doubleAuth_secret = ? WHERE userId = ?").run(doubleAuth_secret, userId) },
 	updateUsername: (userId, newUsername) => { return db.prepare("UPDATE users SET username = ? WHERE userId = ?").run(newUsername, userId) },
 	updatePassword: (userId, newPassword) => { return db.prepare("UPDATE users SET password = ? WHERE userId = ?").run(newPassword, userId) },
-	updateConnectionStatus: (userId, NewConnectionStatus) => { return db.prepare("UPDATE users SET connection_status = ? WHERE userId = ?").run(NewConnectionStatus, userId) },
+	updateOnlineStatus: (userId, NewOnlineStatus) => { return db.prepare("UPDATE users SET online_status = ? WHERE userId = ?").run(NewOnlineStatus, userId) },
+	setInactiveUsersOffline: (inactiveSince) => { return db.prepare("UPDATE users SET online_status = 0 WHERE last_connection <= ?").run(inactiveSince); },
 	updateProfilePicture: (userId, profile_picture) => { return db.prepare("UPDATE users SET profile_picture = ? WHERE userId = ?").run(profile_picture, userId) },
 	delete: (userId) => { return db.prepare("DELETE FROM users WHERE userId = ?").run(userId) },
 	anonymizeUser: (userId) => {
@@ -56,7 +57,7 @@ const usersModel = {
 	updateGamesWon: (userId) => { return db.prepare("UPDATE users SET games_won = games_won + 1 WHERE userId = ?").run(userId) },
 	updateGamesLost: (userId) => { return db.prepare("UPDATE users SET games_lost = games_lost + 1 WHERE userId = ?").run(userId) },
 	updateUserCGUVersion: (userId, version) => { return db.prepare("UPDATE users SET cgu_version = ?, cgu_accepted = CURRENT_TIMESTAMP WHERE userId = ?").run(version, userId) },
-	updateLastConnection: (userId) => { return db.prepare("UPDATE users SET last_connection = CURRENT_TIMESTAMP WHERE userId = ?").run(userId) },
+	updateLastConnection: (userId) => { return db.prepare("UPDATE users SET last_connection = CURRENT_TIMESTAMP, online_status = 1 WHERE userId = ?").run(userId) },
 	getUsersWithOldCGU: () => {
 		const currentVersion = getCurrentCGUVersion();
 		return db.prepare("SELECT * FROM users WHERE cgu_version != ?").all(currentVersion);

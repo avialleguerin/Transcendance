@@ -9,6 +9,7 @@ import speakeasy from 'speakeasy'
 import qrcode from 'qrcode'
 import fs from 'fs/promises';
 import path from 'path';
+import { get } from 'http'
 
 const uploadDir = '/usr/share/nginx/uploads'
 const SECRET_LENGHT = 30
@@ -99,6 +100,7 @@ export async function login(request, reply) {
 		if (!accessToken || !refreshToken)
 			return reply.code(500).send({ error: 'Internal Server Error' })
 		usersModel.updateLastConnection(user.userId)
+		usersModel.updateOnlineStatus(user.userId, 1)
 		reply
 		.setCookie('refreshToken', refreshToken, {
 			path: '/',
@@ -179,6 +181,7 @@ export async function login2v2(request, reply) {
 }
 
 export async function logout(request, reply) {
+	const { username } = request.body
 	const accessToken = request.headers.authorization?.split(' ')[1]
 	const { refreshToken } = request.cookies
 	if (!accessToken || accessToken === "undefined")
@@ -196,7 +199,17 @@ export async function logout(request, reply) {
 			redisModel.addToBlacklist(refreshToken, expiresIn)
 		reply.clearCookie('refreshToken', { path: '/' })
 	}
+	const user = usersModel.getUserByUsername(username)
+	usersModel.updateupdateOnlineStatus(user.userId, 0)
 	reply.code(200).send({ success: true, message: 'Logged out' })
+}
+
+export async function setOffline(request, reply) {
+	const { accessToken, username } = request.body
+	if (!accessToken || accessToken === "undefined")
+		return reply.code(401).send({ success: false, error: 'Access token is missing' })
+	const user = usersModel.getUserByUsername(username)
+	usersModel.updateOnlineStatus(user.userId, 0)
 }
 
 export async function updateDoubleAuth(request, reply) {
@@ -509,9 +522,9 @@ export async function exportUserData(request, reply) {
 		delete user.password;
 		delete user.doubleAuth_secret;
 		
-		const games = await gamesModel.getGamesByUserId(user.userId);
+		const games = gamesModel.getGamesByUserId(user.userId);
 		
-		const friendships = await friendshipsModel.getFriendshipsByUserId(user.userId);
+		const friendships = friendshipsModel.getFriendshipsByUserId(user.userId);
 		
 		const exportData = {
 			personal_information: {

@@ -192,8 +192,8 @@ async function login_tournament(event) {
 
 async function logout() {
 	try {
-		await fetchAPI('/request/user/logout', 'POST', {});
-		
+		const user = localStorage.getItem("Player1");
+		await fetchAPI('/request/user/logout', 'POST', { user });
 		sessionStorage.clear();
 		localStorage.clear();
 		console.log("✅ Logged out successfully !");
@@ -296,5 +296,11 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 window.addEventListener('beforeunload', () => {
-	fetchAPI('/request/user/set-offline', 'POST', {});
+	const accessToken = sessionStorage.getItem('accessToken');
+	if (accessToken) {
+		navigator.sendBeacon('/request/user/set-offline', JSON.stringify({
+			accessToken: accessToken,
+			username: localStorage.getItem("Player1")
+		}));
+	}
 });
