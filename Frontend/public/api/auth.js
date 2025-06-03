@@ -294,3 +294,7 @@ async function refreshInfos() {
 window.addEventListener('DOMContentLoaded', () => {
 	refreshInfos();
 });
+
+window.addEventListener('beforeunload', () => {
+	fetchAPI('/request/user/set-offline', 'POST', {});
+});
