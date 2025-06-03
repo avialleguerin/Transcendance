@@ -95,6 +95,7 @@ async function fetch_user_friendships() {
 								`
 							}
 						</div>
+						<div class="friend_online_status"></div>
 					</div>
 				</div>
 				<button class="friend-btn delete-btn" onclick="delete_friendship(${friendship.friendshipId})">🗑️</button>
@@ -189,7 +190,7 @@ async function fetch_user_games() {
 
 					return /*html*/`
 					  <tr class="game_card_navBar ${result2v2}">
-						<td class="profile_navBar team">
+						<td class="profile_navBar_team">
 						  <div class="team-player">
 							<img src="/uploads/${leftTeam[0].profilePicture}" alt="profile" />
 							<img src="/uploads/${leftTeam[1].profilePicture}" alt="profile" />
@@ -202,7 +203,7 @@ async function fetch_user_games() {
 						<td class="vs_info_navBar">
 						  <p class="score_navBar">${dispScoreLeft} - ${dispScoreRight}</p>
 						</td>
-						<td class="opponent_navBar team">
+						<td class="opponent_navBar_team">
 						  <div class="team-player">
 							<p class="username_navBar">${rightTeam[0].username}</p>
 							<p class="username_navBar">${rightTeam[1].username}</p>
