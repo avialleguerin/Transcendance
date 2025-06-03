@@ -36,7 +36,7 @@ export async function addFriend(request, reply) {
 		if (!user)
 			return reply.code(401).send({ error: "User not found" })
 		const friendExists = usersModel.getUserByUsername(friend)
-		if (!friendExists)
+		if (!friendExists || friendExists.anonimized_at)
 			return reply.code(404).send({ success: false, error: `User '${friend}' not found`, accessToken: infos.accessToken })
 		if (friendExists.userId === user.userId)
 			return reply.code(400).send({success: false, error: `You can't invite yourself`, accessToken: infos.accessToken })

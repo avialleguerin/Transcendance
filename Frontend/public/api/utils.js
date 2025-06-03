@@ -3,11 +3,11 @@ function notif(message, success = true) {
 	
 	if (notification) {
 		const icon = success ?
-			`<img src='./assets/image/success.png' style='width:20px; height:20px; margin-right:5px;'>` :
-			`<img src='./assets/image/failure.png' style='width:20px; height:20px; margin-right:5px;'>`;
-   
-        notification.innerHTML = `<div style='display:flex; align-items:center;'>${icon}<span>${message}</span></div>`;
-        notification.className = `py-2 px-4 rounded shadow-lg ${success ? 'bg-green-500' : 'bg-red-500'} text-white font-medium`;
+			`<img src='/srcs/game/assets/image/success.png' style='width:20px; height:20px; margin-right:5px;'>` :
+			`<img src='/static/js/views/platformer/assets/image/failure.png' style='width:20px; height:20px; margin-right:5px;'>`;
+
+		notification.innerHTML = `<div style='display:flex; align-items:center;'>${icon}<span>${message}</span></div>`;
+		notification.className = `py-2 px-4 rounded shadow-lg ${success ? 'bg-green-500' : 'bg-red-500'} text-white font-medium`;
 
 		setTimeout(() => {
 			notification.classList.add('opacity-100');

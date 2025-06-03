@@ -202,7 +202,6 @@ export async function logout(request, reply) {
 export async function updateDoubleAuth(request, reply) {
 	try {
 		const infos = await getUserFromToken(request)
-		// fastify.log.info("🔑 infos :", infos)
 		if (!infos)
 			return reply.code(401).send({ success: false, error: 'Unauthorized' })
 		const user = infos.user
@@ -212,12 +211,9 @@ export async function updateDoubleAuth(request, reply) {
 		{
 			usersModel.updateDoubleAuth_status(user.userId, 0)
 			usersModel.updateDoubleAuth_secret(user.userId, null)
-			// fastify.log.info("Double Auth disabled")
 			return reply.code(200).send({success: true, message: "2FA disabled successfully!", doubleAuth_secret: false})
 		}
 		const doubleAuthData = generateDoubleAuth(user.userId)
-		// fastify.log.info("Double Auth qrCode", (await doubleAuthData).qrCode)
-		// fastify.log.info("Double Auth secret", (await doubleAuthData).secret)
 
 		return reply.code(200).send({
 			success: true,

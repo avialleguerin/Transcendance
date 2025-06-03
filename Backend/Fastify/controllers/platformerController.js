@@ -25,7 +25,7 @@ export async function createPlatformer(request, reply) {
 	const { chrono } = request.body
 
 	try {
-		if (!user_id || !chrono)
+		if (!chrono)
 			return reply.code(400).send({ success: false, error: "Missing parameters", accessToken: infos.accessToken })
 		const infos = await getUserFromToken(request)
 		if (!infos)

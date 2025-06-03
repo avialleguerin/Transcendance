@@ -4,9 +4,7 @@ import { redisModel } from '../models/redisModel.js'
 
 export async function getUserFromToken(request, reply) {
 	const accessToken = request.headers.authorization?.split(' ')[1]
-	// fastify.log.info("🔑 Access Token reçu :", accessToken)
 	const { refreshToken } = request.cookies
-	// fastify.log.info("🔑 Refresh Token reçu :", refreshToken)
 	if (!refreshToken || refreshToken === undefined || refreshToken === null)
 		return null
 	if (await redisModel.isTokenBlacklisted(refreshToken))
@@ -20,21 +18,20 @@ export async function getUserFromToken(request, reply) {
 	const user = usersModel.getUserById(userId)
 	if (!user)
 		return null
-	// fastify.log.info("🔑 User :", user)
-	// fastify.log.info("🔑 accessToken :", accessToken)
-	// fastify.log.info("🔑 accessToken :", request.headers.authorization?.split(' ')[1])
 	if (expiresInRefresh > 0)
 	{
 		if (accessToken && accessToken !== "undefined" && accessToken !== "null")
 		{
-			// fastify.log.info("🔑 je passe la :", accessToken)
 			const decodedAccess = fastify.jwt.decode(accessToken)
 			const expiresInAccess = decodedAccess.exp - Math.floor(Date.now() / 1000)
 			if (expiresInAccess > 0 && !await redisModel.isTokenBlacklisted(accessToken))
+			{
+				usersModel.updateLastConnection(user.userId)
 				return {user: user, accessToken: accessToken}
+			}
 		}
 		const newAccessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, { expiresIn: '15m' })
-		// fastify.log.info("🔑 New Access Token :", newAccessToken)
+		usersModel.updateLastConnection(user.userId)
 		return {user: user, accessToken: newAccessToken}
 	} else {
 		reply.clearCookie('refreshToken', { path: '/' })

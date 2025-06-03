@@ -31,7 +31,7 @@ const gamesModel = {
 	},
 
 	getAllGames: () => db.prepare(`
-		SELECT g.gameId, g.user1_id, g.user2_id, g.user3_id, g.user4_id, g.score_left, g.score_right,  g.created_at,
+		SELECT g.gameId, g.user1_id, g.user2_id, g.user3_id, g.user4_id, g.score_left, g.score_right, g.created_at,
 			u1.username as user1_name,  u2.username as user2_name, u3.username as user3_name, u4.username as user4_name
 		FROM games g
 		JOIN users u1 ON g.user1_id = u1.userId

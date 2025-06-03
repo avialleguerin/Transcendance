@@ -149,8 +149,9 @@ async function fetch_platformers() {
 		document.getElementById('platformers-table').innerHTML = platformers.map(platformer => /*html*/`
 			<tr class="border-collapse text-sm hover:shadow-lg hover:rounded-xl hover:-translate-y-1 transition-all duration-200 ease-in-out cursor-pointer">
 				<td class="bg-white px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${platformer.platformerId}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.username}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.chrono}s</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.user1_name}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.score_user1} - ${platformer.score_user2}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.user2_name}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.created_at}</td>
 				<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0"><button class="bg-red-200 hover:bg-red-300 m-2 text-red-500 hover:text-red-600 px-4 py-1 rounded-full transition-colors duration-300 ease-in-out" onclick="delete_platformer(${platformer.platformerId})">Delete</button></td>
 			</tr>
@@ -248,11 +249,13 @@ async function create_game(event) {
 async function create_platformer(event) {
 	event.preventDefault();
 
-	const username = document.getElementById("addPlatformer-user").value;
-	const chrono = document.getElementById("addPlatformer-chrono").value;
+	const username1 = document.getElementById("addPlatformer-username1").value;
+	const username2 = document.getElementById("addPlatformer-username2").value;
+	const score_user1 = document.getElementById("addPlatformer-score1").value;
+	const score_user2 = document.getElementById("addPlatformer-score2").value;
 
-	if (!username || !chrono) {
-		notif("Please select the user and the chrono", false);
+	if (!username1 || !username2 || !score_user1 || !score_user2) {
+		notif("Please select the users and their scores", false);
 		return ;
 	}
 
@@ -261,7 +264,7 @@ async function create_platformer(event) {
 		headers: { 
 			"Content-Type": "application/json",
 		},
-		body: JSON.stringify({ username, chrono }),
+		body: JSON.stringify({ username1, username2, score_user1, score_user2 }),
 		credentials: 'include',
 	});
 	const data = await response.json();

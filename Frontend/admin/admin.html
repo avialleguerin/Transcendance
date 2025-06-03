@@ -209,8 +209,9 @@
 						<thead>
 							<tr>
 								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider rounded-l-xl">Platformer ID</th>
-								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">User</th>
-								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Chrono</th>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Player 1</th>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Score</th>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Player 2</th>
 								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Date</th>
 								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider rounded-r-xl">Action</th>
 							</tr>
@@ -228,12 +229,20 @@
 			<form id="addPlatformerForm" class="mx-auto bg-white p-6 rounded-lg shadow-lg" onsubmit="create_platformer(event)">
 				<h2 class="text-2xl font-semibold text-center mb-2">Add Platformer</h2>
 				<div class="mb-2">
-					<label for="username" class="block text-gray-700 font-medium">User :</label>
-					<input type="text" id="addPlatformer-user" name="username" placeholder="Username" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
+					<label for="username1" class="block text-gray-700 font-medium">Player 1:</label>
+					<input type="text" id="addPlatformer-username1" name="username1" placeholder="Username player 1" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
 				</div>
 				<div class="mb-2">
-					<label for="chrono" class="block text-gray-700 font-medium">User :</label>
-					<input type="number" id="addPlatformer-chrono" name="chrono" placeholder="Chrono" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
+					<label for="username2" class="block text-gray-700 font-medium">Player 2 :</label>
+					<input type="text" id="addPlatformer-username2" name="username2" placeholder="Username player 2" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
+				</div>
+				<div class="mb-2">
+					<label for="score1" class="block text-gray-700 font-medium">Score player 1 :</label>
+					<input type="number" id="addPlatformer-score1" name="score1" placeholder="Score player 1" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
+				</div>
+				<div class="mb-2">
+					<label for="score2" class="block text-gray-700 font-medium">Score player 2 :</label>
+					<input type="number" id="addPlatformer-score2" name="score2" placeholder="Score player 1" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
 				</div>
 				<button type="submit" class="w-full bg-violet-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-violet-600 transition">Add</button>
 				<button type="button" class="mt-4 w-full border border-violet-500 text-violet-500 font-bold py-2 px-4 rounded-lg hover:bg-violet-500 hover:text-white transition" onclick="close_platformer_modal()">Cancel</button>

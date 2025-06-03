@@ -263,17 +263,24 @@ export async function getAllPlatformers(request, reply) {
 }
 
 export async function addPlatformer(request, reply) {
-	const { username, chrono } = request.body
+	const { username1, username2, score_user1, score_user2 } = request.body
 
 	try {
-		console.log("username :", username)
-		console.log("chrono :", chrono)
-		if (!username || !chrono)
+		console.log("username1 :", username1)
+		console.log("username2 :", username2)
+		console.log("score_user1 :", score_user1)
+		console.log("score_user2 :", score_user2)
+		if (!username1 || !username1 || !score_user1 || !score_user2)
 			return reply.code(400).send({ success: false, error: "Missing parameters" })
-		const user = usersModel.getUserByUsername(username)
-		if (!user)
-			return reply.code(404).send({ success: false, error: `User '${username}' not found` })
-		platformersModel.createPlatformer(user.userId, chrono)
+		const user1 = usersModel.getUserByUsername(username1)
+		const user2 = usersModel.getUserByUsername(username2)
+		if (!user1)
+			return reply.code(404).send({ success: false, error: `User '${username1}' not found` })
+		if (!user2)
+			return reply.code(404).send({ success: false, error: `User '${username2}' not found` })
+		if (user1.userId === user2.userId)
+			return reply.code(400).send({ success: false, error: "Cannot create a platformer with the same user" })
+		platformersModel.createPlatformer(user1.userId, user2.userId, score_user1, score_user2)
 
 		return reply.code(201).send({ 
 			success: true,
