@@ -16,7 +16,9 @@ export const CREATE_USERS_TABLE = `
 		cgu_version TEXT DEFAULT '1.0',
 		last_connection DATETIME DEFAULT CURRENT_TIMESTAMP,
 		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-		anonymized_at DATETIME DEFAULT NULL
+		anonymized_at DATETIME DEFAULT NULL,
+		email TEXT,
+        google_id TEXT UNIQUE
 	);
 `;
 

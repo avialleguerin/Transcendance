@@ -2,6 +2,27 @@ import AbstractView from "./AbstractView.js";
 // import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.js";
 // import Game_menu from "./Game_menu.js";
 
+// Type declaration for Google Identity Services // REVIEW if its necessary
+declare global {
+  interface Window {
+    google?: {
+      accounts: {
+        id: {
+          initialize: (config: any) => void;
+          prompt: () => void;
+        }
+      }
+    };
+    initGoogleSignIn?: () => void;
+    handleGoogleSignIn?: (response: any) => void;
+  }
+}
+
+// Déclarations des fonctions externes
+declare function notif(message: string, success: boolean): void;
+declare function initGoogleSignIn(): void;
+//---
+
 
 export default class Home extends AbstractView {
 	constructor() {
@@ -171,6 +192,14 @@ export default class Home extends AbstractView {
 							</div>
 							<button type="submit" class="connexion" id="validate-login">Login</button>
 							<button type="button" class="creer-compte" id="create-Account">Create an account</button>
+							<!-- Nouveau bouton Google Sign In -->
+							<div class="google-signin-container">
+								<button type="button" class="google-signin-btn" id="google-signin-btn">
+									<img src="https://developers.google.com/identity/images/g-logo.png" alt="Google">
+									Sign in with Google
+								</button>
+							</div>
+
 						</form>
 						
 						<form id="doubleAuthForm" class="doubleAuthForm" onsubmit="verify2FA(event)">
@@ -275,5 +304,25 @@ export default class Home extends AbstractView {
 			loginForm.classList.remove("active");
 			(document.getElementById("registerForm") as HTMLFormElement).reset();
 		});
-	}
+
+		//* GOOGLE SIGN IN
+		// Ajouter l'événement pour le bouton Google
+		const googleSignInBtn = document.getElementById("google-signin-btn");
+
+		googleSignInBtn?.addEventListener("click", () => {
+			if (typeof tokenClient !== 'undefined') {
+				tokenClient.requestAccessToken();
+			} else {
+				console.error("Client Google OAuth non initialisé");
+				notif("Connexion Google non disponible", false);
+			}
+		});
+
+
+		// Initialiser Google Sign In
+		window.addEventListener("load", () => {
+			initGoogleSignIn();
+		});
+
+		}
 }

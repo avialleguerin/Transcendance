@@ -2,7 +2,7 @@ import { getUserProfilePicture, createUser , deleteAccount, login, login1v1, log
 import { getUserGames, create1v1Game, create2v2Game } from '../controllers/gamesController.js';
 import { getUserFriendships, addFriend, acceptFriend, deleteFriend } from '../controllers/friendshipsController.js';
 import { getAllUsers, getAnonymizedUsers, deleteUser, forceDeleteUser, getAllGames, createGame, deleteGame, getAllFriendships, addFriendship, deleteFriendship } from '../controllers/adminController.js';
-import { googleSignIn } from '../controllers/googleAuthController.js';
+import { googleSignIn } from '../controllers/usersController.js';
 import { getSQLiteCreds } from '../utils/vault.js'
 
 /**
