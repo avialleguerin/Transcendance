@@ -102,7 +102,7 @@ async function fetch_user_friendships() {
 		`;
 
 		document.getElementById('friends-accepted').innerHTML =
-			accepted.map(friend => renderFriend(friend, false)).join('') || `<div class="text-center">No friend found</div>`;
+			accepted.map(friend => renderFriend(friend, false)).join('') || `<div class="text-center">No Friends found</div>`;
 
 		const gameHistory = document.getElementById('game_history');
 		const exit_game_history_btn = document.getElementById('exit_game_history_btn');
@@ -139,7 +139,7 @@ async function fetch_user_friendships() {
 			pending.map(friend => {
 				const isReceivedRequest = user.userId === friend.friendId;
 				return renderFriend(friend, isReceivedRequest);
-			}).join('') || `<div class="text-center">No request found</div>`;
+			}).join('') || `<div class="text-center">No Requests found</div>`;
 
 	} catch (err) {
 		console.error('Erreur lors de la récupération des amis :', err);
