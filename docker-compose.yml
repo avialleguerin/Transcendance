@@ -16,6 +16,8 @@ services:
     ports:
       - "3000:3000"
     restart: always
+    env_file:
+      - .env
     environment:
       - REDIS_URL="redis://redis:6379"
       - VAULT_DEV_ROOT_TOKEN_ID=root

@@ -5,7 +5,6 @@ import { redisModel } from '../models/redisModel.js'
 import { getUserFromToken } from './utils.js'
 import friendshipsModel from '../models/friendshipsModel.js'; //NOTE - new
 import gamesModel from '../models/gamesModel.js'; //NOTE - new
-import { OAuth2Client } from 'google-auth-library'; //NOTE - new
 import speakeasy from 'speakeasy'
 import qrcode from 'qrcode'
 import fs from 'fs/promises';
@@ -13,83 +12,96 @@ import path from 'path';
 
 const uploadDir = '/usr/share/nginx/uploads'
 const SECRET_LENGHT = 30
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 export async function googleSignIn(request, reply) {
 	try {
-		const { credential } = request.body;
+		const { access_token } = request.body;
+		if (!access_token) {
+			return reply.code(400).send({ 
+				success: false, 
+				error: 'Google access_token is required' 
+			});
+		}
+
+		const response = await fetch(`https://www.googleapis.com/oauth2/v2/userinfo?access_token=${access_token}`);
 		
-		// Verify the Google token
-		const ticket = await client.verifyIdToken({
-			idToken: credential,
-			audience: process.env.GOOGLE_CLIENT_ID,
-		});
+		if (!response.ok) {
+			fastify.log.error('Google API error:', response.status);
+			return reply.code(401).send({ 
+				success: false, 
+				error: 'Invalid Google access token' 
+			});
+		}
+
+		const googleUser = await response.json();
+		if (!googleUser.id || !googleUser.email)
+			return reply.code(401).send({ success: false, error: 'Invalid Google user data'});
 		
-		const payload = ticket.getPayload();
-		const { sub: googleId, email, name, picture } = payload;
+		const { id: googleId, email, name, picture: profilePictureUrl } = googleUser;
 		
-		// Check if user already exists
 		let user = usersModel.getUserByGoogleId(googleId);
-		
 		if (!user) {
-			// Check if email already exists
 			const existingUser = usersModel.getUserByEmail(email);
-			if (existingUser) {
-				return reply.code(409).send({ 
-					success: false, 
-					error: 'An account with this email already exists' 
-				});
-			}
+			if (existingUser)
+				return reply.code(409).send({ success: false, error: 'Email already associated with another account' });
 			
-			// Create new user
-			const username = email.split('@')[0] + '_' + Math.random().toString(36).substr(2, 4);
-			const randomPassword = Math.random().toString(36).substr(2, 15);
+			const username = name.replace(/\s+/g, '').toLowerCase().substring(0,10);
+			const randomPassword = Math.random().toString(36).substring(2, 17);
 			const hashedPassword = await hashPassword(randomPassword);
 			
-			const userInfo = usersModel.createGoogleUser(username, hashedPassword, email, googleId, name, picture);
-			user = usersModel.getUserById(userInfo.lastInsertRowid);
+			// Télécharger et sauvegarder l'image de profil de Google
+			let profilePicture = "default-profile-picture.png";
+			if (profilePictureUrl) {
+				try {
+					const imageResponse = await fetch(profilePictureUrl);
+					if (imageResponse.ok) {
+						const imageBuffer = await imageResponse.arrayBuffer();
+						const buffer = Buffer.from(imageBuffer);
+						
+						// Déterminer l'extension du fichier
+						const contentType = imageResponse.headers.get('content-type');
+						let extension = '.jpg'; // Par défaut
+						if (contentType?.includes('png')) extension = '.png';
+						else if (contentType?.includes('gif')) extension = '.gif';
+						else if (contentType?.includes('webp')) extension = '.webp';
+						
+						// Créer le nom de fichier au format standard
+						const filename = `${Date.now()}-${username}-pp${extension}`;
+						const filePath = path.join(uploadDir, filename);
+						
+						// Sauvegarder l'image
+						await fs.writeFile(filePath, buffer);
+						profilePicture = filename;
+						
+						fastify.log.info(`✅ Google profile picture saved: ${filename}`);
+					} else {
+						fastify.log.warn('Failed to download Google profile picture');
+					}
+				} catch (error) {
+					fastify.log.error('Error downloading Google profile picture:', error);
+					// On continue avec l'image par défaut
+				}
+			}
+			
+			const newUserInfo = usersModel.createGoogleUser(username, hashedPassword, email, googleId, profilePicture);
+			user = usersModel.getUserById(newUserInfo.lastInsertRowid);
 		}
-		
-		// Generate JWT tokens
-		const accessToken = fastify.jwt.sign(
-			{ userId: user.userId, username: user.username }, 
-			{ expiresIn: '15m' }
-		);
-		const refreshToken = fastify.jwt.sign(
-			{ userId: user.userId }, 
-			{ expiresIn: '7d' }
-		);
+		const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, { expiresIn: '15m' });
+		const refreshToken = fastify.jwt.sign({ userId: user.userId }, { expiresIn: '7d' });
 		
 		usersModel.updateLastConnection(user.userId);
 		
-		reply
-			.setCookie('refreshToken', refreshToken, {
+		return reply.setCookie('refreshToken', refreshToken, {
 				path: '/',
 				httpOnly: true,
 				secure: true,
 				sameSite: 'strict',
 				expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-			})
-			.code(200)
-			.send({
-				success: true,
-				message: 'Google Sign-In successful',
-				connection_status: "connected",
-				user: {
-					userId: user.userId,
-					username: user.username,
-					email: user.email,
-					profile_picture: user.profile_picture
-				},
-				accessToken: accessToken
-			});
+			}).code(200).send({ success: true, message: 'Google Sign-In successful', connection_status: "connected", user: user, accessToken: accessToken });
 			
 	} catch (error) {
 		fastify.log.error('Google Sign-In error:', error);
-		return reply.code(500).send({ 
-			success: false, 
-			error: 'Google Sign-In failed' 
-		});
+		return reply.code(500).send({ success: false, error: 'Google Sign-In failed' });
 	}
 }
 
@@ -626,7 +638,7 @@ export async function anonymizeUser(request, reply) {
 			return reply.code(401).send({ success: false, error: 'Unauthorized' })
 		const user = infos.user
 		if (!user)
-			return reply.code(401).send({ success: false , error: 'User not found' })
+			return reply.code(401).send({ success: false, error: 'User not found' })
 		
 		const anonymizedUsername = `Anonym${user.userId}`;
 		const anonymizedProfilePicture = "default-profile-picture.png";

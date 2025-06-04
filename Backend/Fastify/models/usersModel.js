@@ -29,12 +29,12 @@ const usersModel = {
 	createUser: (username, password) => { const currentCGUVersion = "1.0"; db.prepare("INSERT INTO users (username, password, cgu_version) VALUES (?, ?, ?)").run(username, password, currentCGUVersion); return { username }; },
 
 	//* Read
-	createGoogleUser: (username, password, email, googleId, displayName, profilePicture) => {
+	createGoogleUser: (username, password, email, googleId, profilePicture) => {
 		const currentCGUVersion = getCurrentCGUVersion();
 		return db.prepare(`
-			INSERT INTO users (username, password, email, google_id, display_name, profile_picture, cgu_version) 
-			VALUES (?, ?, ?, ?, ?, ?, ?)
-		`).run(username, password, email, googleId, displayName, profilePicture, currentCGUVersion);
+			INSERT INTO users (username, password, email, google_id, profile_picture, cgu_version) 
+			VALUES (?, ?, ?, ?, ?, ?)
+		`).run(username, password, email, googleId, profilePicture, currentCGUVersion);
 	},
 	getAllUsers: () => { db.prepare("SELECT * FROM users").all() },
 	getUserById: (userId) => { return db.prepare("SELECT * FROM users WHERE userId = ?").get(userId) },

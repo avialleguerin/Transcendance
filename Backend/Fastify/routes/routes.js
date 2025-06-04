@@ -79,7 +79,7 @@ export default async function routes (fastify) {
 	fastify.post('/user/refresh-infos', refreshInfos)
 	fastify.get('/user/export-data', exportUserData) // NOTE - new route to export user data
 	fastify.put('/user/anonymize-account', anonymizeUser) //NOTE - new route to anonymize user account
-	fastify.post('/user/google-sign-in', googleSignIn) // NOTE - new route for Google Sign-In
+	fastify.post('/user/google-signin', googleSignIn) // NOTE - new route for Google Sign-In
 
 	//* FRIENDS
 	fastify.get('/friendship/get-user-friendships', getUserFriendships)
