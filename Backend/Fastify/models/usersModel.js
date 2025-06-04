@@ -14,7 +14,7 @@ export const CREATE_USERS_TABLE = `
 		games_lost INTEGER DEFAULT 0,
 		cgu_accepted DATETIME DEFAULT CURRENT_TIMESTAMP,
 		cgu_version TEXT DEFAULT '1.0',
-		online_status BOOL DEFAULT 0 CHECK(online_status IN (0, 1)),
+		online_status BOOL DEFAULT false,
 		last_connection DATETIME DEFAULT CURRENT_TIMESTAMP,
 		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 		anonymized_at DATETIME DEFAULT NULL

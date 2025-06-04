@@ -2243,7 +2243,7 @@ input[type="file"] {
 	width: 30px;
 	height: 30px;
 	border-radius: 50%;
-	border: 2px dashed #ccc;
+	border: 2px solid #555;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -2690,13 +2690,12 @@ to {
 	align-items: center;
 	background-color: #3a3a3a;
 	border-radius: 6px;
-	padding: 2px 8px;
+	padding: 8px;
 	border-left: 4px solid transparent;
 	border-left-color: transparent;
 	transition: transform 0.2s;
 	font-size: 14px;
 	margin-bottom: 5px;
-	height: 12%;
 }
 
 .game_card_navBar_team {
@@ -2764,6 +2763,7 @@ to {
 	height: 40px;
 	border-radius: 50%;
 	border: 2px solid #555;
+	object-fit: cover;
 }
 
 .profile_navBar_team, .opponent_navBar_team {
@@ -3157,8 +3157,9 @@ to {
 	margin-right: 10px;
 	flex-shrink: 0;
 	cursor: pointer;
-	border: 2px dashed white;
+	border: 2px solid white;
 	margin-left: 10px;
+	object-fit: cover;
 }
 
 .friend-details {
@@ -3201,20 +3202,18 @@ to {
 	height: 60px;
 	margin-right: 10px;
 	/* flex-shrink: 0; */
-	
-	position: absolute;
 	top: 3.3%;
 	left: 2%;
 	border-radius: 2px;
 	/* background-color: #ff1a1a; */
 }
 
-.friend_online_status.online {
-	background-color: #03bf03;
+.friend_photo.online {
+	border-color: #03bf03;
 }
 
-.friend_online_status.offline {
-	background-color: red;
+.friend_photo.offline {
+	border-color: red;
 }
 
 #add_friend_btn {

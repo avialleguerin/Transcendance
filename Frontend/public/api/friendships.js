@@ -79,7 +79,7 @@ async function fetch_user_friendships() {
 		const renderFriend = (friendship, showActions) => `
 			<div class="friend">
 				<div class="friend-info">
-					<img src="/uploads/${friendship.friendProfilePicture}" class="friend_photo" alt="Profile">
+					<img src="/uploads/${friendship.friendProfilePicture}" class="friend_photo ${friendship.friendOnlineStatus ? 'online' : 'offline'}" alt="Profile">
 					<div class="friend-details">
 						<p class="friend_name">${friendship.friend_username}</p>
 						<div class="friend-status-actions">
@@ -95,7 +95,6 @@ async function fetch_user_friendships() {
 								`
 							}
 						</div>
-						<div class="friend_online_status ${friendship.friendOnlineStatus ? 'online' : 'offline'}"></div>
 					</div>
 				</div>
 				<button class="friend-btn delete-btn" onclick="delete_friendship(${friendship.friendshipId})">🗑️</button>

@@ -19,7 +19,6 @@ export async function getUserGames(request, reply) {
 		if (username)
 			user = usersModel.getUserByUsername(username)
 		const games = gamesModel.getUserGames(user.userId)
-		fastify.log.debug("game :", games)
 		return reply.send({ success: true, user: user, games: games, accessToken: infos.accessToken })
 	} catch (err) {
 		return reply.code(500).send({ error: err.message })

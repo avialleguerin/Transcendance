@@ -10,6 +10,7 @@ async function verify2FA(event) {
 			sessionStorage.removeItem("userId")
 			localStorage.setItem("Player1", data.username);
 			localStorage.setItem("profile_picture", data.profile_picture);
+			connectWebSocket()
 			console.log("✅ 2FA code valid!");
 			history.pushState({}, '', '/Game_menu');
 			import('../static/js/views/Game_menu.js').then(module => {
@@ -49,6 +50,7 @@ async function login(event) {
 			notif(data.message, true);
 			localStorage.setItem("Player1", data.user.username);
 			localStorage.setItem("profile_picture", data.user.profile_picture);
+			connectWebSocket()
 			console.log("✅ Connected, Token :", sessionStorage.getItem("accessToken"));
 			
 			history.pushState({}, '', '/Game_menu');
@@ -193,7 +195,8 @@ async function login_tournament(event) {
 async function logout() {
 	try {
 		const user = localStorage.getItem("Player1");
-		await fetchAPI('/request/user/logout', 'POST', { user });
+		disconnectWebSocket()
+		await fetchAPI('/request/user/logout', 'POST', {});
 		sessionStorage.clear();
 		localStorage.clear();
 		console.log("✅ Logged out successfully !");
@@ -296,11 +299,5 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 window.addEventListener('beforeunload', () => {
-	const accessToken = sessionStorage.getItem('accessToken');
-	if (accessToken) {
-		navigator.sendBeacon('/request/user/set-offline', JSON.stringify({
-			accessToken: accessToken,
-			username: localStorage.getItem("Player1")
-		}));
-	}
+	disconnectWebSocket()
 });

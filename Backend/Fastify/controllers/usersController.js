@@ -181,7 +181,7 @@ export async function login2v2(request, reply) {
 }
 
 export async function logout(request, reply) {
-	const { username } = request.body
+	// const { username } = request.body
 	const accessToken = request.headers.authorization?.split(' ')[1]
 	const { refreshToken } = request.cookies
 	if (!accessToken || accessToken === "undefined")
@@ -199,17 +199,9 @@ export async function logout(request, reply) {
 			redisModel.addToBlacklist(refreshToken, expiresIn)
 		reply.clearCookie('refreshToken', { path: '/' })
 	}
-	const user = usersModel.getUserByUsername(username)
-	usersModel.updateupdateOnlineStatus(user.userId, 0)
+	// const user = usersModel.getUserByUsername(username)
+	// usersModel.updateOnlineStatus(user.userId, 0)
 	reply.code(200).send({ success: true, message: 'Logged out' })
-}
-
-export async function setOffline(request, reply) {
-	const { accessToken, username } = request.body
-	if (!accessToken || accessToken === "undefined")
-		return reply.code(401).send({ success: false, error: 'Access token is missing' })
-	const user = usersModel.getUserByUsername(username)
-	usersModel.updateOnlineStatus(user.userId, 0)
 }
 
 export async function updateDoubleAuth(request, reply) {

@@ -3,7 +3,7 @@ import usersModel from '../models/usersModel.js'
 import { redisModel } from '../models/redisModel.js'
 
 export async function getUserFromToken(request, reply) {
-	const accessToken = request.headers.authorization?.split(' ')[1]
+	const accessToken = request.headers.authorization?.split(' ')[1] || request.query.token
 	const { refreshToken } = request.cookies
 	if (!refreshToken || refreshToken === undefined || refreshToken === null)
 		return null
