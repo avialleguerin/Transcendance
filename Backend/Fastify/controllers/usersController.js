@@ -49,7 +49,6 @@ export async function googleSignIn(request, reply) {
 			const randomPassword = Math.random().toString(36).substring(2, 17);
 			const hashedPassword = await hashPassword(randomPassword);
 			
-			// Télécharger et sauvegarder l'image de profil de Google
 			let profilePicture = "default-profile-picture.png";
 			if (profilePictureUrl) {
 				try {
@@ -58,18 +57,15 @@ export async function googleSignIn(request, reply) {
 						const imageBuffer = await imageResponse.arrayBuffer();
 						const buffer = Buffer.from(imageBuffer);
 						
-						// Déterminer l'extension du fichier
 						const contentType = imageResponse.headers.get('content-type');
-						let extension = '.jpg'; // Par défaut
+						let extension = '.jpg';
 						if (contentType?.includes('png')) extension = '.png';
 						else if (contentType?.includes('gif')) extension = '.gif';
 						else if (contentType?.includes('webp')) extension = '.webp';
 						
-						// Créer le nom de fichier au format standard
 						const filename = `${Date.now()}-${username}-pp${extension}`;
 						const filePath = path.join(uploadDir, filename);
 						
-						// Sauvegarder l'image
 						await fs.writeFile(filePath, buffer);
 						profilePicture = filename;
 						
@@ -79,7 +75,6 @@ export async function googleSignIn(request, reply) {
 					}
 				} catch (error) {
 					fastify.log.error('Error downloading Google profile picture:', error);
-					// On continue avec l'image par défaut
 				}
 			}
 			
