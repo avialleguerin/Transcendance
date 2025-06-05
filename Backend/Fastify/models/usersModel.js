@@ -17,19 +17,34 @@ export const CREATE_USERS_TABLE = `
 		online_status BOOL DEFAULT false,
 		last_connection DATETIME DEFAULT CURRENT_TIMESTAMP,
 		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-		anonymized_at DATETIME DEFAULT NULL
+		deleted_at DATETIME DEFAULT NULL,
+        google_id TEXT UNIQUE
 	);
 `;
 
 const usersModel = {
-	createUser: (username, password) => {
-		const currentCGUVersion = "1.0"; // À définir ailleurs ou en constante
-		db.prepare("INSERT INTO users (username, password, cgu_version) VALUES (?, ?, ?)").run(username, password, currentCGUVersion);
-		return { username };
+	//** CRUD */
+	
+	//* Create
+	createUser: (username, password) => { const currentCGUVersion = "1.0"; db.prepare("INSERT INTO users (username, password, cgu_version) VALUES (?, ?, ?)").run(username, password, currentCGUVersion); return { username }; },
+
+	//* Read
+	createGoogleUser: (username, password, googleId, profilePicture) => {
+		const currentCGUVersion = getCurrentCGUVersion();
+		return db.prepare(`
+			INSERT INTO users (username, password, google_id, profile_picture, cgu_version) 
+			VALUES (?, ?, ?, ?, ?)
+		`).run(username, password, googleId, profilePicture, currentCGUVersion);
 	},
-	getAllUsers: () => db.prepare("SELECT * FROM users").all(),
+	getAllUsers: () => { db.prepare("SELECT * FROM users").all() },
 	getUserById: (userId) => { return db.prepare("SELECT * FROM users WHERE userId = ?").get(userId) },
 	getUserByUsername: (username) => { return db.prepare("SELECT * FROM users WHERE username = ?").get(username) },
+	getUsersWithOldCGU: () => { const currentVersion = getCurrentCGUVersion(); return db.prepare("SELECT * FROM users WHERE cgu_version != ?").all(currentVersion); },
+	getActiveUsers: () => { return db.prepare("SELECT * FROM users WHERE deleted_at IS NULL").all(); },
+	getDeletedUsers: () => { return db.prepare("SELECT userId, username, deleted_at FROM users WHERE deleted_at IS NOT NULL ORDER BY deleted_at DESC").all(); },
+	getUserByGoogleId: (googleId) => { return db.prepare("SELECT * FROM users WHERE google_id = ?").get(googleId); },
+
+	//* Update
 	updateDoubleAuth_status: (userId, doubleAuth_status) => { return db.prepare("UPDATE users SET doubleAuth_status = ? WHERE userId = ?").run(doubleAuth_status, userId) },
 	updateDoubleAuth_secret: (userId, doubleAuth_secret) => { return db.prepare("UPDATE users SET doubleAuth_secret = ? WHERE userId = ?").run(doubleAuth_secret, userId) },
 	updateUsername: (userId, newUsername) => { return db.prepare("UPDATE users SET username = ? WHERE userId = ?").run(newUsername, userId) },
@@ -37,7 +52,14 @@ const usersModel = {
 	updateOnlineStatus: (userId, NewOnlineStatus) => { return db.prepare("UPDATE users SET online_status = ? WHERE userId = ?").run(NewOnlineStatus, userId) },
 	setInactiveUsersOffline: (inactiveSince) => { return db.prepare("UPDATE users SET online_status = 0 WHERE last_connection <= ?").run(inactiveSince); },
 	updateProfilePicture: (userId, profile_picture) => { return db.prepare("UPDATE users SET profile_picture = ? WHERE userId = ?").run(profile_picture, userId) },
+	updateGamesWon: (userId) => { return db.prepare("UPDATE users SET games_won = games_won + 1 WHERE userId = ?").run(userId) },
+	updateGamesLost: (userId) => { return db.prepare("UPDATE users SET games_lost = games_lost + 1 WHERE userId = ?").run(userId) },
+	updateUserCGUVersion: (userId, version) => { return db.prepare("UPDATE users SET cgu_version = ?, cgu_accepted = CURRENT_TIMESTAMP WHERE userId = ?").run(version, userId) },
+	updateLastConnection: (userId) => { return db.prepare("UPDATE users SET last_connection = CURRENT_TIMESTAMP, online_status = 1 WHERE userId = ?").run(userId) },
+	
+	//* Delete
 	delete: (userId) => { return db.prepare("DELETE FROM users WHERE userId = ?").run(userId) },
+	deleteInactiveUsers: () => { return db.prepare("DELETE FROM users WHERE last_connection <= date('now', '-3 years')").run() },
 	anonymizeUser: (userId) => {
 		const anonymizedUsername = `del_${userId}`;
 		const anonymizedPassword = 'DELETED_ACCOUNT';
@@ -50,24 +72,10 @@ const usersModel = {
 				profile_picture = ?,
 				doubleAuth_status = 0,
 				doubleAuth_secret = ?,
-				anonymized_at = CURRENT_TIMESTAMP
+				google_id = NULL,
+				deleted_at = CURRENT_TIMESTAMP
 			WHERE userId = ?
 		`).run(anonymizedUsername, anonymizedPassword, defaultProfilePicture, null, userId);
-	},
-	updateGamesWon: (userId) => { return db.prepare("UPDATE users SET games_won = games_won + 1 WHERE userId = ?").run(userId) },
-	updateGamesLost: (userId) => { return db.prepare("UPDATE users SET games_lost = games_lost + 1 WHERE userId = ?").run(userId) },
-	updateUserCGUVersion: (userId, version) => { return db.prepare("UPDATE users SET cgu_version = ?, cgu_accepted = CURRENT_TIMESTAMP WHERE userId = ?").run(version, userId) },
-	updateLastConnection: (userId) => { return db.prepare("UPDATE users SET last_connection = CURRENT_TIMESTAMP, online_status = 1 WHERE userId = ?").run(userId) },
-	getUsersWithOldCGU: () => {
-		const currentVersion = getCurrentCGUVersion();
-		return db.prepare("SELECT * FROM users WHERE cgu_version != ?").all(currentVersion);
-	},
-	deleteInactiveUsers: () => { return db.prepare("DELETE FROM users WHERE last_connection <= date('now', '-3 years')").run() },
-	getAnonymizedUsers: () => {
-		return db.prepare("SELECT userId, username, anonymized_at FROM users WHERE anonymized_at IS NOT NULL ORDER BY anonymized_at DESC").all();
-	},
-	getActiveUsers: () => {
-		return db.prepare("SELECT * FROM users WHERE anonymized_at IS NULL").all();
 	},
 	forceDeleteUser: (userId) => {
 		// Utiliser une transaction pour supprimer toutes les références
@@ -86,6 +94,8 @@ const usersModel = {
 		
 		return transaction();
 	},
+	
+	
 }
 
 export default usersModel;

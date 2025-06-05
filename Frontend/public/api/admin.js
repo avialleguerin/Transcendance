@@ -1,5 +1,3 @@
-{/* <td class="bg-white px-6 py-2 border border-gray-100 border-r-0">********</td> */}
-{/* <td class="bg-white px-6 py-4 border border-gray-200 border-r-0 border-l-0"><img class="rounded-lg" style="width: 100%; height: auto; max-height: 50px; object-fit: contain;" src="/uploads/${user.profile_picture}"></td> */}
 
 
 async function fetch_users() {
@@ -13,6 +11,7 @@ async function fetch_users() {
 			<tr class="border-collapse text-sm hover:shadow-lg hover:rounded-xl hover:-translate-y-1 transition-all duration-200 ease-in-out cursor-pointer">
 				<td class="bg-white px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${user.userId}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.username}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.google_id || "—"}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.games_won}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.games_lost}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.doubleAuth_status === 0 ? "Disabled" : "Enabled" }</td>
@@ -31,24 +30,28 @@ async function fetch_users() {
 	}
 }
 
-async function fetch_anonymized_users() {
+async function fetch_deleted_users() {
 	try {
-		const response = await fetch('/request/admin/get-anonymized-users', {
+		const response = await fetch('/request/admin/get-deleted-users', {
 			method: 'GET',
 		});
 		const data = await response.json();
 		
 		if (data.success) {
-			document.getElementById('anonymized-users-table').innerHTML = data.users.map(user => /*html*/`
+			document.getElementById('deleted-users-table').innerHTML = data.users.map(user => /*html*/`
 				<tr class="border-collapse text-sm hover:shadow-lg hover:rounded-xl hover:-translate-y-1 transition-all duration-200 ease-in-out">
 					<td class="bg-gray-50 px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${user.userId}</td>
 					<td class="bg-gray-50 px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.username}</td>
-					<td class="bg-gray-50 px-6 py-2 rounded-r-xl border border-gray-100 border-l-0">${new Date(user.anonymized_at).toLocaleString()}</td>
-				</tr>
-			`).join('') || '<tr><td colspan="3" class="text-center py-4 text-gray-500">No anonymized users</td></tr>';
+					<td class="bg-gray-50 px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.google_id || "—"}</td>
+					<td class="bg-gray-50 px-6 py-2 border border-gray-100 border-l-0">${new Date(user.deleted_at).toLocaleString()}</td>
+					<td class="bg-gray-50 px-6 py-2 rounded-r-xl border border-gray-100 border-l-0">
+						<button class="bg-red-500 hover:bg-red-600 m-1 text-white px-3 py-1 rounded-full transition-colors duration-300 ease-in-out text-xs" onclick="force_delete_user(${user.userId})">Force Delete</button>
+					</td>
+					</tr>
+			`).join('') || '<tr><td colspan="3" class="text-center py-4 text-gray-500">No deleted users</td></tr>';
 		}
 	} catch (err) {
-		console.error('Error fetching anonymized users:', err);
+		console.error('Error fetching deleted users:', err);
 	}
 }
 
@@ -338,7 +341,7 @@ async function delete_user(userId) {
 	fetch_users();
 	fetch_games();
 	fetch_friendships();
-	fetch_anonymized_users();
+	fetch_deleted_users();
 }
 
 async function force_delete_user(userId) {
@@ -370,7 +373,7 @@ async function force_delete_user(userId) {
 	fetch_users();
 	fetch_games();
 	fetch_friendships();
-	fetch_anonymized_users();
+	fetch_deleted_users();
 }
 
 async function delete_game(gameId) {
@@ -492,5 +495,5 @@ window.addEventListener('DOMContentLoaded', () => {
 	fetch_games();
 	fetch_platformers();
 	fetch_friendships();
-	fetch_anonymized_users();
+	fetch_deleted_users();
 });
