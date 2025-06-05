@@ -1,20 +1,37 @@
-# -----------------------
-# SERVER : Game on HTTP (non-secure)
-# -----------------------
+
+# server {
+# 	listen 8300;
+# 	server_name 0.0.0.0;
+# 	return 301 https://$host:8443$request_uri;
+# }
+
+# server {
+# 	listen 8100;
+# 	server_name 0.0.0.0;
+# 	return 301 https://$host:8143$request_uri;
+# }
+
+
 server {
-	listen 8300;
-	server_name localhost;
+	listen 8443 ssl;
+	server_name 0.0.0.0;
+
+	ssl_certificate /etc/nginx/conf/server.crt;
+	ssl_certificate_key /etc/nginx/conf/server.key;
+
+	ssl_session_timeout 1d;
+	ssl_session_cache shared:MozSSL:10m;
+	ssl_session_tickets off;
+
+	ssl_protocols TLSv1.2 TLSv1.3;
+	ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
+	ssl_prefer_server_ciphers off;
 
 	location / {
 		root /usr/share/nginx/dist;
 		index index.html;
 		try_files $uri $uri/ /index.html;
 	}
-
-	# location /api/ {
-	#     alias /usr/share/nginx/dist/api/;
-	#     add_header Content-Type application/javascript;
-	# }
 
 	location /uploads/ {
 		alias /usr/share/nginx/uploads/;
@@ -34,7 +51,7 @@ server {
 	}
 
 	location /ws {
-		proxy_pass http://fastify:3000/ws;  # Port de votre serveur Fastify
+		proxy_pass http://fastify:3000/ws;
 		proxy_http_version 1.1;
 		proxy_set_header Upgrade $http_upgrade;
 		proxy_set_header Connection "upgrade";
@@ -42,28 +59,39 @@ server {
 		proxy_set_header X-Real-IP $remote_addr;
 		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 		proxy_set_header X-Forwarded-Proto $scheme;
+		proxy_read_timeout 86400;
 	}
 }
 
-# -----------------------
-# SERVER : Administration Panel
-# -----------------------
 server {
-	listen 8100;
-	server_name localhost;
+	listen 8143 ssl;
+	server_name 0.0.0.0;
+
+	# -----------------------
+	# SSL / TLS Configuration
+	# -----------------------
+	ssl_certificate /etc/nginx/conf/server.crt;
+	ssl_certificate_key /etc/nginx/conf/server.key;
+
+	ssl_session_timeout 1d;
+	ssl_session_cache shared:MozSSL:10m;
+	ssl_session_tickets off;
+
+	ssl_protocols TLSv1.2 TLSv1.3;
+	ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
+	ssl_prefer_server_ciphers off;
 
 	location / {
 		root /usr/share/nginx/admin;
-		index admin.html
+		index admin.html;
 		try_files $uri $uri/ /admin.html;
-		auth_basic "Procteded Area";
+		auth_basic "Protected Area";
 		auth_basic_user_file /etc/nginx/passwd/.htpasswd;
-	}						
+	}
 
 	location /api/ {
 		alias /usr/share/nginx/html/api/;
 	}
-
 
 	location /image/ {
 		alias /usr/share/nginx/dist/srcs/game/assets/image/;
@@ -81,69 +109,4 @@ server {
 		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 		proxy_set_header X-Forwarded-Proto $scheme;
 	}
-
-	
 }
-
-
-# Serveur HTTPS sécurisé sur le port 443
-# server {
-#     listen 443 ssl;                     # Écoute sur le port HTTPS avec SSL
-#     server_name localhost;              # Nom du serveur
-
-#     # -----------------------
-#     # SSL / TLS Configuration
-#     # -----------------------
-#     ssl_certificate /etc/nginx/conf/server.crt;         # Chemin vers le certificat SSL
-#     ssl_certificate_key /etc/nginx/conf/server.key;     # Clé privée du certificat SSL
-
-#     ssl_session_timeout 1d;							   # Durée des sessions SSL
-#     ssl_session_cache shared:MozSSL:10m;                # Cache SSL partagé
-#     ssl_session_tickets off;							  # Désactive les tickets SSL (meilleure sécurité)
-
-#     ssl_dhparam /etc/ssl/certs/dhparam-2048.pem;        # Paramètres Diffie-Hellman (renforce le chiffrement)
-
-#     ssl_protocols TLSv1.2 TLSv1.3;                      # Protocoles SSL autorisés
-#     ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;							        # Liste des suites de chiffrement à définir (voir modèle)
-#     ssl_prefer_server_ciphers off;                      # Ne pas forcer les suites du serveur
-#     ssl_stapling off;							         # Pas de OCSP stapling (désactivé ici)
-#     ssl_stapling_verify off;							  # Vérification OCSP désactivée
-#     ssl_verify_client off;							    # Pas de vérification client SSL
-
-#     access_log /dev/null;							     # Désactive les logs d'accès (optionnel pour moins de bruit)
-
-#     # -----------------------
-#     # FRONTEND : Application SPA (Single Page App)
-#     # -----------------------
-#     location / {
-#         root /usr/share/nginx/html;                     # Répertoire des fichiers frontend (HTML/CSS/JS)
-#         index index.html;							     # Fichier index à servir
-#         try_files $uri $uri/ /index.html;               # Permet la navigation côté client (React/Vue/etc.)
-#     }
-
-#     # -----------------------
-#     # FICHIERS UTILES : accès direct via /utils/
-#     # -----------------------
-#     location /utils/ {
-#         alias /usr/share/nginx/utils/;                  # Dossier de fichiers utilitaires
-#     }
-
-#     # -----------------------
-#     # BACKEND API : proxy vers le serveur Fastify + ModSecurity activé
-#     # -----------------------
-#     location /api/ {
-#         modsecurity on;							# Active ModSecurity (pare-feu applicatif)
-#         # modsecurity_rules_file /etc/modsecurity/modsecurity.conf;  # Fichier de config ModSecurity
-
-#         proxy_pass http://fastify:3000;                 # Redirige les requêtes vers ton backend Fastify
-#         proxy_set_header Host $host;                    # Transmet l'en-tête Host
-#         proxy_set_header X-Real-IP $remote_addr;        # Transmet l'IP réelle du client
-#         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;  # IPs en cascade
-#         proxy_set_header X-Forwarded-Proto $scheme;     # Transmet le protocole (http ou https)
-#     }
-
-#     # -----------------------
-#     # INCLUSIONS COMMUNES
-#     # -----------------------
-#     include includes/location_common.conf;              # Inclusion d’un fichier partagé si besoin
-# }

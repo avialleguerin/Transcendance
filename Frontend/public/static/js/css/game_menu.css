@@ -2530,7 +2530,7 @@ to {
 	width: 40px;
 	height: 40px;
 	border-radius: 50%;
-	border: 2px dashed #ccc;
+	border: 2px solid #555;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -3208,11 +3208,11 @@ to {
 	/* background-color: #ff1a1a; */
 }
 
-.friend_photo.online {
+.online {
 	border-color: #03bf03;
 }
 
-.friend_photo.offline {
+.offline {
 	border-color: red;
 }
 
