@@ -12,7 +12,7 @@ async function setupDatabase() {
 	try {
 		const { user, pass } = await getSQLiteCreds()
 		const db = new Database(dbFile, {
-			verbose: console.log,
+			verbose: null,
 			fileMustExist: false
 		})
 
