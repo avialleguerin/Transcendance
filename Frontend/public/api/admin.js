@@ -42,7 +42,7 @@ async function fetch_deleted_users() {
 					<td class="bg-gray-50 px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${user.userId}</td>
 					<td class="bg-gray-50 px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.username}</td>
 					<td class="bg-gray-50 px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.google_id || "—"}</td>
-					<td class="bg-gray-50 px-6 py-2 rounded-r-xl border border-gray-100 border-l-0">${new Date(user.deleted_at).toLocaleString()}</td>
+					<td class="bg-gray-50 px-6 py-2 border border-gray-100 border-l-0">${new Date(user.deleted_at).toLocaleString()}</td>
 					<td class="bg-gray-50 px-6 py-2 rounded-r-xl border border-gray-100 border-l-0">
 						<button class="bg-red-500 hover:bg-red-600 m-1 text-white px-3 py-1 rounded-full transition-colors duration-300 ease-in-out text-xs" onclick="force_delete_user(${user.userId})">Force Delete</button>
 					</td>
