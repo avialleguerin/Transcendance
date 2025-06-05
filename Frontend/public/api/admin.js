@@ -109,8 +109,8 @@ async function fetch_games() {
 			<tr class="border-collapse text-sm hover:shadow-lg hover:rounded-xl hover:-translate-y-1 transition-all duration-200 ease-in-out cursor-pointer">
 				<td class="bg-white px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${game.gameId}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0 font-semibold text-gray-800">${teamLeftDisplay}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0 text-center font-bold text-blue-600">${game.score_left}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0 text-center font-bold text-red-600">${game.score_right}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0 text-center font-bold ${game.score_left > game.score_right ? 'text-green-600' : 'text-red-600'}">${game.score_left}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0 text-center font-bold ${game.score_right > game.score_left ? 'text-green-600' : 'text-red-600'}">${game.score_right}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0 font-semibold text-gray-800">${teamRightDisplay}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0 text-gray-500">${game.created_at}</td>
 				<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0">
