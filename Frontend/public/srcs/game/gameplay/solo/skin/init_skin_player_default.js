@@ -47,7 +47,7 @@ export function init_skins_perso_first_default(scene) {
 }
 
 export function init_skins_perso_seconde_default(scene) {
-    loadSkinsForPlayer(skinPaths, scene, player2Skins_podium, -63, 303, -50);
+    loadSkinsForPlayer(skinPaths, scene, player2Skins_podium, -63, 303, -47.5);
 }
 
 export function enable_skin_perso_player_first_and_second_default() {
