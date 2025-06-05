@@ -211,14 +211,11 @@ export default class Home extends AbstractView {
 								<label for="confirm-password">Confirm password :</label>
 								<input type="password" id="register-confirm-password" name="password" placeholder="Confirm your password" required>
 							</div>
-							<p style="color:red; font-size:12px" >Your password must contain at least 8 characters, including one uppercase letter, one lowercase letter, one number, and one special character.</p>
 							<div class="input-container cgu-container">
 								<input type="checkbox" id="accept-cgu" name="accept-cgu" required>
 								<label for="accept-cgu">J'accepte les <a href="#" id="show-cgu" class="cgu-link">Conditions Générales d'Utilisation</a></label>
 							</div>
-							<div class="privacy-policy-container">
-								<label><a href="#" id="show-privacy-policy" class="cgu-link">Politique de Confidentialité</a></label>
-							</div>
+							
 							<button type="submit" class="connexion">Sign In</button>
 							<button type="button" class="connexion" id="alreadyHaveAccountButton_id">Already have an account ?</button>
 							<div class="google-signin-container">
@@ -226,6 +223,9 @@ export default class Home extends AbstractView {
 									<img src="https://developers.google.com/identity/images/g-logo.png" alt="Google">
 									Sign up with Google
 								</button>
+							</div>
+							<div class="privacy-policy-container">
+								<label><a href="#" id="show-privacy-policy" class="cgu-link">Politique de Confidentialité</a></label>
 							</div>
 						</form>
 					</div>
