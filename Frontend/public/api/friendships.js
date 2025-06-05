@@ -79,7 +79,7 @@ async function fetch_user_friendships() {
 		const renderFriend = (friendship, showActions) => `
 			<div class="friend">
 				<div class="friend-info">
-					<img src="/uploads/${friendship.friendProfilePicture}" class="friend_photo ${friendship.friendOnlineStatus ? 'online' : 'offline'}" alt="Profile">
+					<img src="/uploads/${friendship.friendProfilePicture}" class="${friendship.status === 'accepted' ? `friend_photo ${friendship.friendOnlineStatus ? 'online' : 'offline'}` : 'friend_photo'}" alt="Profile">
 					<div class="friend-details">
 						<p class="friend_name">${friendship.friend_username}</p>
 						<div class="friend-status-actions">

@@ -416,7 +416,7 @@ export async function changeProfilePicture(request, reply) {
 			success: true,
 			accessToken: accessToken,
 			message: 'Profile picture updated successfully!',
-			path: `/uploads/${filename}`
+			profile_picture: `uploads/${filename}`
 		});
 	} catch (err) {
 		fastify.log.error("❌ Error uploading new profile picture :", err);

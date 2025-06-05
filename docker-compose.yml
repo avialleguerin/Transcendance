@@ -38,8 +38,10 @@ services:
       context: ./Security
       dockerfile: Nginx/Dockerfile
     ports:
+      - "8080:8080"
+      - "8081:8081"
       - "8443:8443"            # HTTPS
-      - "8143:8143"           # HTTPS Admin
+      - "8143:8143"            # HTTPS Admin
     depends_on:
       - fastify
       - tsengine

@@ -3157,7 +3157,7 @@ to {
 	margin-right: 10px;
 	flex-shrink: 0;
 	cursor: pointer;
-	border: 2px solid white;
+	border: 2px solid #555;
 	margin-left: 10px;
 	object-fit: cover;
 }
