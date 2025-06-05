@@ -245,11 +245,11 @@ async function refreshInfos() {
 	try {
 		const data = await fetchAPI('/request/user/refresh-infos', 'POST', {}, true, false);
 
-		if (!data.accessToken) {
+		if (!data.accessToken || data.deleted_account) {
 			sessionStorage.removeItem("accessToken");
 			localStorage.clear();
 			history.pushState({}, '', '/');
-			import('../static/js/views/Home.js').then((module) => {
+			import('../static/js/views/Home.js').then((module) => { //TODO - bug de la page de chargement lors de la redirection vers '/' apres une suppression du user par exemple
 				console.log("Home module loaded");
 				const Home = module.default;
 				const homeInstance = new Home();

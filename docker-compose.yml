@@ -38,10 +38,10 @@ services:
       context: ./Security
       dockerfile: Nginx/Dockerfile
     ports:
-      - "8080:8080"           # 80:80 needs to be root
+      - "8300:8300"           # Typescript
       - "8443:443"            # HTTPS
       - "8100:8100"           # Admin Panel
-      - "8300:8300"           # Typescript
+      # - "8080:8080"           # 80:80 needs to be root
     depends_on:
       - fastify
       - tsengine

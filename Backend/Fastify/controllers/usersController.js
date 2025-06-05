@@ -34,16 +34,17 @@ export async function googleSignIn(request, reply) {
 		}
 
 		const googleUser = await response.json();
-		if (!googleUser.id || !googleUser.email)
+		if (!googleUser.id)
 			return reply.code(401).send({ success: false, error: 'Invalid Google user data'});
 		
-		const { id: googleId, email, name, picture: profilePictureUrl } = googleUser;
+		const { id: googleId, name, picture: profilePictureUrl } = googleUser;
 		
 		let user = usersModel.getUserByGoogleId(googleId);
-		if (!user) {
-			const existingUser = usersModel.getUserByEmail(email);
-			if (existingUser)
-				return reply.code(409).send({ success: false, error: 'Email already associated with another account' });
+		if (!user || user.anonymized_at) {
+
+			if (user && user.anonymized_at)
+				fastify.log.info(`User with Google ID ${googleId} was previously anonymized, creating new account`);
+		
 			
 			const username = name.replace(/\s+/g, '').toLowerCase().substring(0,10);
 			const randomPassword = Math.random().toString(36).substring(2, 17);
@@ -78,7 +79,7 @@ export async function googleSignIn(request, reply) {
 				}
 			}
 			
-			const newUserInfo = usersModel.createGoogleUser(username, hashedPassword, email, googleId, profilePicture);
+			const newUserInfo = usersModel.createGoogleUser(username, hashedPassword, googleId, profilePicture);
 			user = usersModel.getUserById(newUserInfo.lastInsertRowid);
 		}
 		const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, { expiresIn: '15m' });
@@ -579,7 +580,7 @@ export async function refreshInfos(request, reply) {
 			return reply.code(401).send({ success: false , error: 'User not found' })
 		if (!user.doubleAuth_status && user.doubleAuth_secret)
 			usersModel.updateDoubleAuth_secret(user.userId, null)
-		return reply.code(200).send({ success: true, user: user, accessToken: accessToken, message: 'User infos refreshed' })
+		return reply.code(200).send({ success: true, user: user, deleted_account: user.deleted_at , accessToken: accessToken, message: 'User infos refreshed' }) //REVIEW - Security of envoi du user en entier
 	} catch (err) {
 		return reply.code(500).send({ error: err.message })
 	}

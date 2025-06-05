@@ -2,22 +2,6 @@ import AbstractView from "./AbstractView.js";
 // import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.js";
 // import Game_menu from "./Game_menu.js";
 
-// Type declaration for Google Identity Services // REVIEW if its necessary
-declare global {
-  interface Window {
-    google?: {
-      accounts: {
-        id: {
-          initialize: (config: any) => void;
-          prompt: () => void;
-        }
-      }
-    };
-    initGoogleSignIn?: () => void;
-    handleGoogleSignIn?: (response: any) => void;
-  }
-}
-
 // Déclarations des fonctions externes
 declare function notif(message: string, success: boolean): void;
 declare function initGoogleSignIn(): void;
@@ -237,6 +221,12 @@ export default class Home extends AbstractView {
 							</div>
 							<button type="submit" class="connexion">Sign In</button>
 							<button type="button" class="connexion" id="alreadyHaveAccountButton_id">Already have an account ?</button>
+							<div class="google-signin-container">
+								<button type="button" class="google-signin-btn" id="google-signup-btn">
+									<img src="https://developers.google.com/identity/images/g-logo.png" alt="Google">
+									Sign up with Google
+								</button>
+							</div>
 						</form>
 					</div>
 				</div>
@@ -308,21 +298,24 @@ export default class Home extends AbstractView {
 		//* GOOGLE SIGN IN
 		// Ajouter l'événement pour le bouton Google
 		const googleSignInBtn = document.getElementById("google-signin-btn");
+		const googleSignUpBtn = document.getElementById("google-signup-btn");
 
-		googleSignInBtn?.addEventListener("click", () => {
+		const handleGoogleAuth = () => {
 			if (typeof tokenClient !== 'undefined') {
 				tokenClient.requestAccessToken();
 			} else {
 				console.error("Client Google OAuth non initialisé");
 				notif("Connexion Google non disponible", false);
 			}
-		});
+		};
 
+		googleSignInBtn?.addEventListener("click", handleGoogleAuth);
+		googleSignUpBtn?.addEventListener("click", handleGoogleAuth);
 
 		// Initialiser Google Sign In
 		window.addEventListener("load", () => {
 			initGoogleSignIn();
 		});
 
-		}
+	}
 }

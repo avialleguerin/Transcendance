@@ -40,7 +40,7 @@
 				<span class="ml-3">RGPD</span>
 			</button>
 			
-			<button onclick="showTab('anonymized-tab')" class="text-gray-700 tab-btn group w-full flex items-center py-3 px-4 rounded-lg hover:bg-violet-600 hover:text-white transition-colors" id="anonymized-tab-btn">
+			<button onclick="showTab('deleted-tab')" class="text-gray-700 tab-btn group w-full flex items-center py-3 px-4 rounded-lg hover:bg-violet-600 hover:text-white transition-colors" id="deleted-tab-btn">
 				<div class="w-6 text-center">
 					<i class="text-gray-700 fas fa-user-slash group-hover:text-white"></i>
 				</div>
@@ -69,6 +69,7 @@
 							<tr>
 								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider rounded-l-xl">User ID</th>
 								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Username</th>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Google ID</th>
 								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Game Winned</th>
 								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Game Losed</th>
 								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">2FA</th>
@@ -384,21 +385,23 @@
 			  </div>
 		</div>
 
-		<div id="anonymized-tab" class="tab-content hidden container mx-auto my-6 p-6 bg-white rounded-lg">
-			<h2 class="text-xl font-semibold mb-4">Anonymized Users</h2>
+		<div id="deleted-tab" class="tab-content hidden container mx-auto my-6 p-6 bg-white rounded-lg">
+			<h2 class="text-xl font-semibold mb-4">Deleted Users</h2>
 			<div class="mb-8">
-				<h3 class="text-lg font-semibold text-violet-600 mb-2">List of Anonymized Users</h3>
+				<h3 class="text-lg font-semibold text-violet-600 mb-2">List of Deleted Users</h3>
 				<p class="text-gray-600 mb-4">Ces utilisateurs ont été anonymisés conformément au RGPD. Leurs données personnelles ont été supprimées mais leurs références dans les parties sont préservées.</p>
 				<div class="overflow-x-auto mb-4">
 					<table class="min-w-full bg-white border-separate border-spacing-y-3">
 						<thead>
 							<tr>
 								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 tracking-wider rounded-l-xl">User ID</th>
-								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 tracking-wider">Anonymized Username</th>
-								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 tracking-wider rounded-r-xl">Date of Anonymization</th>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 tracking-wider">Deleted Username</th>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 tracking-wider">Google ID</th>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 tracking-wider">Date of Anonymization</th>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 tracking-wider rounded-r-xl">Action</th>
 							</tr>
 						</thead>
-						<tbody id="anonymized-users-table">
+						<tbody id="deleted-users-table">
 							<!-- Data will be injected here by JavaScript -->
 						</tbody>
 					</table>
@@ -417,7 +420,7 @@
 				'games-tab': 'Games',
 				'friendships-tab': 'Friendships',
 				'rgpd-tab': 'RGPD',
-				'anonymized-tab': 'Anonymized Users'
+				'deleted-tab': 'Deleted Users'
 			};
 			
 			// Stock the active tab in localStorage

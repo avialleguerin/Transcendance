@@ -17,9 +17,9 @@ export async function getAllUsers(request, reply) {
 	}
 }
 
-export async function getAnonymizedUsers(request, reply) {
+export async function getDeletedUsers(request, reply) {
 	try {
-		const anonymizedUsers = usersModel.getAnonymizedUsers()
+		const anonymizedUsers = usersModel.getDeletedUsers()
 		return reply.code(200).send({ success: true, users: anonymizedUsers })
 	} catch (err) {
 		return reply.code(500).send({ error: err.message })
