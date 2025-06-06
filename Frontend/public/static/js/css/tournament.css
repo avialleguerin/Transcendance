@@ -285,8 +285,8 @@
 	padding: 8px 12px;
 	border: none;
 	border-radius: 5px;
-	background-color: #5c88ff;
-	color: white;
+	background-color: #e6e600;
+	color: black;
 	cursor: pointer;
 	transition: background 0.2s;
 	position: absolute;
@@ -304,7 +304,7 @@
 }
 
 .btn_start_game:hover {
-    background-color: #3a6ce0;
+    background-color: #bb0;
 }
 
 
@@ -312,7 +312,7 @@
     padding: 8px 12px;
 	border: none;
 	border-radius: 5px;
-	background-color: #5c88ff;
+	background-color: #e6e600;
 	color: white;
 	cursor: pointer;
 	transition: background 0.2s;
@@ -323,7 +323,7 @@
 }
 
 .btn_finished_game:hover {
-    background-color: #3a6ce0;
+    background-color: #bb0;
 }
 
 
@@ -346,14 +346,14 @@
     height: 4%;
     /* display: flex; */
     align-items: center;
-    background-color: #5c88ff;
+    background-color: #e6e600;
     clip-path: polygon(0% 0%, 98% 0%, 70% 100%, 0% 100%);
     font-family: 'Black Ops One', sans-serif;
     color : black;
 }
 
 .btn_leave_tournament:hover {
-    background-color: #3a6ce0;
+    background-color: #bb0;
 }
 
 .message {
@@ -396,11 +396,11 @@
     color: rgb(0, 0, 0);
     font-family: 'Black Ops One', sans-serif;
     z-index: 100;
-    background-color: #5c88ff;
+    background-color: #e6e600;
 }
 
 .message .close_message:hover {
-    background-color: #3a6ce0;
+    background-color: #bb0;
 }
 
 .message.active {
@@ -414,8 +414,8 @@
     padding: 8px 12px;
 	border: none;
 	border-radius: 5px;
-	background-color: #5c88ff;
-	color: white;
+	background-color: #e6e600;
+	color: black;
 	cursor: pointer;
 	transition: background 0.2s;
     position: absolute;
@@ -426,7 +426,7 @@
 }
 
 .comfirm_leave_tournament:hover {
-    background-color: #3a6ce0;
+    background-color: #bb0;
 }
 
 
@@ -590,7 +590,7 @@
     padding: 8px 12px;
 	border: none;
 	border-radius: 5px;
-	background-color: #5c88ff;
+	background-color: #e6e600;
 	color: white;
 	cursor: pointer;
 	transition: background 0.2s;
@@ -598,5 +598,5 @@
 }
 
 .finish_tournament:hover {
-    background-color: #3a6ce0;
+    background-color: #bb0;
 }
