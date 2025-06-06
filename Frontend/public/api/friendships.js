@@ -139,8 +139,6 @@ async function fetch_user_friendships() {
 					historyIsActive = false;
 					bool = false;
 				}
-
-				// If history is already visible, do nothing
 			};
 		});
 
