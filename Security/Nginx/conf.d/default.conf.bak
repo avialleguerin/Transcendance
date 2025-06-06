@@ -65,9 +65,6 @@ server {
 	listen 8143 ssl;
 	server_name 0.0.0.0;
 
-	# -----------------------
-	# SSL / TLS Configuration
-	# -----------------------
 	ssl_certificate /etc/nginx/conf/server.crt;
 	ssl_certificate_key /etc/nginx/conf/server.key;
 
