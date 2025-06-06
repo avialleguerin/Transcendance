@@ -102,7 +102,7 @@ export async function googleSignIn(request, reply) {
 		usersModel.updateLastConnection(user.userId);
 		
 		return reply.setCookie('refreshToken', refreshToken, {
-				path: '/app',
+				path: '/',
 				httpOnly: true,
 				secure: true,
 				sameSite: 'strict',
@@ -204,7 +204,7 @@ export async function login(request, reply) {
 		usersModel.updateOnlineStatus(user.userId, 1)
 		reply
 		.setCookie('refreshToken', refreshToken, {
-			path: '/app',
+			path: '/',
 			httpOnly: true,
 			secure: true,
 			sameSite: 'strict',
@@ -517,7 +517,7 @@ export async function verifyDoubleAuth(request, reply) {
 			usersModel.updateLastConnection(user.userId)
 			reply
 			.setCookie('refreshToken', refreshToken, {
-				path: '/app',
+				path: '/',
 				httpOnly: true,
 				secure: true,
 				sameSite: 'strict',
