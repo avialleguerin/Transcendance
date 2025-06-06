@@ -1,6 +1,7 @@
 import { fastify, log } from '../server.js'
 import usersModel from '../models/usersModel.js'
 import gamesModel from '../models/gamesModel.js'
+import platformersModel from '../models/platformersModel.js'
 import friendshipsModel from '../models/friendshipsModel.js'
 import fs from 'fs/promises'
 import path from 'path'
@@ -17,9 +18,9 @@ export async function getAllUsers(request, reply) {
 	}
 }
 
-export async function getAnonymizedUsers(request, reply) {
+export async function getDeletedUsers(request, reply) {
 	try {
-		const anonymizedUsers = usersModel.getAnonymizedUsers()
+		const anonymizedUsers = usersModel.getDeletedUsers()
 		return reply.code(200).send({ success: true, users: anonymizedUsers })
 	} catch (err) {
 		return reply.code(500).send({ error: err.message })
@@ -248,6 +249,61 @@ export async function deleteFriendship(request, reply) {
 		return reply.send({ success: true, message: "Friendship deleted successfully"})
 	} catch (err) {
 		log.error(err)
+		return reply.code(500).send({ error: err.message })
+	}
+}
+
+export async function getAllPlatformers(request, reply) {
+	try {
+		const platformers = platformersModel.getAllPlatformers()
+		return platformers
+	} catch (err) {
+		return reply.code(500).send({ error: err.message })
+	}
+}
+
+export async function addPlatformer(request, reply) {
+	const { username1, username2, score_user1, score_user2 } = request.body
+
+	try {
+		console.log("username1 :", username1)
+		console.log("username2 :", username2)
+		console.log("score_user1 :", score_user1)
+		console.log("score_user2 :", score_user2)
+		if (!username1 || !username1 || !score_user1 || !score_user2)
+			return reply.code(400).send({ success: false, error: "Missing parameters" })
+		const user1 = usersModel.getUserByUsername(username1)
+		const user2 = usersModel.getUserByUsername(username2)
+		if (!user1)
+			return reply.code(404).send({ success: false, error: `User '${username1}' not found` })
+		if (!user2)
+			return reply.code(404).send({ success: false, error: `User '${username2}' not found` })
+		if (user1.userId === user2.userId)
+			return reply.code(400).send({ success: false, error: "Cannot create a platformer with the same user" })
+		platformersModel.createPlatformer(user1.userId, user2.userId, score_user1, score_user2)
+
+		return reply.code(201).send({ 
+			success: true,
+			message: "Platformer finished successfully",
+		})
+	} catch (err) {
+		console.error("Error creating platformer game:", err)
+		return reply.code(500).send({ error: err.message })
+	}
+}
+
+export async function deletePlatformer(request, reply) {
+	const { platformerId } = request.body
+	try {
+		const platformer = platformersModel.getPlatformerById(platformerId)
+		if (!platformer)
+			return reply.code(404).send({ error: 'Platformer not found' })
+		const info = platformersModel.deletePlatformer(platformerId)
+		if (info.changes === 0)
+			return reply.code(404).send({ error: "Platformer not found" })
+		return reply.send({ success: true, message: "Platformer deleted successfully"})
+	} catch (err) {
+		fastify.log.error(err)
 		return reply.code(500).send({ error: err.message })
 	}
 }

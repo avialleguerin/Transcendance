@@ -78,8 +78,8 @@ async function fetch_user_friendships() {
 
 		const renderFriend = (friendship, showActions) => {
 			// Déterminer le statut en fonction des données de l'API
-			let statusClass = 'status-offline';
-			let statusTitle = 'Ofdewfwffline';
+			let statusClass = `${friendship.friendOnlineStatus ? 'status_online' : 'status_offline'}`;
+			let statusTitle = `${friendship.friendOnlineStatus ? 'Online' : 'Offline'}`;
 			
 			return `
 				<div class="friend">
@@ -110,7 +110,7 @@ async function fetch_user_friendships() {
 		};
 
 		document.getElementById('friends-accepted').innerHTML =
-			accepted.map(friend => renderFriend(friend, false)).join('') || `<div class="text-center">No friend found</div>`;
+			accepted.map(friend => renderFriend(friend, false)).join('') || `<div class="text-center">No Friends found</div>`;
 
 		const gameHistory = document.getElementById('game_history');
 		const exit_game_history_btn = document.getElementById('exit_game_history_btn');
@@ -147,7 +147,7 @@ async function fetch_user_friendships() {
 			pending.map(friend => {
 				const isReceivedRequest = user.userId === friend.friendId;
 				return renderFriend(friend, isReceivedRequest);
-			}).join('') || `<div class="text-center">No request found</div>`;
+			}).join('') || `<div class="text-center">No Requests found</div>`;
 
 	} catch (err) {
 		console.error('Erreur lors de la récupération des amis :', err);
@@ -274,6 +274,7 @@ async function fetch_user_games_big(username) {
 		const userId = user.userId;
 		const games = data.games;
 		document.getElementById("profile_photo_circle_Game_History").innerHTML = `<img src="/uploads/${data.user.profile_picture}" alt="${data.username} profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+		document.getElementById("profile_photo_circle_Game_History").classList.add(`${data.user.online_status ? 'online' : 'offline'}`);
 		document.getElementById("game_history_username").innerHTML = `${data.user.username}`;
 		document.getElementById("games_won_history").innerHTML = `${user.games_won}`;
 		document.getElementById("games_lost_history").innerHTML = `${user.games_lost}`;

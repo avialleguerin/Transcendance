@@ -1,4 +1,4 @@
-import { fastify } from '../server.js'
+import { fastify, log } from '../server.js'
 import usersModel from '../models/usersModel.js'
 import { hashPassword, verifyPassword } from '../utils/hashUtils.js'
 import { redisModel } from '../models/redisModel.js'
@@ -7,11 +7,113 @@ import friendshipsModel from '../models/friendshipsModel.js'; //NOTE - new
 import gamesModel from '../models/gamesModel.js'; //NOTE - new
 import speakeasy from 'speakeasy'
 import qrcode from 'qrcode'
-import fs from 'fs/promises';
-import path from 'path';
+import fs from 'fs/promises'
+import path from 'path'
+// import { get } from 'http'
 
 const uploadDir = '/usr/share/nginx/uploads'
 const SECRET_LENGHT = 30
+
+export async function googleConfig(request, reply) {
+	try {
+		fastify.log.debug("ID du client Google :", process.env.GOOGLE_CLIENT_ID);
+        return {
+            success: true,
+            client_id: process.env.GOOGLE_CLIENT_ID
+        };
+    } catch (err) {
+        console.error("❌ Erreur lors de la récupération de la config Google :", err);
+        reply.code(500).send({ error: 'Erreur serveur' });
+    }
+}
+
+export async function googleSignIn(request, reply) {
+	try {
+		const { access_token } = request.body;
+		if (!access_token) {
+			return reply.code(400).send({ 
+				success: false, 
+				error: 'Google access_token is required' 
+			});
+		}
+
+		const response = await fetch(`https://www.googleapis.com/oauth2/v2/userinfo?access_token=${access_token}`);
+		
+		if (!response.ok) {
+			fastify.log.error('Google API error:', response.status);
+			return reply.code(401).send({ 
+				success: false, 
+				error: 'Invalid Google access token' 
+			});
+		}
+
+		const googleUser = await response.json();
+		if (!googleUser.id)
+			return reply.code(401).send({ success: false, error: 'Invalid Google user data'});
+		
+		const { id: googleId, name, picture: profilePictureUrl } = googleUser;
+		
+		let user = usersModel.getUserByGoogleId(googleId);
+		if (!user || user.anonymized_at) {
+
+			if (user && user.anonymized_at)
+				fastify.log.info(`User with Google ID ${googleId} was previously anonymized, creating new account`);
+		
+			
+			const username = name.replace(/\s+/g, '').toLowerCase().substring(0,10);
+			const randomPassword = Math.random().toString(36).substring(2, 17);
+			const hashedPassword = await hashPassword(randomPassword);
+			
+			let profilePicture = "default-profile-picture.png";
+			if (profilePictureUrl) {
+				try {
+					const imageResponse = await fetch(profilePictureUrl);
+					if (imageResponse.ok) {
+						const imageBuffer = await imageResponse.arrayBuffer();
+						const buffer = Buffer.from(imageBuffer);
+						
+						const contentType = imageResponse.headers.get('content-type');
+						let extension = '.jpg';
+						if (contentType?.includes('png')) extension = '.png';
+						else if (contentType?.includes('gif')) extension = '.gif';
+						else if (contentType?.includes('webp')) extension = '.webp';
+						
+						const filename = `${Date.now()}-${username}-pp${extension}`;
+						const filePath = path.join(uploadDir, filename);
+						
+						await fs.writeFile(filePath, buffer);
+						profilePicture = filename;
+						
+						fastify.log.info(`✅ Google profile picture saved: ${filename}`);
+					} else {
+						fastify.log.warn('Failed to download Google profile picture');
+					}
+				} catch (error) {
+					fastify.log.error('Error downloading Google profile picture:', error);
+				}
+			}
+			
+			const newUserInfo = usersModel.createGoogleUser(username, hashedPassword, googleId, profilePicture);
+			user = usersModel.getUserById(newUserInfo.lastInsertRowid);
+		}
+		const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, { expiresIn: '15m' });
+		const refreshToken = fastify.jwt.sign({ userId: user.userId }, { expiresIn: '7d' });
+		
+		usersModel.updateLastConnection(user.userId);
+		
+		return reply.setCookie('refreshToken', refreshToken, {
+				path: '/',
+				httpOnly: true,
+				secure: true,
+				sameSite: 'strict',
+				expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+			}).code(200).send({ success: true, message: 'Google Sign-In successful', connection_status: "connected", user: user, accessToken: accessToken });
+			
+	} catch (error) {
+		fastify.log.error('Google Sign-In error:', error);
+		return reply.code(500).send({ success: false, error: 'Google Sign-In failed' });
+	}
+}
 
 export async function getUserProfile(request, reply) {
 	try {
@@ -99,6 +201,7 @@ export async function login(request, reply) {
 		if (!accessToken || !refreshToken)
 			return reply.code(500).send({ error: 'Internal Server Error' })
 		usersModel.updateLastConnection(user.userId)
+		usersModel.updateOnlineStatus(user.userId, 1)
 		reply
 		.setCookie('refreshToken', refreshToken, {
 			path: '/',
@@ -179,6 +282,7 @@ export async function login2v2(request, reply) {
 }
 
 export async function logout(request, reply) {
+	// const { username } = request.body
 	const accessToken = request.headers.authorization?.split(' ')[1]
 	const { refreshToken } = request.cookies
 	if (!accessToken || accessToken === "undefined")
@@ -196,13 +300,14 @@ export async function logout(request, reply) {
 			redisModel.addToBlacklist(refreshToken, expiresIn)
 		reply.clearCookie('refreshToken', { path: '/' })
 	}
+	// const user = usersModel.getUserByUsername(username)
+	// usersModel.updateOnlineStatus(user.userId, 0)
 	reply.code(200).send({ success: true, message: 'Logged out' })
 }
 
 export async function updateDoubleAuth(request, reply) {
 	try {
 		const infos = await getUserFromToken(request)
-		// fastify.log.info("🔑 infos :", infos)
 		if (!infos)
 			return reply.code(401).send({ success: false, error: 'Unauthorized' })
 		const user = infos.user
@@ -212,12 +317,9 @@ export async function updateDoubleAuth(request, reply) {
 		{
 			usersModel.updateDoubleAuth_status(user.userId, 0)
 			usersModel.updateDoubleAuth_secret(user.userId, null)
-			// fastify.log.info("Double Auth disabled")
 			return reply.code(200).send({success: true, message: "2FA disabled successfully!", doubleAuth_secret: false})
 		}
 		const doubleAuthData = generateDoubleAuth(user.userId)
-		// fastify.log.info("Double Auth qrCode", (await doubleAuthData).qrCode)
-		// fastify.log.info("Double Auth secret", (await doubleAuthData).secret)
 
 		return reply.code(200).send({
 			success: true,
@@ -492,7 +594,7 @@ export async function refreshInfos(request, reply) {
 			return reply.code(401).send({ success: false , error: 'User not found' })
 		if (!user.doubleAuth_status && user.doubleAuth_secret)
 			usersModel.updateDoubleAuth_secret(user.userId, null)
-		return reply.code(200).send({ success: true, user: user, accessToken: accessToken, message: 'User infos refreshed' })
+		return reply.code(200).send({ success: true, user: user, deleted_account: user.deleted_at , accessToken: accessToken, message: 'User infos refreshed' }) //REVIEW - Security of envoi du user en entier
 	} catch (err) {
 		return reply.code(500).send({ error: err.message })
 	}
@@ -513,9 +615,9 @@ export async function exportUserData(request, reply) {
 		delete user.password;
 		delete user.doubleAuth_secret;
 		
-		const games = await gamesModel.getGamesByUserId(user.userId);
+		const games = gamesModel.getGamesByUserId(user.userId);
 		
-		const friendships = await friendshipsModel.getFriendshipsByUserId(user.userId);
+		const friendships = friendshipsModel.getFriendshipsByUserId(user.userId);
 		
 		const exportData = {
 			personal_information: {
@@ -546,7 +648,7 @@ export async function anonymizeUser(request, reply) {
 			return reply.code(401).send({ success: false, error: 'Unauthorized' })
 		const user = infos.user
 		if (!user)
-			return reply.code(401).send({ success: false , error: 'User not found' })
+			return reply.code(401).send({ success: false, error: 'User not found' })
 		
 		const anonymizedUsername = `Anonym${user.userId}`;
 		const anonymizedProfilePicture = "default-profile-picture.png";

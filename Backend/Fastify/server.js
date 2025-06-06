@@ -10,8 +10,11 @@ import routes from "./routes/routes.js"
 import { redisClient, setupRedisLogging } from './utils/redis.js';
 import { redisModel } from './models/redisModel.js';
 import cron from 'node-cron';
+// Models
+import usersModel from './models/usersModel.js';
 
 import colorLoggerPlugin from './utils/logger.js' // NOTE - bonus: Colorized logger plugin
+import websocket from '@fastify/websocket'
 
 // setting up the server
 export const fastify = Fastify({
@@ -28,6 +31,60 @@ export const fastify = Fastify({
 	},
 	disableRequestLogging: true
 })
+
+// Enregistrer le plugin WebSocket
+await fastify.register(websocket)
+
+// Map pour stocker les connexions WebSocket actives
+const activeConnections = new Map()
+
+// Route WebSocket pour gérer les connexions
+fastify.register(async function (fastify) {
+	fastify.get('/ws', { websocket: true }, (connection, request) => {
+		const userId = request.query.userId
+
+		if (userId && !isNaN(userId)) {
+			activeConnections.set(userId, connection)
+			
+			usersModel.updateOnlineStatus(userId, 1)
+			usersModel.updateLastConnection(userId)
+			
+			console.log(`User ${userId} connected via WebSocket`)
+			connection.on('message', (message) => {
+				const data = JSON.parse(message)
+				
+				if (data.type === 'heartbeat') {
+					usersModel.updateLastConnection(userId)
+					connection.send(JSON.stringify({ type: 'pong' }))
+				}
+			})
+
+			connection.on('close', () => {
+				console.log(`🔌 User ${userId} WebSocket disconnected`)
+				console.log(`Type of userId: ${typeof userId}`)
+				
+				activeConnections.delete(userId)
+				
+				// Vérifier que l'utilisateur existe
+				const user = usersModel.getUserById(userId)
+				console.log(`User found in DB:`, user)
+				
+				if (user) {
+					usersModel.updateLastConnection(userId)
+					const updateResult = usersModel.updateOnlineStatus(userId, 0)
+					console.log(`Update online status result:`, updateResult)
+					const userAfter = usersModel.getUserById(userId)
+					console.log(`User status after update:`, userAfter.online_status)
+					console.log(`✅ User ${userId} marked as offline`)
+				} else {
+					console.log(`⚠️ User ${userId} not found in database`)
+				}
+			})
+		}
+	})
+})
+
+
 
 setupRedisLogging(fastify); // Setup Redis logging with Fastify
 await redisClient.connect();
@@ -69,6 +126,12 @@ fastify.decorate('authenticate', async function (request, reply) {
 	}
 });
 
+// cron.schedule('* * * * *', () => {
+// 	// Marquer comme hors ligne les utilisateurs inactifs depuis plus de 2 minutes
+// 	const twoMinutesAgo = new Date(Date.now() - 2 * 60 * 1000).toISOString();
+// 	console.log(`Marking users inactive if offline since: ${twoMinutesAgo}`);
+// 	usersModel.setInactiveUsersOffline(twoMinutesAgo);
+// });
 
 cron.schedule('0 0 * * *', () => {
 	console.log('Clean inactive users...');

@@ -1,5 +1,3 @@
-{/* <td class="bg-white px-6 py-2 border border-gray-100 border-r-0">********</td> */}
-{/* <td class="bg-white px-6 py-4 border border-gray-200 border-r-0 border-l-0"><img class="rounded-lg" style="width: 100%; height: auto; max-height: 50px; object-fit: contain;" src="/uploads/${user.profile_picture}"></td> */}
 
 
 async function fetch_users() {
@@ -13,10 +11,12 @@ async function fetch_users() {
 			<tr class="border-collapse text-sm hover:shadow-lg hover:rounded-xl hover:-translate-y-1 transition-all duration-200 ease-in-out cursor-pointer">
 				<td class="bg-white px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${user.userId}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.username}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.google_id || "—"}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.games_won}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.games_lost}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.doubleAuth_status === 0 ? "Disabled" : "Enabled" }</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.cgu_version || "—"}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.online_status === 0 ? "offline" : "online"}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.last_connection}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.created_at}</td>
 				<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0">
@@ -30,24 +30,28 @@ async function fetch_users() {
 	}
 }
 
-async function fetch_anonymized_users() {
+async function fetch_deleted_users() {
 	try {
-		const response = await fetch('/request/admin/get-anonymized-users', {
+		const response = await fetch('/request/admin/get-deleted-users', {
 			method: 'GET',
 		});
 		const data = await response.json();
 		
 		if (data.success) {
-			document.getElementById('anonymized-users-table').innerHTML = data.users.map(user => /*html*/`
+			document.getElementById('deleted-users-table').innerHTML = data.users.map(user => /*html*/`
 				<tr class="border-collapse text-sm hover:shadow-lg hover:rounded-xl hover:-translate-y-1 transition-all duration-200 ease-in-out">
 					<td class="bg-gray-50 px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${user.userId}</td>
 					<td class="bg-gray-50 px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.username}</td>
-					<td class="bg-gray-50 px-6 py-2 rounded-r-xl border border-gray-100 border-l-0">${new Date(user.anonymized_at).toLocaleString()}</td>
-				</tr>
-			`).join('') || '<tr><td colspan="3" class="text-center py-4 text-gray-500">No anonymized users</td></tr>';
+					<td class="bg-gray-50 px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.google_id || "—"}</td>
+					<td class="bg-gray-50 px-6 py-2 border border-gray-100 border-l-0">${new Date(user.deleted_at).toLocaleString()}</td>
+					<td class="bg-gray-50 px-6 py-2 rounded-r-xl border border-gray-100 border-l-0">
+						<button class="bg-red-500 hover:bg-red-600 m-1 text-white px-3 py-1 rounded-full transition-colors duration-300 ease-in-out text-xs" onclick="force_delete_user(${user.userId})">Force Delete</button>
+					</td>
+					</tr>
+			`).join('') || '<tr><td colspan="3" class="text-center py-4 text-gray-500">No deleted users</td></tr>';
 		}
 	} catch (err) {
-		console.error('Error fetching anonymized users:', err);
+		console.error('Error fetching deleted users:', err);
 	}
 }
 
@@ -76,48 +80,89 @@ async function fetch_anonymized_users() {
 //// }
 
 async function fetch_games() {
-    try {
-        const response = await fetch('/request/admin/get-all-games', {
-            method: 'GET',
-        });
-        const games = await response.json();
+	try {
+		const response = await fetch('/request/admin/get-all-games', {
+			method: 'GET',
+		});
+		const games = await response.json();
 
-        document.getElementById('games-table').innerHTML = games.map(game => {
-            // Vérifier si c'est un 1v1 ou un 2v2
-            const is1v1 = !game.user3_name || game.user3_name === '—' || !game.user4_name || game.user4_name === '—';
-            
-            let teamLeftDisplay, teamRightDisplay;
-            
-            if (is1v1) {
-                // 1v1: user1 à gauche, user2 à droite
-                teamLeftDisplay = game.user1_name || 'Utilisateur supprimé';
-                teamRightDisplay = game.user2_name || 'Utilisateur supprimé';
-            } else {
-                // 2v2: (user1 & user3) vs (user2 & user4)
-                const teamLeft = [game.user1_name, game.user2_name].filter(name => name && name !== '—');
-                const teamRight = [game.user3_name, game.user4_name].filter(name => name && name !== '—');
-                
-                teamLeftDisplay = teamLeft.length > 0 ? teamLeft.join(' & ') : 'Équipe incomplète';
-                teamRightDisplay = teamRight.length > 0 ? teamRight.join(' & ') : 'Équipe incomplète';
-            }
+		document.getElementById('games-table').innerHTML = games.map(game => {
+			// Vérifier si c'est un 1v1 ou un 2v2
+			const is1v1 = !game.user3_name || game.user3_name === '—' || !game.user4_name || game.user4_name === '—';
+			
+			let teamLeftDisplay, teamRightDisplay;
+			
+			if (is1v1) {
+				// 1v1: user1 à gauche, user2 à droite
+				teamLeftDisplay = game.user1_name || 'Utilisateur supprimé';
+				teamRightDisplay = game.user2_name || 'Utilisateur supprimé';
+			} else {
+				// 2v2: (user1 & user3) vs (user2 & user4)
+				const teamLeft = [game.user1_name, game.user2_name].filter(name => name && name !== '—');
+				const teamRight = [game.user3_name, game.user4_name].filter(name => name && name !== '—');
+				
+				teamLeftDisplay = teamLeft.length > 0 ? teamLeft.join(' & ') : 'Équipe incomplète';
+				teamRightDisplay = teamRight.length > 0 ? teamRight.join(' & ') : 'Équipe incomplète';
+			} 
 
-            return /*html*/`
-            <tr class="border-collapse text-sm hover:shadow-lg hover:rounded-xl hover:-translate-y-1 transition-all duration-200 ease-in-out cursor-pointer">
-                <td class="bg-white px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${game.gameId}</td>
-                <td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0 font-semibold text-gray-800">${teamLeftDisplay}</td>
-                <td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0 text-center font-bold text-blue-600">${game.score_left}</td>
-                <td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0 text-center font-bold text-red-600">${game.score_right}</td>
-                <td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0 font-semibold text-gray-800">${teamRightDisplay}</td>
-                <td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0 text-gray-500">${game.created_at}</td>
-                <td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0">
-                    <button class="bg-red-200 hover:bg-red-300 m-2 text-red-500 hover:text-red-600 px-4 py-1 rounded-full transition-colors duration-300 ease-in-out" onclick="delete_game(${game.gameId})">Delete</button>
-                </td>
-            </tr>
-            `;
-        }).join('');
-    } catch (err) {
-        console.error('Erreur lors de la récupération des Jeux :', err);
-    }
+			return /*html*/`
+			<tr class="border-collapse text-sm hover:shadow-lg hover:rounded-xl hover:-translate-y-1 transition-all duration-200 ease-in-out cursor-pointer">
+				<td class="bg-white px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${game.gameId}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0 font-semibold text-gray-800">${teamLeftDisplay}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0 text-center font-bold text-blue-600">${game.score_left}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0 text-center font-bold text-red-600">${game.score_right}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0 font-semibold text-gray-800">${teamRightDisplay}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0 text-gray-500">${game.created_at}</td>
+				<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0">
+					<button class="bg-red-200 hover:bg-red-300 m-2 text-red-500 hover:text-red-600 px-4 py-1 rounded-full transition-colors duration-300 ease-in-out" onclick="delete_game(${game.gameId})">Delete</button>
+				</td>
+			</tr>
+			`;
+		}).join('');
+	} catch (err) {
+		console.error('Erreur lors de la récupération des Jeux :', err);
+	}
+}
+
+async function fetch_platformers() {
+	try {
+		const response = await fetch('/request/admin/get-all-platformers', {
+			method: 'GET',
+		});
+		const platformers = await response.json();
+		document.getElementById('platformers-table').innerHTML = platformers.map(platformer => /*html*/`
+			<tr class="border-collapse text-sm hover:shadow-lg hover:rounded-xl hover:-translate-y-1 transition-all duration-200 ease-in-out cursor-pointer">
+				<td class="bg-white px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${platformer.platformerId}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.username}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.chrono}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.created_at}</td>
+				<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0"><button class="bg-red-200 hover:bg-red-300 m-2 text-red-500 hover:text-red-600 px-4 py-1 rounded-full transition-colors duration-300 ease-in-out" onclick="delete_platformer(${platformer.platformerId})">Delete</button></td>
+			</tr>
+		`).join('');
+	} catch (err) {
+		console.error('Erreur lors de la récupération des Jeux :', err);
+	}
+}
+
+async function fetch_platformers() {
+	try {
+		const response = await fetch('/request/admin/get-all-platformers', {
+			method: 'GET',
+		});
+		const platformers = await response.json();
+		document.getElementById('platformers-table').innerHTML = platformers.map(platformer => /*html*/`
+			<tr class="border-collapse text-sm hover:shadow-lg hover:rounded-xl hover:-translate-y-1 transition-all duration-200 ease-in-out cursor-pointer">
+				<td class="bg-white px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${platformer.platformerId}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.user1_name}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.score_user1} - ${platformer.score_user2}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.user2_name}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.created_at}</td>
+				<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0"><button class="bg-red-200 hover:bg-red-300 m-2 text-red-500 hover:text-red-600 px-4 py-1 rounded-full transition-colors duration-300 ease-in-out" onclick="delete_platformer(${platformer.platformerId})">Delete</button></td>
+			</tr>
+		`).join('');
+	} catch (err) {
+		console.error('Erreur lors de la récupération des Jeux :', err);
+	}
 }
 
 async function fetch_friendships() {
@@ -205,6 +250,39 @@ async function create_game(event) {
 	fetch_games();
 };
 
+async function create_platformer(event) {
+	event.preventDefault();
+
+	const username1 = document.getElementById("addPlatformer-username1").value;
+	const username2 = document.getElementById("addPlatformer-username2").value;
+	const score_user1 = document.getElementById("addPlatformer-score1").value;
+	const score_user2 = document.getElementById("addPlatformer-score2").value;
+
+	if (!username1 || !username2 || !score_user1 || !score_user2) {
+		notif("Please select the users and their scores", false);
+		return ;
+	}
+
+	const response = await fetch('/request/admin/create-platformer', {
+		method: 'POST',
+		headers: { 
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({ username1, username2, score_user1, score_user2 }),
+		credentials: 'include',
+	});
+	const data = await response.json();
+	if (data.success) {
+		notif(`Platformer added : ${data.username} in ${data.chrono}s`, true);
+		close_platformer_modal();
+	} else {
+		notif(data.error, false);
+	}
+	document.getElementById("addPlatformerForm").reset();
+	fetch_platformers();
+};
+
+
 async function create_friendship(event) {
 	event.preventDefault();
 
@@ -252,9 +330,9 @@ async function delete_user(userId) {
 			if (data.success) {
 				console.log('User deleted successfully');
 			} else {
-                console.error('Delete failed:', data.error);
-                notif(data.error || 'Failed to delete user', false);
-            }
+				console.error('Delete failed:', data.error);
+				notif(data.error || 'Failed to delete user', false);
+			}
 		} catch (err) {
 			console.error('Erreur lors de la suppression :', err.message);
 			notif('Failed to delete user' + err.message, false);
@@ -263,7 +341,7 @@ async function delete_user(userId) {
 	fetch_users();
 	fetch_games();
 	fetch_friendships();
-	fetch_anonymized_users();
+	fetch_deleted_users();
 }
 
 async function force_delete_user(userId) {
@@ -284,9 +362,9 @@ async function force_delete_user(userId) {
 				console.log('User permanently deleted');
 				notif('User permanently deleted', true);
 			} else {
-                console.error('Force delete failed:', data.error);
-                notif(data.error || 'Failed to permanently delete user', false);
-            }
+				console.error('Force delete failed:', data.error);
+				notif(data.error || 'Failed to permanently delete user', false);
+			}
 		} catch (err) {
 			console.error('Erreur lors de la suppression forcée :', err.message);
 			notif('Failed to force delete user' + err.message, false);
@@ -295,7 +373,7 @@ async function force_delete_user(userId) {
 	fetch_users();
 	fetch_games();
 	fetch_friendships();
-	fetch_anonymized_users();
+	fetch_deleted_users();
 }
 
 async function delete_game(gameId) {
@@ -318,6 +396,28 @@ async function delete_game(gameId) {
 		}
 	}
 	fetch_games();
+}
+
+async function delete_platformer(platformerId) {
+	if (confirm('Do you really want to delete this platformer ?')) {
+		try {
+			const response = await fetch('/request/admin/delete-platformer', { 
+				method: 'DELETE',
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ platformerId }),
+				credentials: 'include'
+			},);
+			const data = await response.json();
+			if (data.success) {
+				console.log('Game deleted successfully');
+			}
+		} catch (err) {
+			console.error('Erreur lors de la suppression :', err);
+		}
+	}
+	fetch_platformers();
 }
 
 async function delete_friendship(friendshipId) {
@@ -358,6 +458,12 @@ async function add_game_modal() {
 	document.getElementById("addGameModal").classList.remove("hidden");
 }
 
+async function add_platformer_modal() {
+	if (!document.getElementById("addPlatformerModal").classList.contains("hidden"))
+		document.getElementById("addPlatformerModal").classList.add("hidden")
+	document.getElementById("addPlatformerModal").classList.remove("hidden");
+}
+
 async function add_friendship_modal() {
 	if (!document.getElementById("addFriendshipModal").classList.contains("hidden"))
 		document.getElementById("addFriendshipModal").classList.add("hidden")
@@ -374,6 +480,11 @@ async function close_game_modal() {
 	document.getElementById("addGameModal").classList.add("hidden");
 }
 
+async function close_platformer_modal() {
+	document.getElementById("addPlatformerForm").reset();
+	document.getElementById("addPlatformerModal").classList.add("hidden");
+}
+
 async function close_friendship_modal() {
 	document.getElementById("addFriendshipForm").reset();
 	document.getElementById("addFriendshipModal").classList.add("hidden");
@@ -382,6 +493,7 @@ async function close_friendship_modal() {
 window.addEventListener('DOMContentLoaded', () => {
 	fetch_users();
 	fetch_games();
+	fetch_platformers();
 	fetch_friendships();
-	fetch_anonymized_users();
+	fetch_deleted_users();
 });

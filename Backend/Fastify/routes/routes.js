@@ -1,7 +1,8 @@
-import { getUserProfilePicture, createUser , deleteAccount, login, login1v1, login2v2, logout, updateDoubleAuth, accessProfileInfo, changeProfilePicture, changeProfile, getUserProfile, verifyDoubleAuth, activateDoubleAuth, refreshInfos, exportUserData, anonymizeUser } from '../controllers/usersController.js';
+import { getUserProfilePicture, createUser , deleteAccount, login, login1v1, login2v2, logout, updateDoubleAuth, accessProfileInfo, changeProfilePicture, changeProfile, getUserProfile, verifyDoubleAuth, activateDoubleAuth, refreshInfos, exportUserData, anonymizeUser, googleSignIn, googleConfig } from '../controllers/usersController.js';
 import { getUserGames, create1v1Game, create2v2Game } from '../controllers/gamesController.js';
+import { getUserPlatformer, createPlatformer } from '../controllers/platformerController.js';
 import { getUserFriendships, addFriend, acceptFriend, deleteFriend } from '../controllers/friendshipsController.js';
-import { getAllUsers, getAnonymizedUsers, deleteUser, forceDeleteUser, getAllGames, createGame, deleteGame, getAllFriendships, addFriendship, deleteFriendship } from '../controllers/adminController.js';
+import { getAllUsers, getDeletedUsers, deleteUser, forceDeleteUser, getAllGames, createGame, deleteGame, getAllPlatformers, addPlatformer, deletePlatformer, getAllFriendships, addFriendship, deleteFriendship } from '../controllers/adminController.js';
 import { getSQLiteCreds } from '../utils/vault.js'
 
 /**
@@ -50,12 +51,15 @@ export default async function routes (fastify) {
 
 	//* ADMIN
 	fastify.get('/admin/get-all-users', getAllUsers)
-	fastify.get('/admin/get-anonymized-users', getAnonymizedUsers)
+	fastify.get('/admin/get-deleted-users', getDeletedUsers)
 	fastify.delete('/admin/delete-user', deleteUser)
 	fastify.delete('/admin/force-delete-user', forceDeleteUser)
 	fastify.get('/admin/get-all-games', getAllGames)
 	fastify.post('/admin/create-game', createGame)
 	fastify.delete('/admin/delete-game', deleteGame)
+	fastify.get('/admin/get-all-platformers', getAllPlatformers)
+	fastify.post('/admin/create-platformer', addPlatformer)
+	fastify.delete('/admin/delete-platformer', deletePlatformer)
 	fastify.get('/admin/get-all-friendships', getAllFriendships)
 	fastify.post('/admin/create-friendship', addFriendship)
 	fastify.delete('/admin/delete-friendship', deleteFriendship)
@@ -78,6 +82,8 @@ export default async function routes (fastify) {
 	fastify.post('/user/refresh-infos', refreshInfos)
 	fastify.get('/user/export-data', exportUserData) // NOTE - new route to export user data
 	fastify.put('/user/anonymize-account', anonymizeUser) //NOTE - new route to anonymize user account
+	fastify.get('/user/google-config', googleConfig)
+	fastify.post('/user/google-signin', googleSignIn) // NOTE - new route for Google Sign-In
 
 	//* FRIENDS
 	fastify.get('/friendship/get-user-friendships', getUserFriendships)
@@ -91,7 +97,12 @@ export default async function routes (fastify) {
 	fastify.post('/game/create-1v1-game', create1v1Game)
 	fastify.post('/game/create-2v2-game', create2v2Game)
 
-	//* TOKENS / OTHER
+
+	//platformerController
+	fastify.get('/platformer/get-user-platformer', getUserPlatformer)
+	fastify.post('/platformer/create-platformer', createPlatformer)
+
+	//* TOKENS / OTHER 
 	//// fastify.post('/refresh-token', refreshAccessToken)
 	fastify.get('/db-credentials', getSQLiteCreds)
 }

@@ -2246,7 +2246,7 @@ input[type="file"] {
 	width: 30px;
 	height: 30px;
 	border-radius: 50%;
-	border: 2px dashed #ccc;
+	border: 2px solid #555;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -2532,7 +2532,7 @@ to {
 	width: 40px;
 	height: 40px;
 	border-radius: 50%;
-	border: 2px dashed #ccc;
+	border: 2px solid #555;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -2692,7 +2692,6 @@ to {
 	align-items: center;
 	background-color: #3a3a3a;
 	border-radius: 6px;
-	padding: 2px 8px;
 	border-left: 4px solid transparent;
 	border-left-color: transparent;
 	transition: transform 0.2s;
@@ -2769,6 +2768,7 @@ to {
 	height: 40px;
 	border-radius: 50%;
 	border: 2px solid #555;
+	object-fit: cover;
 }
 
 .opponent_navBar, .opponent_navBar_team {
@@ -3163,8 +3163,9 @@ to {
 	margin-right: 10px;
 	flex-shrink: 0;
 	cursor: pointer;
-	border: 2px dashed white;
+	border: 2px solid white;
 	margin-left: 10px;
+	object-fit: cover;
 }
 
 .friend-details {

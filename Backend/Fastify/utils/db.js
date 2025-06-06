@@ -3,7 +3,8 @@ import { getSQLiteCreds } from './vault.js';
 import { CREATE_USERS_TABLE } from '../models/usersModel.js';
 import { CREATE_GAMES_TABLE } from '../models/gamesModel.js';
 import { CREATE_FRIENDSHIPS_TABLE } from '../models/friendshipsModel.js';
-import {fastify} from '../server.js'; // Import Fastify instance
+import { CREATE_PLATFORMERS_TABLE } from '../models/platformersModel.js';
+import { fastify } from '../server.js'; // Import Fastify instance
 
 const dbFile = "Data/db/database.sqlite";
 
@@ -11,7 +12,7 @@ async function setupDatabase() {
 	try {
 		const { user, pass } = await getSQLiteCreds()
 		const db = new Database(dbFile, {
-			verbose: null,
+			verbose: null, //console.log,
 			fileMustExist: false
 		})
 
@@ -28,6 +29,7 @@ export function initDb() {
 	db.prepare(CREATE_USERS_TABLE).run();
 	db.prepare(CREATE_GAMES_TABLE).run();
 	db.prepare(CREATE_FRIENDSHIPS_TABLE).run();
+	db.prepare(CREATE_PLATFORMERS_TABLE).run();
 	fastify.log.info("Bases de données initialisée");
 	
 }

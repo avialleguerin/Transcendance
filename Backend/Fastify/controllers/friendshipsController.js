@@ -14,7 +14,6 @@ export async function getUserFriendships(request, reply) {
 		if (!infos.accessToken)
 			return reply.code(401).send({ error: "Unauthorized" })
 		const friendships = friendshipsModel.getUserFriendships(user.userId)
-		fastify.log.debug("friendships :", friendships)
 		return reply.send({ success: true, friendships: friendships, user: infos.user, accessToken: infos.accessToken })
 	} catch (err) {
 		return reply.code(500).send({ error: err.message, accessToken: infos.accessToken })
@@ -36,7 +35,7 @@ export async function addFriend(request, reply) {
 		if (!user)
 			return reply.code(401).send({ error: "User not found" })
 		const friendExists = usersModel.getUserByUsername(friend)
-		if (!friendExists)
+		if (!friendExists || friendExists.anonimized_at)
 			return reply.code(404).send({ success: false, error: `User '${friend}' not found`, accessToken: infos.accessToken })
 		if (friendExists.userId === user.userId)
 			return reply.code(400).send({success: false, error: `You can't invite yourself`, accessToken: infos.accessToken })

@@ -10,6 +10,7 @@ async function verify2FA(event) {
 			sessionStorage.removeItem("userId")
 			localStorage.setItem("Player1", data.username);
 			localStorage.setItem("profile_picture", data.profile_picture);
+			connectWebSocket()
 			console.log("✅ 2FA code valid!");
 			history.pushState({}, '', '/Game_menu');
 			import('../static/js/views/Game_menu.js').then(module => {
@@ -49,6 +50,7 @@ async function login(event) {
 			notif(data.message, true);
 			localStorage.setItem("Player1", data.user.username);
 			localStorage.setItem("profile_picture", data.user.profile_picture);
+			connectWebSocket()
 			console.log("✅ Connected, Token :", sessionStorage.getItem("accessToken"));
 			
 			history.pushState({}, '', '/Game_menu');
@@ -192,8 +194,9 @@ async function login_tournament(event) {
 
 async function logout() {
 	try {
+		const user = localStorage.getItem("Player1");
+		disconnectWebSocket()
 		await fetchAPI('/request/user/logout', 'POST', {});
-		
 		sessionStorage.clear();
 		localStorage.clear();
 		console.log("✅ Logged out successfully !");
@@ -245,11 +248,11 @@ async function refreshInfos() {
 	try {
 		const data = await fetchAPI('/request/user/refresh-infos', 'POST', {}, true, false);
 
-		if (!data.accessToken) {
+		if (!data.accessToken || data.deleted_account) {
 			sessionStorage.removeItem("accessToken");
 			localStorage.clear();
 			history.pushState({}, '', '/');
-			import('../static/js/views/Home.js').then((module) => {
+			import('../static/js/views/Home.js').then((module) => { //TODO - bug de la page de chargement lors de la redirection vers '/' apres une suppression du user par exemple
 				console.log("Home module loaded");
 				const Home = module.default;
 				const homeInstance = new Home();
@@ -293,4 +296,81 @@ async function refreshInfos() {
 
 window.addEventListener('DOMContentLoaded', () => {
 	refreshInfos();
+	setTimeout(() => { //FIXME - 
+        initGoogleSignIn();
+    }, 1000);
+});
+
+
+//* GOOGLE SIGN-IN
+// Fonction pour initialiser Google Sign In avec gestion d'erreur
+let tokenClient; // déclaration globale
+
+async function initGoogleSignIn() {
+	console.log("URL actuelle:", window.location.origin);
+
+	if (typeof google !== 'undefined' && google.accounts?.oauth2) {
+		try {
+			const config = await fetchAPI('/request/user/google-config', 'GET');
+            // const config = await configResponse.json();
+            
+            if (!config.success || !config.client_id) {
+                console.error("❌ Impossible de récupérer la configuration Google");
+                return;
+            }
+			tokenClient = google.accounts.oauth2.initTokenClient({
+				// client_id: "947283985561-juoekoaqm73bm3jmtt36j0pa1kmggok3.apps.googleusercontent.com",
+				client_id: config.client_id,
+				scope: "openid email profile",
+				callback: handleGoogleSignIn, // appelée une fois que le user accepte
+			});
+			console.log("Google OAuth Token Client initialisé avec succès");
+		} catch (error) {
+			console.error("Erreur lors de l'initialisation OAuth:", error);
+		}
+	} else {
+		console.warn("Google OAuth API non disponible");
+	}
+}
+
+// Fonction de gestion de la réponse Google
+async function handleGoogleSignIn(response) {
+	try {
+		const accessToken = response.access_token;
+		
+		// Envoie du token à ton serveur pour vérification et login
+		const data = await fetchAPI('/request/user/google-signin', 'POST', {
+			access_token: accessToken
+		});
+
+		if (data.success) {
+			sessionStorage.setItem("accessToken", data.accessToken);
+			localStorage.setItem("Player1", data.user.username);
+			if (data.user.profile_picture) {
+				localStorage.setItem("profile_picture", data.user.profile_picture);
+			}
+			notif("Connexion Google réussie !", true);
+
+			// Redirection vers le menu du jeu
+			history.pushState({}, '', '/Game_menu');
+			import('../static/js/views/Game_menu.js').then(module => {
+				const GameMenu = module.default;
+				const gameMenuInstance = new GameMenu();
+				gameMenuInstance.getHtml().then(html => {
+					document.getElementById('app').innerHTML = html;
+					gameMenuInstance.game_menu?.();
+				});
+			});
+		} else {
+			notif(data.error || "Erreur lors de la connexion Google", false);
+		}
+	} catch (err) {
+		console.error("Erreur Google Sign In:", err);
+		notif("Erreur de connexion Google", false);
+	}
+}
+
+
+window.addEventListener('beforeunload', () => {
+	disconnectWebSocket()
 });
