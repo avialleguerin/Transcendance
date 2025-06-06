@@ -78,14 +78,15 @@ async function fetch_user_friendships() {
 
 		const renderFriend = (friendship, showActions) => {
 			// Déterminer le statut en fonction des données de l'API
-			let statusClass = `${friendship.friendOnlineStatus ? 'status_online' : 'status_offline'}`;
+			let statusClass = `${friendship.friendOnlineStatus ? 'friend_online_status status-online' : 'friend_online_status status-offline'}`;
 			let statusTitle = `${friendship.friendOnlineStatus ? 'Online' : 'Offline'}`;
+			let friendshipProfilePicture = friendship.status === 'accepted' ? friendship.friendProfilePicture : 'default-profile-picture.png'; // Fallback to a default picture if none is provided
 			
 			return `
 				<div class="friend">
 					<div class="friend-info">
-						<div class="friend_online_status ${statusClass}" title="${statusTitle}"></div>
-						<img src="/uploads/${friendship.friendProfilePicture}" class="friend_photo" alt="Profile">
+						<div class="${friendship.status === 'accepted'? statusClass : ''}" title="${statusTitle}"></div>
+						<img src="/uploads/${friendshipProfilePicture}" class="friend_photo" alt="Profile">
 						<div class="friend-details">
 							<p class="friend_name">${friendship.friend_username}</p>
 							<div class="friend-status-actions">

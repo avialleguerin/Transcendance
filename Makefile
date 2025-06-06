@@ -23,6 +23,7 @@ BABYLON_FILE = ./Frontend/public/srcs/game/gameplay/babylon.js
 all:
 	@make build
 	@make -j4 up
+	
 
 up:
 	@docker compose up ${NO_LOGS}
@@ -48,6 +49,14 @@ fixer:
 	@echo "\n${BLUE}Resinstall node packages...${RESET}"
 	@docker exec -it fastify npm install
 	@echo "\n${GREEN}✓ Fixer completed successfully.${RESET}"
+
+#IP
+ip:
+	@echo "\n${BLUE}=== NETWORK INFORMATION ===${RESET}"
+	$(eval LOCAL_IP := $(shell ip route get 1.1.1.1 | awk '{print $$7}' | head -1))
+	@echo "${GREEN}Local IP:${RESET} $(LOCAL_IP)"
+	@echo "${GREEN}Game URL:${RESET} http://$(LOCAL_IP):8080 → https://$(LOCAL_IP):8443"
+	@echo "${GREEN}Admin URL:${RESET} http://$(LOCAL_IP):8081 → https://$(LOCAL_IP):8143"
 
 #NGINX
 reload-nginx:
