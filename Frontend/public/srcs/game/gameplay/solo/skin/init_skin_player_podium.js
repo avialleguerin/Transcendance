@@ -66,7 +66,7 @@ export function init_skins_perso_first(scene)
 
 export function init_skins_perso_seconde(scene)
 {
-    loadSkinsForPlayer(skinPaths, scene, player2Skins_podium, -63, 303, -50	);
+    loadSkinsForPlayer(skinPaths, scene, player2Skins_podium, -63, 303, -45	);
 }
 
 

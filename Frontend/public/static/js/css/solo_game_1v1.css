@@ -300,6 +300,7 @@ p {
     width: 40%;
     height: 72%;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     z-index: 1;
@@ -307,24 +308,45 @@ p {
     visibility: hidden;
 }
 
+.place_playerName {
+    display: flex;
+    /* justify-content: space-between; */
+    /* align-items: center; */
+    width: 76%;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
 .winner {
-    position: absolute;
-    top: 2%;
-    left: 25%;
     font-size: 2vw;
     font-family: 'Black Ops One', sans-serif;
     color: rgb(255, 255, 255);
     text-shadow: 2px 2px 2px #000000;
+    margin: 0;
+    width: 25%;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    top: 53%;
+    left: 20%;
 }
 
 .looser {
-    position: absolute;
-    top: 11%;
-    right: 31%;
     font-size: 2vw;
     font-family: 'Black Ops One', sans-serif;
     color: rgb(255, 255, 255);
     text-shadow: 2px 2px 2px #000000;
+    margin: 0;
+    width: 25%;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    top: 57%;
+    left: 60%;
+
 }
 
 .container-EndGame h1 {
@@ -447,13 +469,6 @@ p {
     right: 10%; /* Encore plus à droite */
     top: 44%;
 }
-
-
-
-
-
-
-
 
 
 
