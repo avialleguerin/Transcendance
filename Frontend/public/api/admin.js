@@ -212,9 +212,8 @@ async function create_user(event) {
 		resultMessage.textContent = `User added : ${data.username}`
 		document.getElementById("addUserForm").reset();
 		close_user_modal();
-	} else {
+	} else
 		notif(data.error, false);
-	}
 	fetch_users();
 };
 
@@ -275,9 +274,8 @@ async function create_platformer(event) {
 	if (data.success) {
 		notif(`Platformer added : ${data.username} in ${data.chrono}s`, true);
 		close_platformer_modal();
-	} else {
+	} else
 		notif(data.error, false);
-	}
 	document.getElementById("addPlatformerForm").reset();
 	fetch_platformers();
 };
@@ -306,9 +304,8 @@ async function create_friendship(event) {
 	if (data.success) {
 		notif(`Frienship added : ${user_username} with ${friend_username}`, true);
 		close_friendship_modal();
-	} else {
+	} else
 		notif(data.error, false);
-	}
 	document.getElementById("addFriendshipForm").reset();
 	fetch_friendships();
 };

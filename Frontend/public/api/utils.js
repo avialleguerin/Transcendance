@@ -49,9 +49,9 @@ async function fetchAPI(url, method, body = null, showNotification = true, formD
 		if (data.accessToken)
 			sessionStorage.setItem('accessToken', data.accessToken);
 
-		if (data.success)
+		if (data.success && showNotification)
 			notif(data.message, true);
-		else if (data.error)
+		else if (data.error && showNotification)
 			notif(data.error, false);
 		console.log("fetchAPI: data:", data.error ? data.error : data);
 		return data;

@@ -81,7 +81,6 @@ async function fetch_user_friendships() {
 			let statusClass = `${friendship.friendOnlineStatus ? 'friend_online_status status-online' : 'friend_online_status status-offline'}`;
 			let statusTitle = `${friendship.friendOnlineStatus ? 'Online' : 'Offline'}`;
 			let friendshipProfilePicture = friendship.status === 'accepted' ? friendship.friendProfilePicture : 'default-profile-picture.png'; // Fallback to a default picture if none is provided
-			
 			return `
 				<div class="friend">
 					<div class="friend-info">
