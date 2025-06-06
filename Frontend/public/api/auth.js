@@ -52,18 +52,21 @@ async function login(event) {
 			localStorage.setItem("profile_picture", data.user.profile_picture);
 			connectWebSocket()
 			console.log("✅ Connected, Token :", sessionStorage.getItem("accessToken"));
-			
-			history.pushState({}, '', '/Game_menu');
-			import('../static/js/views/Game_menu.js').then(module => {
-				const GameMenu = module.default;
-				const gameMenuInstance = new GameMenu();
-				gameMenuInstance.getHtml().then(html => {
-					document.getElementById('app').innerHTML = html;
-					if (gameMenuInstance.game_menu) {
-						gameMenuInstance.game_menu();
-					}
+			setTimeout(() => {
+				history.pushState({}, '', '/Game_menu');
+				import('../static/js/views/Game_menu.js').then(module => {
+					const GameMenu = module.default;
+					const gameMenuInstance = new GameMenu();
+					gameMenuInstance.getHtml().then(html => {
+						document.getElementById('app').innerHTML = html;
+						if (gameMenuInstance.game_menu) {
+							gameMenuInstance.game_menu();
+						}
+					});
 				});
-			});
+			}, 2000);
+			document.getElementById("loginForm").reset();
+			localStorage.setItem("googleSignIn", false);
 			document.getElementById("login-password").value = "";
 		} else {
 			notif(data.error, false);
@@ -236,6 +239,7 @@ async function register(event) {
 		const data = await fetchAPI('/request/user/create-user', 'POST', { username, password });
 		
 		if (data.success) {
+			document.getElementById("registerForm").reset();
 			document.getElementById("create_account_id").classList.remove("active");
 			document.getElementById("loginform_id").classList.remove("active");
 		}
@@ -249,7 +253,7 @@ async function refreshInfos() {
 		const data = await fetchAPI('/request/user/refresh-infos', 'POST', {}, true, false);
 
 		if (!data.accessToken || data.deleted_account) {
-			sessionStorage.removeItem("accessToken");
+			sessionStorage.clear();
 			localStorage.clear();
 			history.pushState({}, '', '/');
 			import('../static/js/views/Home.js').then((module) => { //TODO - bug de la page de chargement lors de la redirection vers '/' apres une suppression du user par exemple
@@ -312,18 +316,19 @@ async function initGoogleSignIn() {
 	if (typeof google !== 'undefined' && google.accounts?.oauth2) {
 		try {
 			const config = await fetchAPI('/request/user/google-config', 'GET');
-            // const config = await configResponse.json();
-            
-            if (!config.success || !config.client_id) {
-                console.error("❌ Impossible de récupérer la configuration Google");
-                return;
-            }
+			// const config = await configResponse.json();
+			
+			if (!config.success || !config.client_id) {
+				console.error("❌ Impossible de récupérer la configuration Google");
+				return;
+			}
 			tokenClient = google.accounts.oauth2.initTokenClient({
 				// client_id: "947283985561-juoekoaqm73bm3jmtt36j0pa1kmggok3.apps.googleusercontent.com",
 				client_id: config.client_id,
 				scope: "openid email profile",
 				callback: handleGoogleSignIn, // appelée une fois que le user accepte
 			});
+			localStorage.setItem("googleSignIn", true);
 			console.log("Google OAuth Token Client initialisé avec succès");
 		} catch (error) {
 			console.error("Erreur lors de l'initialisation OAuth:", error);
