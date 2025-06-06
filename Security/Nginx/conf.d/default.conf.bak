@@ -1,4 +1,16 @@
 server {
+	listen 8080;
+	server_name 0.0.0.0;
+	return 301 https://$host:8443$request_uri;
+}
+
+server {
+	listen 8081;
+	server_name 0.0.0.0;
+	return 301 https://$host:8143$request_uri;
+}
+
+server {
 	listen 8443 ssl;
 	server_name 0.0.0.0;
 
