@@ -309,27 +309,44 @@ p {
 }
 
 .place_playerName {
-    display: grid;
+    display: flex;
     /* justify-content: space-between; */
     /* align-items: center; */
     width: 76%;
     padding: 20px;
     border-radius: 10px;
     margin-bottom: 20px;
-    /* background-color: red; */
-    position: absolute;
-    top: 0%;
-    grid-template-columns: 1fr 1fr 0fr;
-    left: 27%;
 }
 
-.winner,
+.winner {
+    font-size: 2vw;
+    font-family: 'Black Ops One', sans-serif;
+    color: rgb(255, 255, 255);
+    text-shadow: 2px 2px 2px #000000;
+    margin: 0;
+    width: 25%;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    top: 53%;
+    left: 20%;
+}
+
 .looser {
     font-size: 2vw;
     font-family: 'Black Ops One', sans-serif;
     color: rgb(255, 255, 255);
     text-shadow: 2px 2px 2px #000000;
     margin: 0;
+    width: 25%;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    top: 57%;
+    left: 60%;
+
 }
 
 .container-EndGame h1 {
