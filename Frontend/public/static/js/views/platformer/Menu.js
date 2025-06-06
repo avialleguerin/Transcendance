@@ -175,6 +175,7 @@ export default class Menu {
 		else if (selected === "✖ Quit") {
 			this.selectedOption = 0;
 			this.disableControls();
+			localStorage.removeItem("platformer_view");
 			gameState.previous = GameState.Menu;
 			gameState.current = GameState.Menu;
 			Setgame_started(false);

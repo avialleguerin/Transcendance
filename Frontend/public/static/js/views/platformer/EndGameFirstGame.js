@@ -27,7 +27,7 @@ export default class EndGameFirstGame {
 		this.optionFont = "20px 'Press Start 2P', Black Ops One";
 		this.optionSpacing = 60;
 		this.time_endGame = 0;
-		this.option1 = "Player 2, Your Time Has Come – Press ENTER";
+		this.option1 = `${localStorage.getItem("Player2")}, Your Time Has Come – Press ENTER`;
 		this.option2 = "Game Stats : "
 		this.gameCanvasFont = "20px 'Press Start 2P', Black Ops One";
 		this.option3 = "Score : ";

@@ -52,6 +52,7 @@ async function login(event) {
 			localStorage.setItem("profile_picture", data.user.profile_picture);
 			connectWebSocket()
 			console.log("✅ Connected, Token :", sessionStorage.getItem("accessToken"));
+			history.pushState({}, '', '/Game_menu');
 			setTimeout(() => {
 				history.pushState({}, '', '/Game_menu');
 				import('../static/js/views/Game_menu.js').then(module => {
@@ -66,7 +67,6 @@ async function login(event) {
 				});
 			}, 2000);
 			document.getElementById("loginForm").reset();
-			localStorage.setItem("googleSignIn", false);
 			document.getElementById("login-password").value = "";
 		} else {
 			notif(data.error, false);
@@ -195,11 +195,55 @@ async function login_tournament(event) {
 	}
 }
 
+async function login_platformer(event) {
+	event.preventDefault();
+	const username = document.getElementById("platformer-username2").value;
+	const password = document.getElementById("platformer-password2").value;
+	console.log("username :", username);
+	console.log("password :", password);
+	if (!username || !password)
+		return notif("Please fill in all fields", false);
+
+	try {
+		const data = await fetchAPI('/request/user/login-1v1', 'POST', { username, password }, true, false);
+		if (data.success) {
+			if (data.player2.username === localStorage.getItem("Player1"))
+				return notif("You cannot play against yourself", false);
+			notif(data.message, true);
+			localStorage.setItem("Player2", data.player2.username);
+			localStorage.setItem("platformer_view", true);
+			document.getElementById("start-platformer").click();
+			// history.pushState({}, '', '/platformer');
+			// import('../static/js/views/platformer/PlatformView.js').then((module) => {
+			// 	console.log("Home module loaded");
+			// 	const PlatformerView = module.default;
+			// 	const platformerInstance = new PlatformerView();
+			// 	platformerInstance.getHtml().then((html) => {
+			// 		const appElement = document.getElementById('app');
+			// 		if (appElement) {
+			// 			appElement.innerHTML = html;
+			// 			if (platformerInstance.createAccount && typeof platformerInstance.createAccount === 'function') {
+			// 				platformerInstance.init_game_platformer();
+			// 			}
+			// 		}
+			// 	});
+			// });
+			// document.getElementById("platformer-oponent-username1").innerHTML = localStorage.getItem("Player1");
+			// document.getElementById("platformer-oponent-username2").innerHTML = localStorage.getItem("Player2");
+		} else
+			notif(data.error, false);
+	} catch (err) {
+		console.error("Erreur lors de la connexion :", err);
+		notif("Erreur de connexion", false);
+	}
+	document.getElementById("choose_your_opponent_platformer_form").reset();
+}
+
 async function logout() {
 	try {
 		const user = localStorage.getItem("Player1");
 		disconnectWebSocket()
-		await fetchAPI('/request/user/logout', 'POST', {});
+		await fetchAPI('/request/user/logout', 'POST', {}, false);
 		sessionStorage.clear();
 		localStorage.clear();
 		console.log("✅ Logged out successfully !");

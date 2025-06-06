@@ -2,6 +2,7 @@ function notif(message, success = true) {
 	const notification = document.getElementById('resultMessage');
 	console.log("notif:", message, "success:", success);
 	if (notification) {
+		document.getElementById('notification-container').style.display = 'flex';
 		const icon = success ?
 			`<img src='/srcs/game/assets/image/success.png' style='width:20px; height:20px; margin-right:5px;'>` :
 			`<img src='/srcs/game/assets/image/failure.png' style='width:20px; height:20px; margin-right:5px;'>`;
@@ -18,6 +19,7 @@ function notif(message, success = true) {
 
 		setTimeout(() => {
 			notification.style.opacity = '0';
+			document.getElementById('notification-container').style.display = 'none';
 		}, 3000);
 	}
 }

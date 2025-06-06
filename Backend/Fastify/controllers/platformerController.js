@@ -22,10 +22,10 @@ export async function getUserPlatformer(request, reply) {
 }
 
 export async function createPlatformer(request, reply) {
-	const { chrono } = request.body
+	const { player1, player2, score_player1, score_player2 } = request.body
 
 	try {
-		if (!chrono)
+		if (!player1 || !player2 || !score_player1 || !score_player2)
 			return reply.code(400).send({ success: false, error: "Missing parameters", accessToken: infos.accessToken })
 		const infos = await getUserFromToken(request)
 		if (!infos)
@@ -35,7 +35,8 @@ export async function createPlatformer(request, reply) {
 			return reply.code(401).send({ error: "User not found" })
 		if (!infos.accessToken)
 			return reply.code(401).send({ error: "Unauthorized" })
-		platformersModel.createPlatformer(user.userId, chrono)
+		const user2 = usersModel.getUserByUsername(player2)
+		platformersModel.createPlatformer(user.userId, user2.userId, score_player1, score_player2)
 
 		return reply.code(201).send({ 
 			success: true,
