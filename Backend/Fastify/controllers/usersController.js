@@ -17,14 +17,14 @@ const SECRET_LENGHT = 30
 export async function googleConfig(request, reply) {
 	try {
 		fastify.log.debug("ID du client Google :", process.env.GOOGLE_CLIENT_ID);
-        return {
-            success: true,
-            client_id: process.env.GOOGLE_CLIENT_ID
-        };
-    } catch (err) {
-        console.error("❌ Erreur lors de la récupération de la config Google :", err);
-        reply.code(500).send({ error: 'Erreur serveur' });
-    }
+		return {
+			success: true,
+			client_id: process.env.GOOGLE_CLIENT_ID
+		};
+	} catch (err) {
+		console.error("❌ Erreur lors de la récupération de la config Google :", err);
+		reply.code(500).send({ error: 'Erreur serveur' });
+	}
 }
 
 export async function googleSignIn(request, reply) {
