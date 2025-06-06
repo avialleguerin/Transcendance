@@ -76,30 +76,39 @@ async function fetch_user_friendships() {
 		const accepted = friendships.filter(f => f.status === 'accepted');
 		const pending = friendships.filter(f => f.status === 'pending');
 
-		const renderFriend = (friendship, showActions) => `
-			<div class="friend">
-				<div class="friend-info">
-					<img src="/uploads/${friendship.friendProfilePicture}" class="${friendship.status === 'accepted' ? `friend_photo ${friendship.friendOnlineStatus ? 'online' : 'offline'}` : 'friend_photo'}" alt="Profile">
-					<div class="friend-details">
-						<p class="friend_name">${friendship.friend_username}</p>
-						<div class="friend-status-actions">
-							${
-								showActions
-								? `
-									<div class="friend-actions">
-										<button class="friend-btn accept-btn" onclick="accept_friendship(${friendship.friendshipId})">✓</button>
-										<button class="friend-btn reject-btn" onclick="delete_friendship(${friendship.friendshipId})">✖</button>
-									</div>
-								`
-								: `
-								`
-							}
+		const renderFriend = (friendship, showActions) => {
+			// Déterminer le statut en fonction des données de l'API
+			let statusClass = `${friendship.friendOnlineStatus ? 'friend_online_status status-online' : 'friend_online_status status-offline'}`;
+			let statusTitle = `${friendship.friendOnlineStatus ? 'Online' : 'Offline'}`;
+			let friendshipProfilePicture = friendship.status === 'accepted' ? friendship.friendProfilePicture : 'default-profile-picture.png'; // Fallback to a default picture if none is provided
+			
+			return `
+				<div class="friend">
+					<div class="friend-info">
+						<div class="${friendship.status === 'accepted'? statusClass : ''}" title="${statusTitle}"></div>
+						<img src="/uploads/${friendshipProfilePicture}" class="friend_photo" alt="Profile">
+						<div class="friend-details">
+							<p class="friend_name">${friendship.friend_username}</p>
+							<div class="friend-status-actions">
+								${
+									showActions
+									? `
+										<div class="friend-actions">
+											<button class="friend-btn accept-btn" onclick="accept_friendship(${friendship.friendshipId})">✓</button>
+											<button class="friend-btn reject-btn" onclick="delete_friendship(${friendship.friendshipId})">✖</button>
+										</div>
+									`
+									: ``
+								}
+							</div>
 						</div>
 					</div>
+					<button class="friend-btn delete-btn" onclick="delete_friendship(${friendship.friendshipId})">
+						<img src="/srcs/game/assets/image/trash.svg" alt="Delete Friend" class="delete-icon">
+					</button>
 				</div>
-				<button class="friend-btn delete-btn" onclick="delete_friendship(${friendship.friendshipId})">🗑️</button>
-			</div>
-		`;
+			`;
+		};
 
 		document.getElementById('friends-accepted').innerHTML =
 			accepted.map(friend => renderFriend(friend, false)).join('') || `<div class="text-center">No Friends found</div>`;

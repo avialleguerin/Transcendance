@@ -7,12 +7,25 @@ import friendshipsModel from '../models/friendshipsModel.js'; //NOTE - new
 import gamesModel from '../models/gamesModel.js'; //NOTE - new
 import speakeasy from 'speakeasy'
 import qrcode from 'qrcode'
-import fs from 'fs/promises';
-import path from 'path';
-import { get } from 'http'
+import fs from 'fs/promises'
+import path from 'path'
+// import { get } from 'http'
 
 const uploadDir = '/usr/share/nginx/uploads'
 const SECRET_LENGHT = 30
+
+export async function googleConfig(request, reply) {
+	try {
+		fastify.log.debug("ID du client Google :", process.env.GOOGLE_CLIENT_ID);
+        return {
+            success: true,
+            client_id: process.env.GOOGLE_CLIENT_ID
+        };
+    } catch (err) {
+        console.error("❌ Erreur lors de la récupération de la config Google :", err);
+        reply.code(500).send({ error: 'Erreur serveur' });
+    }
+}
 
 export async function googleSignIn(request, reply) {
 	try {

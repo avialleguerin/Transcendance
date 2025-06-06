@@ -131,11 +131,13 @@ export default class solo_game extends AbstractView {
 					</div>
 				</div>
 				<div class="container-EndGame">
-					<div class="winner">
-						<h1 id="winner_id"></h1>
-					</div>
-					<div class="looser">
-						<h1 id="looser_id"></h1>
+					<div class="place_playerName">
+						<div class="winner">
+							<h1 id="winner_id"></h1>
+						</div>
+						<div class="looser">
+							<h1 id="looser_id"></h1>
+						</div>
 					</div>
 					<button class="leave_game_2" id="leave_game_2_id" onclick="create_1v1_game(event, '${localStorage.getItem('Player1')}', '${localStorage.getItem('Player2')}')">Quitter la partie</button>
 				</div>

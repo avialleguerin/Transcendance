@@ -1,9 +1,8 @@
-import { getUserProfilePicture, createUser , deleteAccount, login, login1v1, login2v2, logout, updateDoubleAuth, accessProfileInfo, changeProfilePicture, changeProfile, getUserProfile, verifyDoubleAuth, activateDoubleAuth, refreshInfos, exportUserData, anonymizeUser } from '../controllers/usersController.js';
+import { getUserProfilePicture, createUser , deleteAccount, login, login1v1, login2v2, logout, updateDoubleAuth, accessProfileInfo, changeProfilePicture, changeProfile, getUserProfile, verifyDoubleAuth, activateDoubleAuth, refreshInfos, exportUserData, anonymizeUser, googleSignIn, googleConfig } from '../controllers/usersController.js';
 import { getUserGames, create1v1Game, create2v2Game } from '../controllers/gamesController.js';
 import { getUserPlatformer, createPlatformer } from '../controllers/platformerController.js';
 import { getUserFriendships, addFriend, acceptFriend, deleteFriend } from '../controllers/friendshipsController.js';
 import { getAllUsers, getDeletedUsers, deleteUser, forceDeleteUser, getAllGames, createGame, deleteGame, getAllPlatformers, addPlatformer, deletePlatformer, getAllFriendships, addFriendship, deleteFriendship } from '../controllers/adminController.js';
-import { googleSignIn } from '../controllers/usersController.js';
 import { getSQLiteCreds } from '../utils/vault.js'
 
 /**
@@ -83,6 +82,7 @@ export default async function routes (fastify) {
 	fastify.post('/user/refresh-infos', refreshInfos)
 	fastify.get('/user/export-data', exportUserData) // NOTE - new route to export user data
 	fastify.put('/user/anonymize-account', anonymizeUser) //NOTE - new route to anonymize user account
+	fastify.get('/user/google-config', googleConfig)
 	fastify.post('/user/google-signin', googleSignIn) // NOTE - new route for Google Sign-In
 
 	//* FRIENDS

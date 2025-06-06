@@ -92,9 +92,7 @@ export default class extends AbstractView {
 					<p class="joueur3" id="Player3">${localStorage.getItem('Player3')}</p>
 					<p class="joueur4" id="Player4">${localStorage.getItem('Player4')}</p>
 					<img src="../../../srcs/game/assets/image/tournament_with_bracket.svg" alt="tournament">
-					<button id="start_game" class="btn_start_game">
-						<a href="/tournament_game" class="nav-link" data-link>JOUER</a>
-					</button>
+					<a id="start_game" class="btn_start_game" href="/tournament_game" data-link>JOUER</a>
 					<button id="leave_tournament" class="btn_leave_tournament">X</button>
 				</div>
 				<div class="message" id="message_id">

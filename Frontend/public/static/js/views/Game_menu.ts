@@ -269,12 +269,8 @@ export default class Game_menu extends AbstractView {
 						<div id="game_mode_btn" class="game_mode_btn">
 							<button id="solo" class="btn">SOLO</button>
 							<button id="multiplayer" class="btn">MULTIPLAYER</button>
-							<button id="tournament_view" class="btn_tournament">
-							<a href="/tournament" class="nav-link" data-link>TOURNAMENT</a>
-							</button>
-							<button id="platformer_view" class="btn_platformer">
-								<a href="/PlatformView" class="nav-link" data-link>PLATFORMER</a>
-							</button>
+							<a id="tournament_view" class="btn_tournament" href="/tournament" data-link>TOURNAMENT</a>
+							<button id="platformer_view" class="btn">PLATFORMER</button>
 						</div>
 					</div>
 				</div>
@@ -451,6 +447,24 @@ export default class Game_menu extends AbstractView {
 					</form>
 				</div>
 
+				<div class="choose_your_opponent_platformer" id="choose_your_opponent_platformer_id">
+					<form class="choose_your_opponent_platformer_content" id="choose_your_opponent_platformer_form" onsubmit="login_1v1(event)">
+						<h1>CONNECT YOUR OPPONENT</h1>
+						<div class="player-section">
+							<p>PLAYER 2</p>
+							<div class="input-container">
+								<label for="username2">Username :</label>
+								<input type="text" id="platformer-username2" name="username2" placeholder="Player 2 username" required>
+							</div>
+							<div class="input-container">
+								<label for="password2">Password :</label>
+								<input type="password" id="platformer-password2" name="password2" placeholder="Player 2 password" required>
+							</div>
+						</div>
+						<button type="submit" class="valider_opponent_btn_platformer" id="validate-opponent-login">Valider</button>
+					</form>
+				</div>
+
 
 				<div class="choose_your_opponent_multi" id="choose_your_opponent_multi_id">
 					<form class="choose_your_opponent_multi_content" id="choose_your_opponent_multi_form" onclick="login_2v2(event)">
@@ -521,9 +535,7 @@ export default class Game_menu extends AbstractView {
 						<div class="skin" id="skin">
 							<p>Custom Skin: <span id="skin_perso" class="skin_perso"></span></p>
 						</div>
-						<button id="solo_1v1_btn" class="btn">
-							<a href="/solo_game_1v1" class="nav-link" data-link>Start Game</a>
-						</button>
+						<a id="solo_1v1_btn" class="btn" href="/solo_game_1v1" class="nav-link" data-link>Start Game</a>
 					</div>
 				</div>
 	
@@ -550,9 +562,7 @@ export default class Game_menu extends AbstractView {
 						<div class="skin" id="skin_multi">
 							<p>Custom Skin: <span id="skin_perso_game_multi" class="skin_perso"></span></p>
 						</div>
-						<button id="multiplayer_btn" class="btn">
-							<a href="/multi_player_game" class="nav-link" data-link>Start Game</a>
-						</button>
+						<a id="multiplayer_btn" class="btn" href="/multi_player_game" class="nav-link" data-link>Start Game</a>
 					</div>
 				</div>
 			</div>
@@ -610,6 +620,9 @@ export default class Game_menu extends AbstractView {
 
 			<div class="back" id="back_to_select_mode_view6">
 				<button id="back_to_menu_view6" class="btn_back">BACK</button>
+			</div>
+			<div class="back" id="back_to_select_mode_platformer">
+				<button id="back_to_select_mode_platformer" class="btn_back">BACK</button>
 			</div>
 			<div class="back" id="back_to_select_mode_view7">
 				<button id="back_to_menu_view7" class="btn_back">BACK</button>
@@ -784,6 +797,7 @@ export default class Game_menu extends AbstractView {
 		const back_to_select_mode_view6 = document.getElementById('back_to_select_mode_view6');
 		const back_to_select_mode_view7 = document.getElementById('back_to_select_mode_view7');
 		const back_to_select_mode_view8 = document.getElementById('back_to_select_mode_view8');
+		const choose_your_opponent_platformer_form = document.getElementById('choose_your_opponent_platformer_form');
 
 		// const back_to_menu_view_tournament = document.getElementById('back_to_menu_view_tournament');
 
@@ -1034,6 +1048,8 @@ export default class Game_menu extends AbstractView {
 			view6.classList.remove('active');
 			view3.classList.add('active');
 			back_to_select_mode_view6.classList.remove('active');
+
+
 			if (choose_your_opponent_1v1_form.classList.contains('active')) {
 				choose_your_opponent_1v1_form.classList.remove('active');
 				back_to_select_mode_view6.classList.remove('active');
@@ -1041,6 +1057,7 @@ export default class Game_menu extends AbstractView {
 				container_menu.classList.remove('active');
 				container_menu.scrollTop = 0;
 			}
+		
 
             if (skin_perso.classList.contains('checked')) {
 				skin_perso.classList.remove('checked');
@@ -1587,12 +1604,34 @@ export default class Game_menu extends AbstractView {
 		/***********************************************************************/
 
 		const platformer = document.getElementById('platformer_view');
+		const back_to_select_mode_platformer = document.getElementById('back_to_select_mode_platformer');
 
 		platformer.addEventListener('click', () => {
-			console.log('Platformer button clicked');
-			handleViewTransitions("platformer", "vue2");
+			btn_back_home.classList.remove('active');
+			view2.classList.remove('active');
+			view1.classList.remove('active');
+			choose_your_opponent_platformer_form.classList.add('active');
+			back_to_select_mode_platformer.classList.add('active');
+			container_menu.classList.add('active');
+			container_menu.scrollTop = 0; // Reset scroll position to the top
 		});
 
+		back_to_select_mode_platformer.addEventListener('click', () => {
+			console.log('Back to select mode platformer clicked');
+			choose_your_opponent_platformer_form.classList.remove('active');
+			back_to_select_mode_platformer.classList.remove('active');
+			view2.classList.add('active');
+			view1.classList.add('active');
+			btn_back_home.classList.add('active');
+			container_menu.classList.remove('active');
+			container_menu.scrollTop = 0; // Reset scroll position to the top
+		});
+
+		// const valider_opponent_btn_platformer = document.getElementById('valider_opponent_btn_platformer');
+
+		// valider_opponent_btn_platformer.addEventListener('click', () => {
+		// 	handleViewTransitions("vue2", "platformer");
+		// });
 		// /***********************************************************************/
 		// /*************************Option deconnected****************************/
 		// /***********************************************************************/

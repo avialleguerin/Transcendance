@@ -306,13 +306,21 @@ window.addEventListener('DOMContentLoaded', () => {
 // Fonction pour initialiser Google Sign In avec gestion d'erreur
 let tokenClient; // déclaration globale
 
-function initGoogleSignIn() {
+async function initGoogleSignIn() {
 	console.log("URL actuelle:", window.location.origin);
 
 	if (typeof google !== 'undefined' && google.accounts?.oauth2) {
 		try {
+			const config = await fetchAPI('/request/user/google-config', 'GET');
+            // const config = await configResponse.json();
+            
+            if (!config.success || !config.client_id) {
+                console.error("❌ Impossible de récupérer la configuration Google");
+                return;
+            }
 			tokenClient = google.accounts.oauth2.initTokenClient({
-				client_id: "947283985561-juoekoaqm73bm3jmtt36j0pa1kmggok3.apps.googleusercontent.com",
+				// client_id: "947283985561-juoekoaqm73bm3jmtt36j0pa1kmggok3.apps.googleusercontent.com",
+				client_id: config.client_id,
 				scope: "openid email profile",
 				callback: handleGoogleSignIn, // appelée une fois que le user accepte
 			});

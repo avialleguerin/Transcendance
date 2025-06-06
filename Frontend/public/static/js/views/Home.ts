@@ -5,6 +5,7 @@ import AbstractView from "./AbstractView.js";
 // Déclarations des fonctions externes
 declare function notif(message: string, success: boolean): void;
 declare function initGoogleSignIn(): void;
+declare var tokenClient: any;
 //---
 
 
@@ -301,7 +302,7 @@ export default class Home extends AbstractView {
 		const googleSignUpBtn = document.getElementById("google-signup-btn");
 
 		const handleGoogleAuth = () => {
-			if (typeof tokenClient !== 'undefined') {
+			if (typeof tokenClient !== 'undefined' && tokenClient) {
 				tokenClient.requestAccessToken();
 			} else {
 				console.error("Client Google OAuth non initialisé");
