@@ -340,24 +340,24 @@ const POSITIONS =
 		player4: { top: '', left: '' }
 	},
 	quart_winner: {
-		winner1_2: { top: '12%', left: '38%' },
-		loser1_2: { top: '62%', left: '24%' },
-		winner3_4: { top: '32%', left: '38%' },
-		loser3_4: { top: '70%', left: '24%' },
+		winner1_2: { top: '11.7%', left: '33.5%' },
+		loser1_2: { top: '61%', left: '20%' },
+		winner3_4: { top: '31.7%', left: '33.5%' },
+		loser3_4: { top: '70%', left: '20%' },
 	},
 	quart_loser: {
-		winner: { top: '67%', left: '38%' },
+		winner: { top: '65.5%', left: '33.7%' },
 	},
 	demi_winer: {
-		winner: { top: '34%', left: '58%' },
-		loser: { top: '75%', left: '38%' },
+		winner: { top: '33.5%', left: '55.9%' },
+		loser: { top: '74.5%', left: '33.7%' },
 	},
 	demi_loser: {
-		winner: { top: '43%', left: '58%' },
+		winner: { top: '42.5%', left: '55.9%' },
 	},
 	grande_final:
 	{
-		winner: { top: '38%', left: '72%' },
+		winner: { top: '38%', left: '69.9%' },
 	},
 };
 
