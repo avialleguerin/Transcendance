@@ -14,9 +14,17 @@ async function fetch_users() {
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.google_id || "—"}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.games_won}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.games_lost}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.doubleAuth_status === 0 ? "Disabled" : "Enabled" }</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">
+					<span class="${user.doubleAuth_status === 0 ? 'bg-red-100 text-red-500' : 'bg-green-100 text-green-600'} px-3 py-1 rounded-full">
+						${user.doubleAuth_status === 0 ? "Disabled" : "Enabled"}
+					</span>
+				</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.cgu_version || "—"}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.online_status === 0 ? "offline" : "online"}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">
+					<span class="${user.online_status === 0 ? 'bg-yellow-100 text-yellow-600' : 'text-green-600 bg-green-100'} px-3 py-1 rounded-full">
+						${user.online_status === 0 ? "Offline" : "Online"}
+					</span>
+				</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.last_connection}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.created_at}</td>
 				<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0">
