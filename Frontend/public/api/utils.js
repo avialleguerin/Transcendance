@@ -4,8 +4,8 @@ export function notif(message, success = true) {
 	if (notification) {
 		document.getElementById('notification-container').style.display = 'flex';
 		const icon = success ?
-			`<img src='/srcs/game/assets/image/success.png' style='width:20px; height:20px; margin-right:5px;'>` :
-			`<img src='/srcs/game/assets/image/failure.png' style='width:20px; height:20px; margin-right:5px;'>`;
+			`<img src='/assets/image/success.png' style='width:20px; height:20px; margin-right:5px;'>` :
+			`<img src='/assets/image/failure.png' style='width:20px; height:20px; margin-right:5px;'>`;
 
 		notification.innerHTML = `<div style='display:flex; align-items:center;'>${icon}<span>${message}</span></div>`;
 		if (success)
@@ -65,72 +65,7 @@ export async function fetchAPI(url, method, body = null, showNotification = true
 	}
 }
 
-// export function changeView(url, viewPath, initMethod = null, delay = 0, transitionFrom = "default", transitionTo = "vue1") {
-//     const loadView = async () => {
-//         try {
-//             handleViewTransitions(transitionFrom, transitionTo);
-//             history.pushState({}, '', url);
-            
-//             const module = await import(viewPath);
-//             const ViewClass = module.default;
-//             const viewInstance = new ViewClass();
-//             const html = await viewInstance.getHtml();
-            
-//             const appElement = document.getElementById('app');
-//             if (appElement) {
-//                 appElement.innerHTML = html;
-                
-//                 if (initMethod && viewInstance[initMethod] && typeof viewInstance[initMethod] === 'function') {
-//                     viewInstance[initMethod]();
-//                 }
-//             }
-//         } catch (error) {
-//             console.error('Erreur lors du chargement de la vue:', error);
-//         }
-//     };
-
-//     if (delay > 0) {
-//         setTimeout(loadView, delay);
-//     } else {
-//         loadView();
-//     }
-// }
-
-// export function changeView(targetView, targetUrl, viewModule, delay = 0) {
-//     if (delay > 0) {
-//         handleViewTransitions("vue1", "default");
-//         history.pushState({}, '', targetUrl);
-//         setTimeout(() => {
-//             history.pushState({}, '', targetUrl);
-//             import(viewModule).then(module => {
-//                 const ViewClass = module.default;
-//                 const viewInstance = new ViewClass();
-//                 viewInstance.getHtml().then(html => {
-//                     document.getElementById('app').innerHTML = html;
-//                     if (viewInstance.game_menu) {
-//                         viewInstance.game_menu();
-//                     }
-//                 });
-//             });
-//         }, delay);
-//     } else {
-//         handleViewTransitions("default", "vue1");
-//         history.pushState({}, '', targetUrl);
-//         import(viewModule).then((module) => {
-//             const ViewClass = module.default;
-//             const viewInstance = new ViewClass();
-//             viewInstance.getHtml().then((html) => {
-//                 const appElement = document.getElementById('app');
-//                 if (appElement) {
-//                     appElement.innerHTML = html;
-//                     if (viewInstance.createAccount && typeof viewInstance.createAccount === 'function') {
-//                         viewInstance.createAccount();
-//                     }
-//                 }
-//             });
-//         });
-//     }
-// }
+import { handleViewTransitions } from '../srcs/game/gameplay/views/camera.js';
 
 export function homeView() {
 	handleViewTransitions("default", "vue1");
@@ -150,7 +85,6 @@ export function homeView() {
 	});
 }
 
-
 export function gameMenuView() {
 	handleViewTransitions("vue1", "default");
 	history.pushState({}, '', '/Game_menu');
@@ -166,33 +100,84 @@ export function gameMenuView() {
 	});
 }
 
+export function platformerView() {
+	history.pushState({}, '', '/platformer');
+	import('../static/js/views/platformer/PlatformView.js').then((module) => {
+		console.log("Home module loaded");
+		const PlatformerView = module.default;
+		const platformerInstance = new PlatformerView();
+		platformerInstance.getHtml().then((html) => {
+			const appElement = document.getElementById('app');
+			if (appElement) {
+				appElement.innerHTML = html;
+				if (platformerInstance.createAccount && typeof platformerInstance.createAccount === 'function') {
+					platformerInstance.init_game_platformer();
+				}
+			}
+		});
+	});
+}
 
+export const setLocalStorage = (items) => {
+	Object.entries(items).forEach(([key, value]) => {
+		localStorage.setItem(key, value);
+	});
+};
 
-// handleViewTransitions("vue1", "default");
-// history.pushState({}, '', '/Game_menu');
-// import('../static/js/views/Game_menu.js').then(module => {
-// 	const GameMenu = module.default;
-// 	const gameMenuInstance = new GameMenu();
-// 	gameMenuInstance.getHtml().then(html => {
-// 		document.getElementById('app').innerHTML = html;
-// 		if (gameMenuInstance.game_menu) {
-// 			gameMenuInstance.game_menu();
-// 		}
-// 	});
-// });
+// export function updateUI(config) {
+//     // Gestion des classes
+//     if (config.removeClass) {
+//         config.removeClass.forEach(id => {
+//             document.getElementById(id)?.classList.remove('active');
+//         });
+//     }
+    
+//     if (config.addClass) {
+//         config.addClass.forEach(id => {
+//             document.getElementById(id)?.classList.add('active');
+//         });
+//     }
+    
+//     // Gestion du contenu innerHTML
+//     if (config.setContent) {
+//         Object.entries(config.setContent).forEach(([id, content]) => {
+//             const element = document.getElementById(id);
+//             if (element) element.innerHTML = content;
+//         });
+//     }
+// }
 
-// handleViewTransitions("default", "vue1");
-// history.pushState({}, '', '/');
-// import('../static/js/views/Home.js').then((module) => {
-// 	const Home = module.default;
-// 	const homeInstance = new Home();
-// 	homeInstance.getHtml().then((html) => {
-// 		const appElement = document.getElementById('app');
-// 		if (appElement) {
-// 			appElement.innerHTML = html;
-// 			if (homeInstance.createAccount && typeof homeInstance.createAccount === 'function') {
-// 				homeInstance.createAccount();
-// 			}
-// 		}
-// 	});
-// });
+export function updateUI(config) {
+    if (config.removeClass) {
+        config.removeClass.forEach(item => {
+            if (typeof item === 'string')
+                document.getElementById(item)?.classList.remove('active');
+            else if (typeof item === 'object')
+                document.getElementById(item.id)?.classList.remove(item.className || 'active');
+        });
+    }
+    
+    if (config.addClass) {
+        config.addClass.forEach(item => {
+            if (typeof item === 'string')
+                document.getElementById(item)?.classList.add('active');
+            else if (typeof item === 'object')
+                document.getElementById(item.id)?.classList.add(item.className || 'active');
+        });
+    }
+    
+    if (config.setContent) {
+        Object.entries(config.setContent).forEach(([id, content]) => {
+            const element = document.getElementById(id);
+            if (element) element.innerHTML = content;
+        });
+    }
+
+    if (config.resetForms) {
+        config.resetForms.forEach(formId => {
+            const form = document.getElementById(formId);
+            if (form && typeof form.reset === 'function')
+                form.reset();
+        });
+    }
+}

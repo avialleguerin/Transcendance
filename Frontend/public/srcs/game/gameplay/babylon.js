@@ -195,7 +195,7 @@ function createOptimizedSkybox(scene) {
 	skyMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
 	
 	// Texture avec paramètres adaptés à la qualité
-	const skyTexture = new BABYLON.Texture("/srcs/game/assets/skybox/skybox.jpg", scene);
+	const skyTexture = new BABYLON.Texture("assets/skybox/skybox.jpg", scene);
 	skyTexture.coordinatesMode = BABYLON.Texture.SPHERICAL_MODE;
 	skyTexture.hasAlpha = false;
 	skyTexture.generateMipMaps = !simplifiedSkybox;

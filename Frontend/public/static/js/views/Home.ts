@@ -14,20 +14,20 @@ export default class Home extends AbstractView {
 	constructor() {
 		super();
 		this.setTitle("Home");
-		const accessToken : string | null = sessionStorage.getItem("accessToken");
-		if (accessToken && accessToken !== undefined) {
-			history
-			import('./Game_menu.js').then(module => {
-				const GameMenu = module.default;
-				const gameMenuInstance = new GameMenu();
-				gameMenuInstance.getHtml().then(html => {
-					document.getElementById('app').innerHTML = html;
-					if (gameMenuInstance.game_menu) {
-						gameMenuInstance.game_menu();
-					}
-				});
-			});
-		}
+		// const accessToken : string | null = sessionStorage.getItem("accessToken");
+		// if (accessToken && accessToken !== undefined) {
+		// 	history
+		// 	import('./Game_menu.js').then(module => {
+		// 		const GameMenu = module.default;
+		// 		const gameMenuInstance = new GameMenu();
+		// 		gameMenuInstance.getHtml().then(html => {
+		// 			document.getElementById('app').innerHTML = html;
+		// 			if (gameMenuInstance.game_menu) {
+		// 				gameMenuInstance.game_menu();
+		// 			}
+		// 		});
+		// 	});
+		// }
 	}
 
 	async getHtml(): Promise<string> {
@@ -181,7 +181,7 @@ export default class Home extends AbstractView {
 							<!-- Nouveau bouton Google Sign In -->
 							<div class="google-signin-container">
 								<button type="button" class="google-signin-btn" id="google-signin-btn">
-									<img src="https://developers.google.com/identity/images/g-logo.png" alt="Google">
+									<img src="/assets/image/gg_icon.png" alt="Google">
 									Sign in with Google
 								</button>
 							</div>
@@ -222,7 +222,7 @@ export default class Home extends AbstractView {
 							<button type="button" class="connexion" id="alreadyHaveAccountButton_id">Already have an account ?</button>
 							<div class="google-signin-container">
 								<button type="button" class="google-signin-btn" id="google-signup-btn">
-									<img src="https://developers.google.com/identity/images/g-logo.png" alt="Google">
+									<img src="/assets/image/gg_icon.png" alt="Google">
 									Sign up with Google
 								</button>
 							</div>

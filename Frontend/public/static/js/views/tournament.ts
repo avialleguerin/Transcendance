@@ -2,6 +2,7 @@ import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.
 import AbstractView from "./AbstractView.js";
 import { startTournamentGame } from "../../../srcs/game/gameplay/babylon.js";
 import { getPlayer_1_win } from "../../../srcs/game/gameplay/score.js";
+import { homeView } from "../../../api/utils.js";
 // import { log } from '../../../utils/logger.js';
 let count = 0;
 
@@ -20,23 +21,24 @@ export default class extends AbstractView {
 		if (window.location.pathname === "/tournament") {
 			this.gameLoop = setInterval(() => this.checktournamentstart(), 1000);
 		}
-		const accessToken: string | null = sessionStorage.getItem('accessToken');
-		if (!accessToken || accessToken === undefined) {
-			history.pushState({}, '', '/');
-			import('./Home.js').then((module: any) => {
-				const Home = module.default;
-				const homeInstance = new Home();
-				homeInstance.getHtml().then((html: string) => {
-					const appElement = document.getElementById('app');
-					if (appElement) {
-						appElement.innerHTML = html;
-						if (homeInstance.createAccount && typeof homeInstance.createAccount === 'function') {
-							homeInstance.createAccount();
-						}
-					}
-				});
-			});
-		}
+		// const accessToken: string | null = sessionStorage.getItem('accessToken');
+		// if (!accessToken || accessToken === undefined) {
+		// 	history.pushState({}, '', '/');
+		// 	import('./Home.js').then((module: any) => {
+		// 		const Home = module.default;
+		// 		const homeInstance = new Home();
+		// 		homeInstance.getHtml().then((html: string) => {
+		// 			const appElement = document.getElementById('app');
+		// 			if (appElement) {
+		// 				appElement.innerHTML = html;
+		// 				if (homeInstance.createAccount && typeof homeInstance.createAccount === 'function') {
+		// 					homeInstance.createAccount();
+		// 				}
+		// 			}
+		// 		});
+		// 	});
+		// }
+		homeView();
 		// tournamentStarted = localStorage.getItem('tournamentStarted') === 'true';
     }
 

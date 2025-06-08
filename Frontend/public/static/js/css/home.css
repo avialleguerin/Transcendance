@@ -475,7 +475,6 @@ button:hover {
     gap: 10px;
     background: white;
     color: #333;
-    border: 1px solid #dadce0;
     border-radius: 5px;
     padding: 8px;
     font-family: 'Black Ops One', sans-serif;
@@ -486,7 +485,8 @@ button:hover {
 
 .google-signin-btn:hover {
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    background: #f8f9fa;
+    background: #c3d6e9;
+	color: #333;
 }
 
 .google-signin-btn img {

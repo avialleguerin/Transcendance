@@ -77,7 +77,7 @@ export async function fetch_user_friendships() {
 						</div>
 					</div>
 					<button class="friend-btn delete-btn" onclick="delete_friendship(${friendship.friendshipId})">
-						<img src="/srcs/game/assets/image/trash.svg" alt="Delete Friend" class="delete-icon">
+						<img src="/assets/image/trash.svg" alt="Delete Friend" class="delete-icon">
 					</button>
 				</div>
 			`;

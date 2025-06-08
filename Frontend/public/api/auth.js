@@ -1,81 +1,33 @@
-import { notif, fetchAPI, changeView } from './utils.js';
+import { notif, fetchAPI, homeView, gameMenuView, platformerView, setLocalStorage, updateUI } from './utils.js';
 import { connectWebSocket, disconnectWebSocket } from './websocket.js';
-import { handleViewTransitions } from '../srcs/game/gameplay/views/camera.js';
 
 // import { log } from '../utils/logger.js';
 
-export async function verify2FA(event) {
-	event.preventDefault();
-	const userId = sessionStorage.getItem("userId");
-	const code = document.getElementById("verify-2fa-code").value;
-
-	try {
-		const data = await fetchAPI('/request/user/verify-2fa', 'POST', { userId, code });
-
-		if (data.success) {
-			sessionStorage.removeItem("userId")
-			localStorage.setItem("Player1", data.username);
-			localStorage.setItem("profile_picture", data.profile_picture);
-			connectWebSocket()
-			console.log("2FA code valid!");
-			handleViewTransitions("vue1", "default");
-			history.pushState({}, '', '/Game_menu');
-			import('../static/js/views/Game_menu.js').then(module => {
-				const GameMenu = module.default;
-				const gameMenuInstance = new GameMenu();
-				gameMenuInstance.getHtml().then(html => {
-					document.getElementById('app').innerHTML = html;
-					if (gameMenuInstance.game_menu) {
-						gameMenuInstance.game_menu();
-					}
-				});
-			});
-		}
-	} catch (err) {
-		console.error("Erreur lors de la validation du code 2FA :", err);
-	}
-}
-
 export async function login(event) {
-	event.preventDefault();
-
-	const username = document.getElementById("login-username").value;
-	const password = document.getElementById("login-password").value;
-	
 	try {
+		event.preventDefault();
+		const username = document.getElementById("login-username").value;
+		const password = document.getElementById("login-password").value;
 		const data = await fetchAPI('/request/user/login', 'POST', { username, password }, true, false);
 		
 		if (!data.accessToken && !data.success) {
 			notif(data.error, false);
 		} else if (data.success && data.connection_status === "partially_connected" && data.user.doubleAuth_status) {
 			sessionStorage.setItem("userId", data.user.userId);
-			document.getElementById("doubleAuthForm").classList.remove("hidden");
-			document.getElementById("loginForm").classList.add("active");
-			document.getElementById("login-title").textContent = "Double Authentication";
-			document.getElementById("doubleAuthForm").classList.add("active");
+			updateUI({
+				removeClass: [{ id:"doubleAuthForm", className: "hidden" }],
+				addClass: ["loginForm", "doubleAuthForm"],
+			}); document.getElementById("login-title").textContent = "Double Authentication";
+
+			// document.getElementById("doubleAuthForm").classList.remove("hidden");
+			// document.getElementById("loginForm").classList.add("active");
+			// document.getElementById("doubleAuthForm").classList.add("active");
 		} else if (data.success && data.connection_status === "connected") {
 			notif(data.message, true);
-			localStorage.setItem("Player1", data.user.username);
-			localStorage.setItem("profile_picture", data.user.profile_picture);
+			setLocalStorage({ "Player1": data.user.username, "profile_picture": data.user.profile_picture });
 			connectWebSocket()
 			console.log("✅ Connected, Token :", sessionStorage.getItem("accessToken"));
-			// handleViewTransitions("vue1", "default");
-			// history.pushState({}, '', '/Game_menu');
-			// setTimeout(() => {
-			// 	history.pushState({}, '', '/Game_menu');
-			// 	import('../static/js/views/Game_menu.js').then(module => {
-			// 		const GameMenu = module.default;
-			// 		const gameMenuInstance = new GameMenu();
-			// 		gameMenuInstance.getHtml().then(html => {
-			// 			document.getElementById('app').innerHTML = html;
-			// 			if (gameMenuInstance.game_menu) {
-			// 				gameMenuInstance.game_menu();
-			// 			}
-			// 		});
-			// 	});
-			// }, 2000);
-			// changeView({ url: '/Game_menu', viewPath: '../static/js/views/Game_menu.js', transition: { from: "vue1", to: "default" }, delay: 2000, initMethod: 'game_menu' });
-			homeView();
+			gameMenuView();
 			document.getElementById("loginForm").reset();
 			document.getElementById("login-password").value = "";
 		} else {
@@ -89,26 +41,50 @@ export async function login(event) {
 	}
 }
 
-export async function login_1v1(event) {
-	event.preventDefault();
-	const username = document.getElementById("1v1-username2").value;
-	const password = document.getElementById("1v1-password2").value;
-	if (!username || !password)
-		return notif("Please fill in all fields", false);
-
+export async function verify2FA(event) {
 	try {
+		event.preventDefault();
+		const userId = sessionStorage.getItem("userId");
+		const code = document.getElementById("verify-2fa-code").value;
+		const data = await fetchAPI('/request/user/verify-2fa', 'POST', { userId, code });
+
+		if (data.success) {
+			sessionStorage.removeItem("userId")
+			setLocalStorage({"Player1": data.username, "profile_picture": data.profile_picture});
+			connectWebSocket()
+			console.log("2FA code valid!");
+			gameMenuView();
+		}
+	} catch (err) {
+		console.error("Erreur lors de la validation du code 2FA :", err);
+	}
+}
+
+export async function login_1v1(event) {
+	try {
+		event.preventDefault();
+		const username = document.getElementById("1v1-username2").value;
+		const password = document.getElementById("1v1-password2").value;
+		if (!username || !password)
+			return notif("Please fill in all fields", false);
+
 		const data = await fetchAPI('/request/user/login-1v1', 'POST', { username, password }, true, false);
 		if (data.success) {
 			if (data.player2.username === localStorage.getItem("Player1"))
 				return notif("You cannot play against yourself", false);
 			notif(data.message, true);
-			localStorage.setItem("Player2", data.player2.username);
-			document.getElementById("choose_your_opponent_1v1_form").classList.remove('active');
-			document.getElementById("back_to_select_mode_view6").classList.add('active');
-			document.getElementById("view6").classList.add('active');
-			document.getElementById("container").classList.remove('active');
-			document.getElementById("1v1-oponent-username1").innerHTML = localStorage.getItem("Player1");
-			document.getElementById("1v1-oponent-username2").innerHTML = localStorage.getItem("Player2");
+			setLocalStorage({ "Player2": data.player2.username });
+			updateUI({
+				removeClass: ["choose_your_opponent_1v1_form", "container"],
+				addClass: ["back_to_select_mode_view6", "view6"],
+				setContent: {"1v1-oponent-username1": localStorage.getItem("Player1"), "1v1-oponent-username2": localStorage.getItem("Player2")}
+			});
+			// document.getElementById("choose_your_opponent_1v1_form").classList.remove('active');
+			// document.getElementById("back_to_select_mode_view6").classList.add('active');
+			// document.getElementById("view6").classList.add('active');
+			// document.getElementById("container").classList.remove('active');
+			// document.getElementById("1v1-oponent-username1").innerHTML = localStorage.getItem("Player1");
+			// document.getElementById("1v1-oponent-username2").innerHTML = localStorage.getItem("Player2");
 		} else
 			notif(data.error, false);
 	} catch (err) {
@@ -139,17 +115,25 @@ export async function login_2v2(event) {
 				username2 === username3 || username2 === username4 || username3 === username4)
 				return notif("There can't be the same player 2 times", false);
 			notif(data.message, true);
-			localStorage.setItem("Player2", data.player2.username);
-			localStorage.setItem("Player3", data.player3.username);
-			localStorage.setItem("Player4", data.player4.username);
-			document.getElementById("choose_your_opponent_multi_form").classList.remove('active');
-			document.getElementById("back_to_select_mode_view8").classList.add('active');
-			document.getElementById("view8").classList.add('active');
-			document.getElementById("container").classList.remove('active');
-			document.getElementById("2v2-oponent-username1").innerHTML = localStorage.getItem("Player1");
-			document.getElementById("2v2-oponent-username2").innerHTML = localStorage.getItem("Player2");
-			document.getElementById("2v2-oponent-username3").innerHTML = localStorage.getItem("Player3");
-			document.getElementById("2v2-oponent-username4").innerHTML = localStorage.getItem("Player4");
+			setLocalStorage({"Player2": data.player2.username, "Player3": data.player3.username, "Player4": data.player4.username });
+			updateUI({
+				removeClass: ["choose_your_opponent_multi_form", "container"],
+				addClass: ["back_to_select_mode_view8", "view8"],
+				setContent: {
+					"2v2-oponent-username1": localStorage.getItem("Player1"),
+					"2v2-oponent-username2": localStorage.getItem("Player2"),
+					"2v2-oponent-username3": localStorage.getItem("Player3"),
+					"2v2-oponent-username4": localStorage.getItem("Player4")
+				}
+			});
+			// document.getElementById("choose_your_opponent_multi_form").classList.remove('active');
+			// document.getElementById("back_to_select_mode_view8").classList.add('active');
+			// document.getElementById("view8").classList.add('active');
+			// document.getElementById("container").classList.remove('active');
+			// document.getElementById("2v2-oponent-username1").innerHTML = localStorage.getItem("Player1");
+			// document.getElementById("2v2-oponent-username2").innerHTML = localStorage.getItem("Player2");
+			// document.getElementById("2v2-oponent-username3").innerHTML = localStorage.getItem("Player3");
+			// document.getElementById("2v2-oponent-username4").innerHTML = localStorage.getItem("Player4");
 		} else
 			notif(data.error, false);
 	} catch (err) {
@@ -180,19 +164,17 @@ export async function login_tournament(event) {
 				username2 === username3 || username2 === username4 || username3 === username4)
 				return notif("There can't be the same player 2 times", false);
 			notif(data.message, true);
-			localStorage.setItem("Player2", data.player2.username);
-			localStorage.setItem("Player3", data.player3.username);
-			localStorage.setItem("Player4", data.player4.username);
+			setLocalStorage({"Player2": data.player2.username, "Player3": data.player3.username, "Player4": data.player4.username });
 			document.getElementById("Player1").innerHTML = localStorage.getItem("Player1");
 			document.getElementById("Player2").innerHTML = localStorage.getItem("Player2");
 			document.getElementById("Player3").innerHTML = localStorage.getItem("Player3");
 			document.getElementById("Player4").innerHTML = localStorage.getItem("Player4");
-			localStorage.setItem("current_player1", localStorage.getItem("Player1"));
-			localStorage.setItem("current_player2", localStorage.getItem("Player2"));
+			setLocalStorage({"current_player1": localStorage.getItem("Player1"), "current_player2": localStorage.getItem("Player2") });
 			const tournamentStarted = true;
 			localStorage.setItem('tournamentStarted', tournamentStarted.toString());
-			document.getElementById("container_name_player").classList.add('hidden');
-			document.getElementById("tournament_graphic_id").classList.add('active');
+			updateUI({ addClass: [{ id: "tournament_graphic_id", className: "active" }, { id: "container_name_player", className: "hidden"}] });
+			// document.getElementById("container_name_player").classList.add('hidden');
+			// document.getElementById("tournament_graphic_id").classList.add('active');
 			document.getElementById("start_tournament").style.display = 'none';
 			document.getElementById("back_to_menu_view_tournament").style.display = 'none';
 			
@@ -223,23 +205,9 @@ export async function login_platformer(event) {
 			localStorage.setItem("Player2", data.player2.username);
 			localStorage.setItem("platformer_view", true);
 			document.getElementById("start-platformer").click();
-			// history.pushState({}, '', '/platformer');
-			// import('../static/js/views/platformer/PlatformView.js').then((module) => {
-			// 	console.log("Home module loaded");
-			// 	const PlatformerView = module.default;
-			// 	const platformerInstance = new PlatformerView();
-			// 	platformerInstance.getHtml().then((html) => {
-			// 		const appElement = document.getElementById('app');
-			// 		if (appElement) {
-			// 			appElement.innerHTML = html;
-			// 			if (platformerInstance.createAccount && typeof platformerInstance.createAccount === 'function') {
-			// 				platformerInstance.init_game_platformer();
-			// 			}
-			// 		}
-			// 	});
-			// });
 			// document.getElementById("platformer-oponent-username1").innerHTML = localStorage.getItem("Player1");
 			// document.getElementById("platformer-oponent-username2").innerHTML = localStorage.getItem("Player2");
+			// PlatformerView(); //TODO
 		} else
 			notif(data.error, false);
 	} catch (err) {
@@ -251,28 +219,12 @@ export async function login_platformer(event) {
 
 export async function logout() {
 	try {
-		const user = localStorage.getItem("Player1");
 		disconnectWebSocket()
 		await fetchAPI('/request/user/logout', 'POST', {}, false);
 		sessionStorage.clear();
 		localStorage.clear();
 		console.log("✅ Logged out successfully !");
-		handleViewTransitions("default", "vue1");
-		history.pushState({}, '', '/');
-		import('../static/js/views/Home.js').then((module) => {
-			console.log("Home module loaded");
-			const Home = module.default;
-			const homeInstance = new Home();
-			homeInstance.getHtml().then((html) => {
-				const appElement = document.getElementById('app');
-				if (appElement) {
-					appElement.innerHTML = html;
-					if (homeInstance.createAccount && typeof homeInstance.createAccount === 'function') {
-						homeInstance.createAccount();
-					}
-				}
-			});
-		});
+		homeView();
 	} catch (err) {
 		console.error("Erreur lors de la déconnexion :", err);
 	}
@@ -285,18 +237,17 @@ export async function register(event) {
 	const password = document.getElementById("register-password").value;
 	const confirmPassword = document.getElementById("register-confirm-password").value;
 
-	if (password !== confirmPassword) {
-		notif("Passwords are different", false);
-		return;
-	}
+	if (password !== confirmPassword)
+		return notif("Passwords are different", false);
 
 	try {
 		const data = await fetchAPI('/request/user/create-user', 'POST', { username, password });
 		
 		if (data.success) {
-			document.getElementById("registerForm").reset();
-			document.getElementById("create_account_id").classList.remove("active");
-			document.getElementById("loginform_id").classList.remove("active");
+			updateUI({removeClass: ["create_account_id", "loginform_id"], resetForm: "registerForm"});
+			// document.getElementById("registerForm").reset();
+			// document.getElementById("create_account_id").classList.remove("active");
+			// document.getElementById("loginform_id").classList.remove("active");
 		}
 	} catch (err) {
 		console.error("Erreur lors de l'inscription :", err);
@@ -310,44 +261,20 @@ export async function refreshInfos() {
 		if (!data.accessToken || data.deleted_account) {
 			sessionStorage.clear();
 			localStorage.clear();
-			history.pushState({}, '', '/');
-			import('../static/js/views/Home.js').then((module) => { //TODO - bug de la page de chargement lors de la redirection vers '/' apres une suppression du user par exemple
-				console.log("Home module loaded");
-				const Home = module.default;
-				const homeInstance = new Home();
-				homeInstance.getHtml().then((html) => {
-					const appElement = document.getElementById('app');
-					if (appElement) {
-						appElement.innerHTML = html;
-						if (homeInstance.createAccount && typeof homeInstance.createAccount === 'function') {
-							homeInstance.createAccount();
-						}
-					}
-				});
-			});
+			homeView(); //TODO - bug de la page de chargement lors de la redirection vers '/' apres une suppression du user par exemple
 			notif("Session expired, please log in again", false);
 		} else if (sessionStorage.getItem("accessToken") && sessionStorage.getItem("accessToken") !== "undefined") {
 			localStorage.clear();
-			localStorage.setItem("Player1", data.user.username);
-			localStorage.setItem("profile_picture", data.user.profile_picture);
-			history.pushState({}, '', '/Game_menu');
-			import('../static/js/views/Game_menu.js').then(module => {
-				const GameMenu = module.default;
-				const gameMenuInstance = new GameMenu();
-				gameMenuInstance.getHtml().then(html => {
-					document.getElementById('app').innerHTML = html;
-					if (gameMenuInstance.game_menu) {
-						gameMenuInstance.game_menu();
-					}
-				});
-			});
+			setLocalStorage({"Player1": data.user.username, "profile_picture": data.user.profile_picture});
+			// localStorage.setItem("Player1", data.user.username);
+			// localStorage.setItem("profile_picture", data.user.profile_picture);
+			gameMenuView();
 		}
 
-		if (data.success) {
+		if (data.success)
 			console.log("Infos refreshed successfully");
-		} else {
-			console.error("❌ Error refreshing infos:", data.error);
-		}
+		else
+			console.error("Error refreshing infos:", data.error);
 	} catch (err) {
 		console.error("Erreur lors du rafraîchissement des informations :", err);
 	}
@@ -414,28 +341,14 @@ export async function handleGoogleSignIn(response) {
 			if (data.user.profile_picture)
 				localStorage.setItem("profile_picture", data.user.profile_picture);
 			notif("Connexion Google réussie !", true);
-
-			// Redirection vers le menu du jeu
-			history.pushState({}, '', '/Game_menu');
-			setTimeout(() => {
-				import('../static/js/views/Game_menu.js').then(module => {
-					const GameMenu = module.default;
-					const gameMenuInstance = new GameMenu();
-					gameMenuInstance.getHtml().then(html => {
-						document.getElementById('app').innerHTML = html;
-						gameMenuInstance.game_menu?.();
-					});
-				});
-			}, 2000);
-		} else {
+			gameMenuView(); //TODO il y avait un delai de -> 2000
+		} else
 			notif(data.error || "Erreur lors de la connexion Google", false);
-		}
 	} catch (err) {
 		console.error("Erreur Google Sign In:", err);
-		notif("Erreur de connexion Google", false);
+		notif("Connexion Google failed", false);
 	}
 }
-
 
 window.addEventListener('beforeunload', () => {
 	disconnectWebSocket()

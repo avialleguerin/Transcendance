@@ -9,6 +9,7 @@ import { getPlayer_1_win, getPlayer_2_win } from "../../../srcs/game/gameplay/sc
 import { disable_skin_perso_player_first_and_seconde_default } from "../../../srcs/game/gameplay/solo/skin/init_skin_player_default.js";
 import { get_skin_is_init } from "../../../srcs/game/gameplay/solo/skin/init_skin_utils.js";
 // import { log } from '../../../utils/logger.js';
+import { homeView } from "../../../api/utils.js";
 
 let spacePressed = false;
 let bool = false;
@@ -23,23 +24,24 @@ export default class solo_game extends AbstractView {
 	gameLoop: ReturnType<typeof setInterval> | null;
 
 	constructor() {
-		const accessToken: string | null = sessionStorage.getItem('accessToken');
-		if (!accessToken || accessToken === undefined) {
-			history.pushState({}, '', '/');
-			import('./Home.js').then((module: any) => {
-				const Home = module.default;
-				const homeInstance = new Home();
-				homeInstance.getHtml().then((html: string) => {
-					const appElement = document.getElementById('app');
-					if (appElement) {
-						appElement.innerHTML = html;
-						if (homeInstance.createAccount && typeof homeInstance.createAccount === 'function') {
-							homeInstance.createAccount();
-						}
-					}
-				});
-			});
-		}
+		// const accessToken: string | null = sessionStorage.getItem('accessToken');
+		// if (!accessToken || accessToken === undefined) {
+		// 	history.pushState({}, '', '/');
+		// 	import('./Home.js').then((module: any) => {
+		// 		const Home = module.default;
+		// 		const homeInstance = new Home();
+		// 		homeInstance.getHtml().then((html: string) => {
+		// 			const appElement = document.getElementById('app');
+		// 			if (appElement) {
+		// 				appElement.innerHTML = html;
+		// 				if (homeInstance.createAccount && typeof homeInstance.createAccount === 'function') {
+		// 					homeInstance.createAccount();
+		// 				}
+		// 			}
+		// 		});
+		// 	});
+		// }
+		homeView();
 		super();
 		this.setTitle("solo_game");
 
