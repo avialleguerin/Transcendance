@@ -17,7 +17,7 @@ async function fetch_users() {
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.doubleAuth_status === 0 ? "Disabled" : "Enabled" }</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.cgu_version || "—"}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.online_status === 0 ? "offline" : "online"}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.last_connection}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.last_activity}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.created_at}</td>
 				<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0">
 					<button class="bg-red-200 hover:bg-red-300 m-1 text-red-500 hover:text-red-600 px-3 py-1 rounded-full transition-colors duration-300 ease-in-out text-xs" onclick="delete_user(${user.userId})">Delete</button>

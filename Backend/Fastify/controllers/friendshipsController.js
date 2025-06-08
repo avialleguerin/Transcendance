@@ -38,12 +38,12 @@ export async function addFriend(request, reply) {
 		if (!friendExists || friendExists.anonimized_at)
 			return reply.code(404).send({ success: false, error: `User '${friend}' not found`, accessToken: infos.accessToken })
 		if (friendExists.userId === user.userId)
-			return reply.code(400).send({success: false, error: `You can't invite yourself`, accessToken: infos.accessToken })
+			return reply.code(400).send({success: false, error: `You can't invite yourself as friend`, accessToken: infos.accessToken })
 		const status = friendshipsModel.checkFriendshipStatus(user.userId, friendExists.userId);
 		if (status.requestSent || status.requestReceived) {
 			return reply.code(400).send({ 
 				success: false,
-				message: "Friendship already exists",
+				message: "You are already friends or a friendship request is pending",
 				accessToken: infos.accessToken
 			});
 		}
@@ -52,11 +52,10 @@ export async function addFriend(request, reply) {
 
 		return reply.code(201).send({ 
 			success: true,
-			message: "Friendship created successfully",
+			message: `Friend added successfully`,
 			accessToken: infos.accessToken
 		})
 	} catch (err) {
-		fastify.log.error("Error creating friendship:", err)
 		return reply.code(500).send({ error: "Internal server error" })
 	}
 }
@@ -68,28 +67,27 @@ export async function acceptFriend(request, reply) {
 		if (!infos)
 			return reply.code(401).send({ error: "Unauthorized" })
 		const user = infos.user
-		fastify.log.info("user :", user)
 		if (!user)
 			return reply.code(401).send({ error: "User not found" })
 		if (!infos.accessToken)
 			return reply.code(401).send({ error: "Unauthorized" })
 		const friendship = friendshipsModel.getFriendshipById(friendshipId)
 		if (!friendship)
-			return reply.code(404).send({ success: false, error: `Friendship '${friendshipId}' not found`, accessToken: infos.accessToken })
+			return reply.code(404).send({ success: false, error: `This Friendship doesn't exist`, accessToken: infos.accessToken })
 		if (friendship.status !== 'pending')
-			return reply.code(400).send({ success: false, error: `Friendship '${friendshipId}' is not pending`, accessToken: infos.accessToken })
+			return reply.code(400).send({ success: false, error: `You already have this friend`, accessToken: infos.accessToken })
 		if (friendship.friendId !== user.userId)
-			return reply.code(403).send({ success: false, error: `You are not allowed to accept this friendship`, accessToken: infos.accessToken })
+			return reply.code(403).send({ success: false, error: `You are not allowed to accept this friend`, accessToken: infos.accessToken })
 
 		friendshipsModel.acceptFriendship(friendship.userId, user.userId)
 
 		return reply.send({ 
 			success: true,
-			message: "Friendship accepted successfully",
+			message: "Friend accepted successfully",
 			accessToken: infos.accessToken
 		})
 	} catch (err) {
-		fastify.log.error("Error accepting friendship:", err)
+		fastify.log.error("Error accepting this friend:", err)
 		return reply.code(500).send({ error: "Internal server error" })
 	}
 }
@@ -108,13 +106,13 @@ export async function deleteFriend(request, reply) {
 			return reply.code(401).send({ error: "Unauthorized" })
 		const friendship = friendshipsModel.getFriendshipById(friendshipId)
 		if (!friendship)
-			return reply.code(404).send({ success: false, error: `Friendship '${friendshipId}' not found`, accessToken: infos.accessToken })
+			return reply.code(404).send({ success: false, error: `Friend not found`, accessToken: infos.accessToken })
 		
 		friendshipsModel.deleteFriendship(friendship.userId, friendship.friendId)
 
 		return reply.send({ 
 			success: true,
-			message: "Friendship deleted successfully",
+			message: "Friend deleted successfully",
 			accessToken: infos.accessToken
 		})
 	} catch (err) {

@@ -359,7 +359,7 @@ async function initGoogleSignIn() {
 
 	if (typeof google !== 'undefined' && google.accounts?.oauth2) {
 		try {
-			const config = await fetchAPI('/request/user/google-config', 'GET');
+			const config = await fetchAPI('/request/user/google-config', 'GET', null, false);
 			// const config = await configResponse.json();
 			
 			if (!config.success || !config.client_id) {

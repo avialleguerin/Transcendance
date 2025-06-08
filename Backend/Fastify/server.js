@@ -47,14 +47,14 @@ fastify.register(async function (fastify) {
 			activeConnections.set(userId, connection)
 			
 			usersModel.updateOnlineStatus(userId, 1)
-			usersModel.updateLastConnection(userId)
+			usersModel.updateLastActivity(userId)
 			
 			console.log(`User ${userId} connected via WebSocket`)
 			connection.on('message', (message) => {
 				const data = JSON.parse(message)
 				
 				if (data.type === 'heartbeat') {
-					usersModel.updateLastConnection(userId)
+					usersModel.updateLastActivity(userId)
 					connection.send(JSON.stringify({ type: 'pong' }))
 				}
 			})
@@ -70,7 +70,7 @@ fastify.register(async function (fastify) {
 				console.log(`User found in DB:`, user)
 				
 				if (user) {
-					usersModel.updateLastConnection(userId)
+					usersModel.updateLastActivity(userId)
 					const updateResult = usersModel.updateOnlineStatus(userId, 0)
 					console.log(`Update online status result:`, updateResult)
 					const userAfter = usersModel.getUserById(userId)

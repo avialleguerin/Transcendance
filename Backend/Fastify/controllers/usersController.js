@@ -3,13 +3,12 @@ import usersModel from '../models/usersModel.js'
 import { hashPassword, verifyPassword } from '../utils/hashUtils.js'
 import { redisModel } from '../models/redisModel.js'
 import { getUserFromToken } from './utils.js'
-import friendshipsModel from '../models/friendshipsModel.js'; //NOTE - new
-import gamesModel from '../models/gamesModel.js'; //NOTE - new
+import friendshipsModel from '../models/friendshipsModel.js';
+import gamesModel from '../models/gamesModel.js';
 import speakeasy from 'speakeasy'
 import qrcode from 'qrcode'
 import fs from 'fs/promises'
 import path from 'path'
-// import { get } from 'http'
 
 const uploadDir = '/usr/share/nginx/uploads'
 const SECRET_LENGHT = 30
@@ -99,8 +98,7 @@ export async function googleSignIn(request, reply) {
 		const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, { expiresIn: '15m' });
 		const refreshToken = fastify.jwt.sign({ userId: user.userId }, { expiresIn: '7d' });
 		
-		usersModel.updateLastConnection(user.userId);
-		
+		usersModel.updateLastActivity(user.userId);
 		return reply.setCookie('refreshToken', refreshToken, {
 				path: '/',
 				httpOnly: true,
@@ -200,7 +198,7 @@ export async function login(request, reply) {
 		
 		if (!accessToken || !refreshToken)
 			return reply.code(500).send({ error: 'Internal Server Error' })
-		usersModel.updateLastConnection(user.userId)
+		usersModel.updateLastActivity(user.userId)
 		usersModel.updateOnlineStatus(user.userId, 1)
 		reply
 		.setCookie('refreshToken', refreshToken, {
@@ -244,7 +242,7 @@ export async function login1v1(request, reply) {
 		if (!await verifyPassword(player2.password, password)) {
 			return reply.code(401).send({ success: false, error: 'Invalid credentials' })
 		}
-		usersModel.updateLastConnection(player2.userId)
+		usersModel.updateLastActivity(player2.userId)
 		reply.code(200).send({ success: true, message: 'Opponent logged in', user: user, player2: player2, accessToken: accessToken })
 	} catch (err) {
 		return reply.code(500).send({ error: err.message })
@@ -272,9 +270,9 @@ export async function login2v2(request, reply) {
 			return reply.code(401).send({ success: false, error: 'Player 3: Invalid credentials' })
 		if (!player4 || !await verifyPassword(player4.password, password4))
 			return reply.code(401).send({ success: false, error: 'Player 4: Invalid credentials' })
-		usersModel.updateLastConnection(player2.userId)
-		usersModel.updateLastConnection(player3.userId)
-		usersModel.updateLastConnection(player4.userId)
+		usersModel.updateLastActivity(player2.userId)
+		usersModel.updateLastActivity(player3.userId)
+		usersModel.updateLastActivity(player4.userId)
 		reply.code(200).send({ success: true, message: 'Opponents logged in', player1: user, player2: player2, player3: player3, player4: player4, accessToken: accessToken })
 	} catch (err) {
 		return reply.code(500).send({ error: err.message })
@@ -282,7 +280,6 @@ export async function login2v2(request, reply) {
 }
 
 export async function logout(request, reply) {
-	// const { username } = request.body
 	const accessToken = request.headers.authorization?.split(' ')[1]
 	const { refreshToken } = request.cookies
 	if (!accessToken || accessToken === "undefined")
@@ -300,8 +297,6 @@ export async function logout(request, reply) {
 			redisModel.addToBlacklist(refreshToken, expiresIn)
 		reply.clearCookie('refreshToken', { path: '/' })
 	}
-	// const user = usersModel.getUserByUsername(username)
-	// usersModel.updateOnlineStatus(user.userId, 0)
 	reply.code(200).send({ success: true, message: 'Logged out' })
 }
 
@@ -514,7 +509,7 @@ export async function verifyDoubleAuth(request, reply) {
 			const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, { expiresIn: '15m' })
 			const refreshToken = fastify.jwt.sign({ userId: user.userId }, { expiresIn: '7d' })
 			usersModel.updateDoubleAuth_status(user.userId, 1)
-			usersModel.updateLastConnection(user.userId)
+			usersModel.updateLastActivity(user.userId)
 			reply
 			.setCookie('refreshToken', refreshToken, {
 				path: '/',
@@ -582,29 +577,9 @@ export async function generateDoubleAuth(userId) {
 	return data
 }
 
-export async function refreshInfos(request, reply) {
-
-	try {
-		const infos = await getUserFromToken(request, reply)
-		if (!infos)
-			return reply.code(401).send({ success: false, error: 'Unauthorized' })
-		const user = infos.user
-		const accessToken = infos.accessToken
-		if (!user)
-			return reply.code(401).send({ success: false , error: 'User not found' })
-		if (!user.doubleAuth_status && user.doubleAuth_secret)
-			usersModel.updateDoubleAuth_secret(user.userId, null)
-		return reply.code(200).send({ success: true, user: user, deleted_account: user.deleted_at , accessToken: accessToken, message: 'User infos refreshed' }) //REVIEW - Security of envoi du user en entier
-	} catch (err) {
-		return reply.code(500).send({ error: err.message })
-	}
-}
-
-
-
 export async function exportUserData(request, reply) {
 	  try {
-		const infos = await getUserFromToken(request, reply)
+		const infos = await getUserFromToken(request)
 		if (!infos)
 			return reply.code(401).send({ success: false, error: 'Unauthorized' })
 		const user = infos.user
@@ -643,7 +618,7 @@ export async function exportUserData(request, reply) {
 
 export async function anonymizeUser(request, reply) {
 	try {
-		const infos = await getUserFromToken(request, reply)
+		const infos = await getUserFromToken(request)
 		if (!infos)
 			return reply.code(401).send({ success: false, error: 'Unauthorized' })
 		const user = infos.user
