@@ -395,14 +395,16 @@ async function handleGoogleSignIn(response) {
 
 			// Redirection vers le menu du jeu
 			history.pushState({}, '', '/Game_menu');
-			import('../static/js/views/Game_menu.js').then(module => {
-				const GameMenu = module.default;
-				const gameMenuInstance = new GameMenu();
-				gameMenuInstance.getHtml().then(html => {
-					document.getElementById('app').innerHTML = html;
-					gameMenuInstance.game_menu?.();
+			setTimeout(() => {
+				import('../static/js/views/Game_menu.js').then(module => {
+					const GameMenu = module.default;
+					const gameMenuInstance = new GameMenu();
+					gameMenuInstance.getHtml().then(html => {
+						document.getElementById('app').innerHTML = html;
+						gameMenuInstance.game_menu?.();
+					});
 				});
-			});
+			}, 2000);
 		} else {
 			notif(data.error || "Erreur lors de la connexion Google", false);
 		}
