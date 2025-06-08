@@ -1,5 +1,6 @@
-import { notif, fetchAPI } from './utils.js';
+import { notif, fetchAPI, changeView } from './utils.js';
 import { connectWebSocket, disconnectWebSocket } from './websocket.js';
+import { handleViewTransitions } from '../srcs/game/gameplay/views/camera.js';
 
 // import { log } from '../utils/logger.js';
 
@@ -17,6 +18,7 @@ export async function verify2FA(event) {
 			localStorage.setItem("profile_picture", data.profile_picture);
 			connectWebSocket()
 			console.log("2FA code valid!");
+			handleViewTransitions("vue1", "default");
 			history.pushState({}, '', '/Game_menu');
 			import('../static/js/views/Game_menu.js').then(module => {
 				const GameMenu = module.default;
@@ -57,20 +59,23 @@ export async function login(event) {
 			localStorage.setItem("profile_picture", data.user.profile_picture);
 			connectWebSocket()
 			console.log("✅ Connected, Token :", sessionStorage.getItem("accessToken"));
-			history.pushState({}, '', '/Game_menu');
-			setTimeout(() => {
-				history.pushState({}, '', '/Game_menu');
-				import('../static/js/views/Game_menu.js').then(module => {
-					const GameMenu = module.default;
-					const gameMenuInstance = new GameMenu();
-					gameMenuInstance.getHtml().then(html => {
-						document.getElementById('app').innerHTML = html;
-						if (gameMenuInstance.game_menu) {
-							gameMenuInstance.game_menu();
-						}
-					});
-				});
-			}, 2000);
+			// handleViewTransitions("vue1", "default");
+			// history.pushState({}, '', '/Game_menu');
+			// setTimeout(() => {
+			// 	history.pushState({}, '', '/Game_menu');
+			// 	import('../static/js/views/Game_menu.js').then(module => {
+			// 		const GameMenu = module.default;
+			// 		const gameMenuInstance = new GameMenu();
+			// 		gameMenuInstance.getHtml().then(html => {
+			// 			document.getElementById('app').innerHTML = html;
+			// 			if (gameMenuInstance.game_menu) {
+			// 				gameMenuInstance.game_menu();
+			// 			}
+			// 		});
+			// 	});
+			// }, 2000);
+			// changeView({ url: '/Game_menu', viewPath: '../static/js/views/Game_menu.js', transition: { from: "vue1", to: "default" }, delay: 2000, initMethod: 'game_menu' });
+			homeView();
 			document.getElementById("loginForm").reset();
 			document.getElementById("login-password").value = "";
 		} else {
@@ -252,6 +257,7 @@ export async function logout() {
 		sessionStorage.clear();
 		localStorage.clear();
 		console.log("✅ Logged out successfully !");
+		handleViewTransitions("default", "vue1");
 		history.pushState({}, '', '/');
 		import('../static/js/views/Home.js').then((module) => {
 			console.log("Home module loaded");

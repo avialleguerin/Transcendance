@@ -243,3 +243,5 @@ if (viewName === 'vue1' && previousView === 'default')
 		changeView('vue2', true);
 	}
 }
+
+// window.handleViewTransition = handleViewTransitions;

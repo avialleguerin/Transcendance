@@ -520,18 +520,18 @@ engine.runRenderLoop(() => {
 			frameCount = 0;
 		}
 		applyQualitySettings();
-		const accessToken = sessionStorage.getItem('accessToken');
-		if ((accessToken && accessToken !== undefined) && accessToken !== "undefined" && !isConnected) {
-			isConnected = true;
-			console.log("User is connectedddddddddddddddddddddddddddddd");
-			handleViewTransitions("vue1", "default");
-		}
+		// const accessToken = sessionStorage.getItem('accessToken');
+		// if ((accessToken && accessToken !== undefined) && accessToken !== "undefined" && !isConnected) {
+		// 	isConnected = true;
+		// 	console.log("User is connectedddddddddddddddddddddddddddddd");
+		// 	// handleViewTransitions("vue1", "default");
+		// }
 
-		if (!(accessToken && accessToken !== undefined) && accessToken !== "undefined" && isConnected) {
-			isConnected = false;
-			console.log("User is disconnectedddddddddddddddddddddddddddddd");
-			handleViewTransitions("vue1", "vue2");
-		}
+		// if (!(accessToken && accessToken !== undefined) && accessToken !== "undefined" && isConnected) {
+		// 	isConnected = false;
+		// 	console.log("User is disconnectedddddddddddddddddddddddddddddd");
+		// 	// handleViewTransitions("vue1", "vue2");
+		// }
 
 		if (Solo_gameStart && !gameIsFinished) {
 			if (!initialized) {

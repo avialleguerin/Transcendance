@@ -64,3 +64,135 @@ export async function fetchAPI(url, method, body = null, showNotification = true
 		throw err;
 	}
 }
+
+// export function changeView(url, viewPath, initMethod = null, delay = 0, transitionFrom = "default", transitionTo = "vue1") {
+//     const loadView = async () => {
+//         try {
+//             handleViewTransitions(transitionFrom, transitionTo);
+//             history.pushState({}, '', url);
+            
+//             const module = await import(viewPath);
+//             const ViewClass = module.default;
+//             const viewInstance = new ViewClass();
+//             const html = await viewInstance.getHtml();
+            
+//             const appElement = document.getElementById('app');
+//             if (appElement) {
+//                 appElement.innerHTML = html;
+                
+//                 if (initMethod && viewInstance[initMethod] && typeof viewInstance[initMethod] === 'function') {
+//                     viewInstance[initMethod]();
+//                 }
+//             }
+//         } catch (error) {
+//             console.error('Erreur lors du chargement de la vue:', error);
+//         }
+//     };
+
+//     if (delay > 0) {
+//         setTimeout(loadView, delay);
+//     } else {
+//         loadView();
+//     }
+// }
+
+// export function changeView(targetView, targetUrl, viewModule, delay = 0) {
+//     if (delay > 0) {
+//         handleViewTransitions("vue1", "default");
+//         history.pushState({}, '', targetUrl);
+//         setTimeout(() => {
+//             history.pushState({}, '', targetUrl);
+//             import(viewModule).then(module => {
+//                 const ViewClass = module.default;
+//                 const viewInstance = new ViewClass();
+//                 viewInstance.getHtml().then(html => {
+//                     document.getElementById('app').innerHTML = html;
+//                     if (viewInstance.game_menu) {
+//                         viewInstance.game_menu();
+//                     }
+//                 });
+//             });
+//         }, delay);
+//     } else {
+//         handleViewTransitions("default", "vue1");
+//         history.pushState({}, '', targetUrl);
+//         import(viewModule).then((module) => {
+//             const ViewClass = module.default;
+//             const viewInstance = new ViewClass();
+//             viewInstance.getHtml().then((html) => {
+//                 const appElement = document.getElementById('app');
+//                 if (appElement) {
+//                     appElement.innerHTML = html;
+//                     if (viewInstance.createAccount && typeof viewInstance.createAccount === 'function') {
+//                         viewInstance.createAccount();
+//                     }
+//                 }
+//             });
+//         });
+//     }
+// }
+
+export function homeView() {
+	handleViewTransitions("default", "vue1");
+	history.pushState({}, '', '/');
+	import('../static/js/views/Home.js').then((module) => {
+		const Home = module.default;
+		const homeInstance = new Home();
+		homeInstance.getHtml().then((html) => {
+			const appElement = document.getElementById('app');
+			if (appElement) {
+				appElement.innerHTML = html;
+				if (homeInstance.createAccount && typeof homeInstance.createAccount === 'function') {
+					homeInstance.createAccount();
+				}
+			}
+		});
+	});
+}
+
+
+export function gameMenuView() {
+	handleViewTransitions("vue1", "default");
+	history.pushState({}, '', '/Game_menu');
+	import('../static/js/views/Game_menu.js').then(module => {
+		const GameMenu = module.default;
+		const gameMenuInstance = new GameMenu();
+		gameMenuInstance.getHtml().then(html => {
+			document.getElementById('app').innerHTML = html;
+			if (gameMenuInstance.game_menu) {
+				gameMenuInstance.game_menu();
+			}
+		});
+	});
+}
+
+
+
+// handleViewTransitions("vue1", "default");
+// history.pushState({}, '', '/Game_menu');
+// import('../static/js/views/Game_menu.js').then(module => {
+// 	const GameMenu = module.default;
+// 	const gameMenuInstance = new GameMenu();
+// 	gameMenuInstance.getHtml().then(html => {
+// 		document.getElementById('app').innerHTML = html;
+// 		if (gameMenuInstance.game_menu) {
+// 			gameMenuInstance.game_menu();
+// 		}
+// 	});
+// });
+
+// handleViewTransitions("default", "vue1");
+// history.pushState({}, '', '/');
+// import('../static/js/views/Home.js').then((module) => {
+// 	const Home = module.default;
+// 	const homeInstance = new Home();
+// 	homeInstance.getHtml().then((html) => {
+// 		const appElement = document.getElementById('app');
+// 		if (appElement) {
+// 			appElement.innerHTML = html;
+// 			if (homeInstance.createAccount && typeof homeInstance.createAccount === 'function') {
+// 				homeInstance.createAccount();
+// 			}
+// 		}
+// 	});
+// });
