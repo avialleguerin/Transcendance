@@ -15,6 +15,7 @@ import usersModel from './models/usersModel.js';
 
 import colorLoggerPlugin from './utils/logger.js' // NOTE - bonus: Colorized logger plugin
 import websocket from '@fastify/websocket'
+import { checkEmailConfig } from './utils/mailer.js'
 
 // setting up the server
 export const fastify = Fastify({
@@ -230,6 +231,7 @@ cron.schedule('0 0 * * *', () => {
  */
 const start = async () => {
 	try {
+		checkEmailConfig();
 		await fastify.listen({ port: 3000, host: '0.0.0.0' })
 	} catch (err) {
 		fastify.log.error(err)
