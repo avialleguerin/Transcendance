@@ -1,4 +1,4 @@
-function notif(message, success = true) {
+export function notif(message, success = true) {
 	const notification = document.getElementById('resultMessage');
 	console.log("notif:", message, "success:", success);
 	if (notification) {
@@ -24,9 +24,9 @@ function notif(message, success = true) {
 	}
 }
 
-async function fetchAPI(url, method, body = null, showNotification = true, formData = null) {
+export async function fetchAPI(url, method, body = null, showNotification = true, formData = null) {
 	try {
-		accessToken = sessionStorage.getItem('accessToken');
+		let accessToken = sessionStorage.getItem('accessToken');
 		
 		const headers = {
 			"Authorization": `Bearer ${accessToken}`

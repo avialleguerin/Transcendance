@@ -1,4 +1,4 @@
-class WebSocketManager {
+export class WebSocketManager {
 	constructor() {
 		this.socket = null
 		this.heartbeatInterval = null
@@ -81,15 +81,15 @@ class WebSocketManager {
 }
 
 // Instance globale du WebSocket
-const wsManager = new WebSocketManager()
+export const wsManager = new WebSocketManager()
 
 // Connexion automatique après login
-function connectWebSocket() {
+export function connectWebSocket() {
 	wsManager.connect()
 }
 
 // Déconnexion lors du logout
-function disconnectWebSocket() {
+export function disconnectWebSocket() {
 	if (typeof wsManager !== 'undefined' && wsManager) {
 		wsManager.disconnect()
 	}

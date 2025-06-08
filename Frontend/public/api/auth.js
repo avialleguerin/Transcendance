@@ -1,6 +1,9 @@
+import { notif, fetchAPI } from './utils.js';
+import { connectWebSocket, disconnectWebSocket } from './websocket.js';
+
 // import { log } from '../utils/logger.js';
 
-async function verify2FA(event) {
+export async function verify2FA(event) {
 	event.preventDefault();
 	const userId = sessionStorage.getItem("userId");
 	const code = document.getElementById("verify-2fa-code").value;
@@ -31,7 +34,7 @@ async function verify2FA(event) {
 	}
 }
 
-async function login(event) {
+export async function login(event) {
 	event.preventDefault();
 
 	const username = document.getElementById("login-username").value;
@@ -73,7 +76,7 @@ async function login(event) {
 		} else {
 			notif(data.error, false);
 			document.getElementById("login-password").value = "";
-			log.info(data.error);
+			console.log(data.error);
 		}
 	} catch (err) {
 		console.error("Erreur lors de la connexion :", err);
@@ -81,7 +84,7 @@ async function login(event) {
 	}
 }
 
-async function login_1v1(event) {
+export async function login_1v1(event) {
 	event.preventDefault();
 	const username = document.getElementById("1v1-username2").value;
 	const password = document.getElementById("1v1-password2").value;
@@ -110,7 +113,7 @@ async function login_1v1(event) {
 	document.getElementById("choose_your_opponent_1v1_form").reset();
 }
 
-async function login_2v2(event) {
+export async function login_2v2(event) {
 	event.preventDefault();
 	const username1 = localStorage.getItem("Player1");
 	const username2 = document.getElementById("2v2-username2").value;
@@ -151,7 +154,7 @@ async function login_2v2(event) {
 	document.getElementById("choose_your_opponent_1v1_form").reset();
 }
 
-async function login_tournament(event) {
+export async function login_tournament(event) {
 	event.preventDefault();
 	const username1 = localStorage.getItem("Player1");
 	const username2 = document.getElementById("tournament-username2").value;
@@ -197,7 +200,7 @@ async function login_tournament(event) {
 	}
 }
 
-async function login_platformer(event) {
+export async function login_platformer(event) {
 	event.preventDefault();
 	const username = document.getElementById("platformer-username2").value;
 	const password = document.getElementById("platformer-password2").value;
@@ -241,7 +244,7 @@ async function login_platformer(event) {
 	document.getElementById("choose_your_opponent_platformer_form").reset();
 }
 
-async function logout() {
+export async function logout() {
 	try {
 		const user = localStorage.getItem("Player1");
 		disconnectWebSocket()
@@ -269,7 +272,7 @@ async function logout() {
 	}
 }
 
-async function register(event) {
+export async function register(event) {
 	event.preventDefault();
 
 	const username = document.getElementById("register-username").value;
@@ -294,7 +297,7 @@ async function register(event) {
 	}
 }
 
-async function refreshInfos() {
+export async function refreshInfos() {
 	try {
 		const data = await fetchAPI('/request/user/refresh-infos', 'POST', {}, true, false);
 
@@ -351,11 +354,10 @@ window.addEventListener('DOMContentLoaded', () => {
 	}, 1000);
 });
 
-
 //* ==== GOOGLE SIGN-IN ==== *//
-let tokenClient;
+export let tokenClient;
 
-async function initGoogleSignIn() {
+export async function initGoogleSignIn() {
 	console.log("URL actuelle:", window.location.origin);
 
 	if (typeof google !== 'undefined' && google.accounts?.oauth2) {
@@ -382,8 +384,20 @@ async function initGoogleSignIn() {
 	}
 }
 
+// Make functions available globally for HTML event handlers and TypeScript
+window.initGoogleSignIn = initGoogleSignIn;
+window.tokenClient = tokenClient;
+window.login = login;
+window.register = register;
+window.verify2FA = verify2FA;
+window.logout = logout;
+window.login_1v1 = login_1v1;
+window.login_2v2 = login_2v2;
+window.login_tournament = login_tournament;
+window.login_platformer = login_platformer;
+
 // Fonction de gestion de la réponse Google
-async function handleGoogleSignIn(response) {
+export async function handleGoogleSignIn(response) {
 	try {
 		const accessToken = response.access_token;
 		const data = await fetchAPI('/request/user/google-signin', 'POST', { access_token: accessToken });

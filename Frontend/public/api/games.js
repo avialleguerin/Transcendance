@@ -1,4 +1,6 @@
-async function create_1v1_game(event, player1, player2) {
+import { notif } from './utils.js';
+
+export async function create_1v1_game(event, player1, player2) {
 	event.preventDefault();
 
 	// const player1 = localStorage.getItem("Player1");
@@ -28,7 +30,7 @@ async function create_1v1_game(event, player1, player2) {
 		localStorage.setItem("tournamentCount", (parseInt(localStorage.getItem("tournamentCount")) + 1).toString());
 };
 
-async function create_2v2_game(event) {
+export async function create_2v2_game(event) {
 	event.preventDefault();
 
 	const player1 = localStorage.getItem("Player1");

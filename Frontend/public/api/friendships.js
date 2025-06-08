@@ -1,8 +1,9 @@
+import { notif, fetchAPI } from './utils.js';
 
 let historyIsActive = localStorage.getItem('historyIsVisible') === 'true';
 let bool = false;
 
-async function addFriend(event) {
+export async function addFriend(event) {
 	event.preventDefault();
 	const friend = document.getElementById("friend_name_input").value;
 	
@@ -16,7 +17,7 @@ async function addFriend(event) {
 	}
 }
 
-async function accept_friendship(friendshipId) {
+export async function accept_friendship(friendshipId) {
 	try {
 		const data = await fetchAPI('/request/friendship/accept-friend', 'POST', { friendshipId });
 		if (data.success)
@@ -26,7 +27,7 @@ async function accept_friendship(friendshipId) {
 	}
 }
 
-async function delete_friendship(friendshipId) {
+export async function delete_friendship(friendshipId) {
 	try {
 		const data = await fetchAPI('/request/friendship/delete-friend', 'DELETE', { friendshipId });
 		if (data.success)
@@ -36,7 +37,7 @@ async function delete_friendship(friendshipId) {
 	}
 }
 
-async function fetch_user_friendships() {
+export async function fetch_user_friendships() {
 	try {
 		const data = await fetchAPI('/request/friendship/get-user-friendships', 'GET', null, false);
 		if (!data.success) {
@@ -123,7 +124,7 @@ async function fetch_user_friendships() {
 	}
 }
 
-async function fetch_user_games() {
+export async function fetch_user_games() {
 	try {
 		console.log("fetch_user_games");
 		const data = await fetchAPI('/request/game/get-user-games', 'GET', null, false);
@@ -229,7 +230,7 @@ async function fetch_user_games() {
 	}
 }
 
-async function fetch_user_games_big(username) {
+export async function fetch_user_games_big(username) {
 	try {
 		console.log("fetch_user_games");
 		const data = await fetchAPI('/request/game/get-friend-games', 'POST', { username }, null, false);
@@ -343,9 +344,18 @@ async function fetch_user_games_big(username) {
 	}
 }
 
-async function togglePanel(event)
+export async function togglePanel(event)
 {
 	event.preventDefault();
 	fetch_user_friendships();
 	fetch_user_games();
 }
+
+// Make functions available globally for HTML event handlers
+window.addFriend = addFriend;
+window.accept_friendship = accept_friendship;
+window.delete_friendship = delete_friendship;
+window.fetch_user_friendships = fetch_user_friendships;
+window.fetch_user_games = fetch_user_games;
+window.fetch_user_games_big = fetch_user_games_big;
+window.togglePanel = togglePanel;
