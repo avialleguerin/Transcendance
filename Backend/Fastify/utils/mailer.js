@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 import { fastify } from '../server.js';
 
-// Configuration du transporteur avec gestion d'erreurs
+// Email transporter configuration with error handling
 const createTransporter = () => {
 	try {
 		return nodemailer.createTransport({
@@ -10,28 +10,28 @@ const createTransporter = () => {
 			user: process.env.GMAIL_USER,
 			pass: process.env.GMAIL_PASS
 		},
-		// Options de sécurité supplémentaires
+		// Additional security options
 		secure: true,
 		tls: {
 			rejectUnauthorized: false
 		}
 		});
 	} catch (error) {
-		fastify.log.error('Erreur lors de la création du transporteur email:' + error);
+		fastify.log.error('Error creating email transporter:' + error);
 		throw error;
 	}
 };
 
 /**
- * Envoie un e-mail de bienvenue avec mot de passe temporaire.
- * @param {string} to - Adresse email du destinataire
- * @param {string} username - Nom d'utilisateur
- * @param {string} tempPassword - Mot de passe temporaire
+ * Sends welcome email with temporary password.
+ * @param {string} to - Recipient email address
+ * @param {string} username - Username
+ * @param {string} tempPassword - Temporary password
  */
 export default async function sendWelcomeEmail(to, username, tempPassword) {
-	// Vérification des variables d'environnement
+	// Check environment variables
 	if (!process.env.GMAIL_USER || !process.env.GMAIL_PASS) {
-		fastify.log.warn('Variables d\'environnement email non configurées, email non envoyé');
+		fastify.log.warn('Email environment variables not configured, email not sent');
 		return false;
 	}
 
@@ -40,7 +40,7 @@ export default async function sendWelcomeEmail(to, username, tempPassword) {
 	const mailOptions = {
 		from: `"Transcendance Game" <${process.env.GMAIL_USER}>`,
 		to,
-		subject: "🎮 Bienvenue sur Transcendance - Identifiants temporaires",
+		subject: "🎮 Welcome to Transcendance - Temporary Credentials",
 		html: `
 		<!DOCTYPE html>
 		<html>
@@ -58,75 +58,75 @@ export default async function sendWelcomeEmail(to, username, tempPassword) {
 		<body>
 			<div class="container">
 			<div class="header">
-				<h2>🎮 Bienvenue sur Transcendance !</h2>
+				<h2>🎮 Welcome to Transcendance!</h2>
 			</div>
 			<div class="content">
-				<p>Bonjour <strong>${username}</strong>,</p>
+				<p>Hello <strong>${username}</strong>,</p>
 				
-				<p>Votre compte a été créé avec succès via Google Sign-In. Voici vos identifiants de connexion temporaires :</p>
+				<p>Your account has been successfully created via Google Sign-In. Here are your temporary login credentials:</p>
 				
 				<div class="credentials">
-				<h3>📋 Vos identifiants :</h3>
+				<h3>📋 Your credentials:</h3>
 				<ul>
-					<li><strong>Nom d'utilisateur :</strong> ${username}</li>
-					<li><strong>Email :</strong> ${to}</li>
-					<li><strong>Mot de passe temporaire :</strong> <code>${tempPassword}</code></li>
+					<li><strong>Username:</strong> ${username}</li>
+					<li><strong>Email:</strong> ${to}</li>
+					<li><strong>Temporary password:</strong> <code>${tempPassword}</code></li>
 				</ul>
 				</div>
 				
 				<div class="warning">
-				<h4>⚠️ Important :</h4>
-				<p>Pour votre sécurité, nous vous recommandons fortement de :</p>
+				<h4>⚠️ Important:</h4>
+				<p>For your security, we strongly recommend that you:</p>
 				<ul>
-					<li>Vous connecter et changer ce mot de passe temporaire</li>
-					<li>Activer l'authentification à deux facteurs (2FA)</li>
-					<li>Ne pas partager ces identifiants</li>
+					<li>Login and change this temporary password</li>
+					<li>Enable two-factor authentication (2FA)</li>
+					<li>Do not share these credentials</li>
 				</ul>
 				</div>
 				
 				<p style="margin-top: 20px;">
 				<a href="${process.env.FRONTEND_URL || 'https://localhost:8443'}" 
 					style="background: #667eea; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; display: inline-block;">
-					🎮 Accéder à Transcendance
+					🎮 Access Transcendance
 				</a>
 				</p>
 				
 				<p style="margin-top: 30px; color: #666; font-size: 14px;">
-				Cet email a été envoyé automatiquement. Si vous n'avez pas créé de compte, veuillez ignorer ce message.
+				This email was sent automatically. If you did not create an account, please ignore this message.
 				</p>
 			</div>
 			</div>
 		</body>
 		</html>
 		`,
-		// Version texte pour les clients qui ne supportent pas HTML
+		// Text version for clients that don't support HTML
 		text: `
-		Bienvenue ${username} sur Transcendance !
+		Welcome ${username} to Transcendance!
 		
-		Vos identifiants temporaires :
-		- Nom d'utilisateur : ${username}
-		- Email : ${to}
-		- Mot de passe temporaire : ${tempPassword}
+		Your temporary credentials:
+		- Username: ${username}
+		- Email: ${to}
+		- Temporary password: ${tempPassword}
 		
-		Connectez-vous et changez ce mot de passe dès que possible pour votre sécurité.
+		Please login and change this password as soon as possible for your security.
 		
-		Lien : ${process.env.FRONTEND_URL || 'https://localhost:8443'}
+		Link: ${process.env.FRONTEND_URL || 'https://localhost:8443'}
 		`
 	};
 
 	try {
 		const info = await transporter.sendMail(mailOptions);
-		fastify.log.info(`📧 Email de bienvenue envoyé à ${to} : ${info.messageId}`);
+		fastify.log.info(`📧 Welcome email sent to ${to}: ${info.messageId}`);
 		return true;
 	} catch (err) {
-		fastify.log.error(`❌ Erreur lors de l'envoi du mail à ${to} :` + err);
+		fastify.log.error(`❌ Error sending email to ${to}:` + err);
 		return false;
 	}
 }
 
 export function checkEmailConfig() {
 	if (!process.env.GMAIL_USER || !process.env.GMAIL_PASS) {
-		fastify.log.warn('⚠️ Configuration email manquante - Les emails ne seront pas envoyés');
+		fastify.log.warn('⚠️ Email configuration missing - Emails will not be sent');
 		return false;
 	}
 	fastify.log.info('Mail initialized successfully');
