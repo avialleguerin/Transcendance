@@ -17,9 +17,11 @@ import colorLoggerPlugin from './utils/logger.js' // NOTE - bonus: Colorized log
 import websocket from '@fastify/websocket'
 import { checkEmailConfig } from './utils/mailer.js'
 
+const logActive = process.env.LOG_ACTIVE === 'true';
+
 // setting up the server
 export const fastify = Fastify({
-	logger: { // trace - debug - info - warn - error - fatal
+	logger: logActive ?{ // trace - debug - info - warn - error - fatal
 		level: 'debug',
 		transport: {
 			target: 'pino-pretty',
@@ -29,8 +31,8 @@ export const fastify = Fastify({
 				ignore: 'pid,hostname',
 			}
 		}
-	},
-	disableRequestLogging: true
+	} : false,
+	disableRequestLogging: !logActive
 })
 
 // Enregistrer le plugin WebSocket

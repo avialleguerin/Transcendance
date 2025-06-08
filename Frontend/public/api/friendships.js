@@ -1,3 +1,4 @@
+
 let historyIsActive = localStorage.getItem('historyIsVisible') === 'true';
 let bool = false;
 

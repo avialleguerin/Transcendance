@@ -64,4 +64,3 @@ async function fetchAPI(url, method, body = null, showNotification = true, formD
 		throw err;
 	}
 }
-

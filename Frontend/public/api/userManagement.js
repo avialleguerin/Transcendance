@@ -1,25 +1,3 @@
-// async function updateProfileInfo(event) {
-// 	event.preventDefault();
-// 	const newUsername = document.getElementById("change_username").value;
-// 	const newPassword = document.getElementById("change_password").value;
-	
-// 	if (newUsername === "" && newPassword === "")
-// 		return notif("Please fill at least one field !", false);
-	
-// 	try {
-// 		const data = await fetchAPI('/request/user/update-profile', 'PUT', { newUsername, newPassword });
-
-// 		if (data.success) {
-// 			document.getElementById("updateProfileForm").reset();
-// 			fetchProfile();
-// 			console.log("Profile updated successfully, print pp");
-// 		}
-// 	} catch (err) {
-// 		console.log("Failed to update profile");
-// 	}
-// }
-
-
 async function changeProfilePicture(event) {
 	event.preventDefault();
 	const input = document.getElementById('profile_photo_input');

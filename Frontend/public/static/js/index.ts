@@ -5,6 +5,7 @@ import multi_player_game from "./views/multi_player_game.js";
 import tournament from "./views/tournament.js";
 import tournament_game from "./views/tournament_game.js";
 import PlatformView  from "./views/platformer/PlatformView.js";
+// import { log } from "../../utils/logger.js";
 
 // Définition d'interfaces
 interface Route {

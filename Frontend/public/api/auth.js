@@ -1,3 +1,5 @@
+// import { log } from '../utils/logger.js';
+
 async function verify2FA(event) {
 	event.preventDefault();
 	const userId = sessionStorage.getItem("userId");
@@ -11,7 +13,7 @@ async function verify2FA(event) {
 			localStorage.setItem("Player1", data.username);
 			localStorage.setItem("profile_picture", data.profile_picture);
 			connectWebSocket()
-			console.log("✅ 2FA code valid!");
+			console.log("2FA code valid!");
 			history.pushState({}, '', '/Game_menu');
 			import('../static/js/views/Game_menu.js').then(module => {
 				const GameMenu = module.default;
@@ -71,7 +73,7 @@ async function login(event) {
 		} else {
 			notif(data.error, false);
 			document.getElementById("login-password").value = "";
-			console.log(data.error);
+			log.info(data.error);
 		}
 	} catch (err) {
 		console.error("Erreur lors de la connexion :", err);
@@ -418,3 +420,4 @@ async function handleGoogleSignIn(response) {
 window.addEventListener('beforeunload', () => {
 	disconnectWebSocket()
 });
+

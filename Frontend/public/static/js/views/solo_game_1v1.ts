@@ -8,6 +8,7 @@ import { disable_skin_perso_player_first_and_seconde } from "../../../srcs/game/
 import { getPlayer_1_win, getPlayer_2_win } from "../../../srcs/game/gameplay/score.js";
 import { disable_skin_perso_player_first_and_seconde_default } from "../../../srcs/game/gameplay/solo/skin/init_skin_player_default.js";
 import { get_skin_is_init } from "../../../srcs/game/gameplay/solo/skin/init_skin_utils.js";
+// import { log } from '../../../utils/logger.js';
 
 let spacePressed = false;
 let bool = false;
@@ -19,7 +20,7 @@ export default class solo_game extends AbstractView {
 	cooldowns: { [key: string]: boolean };
 	cooldownTimes: { [key: string]: number };
 	boundKeyPressHandler: (event: KeyboardEvent) => void;
-	gameLoop: number | null;
+	gameLoop: ReturnType<typeof setInterval> | null;
 
 	constructor() {
 		const accessToken: string | null = sessionStorage.getItem('accessToken');

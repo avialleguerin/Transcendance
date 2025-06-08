@@ -11,7 +11,7 @@ import { getValue_leave_game, setLeaveGameVar } from "../index.js";
 import { enable_skin_perso_player_solo, disable_skin_perso_player_solo, disable_skin_perso_player_solo_and_save, switch_skin_perso_player1_left, switch_skin_perso_player1_right, switch_skin_perso_player2_left, switch_skin_perso_player2_right } from "../../../srcs/game/gameplay/solo/skin/init_skin_perso.js";
 import { enable_skin_multi, disable_skin_and_save_multi, disable_skin_multi, switch_skin_perso_player1_right_multi, switch_skin_perso_player1_left_multi, switch_skin_perso_player2_left_multi, switch_skin_perso_player2_right_multi, switch_skin_perso_player3_left_multi, switch_skin_perso_player3_right_multi, switch_skin_perso_player4_left_multi, switch_skin_perso_player4_right_multi } from "../../../srcs/game/gameplay/multiplayer/init_skin_perso_multi.js";
 import { get_skin_is_init } from "../../../srcs/game/gameplay/solo/skin/init_skin_utils.js";
-
+// import { log } from '../../../utils/logger.js';
 
 let powerUP_nb = 0;
 let powerUP_nb_multi = 0;

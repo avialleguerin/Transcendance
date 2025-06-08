@@ -2,6 +2,7 @@ import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.
 import AbstractView from "./AbstractView.js";
 import { startTournamentGame } from "../../../srcs/game/gameplay/babylon.js";
 import { getPlayer_1_win } from "../../../srcs/game/gameplay/score.js";
+// import { log } from '../../../utils/logger.js';
 let count = 0;
 
 let tournamentStarted = false;
@@ -12,7 +13,7 @@ let secondeChance = false; // Variable pour la seconde chance
 
 
 export default class extends AbstractView {
-	private gameLoop: number;  // NOTE - or 'any'
+	private gameLoop: ReturnType<typeof setInterval> | null;
     constructor() {
         super();
         this.setTitle("Tournament");

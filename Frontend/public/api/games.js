@@ -1,5 +1,3 @@
-
-
 async function create_1v1_game(event, player1, player2) {
 	event.preventDefault();
 

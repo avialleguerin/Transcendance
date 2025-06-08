@@ -57,3 +57,11 @@ async function colorLoggerPlugin(fastify) {
 export default fp(colorLoggerPlugin, {
     name: 'color-logger'
 })
+
+
+export async function envLogConfig(request, reply) {
+    return {
+        LOG_ACTIVE: process.env.LOG_ACTIVE === 'true',
+        LOG_LEVEL: process.env.LOG_LEVEL || 'info'
+    };
+}

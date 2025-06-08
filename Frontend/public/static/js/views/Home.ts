@@ -1,4 +1,5 @@
 import AbstractView from "./AbstractView.js";
+// import { log } from '../../../utils/logger.js';
 // import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.js";
 // import Game_menu from "./Game_menu.js";
 

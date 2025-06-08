@@ -5,6 +5,8 @@ import { getUserFriendships, addFriend, acceptFriend, deleteFriend } from '../co
 import { getAllUsers, getDeletedUsers, deleteUser, forceDeleteUser, getAllGames, createGame, deleteGame, getAllPlatformers, addPlatformer, deletePlatformer, getAllFriendships, addFriendship, deleteFriendship } from '../controllers/adminController.js';
 import { getSQLiteCreds } from '../utils/vault.js'
 import { refreshInfos } from '../controllers/utils.js';
+import { env } from 'process';
+import { envLogConfig } from '../utils/logger.js';
 
 /**
  * Encapsulates the routes
@@ -97,8 +99,6 @@ export default async function routes (fastify) {
 	fastify.post('/game/get-friend-games', getUserGames)
 	fastify.post('/game/create-1v1-game', create1v1Game)
 	fastify.post('/game/create-2v2-game', create2v2Game)
-
-
 	//platformerController
 	fastify.get('/platformer/get-user-platformer', getUserPlatformer)
 	fastify.post('/platformer/create-platformer', createPlatformer)
@@ -106,4 +106,5 @@ export default async function routes (fastify) {
 	//* TOKENS / OTHER 
 	//// fastify.post('/refresh-token', refreshAccessToken)
 	fastify.get('/db-credentials', getSQLiteCreds)
+	fastify.get('/config/logger', envLogConfig)
 }
