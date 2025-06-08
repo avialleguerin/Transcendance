@@ -30,7 +30,7 @@ export function initDb() {
 	db.prepare(CREATE_GAMES_TABLE).run();
 	db.prepare(CREATE_FRIENDSHIPS_TABLE).run();
 	db.prepare(CREATE_PLATFORMERS_TABLE).run();
-	fastify.log.info("Bases de données initialisée");
+	fastify.log.info("Database initialized successfully");
 	
 }
 
