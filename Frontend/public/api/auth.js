@@ -302,9 +302,8 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 
-//* GOOGLE SIGN-IN
-// Fonction pour initialiser Google Sign In avec gestion d'erreur
-let tokenClient; // déclaration globale
+//* ==== GOOGLE SIGN-IN ==== *//
+let tokenClient;
 
 async function initGoogleSignIn() {
 	console.log("URL actuelle:", window.location.origin);
@@ -312,7 +311,6 @@ async function initGoogleSignIn() {
 	if (typeof google !== 'undefined' && google.accounts?.oauth2) {
 		try {
 			const config = await fetchAPI('/request/user/google-config', 'GET');
-            // const config = await configResponse.json();
             
             if (!config.success || !config.client_id) {
                 console.error("❌ Impossible de récupérer la configuration Google");
@@ -337,18 +335,13 @@ async function initGoogleSignIn() {
 async function handleGoogleSignIn(response) {
 	try {
 		const accessToken = response.access_token;
-		
-		// Envoie du token à ton serveur pour vérification et login
-		const data = await fetchAPI('/request/user/google-signin', 'POST', {
-			access_token: accessToken
-		});
+		const data = await fetchAPI('/request/user/google-signin', 'POST', { access_token: accessToken });
 
 		if (data.success) {
 			sessionStorage.setItem("accessToken", data.accessToken);
 			localStorage.setItem("Player1", data.user.username);
-			if (data.user.profile_picture) {
+			if (data.user.profile_picture)
 				localStorage.setItem("profile_picture", data.user.profile_picture);
-			}
 			notif("Connexion Google réussie !", true);
 
 			// Redirection vers le menu du jeu

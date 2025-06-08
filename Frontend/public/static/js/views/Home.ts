@@ -238,48 +238,13 @@ export default class Home extends AbstractView {
 `;}
 
 	createAccount() {
-
-		console.log("createAccount");
-
+		//*===== Form Management =====*/
 		const loginForm = document.getElementById("loginform_id");
 		const createAccountForm = document.getElementById("create_account_id");
 		const createAccountButton = document.getElementById("create-Account");
 		const alreadyHaveAccountButton = document.getElementById("alreadyHaveAccountButton_id");
 		const doubleAuthForm = document.getElementById("doubleAuthForm");
 		const backButton = document.getElementById("back");
-		
-		// Gestion des CGU
-		const showCguLink = document.getElementById("show-cgu");
-		const cguModal = document.getElementById("cgu-modal");
-		const cguBackButton = document.getElementById("cgu-back-button");
-		
-		// Afficher les CGU quand on clique sur le lien
-		showCguLink?.addEventListener("click", (e) => {
-			e.preventDefault();
-			cguModal?.classList.add("active");
-		});
-		
-		// Cacher les CGU quand on clique sur "Retour"
-		cguBackButton?.addEventListener("click", () => {
-			cguModal?.classList.remove("active");
-		});
-
-		// Gestion de la Politique de Confidentialité
-        const showPrivacyPolicyLink = document.getElementById("show-privacy-policy");
-        const privacyPolicyModal = document.getElementById("privacy-policy-modal");
-        const privacyPolicyBackButton = document.getElementById("privacy-policy-back-button");
-
-        // Afficher la Politique de Confidentialité quand on clique sur le lien
-        showPrivacyPolicyLink?.addEventListener("click", (e) => {
-            e.preventDefault();
-            privacyPolicyModal?.classList.add("active");
-        });
-
-        // Cacher la Politique de Confidentialité quand on clique sur "Retour"
-        privacyPolicyBackButton?.addEventListener("click", () => {
-            privacyPolicyModal?.classList.remove("active");
-        });
-		
 
 		createAccountButton.addEventListener("click", () => {
 			console.log("createAccountForm");
@@ -296,8 +261,22 @@ export default class Home extends AbstractView {
 			(document.getElementById("registerForm") as HTMLFormElement).reset();
 		});
 
-		//* GOOGLE SIGN IN
-		// Ajouter l'événement pour le bouton Google
+		//*===== CGU and Privacy Policy Management =====*/
+		const showCguLink = document.getElementById("show-cgu");
+		const cguModal = document.getElementById("cgu-modal");
+		const cguBackButton = document.getElementById("cgu-back-button");
+		
+		showCguLink?.addEventListener("click", (e) => { e.preventDefault(); cguModal?.classList.add("active"); });
+		cguBackButton?.addEventListener("click", () => { cguModal?.classList.remove("active"); });
+
+        const showPrivacyPolicyLink = document.getElementById("show-privacy-policy");
+        const privacyPolicyModal = document.getElementById("privacy-policy-modal");
+        const privacyPolicyBackButton = document.getElementById("privacy-policy-back-button");
+
+        showPrivacyPolicyLink?.addEventListener("click", (e) => { e.preventDefault(); privacyPolicyModal?.classList.add("active"); });
+        privacyPolicyBackButton?.addEventListener("click", () => { privacyPolicyModal?.classList.remove("active"); });
+
+		//*==== Google Sign-In =====*/
 		const googleSignInBtn = document.getElementById("google-signin-btn");
 		const googleSignUpBtn = document.getElementById("google-signup-btn");
 
@@ -312,11 +291,6 @@ export default class Home extends AbstractView {
 
 		googleSignInBtn?.addEventListener("click", handleGoogleAuth);
 		googleSignUpBtn?.addEventListener("click", handleGoogleAuth);
-
-		// Initialiser Google Sign In
-		window.addEventListener("load", () => {
-			initGoogleSignIn();
-		});
-
+		window.addEventListener("load", () => { initGoogleSignIn(); });
 	}
 }

@@ -787,10 +787,7 @@ export default class Game_menu extends AbstractView {
 
 		// const back_to_menu_view_tournament = document.getElementById('back_to_menu_view_tournament');
 
-
-
-
-		// Gestion des CGU
+		//*==== CGU & Privacy Policy Modals ====*/
 		const showCguLink = document.getElementById("show-cgu");
 		const cguModal = document.getElementById("cgu-modal");
 		const cguBackButton = document.getElementById("cgu-back-button");
@@ -875,7 +872,7 @@ export default class Game_menu extends AbstractView {
 		console.log('skin_id', skin);
 
 		if (skin == false) {
-			console.log('skin_idiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii');
+			console.log('skin_id');
 			skin_id.classList.add('hidden');
 			skin_id_multi.classList.add('hidden');
 		}
