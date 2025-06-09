@@ -74,7 +74,7 @@ async function fetch_user_friendships() {
 							</div>
 						</div>
 					</div>
-					<button class="friend-btn delete-btn" onclick="delete_friendship(${friendship.friendshipId})">
+					<button id="btn_delete_friend" class="friend-btn delete-btn" onclick="delete_friendship(${friendship.friendshipId})">
 						<img src="/srcs/game/assets/image/trash.svg" alt="Delete Friend" class="delete-icon">
 					</button>
 				</div>
@@ -88,6 +88,7 @@ async function fetch_user_friendships() {
 		const exit_game_history_btn = document.getElementById('exit_game_history_btn');
 
 		const friendPhotos = document.querySelectorAll('.friend_photo');
+		const friendDeleteBtns = document.getElementById('btn_delete_friend');
 
 		friendPhotos.forEach(photo => {
 			photo.onclick = function() {
@@ -99,6 +100,8 @@ async function fetch_user_friendships() {
 					localStorage.setItem('historyIsVisible', 'true');
 					historyIsActive = true;
 					bool = true;
+					localStorage.setItem('historyVisible', true);
+					friendDeleteBtns.style.display = 'none';
 				}
 				else if (bool === true && gameHistory.classList.contains('active')) {
 					console.log("Closing game history view");
@@ -107,6 +110,8 @@ async function fetch_user_friendships() {
 					localStorage.setItem('historyIsVisible', 'false');
 					historyIsActive = false;
 					bool = false;
+					friendDeleteBtns.style.display = 'block';
+					localStorage.setItem('historyVisible', false);
 				}
 			};
 		});

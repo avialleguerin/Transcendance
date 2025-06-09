@@ -1663,7 +1663,7 @@ export default class Game_menu extends AbstractView {
 		const panel_option_navbar = document.getElementById('panel_option_navbar');
 		const option_btn_remove = document.getElementById('option_btn_remove');
 		const deconnect_btn_navBar = document.getElementById('deconnect_btn_navBar');
-		const gameHistory = document.getElementById('game_history');
+
 		option_btn_navBar.addEventListener('click', () => {
 			console.log('Option deconnect clicked');
 			panel_option_navbar.classList.remove('remove'); // retire l'animation de fermeture
@@ -1675,9 +1675,6 @@ export default class Game_menu extends AbstractView {
 			console.log('Option deconnect back clicked');
 			// panel_option_navbar.classList.remove('active'); // retire l'animation d’ouverture
 			panel_option_navbar.classList.add('remove');
-			if (localStorage.getItem("historyIsVisible") === "true" && gameHistory.classList.contains('active')) {
-				gameHistory.classList.remove('active');
-			}
 		});
 
 		deconnect_btn_navBar.addEventListener('click', () => {
