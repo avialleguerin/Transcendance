@@ -35,23 +35,21 @@
 }
 
 
-.register-form {
+.register-form
+{
 	position: absolute;
 	top: 50%;
 	left: 20%;
-
 	transform: translateY(-50%);
 	width: 30%;
 	height: 55%;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-
 	background-image: url("../../../srcs/game/assets/image/homeV2.svg");
 	background-size: 100% auto;
 	background-repeat: no-repeat;
 	background-position: center;
-
 	display: none;
 }
 
@@ -62,7 +60,7 @@
 	font-family: 'Black Ops One', sans-serif;
 	color: rgb(255, 255, 255);
 	position: absolute;
-	top: 5%;
+	top: 3%;
 	left: 50%;
 	transform: translateX(-50%);
 
@@ -95,6 +93,7 @@
 	align-items: center; /* Alignement vertical */
 	gap: 10px; /* Espacement entre le label et l'input */
 	width: 100%;
+	margin-bottom: 10px;
 }
 
 .input-container label {

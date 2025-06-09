@@ -402,7 +402,6 @@ p {
     background-color: transparent;
     color: rgb(255, 255, 255);
     border: none;
-    border-radius: 10px;
     cursor: pointer;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     transition: all 0.3sease;
@@ -412,12 +411,16 @@ p {
     background-repeat: no-repeat;
     /* line-height: 3vh; */
     width: 170px;
-    height: 112px;
+    height: 95px;
     display: flex;
     justify-content: center;
     align-items: center;
-    bottom: -4%;
+    bottom: 0%;
+    background-color: #3a3a3a;
+}
 
+.leave_game_2:hover {
+    color: gray;
 }
 
 .nav-link {

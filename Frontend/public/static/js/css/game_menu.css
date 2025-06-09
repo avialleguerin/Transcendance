@@ -1259,7 +1259,7 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
 	flex-direction: row;
 	justify-content: center;
 	align-items: center;
-	gap: 20px;
+	gap: 10px;
 	margin-top: 30px;
 	background-image: none;
 	padding: 0;
@@ -1267,8 +1267,8 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
 
 
 .select_parametres .btn {
-	padding: 20px 40px;
-	font-size: 0.9vw;
+	padding: 0px 0px;
+	font-size: 0.7vw;
 	font-weight: bold;
 	transform: translateY(-50%);
 	background-color: transparent;
@@ -1282,11 +1282,15 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
 	background-position: center;
 	background-repeat: no-repeat;
 	line-height: 3vh;
-	width: 130px;
+	width: 134px;
 	height: 100px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+}
+
+.select_parametres .btn:hover {
+	color: gray;
 }
 
 .option {
@@ -1851,6 +1855,10 @@ input[type="file"] {
 	justify-content: center;
 	align-items: center;
 	text-decoration: none;
+}
+
+.btn_tournament:hover {
+	color: gray;
 }
 
 .btn_tournament a {
@@ -2830,7 +2838,6 @@ to {
 	flex-direction: column;
 	align-items: center;
 	justify-content: flex-start;
-	gap: 20px;
 	padding: 30px;
 	width: 80%;
 	max-width: 600px;
@@ -2854,7 +2861,6 @@ to {
 	text-align: center;
 	font-size: 1vw;
 	font-family: 'Black Ops One', sans-serif;
-	margin-bottom: 30px;
 }
 
 /* .valider_opponent_btn {
@@ -2925,7 +2931,7 @@ to {
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 10px;
 }
 
 .choose_your_opponent_multi_content, .choose_your_opponent_1v1_content p, .choose_your_opponent_platformer_content p {
@@ -2983,7 +2989,7 @@ to {
 	justify-content: center;
 	align-items: center;
 	position: absolute;
-	top: 28%;
+	top: 24%;
 	left: 50%;
 	transform: translate(-50%, -20%);
 }

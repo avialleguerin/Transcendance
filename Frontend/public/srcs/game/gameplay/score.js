@@ -113,24 +113,24 @@ export function updateScore(side)
 	}
 	if (soloGameStart)
 	{
-		if (scoreLeft === 5 || scoreRight === 5) {
-			SetIsGameFinished(true);
-			if (scoreLeft === 5)
-			{
-				isPlayer1_win = true;
-				isPlayer2_win = false;
-			}
-			else
-			{
-				isPlayer1_win = false;
-				isPlayer2_win = true;
-			}
-			handleViewTransitions('winner', true);
-			if (!skinIsInit)
-				enable_skin_perso_player_first_and_second_default();
-			else
-				enable_skin_perso_player_first_and_second();
-		}
+		// if (scoreLeft === 5 || scoreRight === 5) {
+		// 	SetIsGameFinished(true);
+		// 	if (scoreLeft === 5)
+		// 	{
+		// 		isPlayer1_win = true;
+		// 		isPlayer2_win = false;
+		// 	}
+		// 	else
+		// 	{
+		// 		isPlayer1_win = false;
+		// 		isPlayer2_win = true;
+		// 	}
+		// 	handleViewTransitions('winner', true);
+		// 	if (!skinIsInit)
+		// 		enable_skin_perso_player_first_and_second_default();
+		// 	else
+		// 		enable_skin_perso_player_first_and_second();
+		// }
 	}
 	else if (multi_player_game)
 	{
