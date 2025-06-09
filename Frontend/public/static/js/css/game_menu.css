@@ -505,6 +505,10 @@
 	align-items: center; /* Centre verticalement */
 }
 
+.btn_back:hover {
+	color: gray;
+}
+
 
 /****************************************************************/
 /*************CHOISI TON SKIN GAME SOLO**************************/

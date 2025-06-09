@@ -390,20 +390,20 @@ export function UpdatePlayerPose(player_1, player_2) {
 
 	if (is_Inverse_team2 == false)
 	{
-		if (keys["i"] && player_2.position.x > minX) {
+		if (keys["ArrowUp"] && player_2.position.x > minX) {
 			player_2.position.x -= paddleSpeed;
 		}
-		if (keys["k"] && player_2.position.x < maxX) {
+		if (keys["ArrowDown"] && player_2.position.x < maxX) {
 			player_2.position.x += paddleSpeed;
 		}
 	}
 
 	if (is_Inverse_team2 == true)
 	{
-		if (keys["i"] && player_2.position.x < maxX) {
+		if (keys["ArrowUp"] && player_2.position.x < maxX) {
 			player_2.position.x += paddleSpeed;
 		}
-		if (keys["k"] && player_2.position.x > minX) {
+		if (keys["ArrowDown"] && player_2.position.x > minX) {
 			player_2.position.x -= paddleSpeed;
 		}
 	}
