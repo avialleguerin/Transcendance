@@ -109,6 +109,34 @@ export default class EndGameSecondeGame {
 		}
 	}
 
+	create_platformer() {
+
+		const player1 = localStorage.getItem("Player1");
+		const player2 = localStorage.getItem("Player2");
+		const score_player1 = localStorage.getItem("score_player1");
+		const score_player2 = localStorage.getItem("score_player2");
+	
+		if (!player1 || !player2) {
+			notif("Please select two players", false);
+			return ;
+		}
+	
+		const response = fetch('/request/platformer/create-platformer', {
+			method: 'POST',
+			headers: { 
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ player1, player2, score_player1, score_player2 }),
+			credentials: 'include',
+		});
+		const data = response.json();
+		if (!data.success)
+			notif(data.error, false);
+		localStorage.removeItem("Player2");
+		localStorage.removeItem("score_player1");
+		localStorage.removeItem("score_player2");
+	};
+
 	handleSelect()
 	{
 		console.log("Game Finished");
@@ -120,15 +148,22 @@ export default class EndGameSecondeGame {
 
 			if (this.Score > this.EndGame_FirstGame.Score)
 			{
-				this.WinnerScore = this.Score;
+				this.WinnerScore = this.Score; // Player 2 wins
+				localStorage.setItem("score_player1", this.Score);
+				console.log("this.EndGame_FirstGame.Score =", this.EndGame_FirstGame.Score);
+				localStorage.setItem("score_player2", this.EndGame_FirstGame.Score);
 			}
 			else
 			{
-				this.WinnerScore = this.EndGame_FirstGame.Score;
+				this.WinnerScore = this.EndGame_FirstGame.Score; // Player 1 wins
+				localStorage.setItem("score_player1", this.EndGame_FirstGame.Score);
+				localStorage.setItem("score_player2", this.Score);
 			}
 			this.MapMenu.nb_game_started++;
-			// localStorage.setItem("score_user1", this.WinnerScore);
-			// localStorage.setItem("score_user1", this.);
+			// if (typeof window.create_platformer === 'function') {
+			// 	window.create_platformer();
+			// }
+			this.create_platformer();
 			this.historyGame.saveGameIfNeeded(this.MapMenu.nb_game_started, this.winner, this.WinnerScore, this.gameCanvas.timer);
 			if (this.player && typeof this.player.reset_Game === "function") {
 				this.player.reset_Game();
@@ -192,8 +227,8 @@ export default class EndGameSecondeGame {
 		this.time_endGame = "Time : " + this.gameCanvas.timer + " seconds";
 		this.Score = (300 - this.gameCanvas.timer) + this.gameCanvas.nb_coin * 100;
 		this.ScoreText = this.Score;
-		this.option5 = "Player 1 has finished the game with : " + this.EndGame_FirstGame.Score + " score";
-		this.option6 = "Player 2 has finished the game with : " + this.Score + " score";
+		this.option5 = `${localStorage.getItem("Player1")} has finished the game with : ` + this.EndGame_FirstGame.Score + " score";
+		this.option6 = `${localStorage.getItem("Player2")} has finished the game with : ` + this.Score + " score";
 
 		if (this.EndGame_FirstGame.Score > this.Score)
 		{

@@ -3,28 +3,28 @@ import usersModel from '../models/usersModel.js'
 import { hashPassword, verifyPassword } from '../utils/hashUtils.js'
 import { redisModel } from '../models/redisModel.js'
 import { getUserFromToken } from './utils.js'
-import friendshipsModel from '../models/friendshipsModel.js'; //NOTE - new
-import gamesModel from '../models/gamesModel.js'; //NOTE - new
+import friendshipsModel from '../models/friendshipsModel.js';
+import sendWelcomeEmail from '../utils/mailer.js' //NOTE - new
+import gamesModel from '../models/gamesModel.js';
 import speakeasy from 'speakeasy'
 import qrcode from 'qrcode'
 import fs from 'fs/promises'
 import path from 'path'
-// import { get } from 'http'
 
 const uploadDir = '/usr/share/nginx/uploads'
 const SECRET_LENGHT = 30
 
 export async function googleConfig(request, reply) {
 	try {
-		fastify.log.debug("ID du client Google :", process.env.GOOGLE_CLIENT_ID);
-        return {
-            success: true,
-            client_id: process.env.GOOGLE_CLIENT_ID
-        };
-    } catch (err) {
-        console.error("❌ Erreur lors de la récupération de la config Google :", err);
-        reply.code(500).send({ error: 'Erreur serveur' });
-    }
+		fastify.log.debug("ID du client Google :" + process.env.GOOGLE_CLIENT_ID);
+		return {
+			success: true,
+			client_id: process.env.GOOGLE_CLIENT_ID
+		};
+	} catch (err) {
+		fastify.log.error("Error Google Config :" + err);
+		reply.code(500).send({ error: 'Erreur serveur' });
+	}
 }
 
 export async function googleSignIn(request, reply) {
@@ -51,9 +51,11 @@ export async function googleSignIn(request, reply) {
 		if (!googleUser.id)
 			return reply.code(401).send({ success: false, error: 'Invalid Google user data'});
 		
-		const { id: googleId, name, picture: profilePictureUrl } = googleUser;
+		const { id: googleId, name, picture: profilePictureUrl, email } = googleUser;
 		
 		let user = usersModel.getUserByGoogleId(googleId);
+		let isNewUser = false;
+        let tempPassword = null;
 		if (!user || user.anonymized_at) {
 
 			if (user && user.anonymized_at)
@@ -63,6 +65,10 @@ export async function googleSignIn(request, reply) {
 			const username = name.replace(/\s+/g, '').toLowerCase().substring(0,10);
 			const randomPassword = Math.random().toString(36).substring(2, 17);
 			const hashedPassword = await hashPassword(randomPassword);
+
+			// Stocker le mot de passe temporaire pour l'email
+			tempPassword = randomPassword;
+			isNewUser = true;
 			
 			let profilePicture = "default-profile-picture.png";
 			if (profilePictureUrl) {
@@ -89,7 +95,7 @@ export async function googleSignIn(request, reply) {
 						fastify.log.warn('Failed to download Google profile picture');
 					}
 				} catch (error) {
-					fastify.log.error('Error downloading Google profile picture:', error);
+					fastify.log.error('Error downloading Google profile picture:' + error);
 				}
 			}
 			
@@ -99,8 +105,18 @@ export async function googleSignIn(request, reply) {
 		const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, { expiresIn: '15m' });
 		const refreshToken = fastify.jwt.sign({ userId: user.userId }, { expiresIn: '7d' });
 		
-		usersModel.updateLastConnection(user.userId);
-		
+		usersModel.updateLastActivity(user.userId);
+
+		if (isNewUser && tempPassword && email) {
+            try {
+				fastify.log.info(`Envoi de l'email de bienvenue à ${email} pour l'utilisateur ${user.username}`);
+                const emailSent = await sendWelcomeEmail(email, user.username, tempPassword);
+                if (emailSent)
+                    fastify.log.info(`📧 Email de bienvenue envoyé à ${email} pour l'utilisateur ${user.username}`);
+            } catch (emailError) {
+                fastify.log.error('Erreur lors de l\'envoi de l\'email de bienvenue:' + emailError);
+            }
+        }
 		return reply.setCookie('refreshToken', refreshToken, {
 				path: '/',
 				httpOnly: true,
@@ -110,7 +126,7 @@ export async function googleSignIn(request, reply) {
 			}).code(200).send({ success: true, message: 'Google Sign-In successful', connection_status: "connected", user: user, accessToken: accessToken });
 			
 	} catch (error) {
-		fastify.log.error('Google Sign-In error:', error);
+		fastify.log.error('Google Sign-In error:' + error);
 		return reply.code(500).send({ success: false, error: 'Google Sign-In failed' });
 	}
 }
@@ -176,21 +192,16 @@ export async function login(request, reply) {
 		fastify.log.info("username : " + username)
 		const user = usersModel.getUserByUsername(username)
 		
-		// Vérifier si l'utilisateur existe
-		if (!user) {
+		if (!user)
 			return reply.code(401).send({ success: false, error: 'Invalid credentials' })
-		}
 		
-		// Vérifier si l'utilisateur a été anonymisé
 		if (user.anonymized_at) {
 			fastify.log.warn(`Tentative de connexion d'un utilisateur anonymisé: ${username}`)
 			return reply.code(401).send({ success: false, error: 'This account has been deleted' })
 		}
 		
-		// Vérifier le mot de passe
-		if (!await verifyPassword(user.password, password)) {
+		if (!await verifyPassword(user.password, password))
 			return reply.code(401).send({ success: false, error: 'Invalid credentials' })
-		}
 		
 		if (user.doubleAuth_status)
 			return reply.code(200).send({success: true, connection_status: "partially_connected", message: 'Double authentication required', user: user})
@@ -200,7 +211,7 @@ export async function login(request, reply) {
 		
 		if (!accessToken || !refreshToken)
 			return reply.code(500).send({ error: 'Internal Server Error' })
-		usersModel.updateLastConnection(user.userId)
+		usersModel.updateLastActivity(user.userId)
 		usersModel.updateOnlineStatus(user.userId, 1)
 		reply
 		.setCookie('refreshToken', refreshToken, {
@@ -233,18 +244,11 @@ export async function login1v1(request, reply) {
 		const player2 = usersModel.getUserByUsername(username)
 		if (!player2 || !await verifyPassword(player2.password, password))
 			return reply.code(401).send({ success: false, error: 'Invalid credentials' })
-		
-		
-		// Vérifier si l'adversaire a été anonymisé
-		if (player2.anonymized_at) {
+		if (player2.anonymized_at)
 			return reply.code(401).send({ success: false, error: 'This account has been deleted' })
-		}
-		
-		// Vérifier le mot de passe
-		if (!await verifyPassword(player2.password, password)) {
+		if (!await verifyPassword(player2.password, password))
 			return reply.code(401).send({ success: false, error: 'Invalid credentials' })
-		}
-		usersModel.updateLastConnection(player2.userId)
+		usersModel.updateLastActivity(player2.userId)
 		reply.code(200).send({ success: true, message: 'Opponent logged in', user: user, player2: player2, accessToken: accessToken })
 	} catch (err) {
 		return reply.code(500).send({ error: err.message })
@@ -272,9 +276,9 @@ export async function login2v2(request, reply) {
 			return reply.code(401).send({ success: false, error: 'Player 3: Invalid credentials' })
 		if (!player4 || !await verifyPassword(player4.password, password4))
 			return reply.code(401).send({ success: false, error: 'Player 4: Invalid credentials' })
-		usersModel.updateLastConnection(player2.userId)
-		usersModel.updateLastConnection(player3.userId)
-		usersModel.updateLastConnection(player4.userId)
+		usersModel.updateLastActivity(player2.userId)
+		usersModel.updateLastActivity(player3.userId)
+		usersModel.updateLastActivity(player4.userId)
 		reply.code(200).send({ success: true, message: 'Opponents logged in', player1: user, player2: player2, player3: player3, player4: player4, accessToken: accessToken })
 	} catch (err) {
 		return reply.code(500).send({ error: err.message })
@@ -282,7 +286,6 @@ export async function login2v2(request, reply) {
 }
 
 export async function logout(request, reply) {
-	// const { username } = request.body
 	const accessToken = request.headers.authorization?.split(' ')[1]
 	const { refreshToken } = request.cookies
 	if (!accessToken || accessToken === "undefined")
@@ -300,8 +303,6 @@ export async function logout(request, reply) {
 			redisModel.addToBlacklist(refreshToken, expiresIn)
 		reply.clearCookie('refreshToken', { path: '/' })
 	}
-	// const user = usersModel.getUserByUsername(username)
-	// usersModel.updateOnlineStatus(user.userId, 0)
 	reply.code(200).send({ success: true, message: 'Logged out' })
 }
 
@@ -429,7 +430,7 @@ export async function changeProfilePicture(request, reply) {
 			success: true,
 			accessToken: accessToken,
 			message: 'Profile picture updated successfully!',
-			path: `/uploads/${filename}`
+			profile_picture: `uploads/${filename}`
 		});
 	} catch (err) {
 		fastify.log.error("❌ Error uploading new profile picture :", err);
@@ -479,13 +480,11 @@ export async function deleteAccount(request, reply) {
 				fastify.log.error(`❌ Error deleting old profile picture: ${deleteErr.message}`);
 			}
 		}
-		// const info = usersModel.delete(user.userId)
-		const info = usersModel.anonymizeUser(user.userId) // Anonymiser l'utilisateur au lieu de le supprimer complètement // Cela préserve les références dans les parties
+		const info = usersModel.anonymizeUser(user.userId)
 			
 			
 		if (info.changes === 0)
 			return reply.code(404).send({ error: "User not found" })
-		// return reply.send({ success: true, message: "User deleted successfully"})
 		console.log(`🔒 User ${user.username} (ID: ${user.userId}) has been anonymized`)
 		return reply.send({ success: true, message: "Account anonymized successfully"})
 	} catch (err) {
@@ -514,7 +513,7 @@ export async function verifyDoubleAuth(request, reply) {
 			const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, { expiresIn: '15m' })
 			const refreshToken = fastify.jwt.sign({ userId: user.userId }, { expiresIn: '7d' })
 			usersModel.updateDoubleAuth_status(user.userId, 1)
-			usersModel.updateLastConnection(user.userId)
+			usersModel.updateLastActivity(user.userId)
 			reply
 			.setCookie('refreshToken', refreshToken, {
 				path: '/',
@@ -582,29 +581,9 @@ export async function generateDoubleAuth(userId) {
 	return data
 }
 
-export async function refreshInfos(request, reply) {
-
-	try {
-		const infos = await getUserFromToken(request, reply)
-		if (!infos)
-			return reply.code(401).send({ success: false, error: 'Unauthorized' })
-		const user = infos.user
-		const accessToken = infos.accessToken
-		if (!user)
-			return reply.code(401).send({ success: false , error: 'User not found' })
-		if (!user.doubleAuth_status && user.doubleAuth_secret)
-			usersModel.updateDoubleAuth_secret(user.userId, null)
-		return reply.code(200).send({ success: true, user: user, deleted_account: user.deleted_at , accessToken: accessToken, message: 'User infos refreshed' }) //REVIEW - Security of envoi du user en entier
-	} catch (err) {
-		return reply.code(500).send({ error: err.message })
-	}
-}
-
-
-
 export async function exportUserData(request, reply) {
 	  try {
-		const infos = await getUserFromToken(request, reply)
+		const infos = await getUserFromToken(request)
 		if (!infos)
 			return reply.code(401).send({ success: false, error: 'Unauthorized' })
 		const user = infos.user
@@ -643,7 +622,7 @@ export async function exportUserData(request, reply) {
 
 export async function anonymizeUser(request, reply) {
 	try {
-		const infos = await getUserFromToken(request, reply)
+		const infos = await getUserFromToken(request)
 		if (!infos)
 			return reply.code(401).send({ success: false, error: 'Unauthorized' })
 		const user = infos.user

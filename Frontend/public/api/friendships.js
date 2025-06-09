@@ -1,7 +1,4 @@
 let historyIsActive = localStorage.getItem('historyIsVisible') === 'true';
-
-
-
 let bool = false;
 
 async function addFriend(event) {
@@ -11,56 +8,32 @@ async function addFriend(event) {
 	try {
 		const data = await fetchAPI('/request/friendship/add-friend', 'POST', { friend });
 		if (data.success)
-			document.getElementById("code_validation_id").classList.remove('active');
+			fetch_user_friendships();
+		document.getElementById("friend_name_input").value = "";
 	} catch (err) {
-		console.log("Failed to add friend");
+		notif("Failed to add '" + friend + "' as a friend", false);
 	}
-	document.getElementById("friend_name_input").value = "";
-	fetch_user_friendships();
 }
 
 async function accept_friendship(friendshipId) {
 	try {
 		const data = await fetchAPI('/request/friendship/accept-friend', 'POST', { friendshipId });
-		if (data.success) {
-			notif("Friendship status updated", true);
+		if (data.success)
 			fetch_user_friendships();
-		} else {
-			notif(data.error, false);
-		}
 	} catch (err) {
-		console.log("Failed to accept friendship");
+		notif("Failed to accept this friend", false);
 	}
 }
 
 async function delete_friendship(friendshipId) {
 	try {
 		const data = await fetchAPI('/request/friendship/delete-friend', 'DELETE', { friendshipId });
-		if (data.success) {
-			notif("Friendship status updated", true);
+		if (data.success)
 			fetch_user_friendships();
-		} else {
-			notif(data.error, false);
-		}
 	} catch (err) {
-		console.log("Failed to accept friendship");
+		notif("Failed to accept this friend", false);
 	}
 }
-
-// async function reject_friendship(friendshipId) {
-// 	try {
-// 		const data = await fetchAPI('/request/friendship/reject-friendship', 'POST', { friendshipId });
-// 		if (data.success) {
-// 			notif("Friendship accepted", true);
-// 			fetch_user_friendships();
-// 		} else {
-// 			notif(data.error, false);
-// 		}
-// 	} catch (err) {
-// 		console.log("Failed to accept friendship");
-// 	}
-// }
-
 
 async function fetch_user_friendships() {
 	try {
@@ -77,11 +50,9 @@ async function fetch_user_friendships() {
 		const pending = friendships.filter(f => f.status === 'pending');
 
 		const renderFriend = (friendship, showActions) => {
-			// Déterminer le statut en fonction des données de l'API
 			let statusClass = `${friendship.friendOnlineStatus ? 'friend_online_status status-online' : 'friend_online_status status-offline'}`;
 			let statusTitle = `${friendship.friendOnlineStatus ? 'Online' : 'Offline'}`;
 			let friendshipProfilePicture = friendship.status === 'accepted' ? friendship.friendProfilePicture : 'default-profile-picture.png'; // Fallback to a default picture if none is provided
-			
 			return `
 				<div class="friend">
 					<div class="friend-info">
@@ -118,10 +89,8 @@ async function fetch_user_friendships() {
 
 		const friendPhotos = document.querySelectorAll('.friend_photo');
 
-		// Only set up click handlers if history toggle is allowed
 		friendPhotos.forEach(photo => {
 			photo.onclick = function() {
-				// Check if history is NOT already visible
 				if (!gameHistory.classList.contains('active')) {
 					console.log("Opening game history view");
 					fetch_user_games_big(this.nextElementSibling.querySelector('.friend_name').textContent);
@@ -165,12 +134,10 @@ async function fetch_user_games() {
 		const userId = data.user.userId;
 		if (games && games.length > 0) {
 			document.getElementById('games-table').innerHTML = games.map(game => {
-				// Calcul initial du score
 				let dispScoreLeft = game.score_left;
 				let dispScoreRight = game.score_right;
 				const leftWinOriginal = (game.score_left - game.score_right) > 0;
 
-				// Si match 2v2
 				const is2v2 = game.user3_id && game.user4_id;
 				if (is2v2) {
 					let leftTeam = [
@@ -281,13 +248,10 @@ async function fetch_user_games_big(username) {
 		document.getElementById("win_rate_history").innerHTML = `${(user.games_won + user.games_lost) > 0 ? Math.round((user.games_won / (user.games_won + user.games_lost)) * 100) : 0} %`;
 		if (games && games.length > 0) {
 			document.getElementById('games-table-big').innerHTML = games.map(game => {
-				// Calcul initial du score
 				let dispScoreLeft = game.score_left;
 				let dispScoreRight = game.score_right;
 				const leftWinOriginal = (game.score_left - game.score_right) > 0;
 
-
-				// Si match 2v2
 				const is2v2 = game.user3_id && game.user4_id;
 				if (is2v2) {
 					let leftTeam = [
@@ -312,59 +276,59 @@ async function fetch_user_games_big(username) {
 					const result2v2 = (dispScoreLeft - dispScoreRight) > 0 ? 'win' : 'lose';
 
 					return /*html*/`
-					  <tr class="game_card_navBar team ${result2v2}">
+					<tr class="game_card_navBar team ${result2v2}">
 						<td class="profile_navBar_team">
-						  <div class="team-player">
-							<img src="/uploads/${leftTeam[0].profilePicture}" alt="profile" />
-							<img src="/uploads/${leftTeam[1].profilePicture}" alt="profile" />
-						  </div>
-						  <div class="team-player">
-							<p class="username_navBar">${leftTeam[0].username}</p>
-							<p class="username_navBar">${leftTeam[1].username}</p>
-						  </div>
+							<div class="team-player">
+								<img src="/uploads/${leftTeam[0].profilePicture}" alt="profile" />
+								<img src="/uploads/${leftTeam[1].profilePicture}" alt="profile" />
+							</div>
+							<div class="team-player">
+								<p class="username_navBar">${leftTeam[0].username}</p>
+								<p class="username_navBar">${leftTeam[1].username}</p>
+							</div>
 						</td>
 						<td class="vs_info_navBar">
-						  <p class="score_navBar">${dispScoreLeft} - ${dispScoreRight}</p>
+							<p class="score_navBar">${dispScoreLeft} - ${dispScoreRight}</p>
 						</td>
 						<td class="opponent_navBar_team">
-						  <div class="team-player">
-							<p class="username_navBar">${rightTeam[0].username}</p>
-							<p class="username_navBar">${rightTeam[1].username}</p>
-						  </div>
-						  <div class="team-player">
-							<img src="/uploads/${rightTeam[0].profilePicture}" alt="profile" />
-							<img src="/uploads/${rightTeam[1].profilePicture}" alt="profile" />
-						  </div>
+							<div class="team-player">
+								<p class="username_navBar">${rightTeam[0].username}</p>
+								<p class="username_navBar">${rightTeam[1].username}</p>
+							</div>
+							<div class="team-player">
+								<img src="/uploads/${rightTeam[0].profilePicture}" alt="profile" />
+								<img src="/uploads/${rightTeam[1].profilePicture}" alt="profile" />
+							</div>
 						</td>
-					  </tr>
+					</tr>
 					`;
 				} else {
 					let leftPlayer = { id: game.user1_id, username: game.user1_username, profilePicture: game.user1ProfilePicture };
 					let rightPlayer = { id: game.user2_id, username: game.user2_username, profilePicture: game.user2ProfilePicture };
 
 					if (rightPlayer.id == userId && leftPlayer.id != userId) {
-					  const tempPlayer = leftPlayer;
-					  leftPlayer = rightPlayer;
-					  rightPlayer = tempPlayer;
-					  dispScoreLeft = game.score_right;
-					  dispScoreRight = game.score_left;
+						const tempPlayer = leftPlayer;
+						leftPlayer = rightPlayer;
+						rightPlayer = tempPlayer;
+						dispScoreLeft = game.score_right;
+						dispScoreRight = game.score_left;
 					}
 					const result1v1 = (dispScoreLeft - dispScoreRight) > 0 ? 'win' : 'lose';
 
 					return /*html*/`
-					  <tr class="game_card_navBar ${result1v1}">
+					<tr class="game_card_navBar ${result1v1}">
 						<td class="profile_navBar">
-						  <img src="/uploads/${leftPlayer.profilePicture}" alt="profile" />
-						  <p class="username_navBar">${leftPlayer.username}</p>
+							<img src="/uploads/${leftPlayer.profilePicture}" alt="profile" />
+							<p class="username_navBar">${leftPlayer.username}</p>
 						</td>
 						<td class="vs_info_navBar">
-						  <p class="score_navBar">${dispScoreLeft} - ${dispScoreRight}</p>
+							<p class="score_navBar">${dispScoreLeft} - ${dispScoreRight}</p>
 						</td>
 						<td class="opponent_navBar">
-						  <p class="username_navBar">${rightPlayer.username}</p>
-						  <img src="/uploads/${rightPlayer.profilePicture}" alt="profile" />
+							<p class="username_navBar">${rightPlayer.username}</p>
+							<img src="/uploads/${rightPlayer.profilePicture}" alt="profile" />
 						</td>
-					  </tr>
+					</tr>
 					`;
 				}
 			}).join('');
@@ -381,7 +345,6 @@ async function fetch_user_games_big(username) {
 async function togglePanel(event)
 {
 	event.preventDefault();
-	console.log("togglePanel");
 	fetch_user_friendships();
 	fetch_user_games();
 }

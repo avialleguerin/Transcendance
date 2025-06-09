@@ -32,6 +32,9 @@ async function changeProfilePicture(event) {
 		if (data.success) {
 			document.getElementById("uploadForm").reset();
 			fetchProfile();
+			document.getElementById("profile_photo_circle_nav_bar").innerHTML = `
+			<img src="./${data.profile_picture}" alt="Profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+			`;
 		}
 	} catch (err) {
 		console.log("Failed to update profile picture");

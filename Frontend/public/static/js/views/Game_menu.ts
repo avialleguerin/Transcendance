@@ -448,7 +448,7 @@ export default class Game_menu extends AbstractView {
 				</div>
 
 				<div class="choose_your_opponent_platformer" id="choose_your_opponent_platformer_id">
-					<form class="choose_your_opponent_platformer_content" id="choose_your_opponent_platformer_form" onsubmit="login_1v1(event)">
+					<form class="choose_your_opponent_platformer_content" id="choose_your_opponent_platformer_form" onsubmit="login_platformer(event)">
 						<h1>CONNECT YOUR OPPONENT</h1>
 						<div class="player-section">
 							<p>PLAYER 2</p>
@@ -461,7 +461,8 @@ export default class Game_menu extends AbstractView {
 								<input type="password" id="platformer-password2" name="password2" placeholder="Player 2 password" required>
 							</div>
 						</div>
-						<button type="submit" class="valider_opponent_btn_platformer" id="validate-opponent-login">Valider</button>
+						<button type="submit" class="valider_opponent_btn_platformer" id="validate-opponent-platformer-login">Validate</button>
+						<a style="display:none" class="valider_opponent_btn_platformer" href="/PlatformView" id="start-platformer" data-link>Start</a>
 					</form>
 				</div>
 
@@ -801,10 +802,7 @@ export default class Game_menu extends AbstractView {
 
 		// const back_to_menu_view_tournament = document.getElementById('back_to_menu_view_tournament');
 
-
-
-
-		// Gestion des CGU
+		//*==== CGU & Privacy Policy Modals ====*/
 		const showCguLink = document.getElementById("show-cgu");
 		const cguModal = document.getElementById("cgu-modal");
 		const cguBackButton = document.getElementById("cgu-back-button");
@@ -889,7 +887,7 @@ export default class Game_menu extends AbstractView {
 		console.log('skin_id', skin);
 
 		if (skin == false) {
-			console.log('skin_idiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii');
+			console.log('skin_id');
 			skin_id.classList.add('hidden');
 			skin_id_multi.classList.add('hidden');
 		}
@@ -1746,6 +1744,9 @@ export default class Game_menu extends AbstractView {
 			btnPending.classList.add('active');
 		});
 
+		document.getElementById("start-platformer").addEventListener('click', () => {
+			handleViewTransitions("platformer", "vue2");
+		});
 	}
 }
 

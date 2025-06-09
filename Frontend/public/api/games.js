@@ -1,3 +1,5 @@
+
+
 async function create_1v1_game(event, player1, player2) {
 	event.preventDefault();
 
@@ -58,4 +60,3 @@ async function create_2v2_game(event) {
 	localStorage.removeItem("Player3");
 	localStorage.removeItem("Player4");
 };
-

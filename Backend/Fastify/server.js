@@ -15,6 +15,7 @@ import usersModel from './models/usersModel.js';
 
 import colorLoggerPlugin from './utils/logger.js' // NOTE - bonus: Colorized logger plugin
 import websocket from '@fastify/websocket'
+import { checkEmailConfig } from './utils/mailer.js'
 
 // setting up the server
 export const fastify = Fastify({
@@ -47,14 +48,14 @@ fastify.register(async function (fastify) {
 			activeConnections.set(userId, connection)
 			
 			usersModel.updateOnlineStatus(userId, 1)
-			usersModel.updateLastConnection(userId)
+			usersModel.updateLastActivity(userId)
 			
 			console.log(`User ${userId} connected via WebSocket`)
 			connection.on('message', (message) => {
 				const data = JSON.parse(message)
 				
 				if (data.type === 'heartbeat') {
-					usersModel.updateLastConnection(userId)
+					usersModel.updateLastActivity(userId)
 					connection.send(JSON.stringify({ type: 'pong' }))
 				}
 			})
@@ -70,7 +71,7 @@ fastify.register(async function (fastify) {
 				console.log(`User found in DB:`, user)
 				
 				if (user) {
-					usersModel.updateLastConnection(userId)
+					usersModel.updateLastActivity(userId)
 					const updateResult = usersModel.updateOnlineStatus(userId, 0)
 					console.log(`Update online status result:`, updateResult)
 					const userAfter = usersModel.getUserById(userId)
@@ -230,6 +231,7 @@ cron.schedule('0 0 * * *', () => {
  */
 const start = async () => {
 	try {
+		checkEmailConfig();
 		await fastify.listen({ port: 3000, host: '0.0.0.0' })
 	} catch (err) {
 		fastify.log.error(err)
