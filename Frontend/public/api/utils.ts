@@ -27,7 +27,7 @@ export function notif(message, success = true) {
 export async function fetchAPI(url, method, body = null, showNotification = true, formData = null) {
 	try {
 		let accessToken = sessionStorage.getItem('accessToken');
-		
+
 		const headers = {
 			"Authorization": `Bearer ${accessToken}`
 		};
@@ -131,13 +131,13 @@ export const setLocalStorage = (items) => {
 //             document.getElementById(id)?.classList.remove('active');
 //         });
 //     }
-    
+
 //     if (config.addClass) {
 //         config.addClass.forEach(id => {
 //             document.getElementById(id)?.classList.add('active');
 //         });
 //     }
-    
+
 //     // Gestion du contenu innerHTML
 //     if (config.setContent) {
 //         Object.entries(config.setContent).forEach(([id, content]) => {
@@ -148,36 +148,36 @@ export const setLocalStorage = (items) => {
 // }
 
 export function updateUI(config) {
-    if (config.removeClass) {
-        config.removeClass.forEach(item => {
-            if (typeof item === 'string')
-                document.getElementById(item)?.classList.remove('active');
-            else if (typeof item === 'object')
-                document.getElementById(item.id)?.classList.remove(item.className || 'active');
-        });
-    }
-    
-    if (config.addClass) {
-        config.addClass.forEach(item => {
-            if (typeof item === 'string')
-                document.getElementById(item)?.classList.add('active');
-            else if (typeof item === 'object')
-                document.getElementById(item.id)?.classList.add(item.className || 'active');
-        });
-    }
-    
-    if (config.setContent) {
-        Object.entries(config.setContent).forEach(([id, content]) => {
-            const element = document.getElementById(id);
-            if (element) element.innerHTML = content;
-        });
-    }
+	if (config.removeClass) {
+		config.removeClass.forEach(item => {
+			if (typeof item === 'string')
+				document.getElementById(item)?.classList.remove('active');
+			else if (typeof item === 'object')
+				document.getElementById(item.id)?.classList.remove(item.className || 'active');
+		});
+	}
 
-    if (config.resetForms) {
-        config.resetForms.forEach(formId => {
-            const form = document.getElementById(formId);
-            if (form && typeof form.reset === 'function')
-                form.reset();
-        });
-    }
+	if (config.addClass) {
+		config.addClass.forEach(item => {
+			if (typeof item === 'string')
+				document.getElementById(item)?.classList.add('active');
+			else if (typeof item === 'object')
+				document.getElementById(item.id)?.classList.add(item.className || 'active');
+		});
+	}
+
+	if (config.setContent) {
+		Object.entries(config.setContent).forEach(([id, content]) => {
+			const element = document.getElementById(id);
+			if (element) element.innerHTML = content;
+		});
+	}
+
+	if (config.resetForms) {
+		config.resetForms.forEach(formId => {
+			const form = document.getElementById(formId);
+			if (form && typeof form.reset === 'function')
+				form.reset();
+		});
+	}
 }
