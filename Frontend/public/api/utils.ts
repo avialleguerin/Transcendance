@@ -126,43 +126,57 @@ export const setLocalStorage = (items) => {
 	});
 };
 
+
+
+interface ClassModification {
+  id: string;
+  className?: string;
+}
+
+interface UIConfig {
+  removeClass?: (string | ClassModification)[];
+  addClass?: (string | ClassModification)[];
+  setContent?: Record<string, string>;
+  resetForms?: string[];
+}
+
 /**
  * 
  * @param config Configuration object for updating the UI
  */
-export function updateUI(config) {
-	if (config.removeClass) {
-		config.removeClass.forEach(item => {
-			if (typeof item === 'string')
-				document.getElementById(item)?.classList.remove('active');
-			else if (typeof item === 'object')
-				document.getElementById(item.id)?.classList.remove(item.className || 'active');
-		});
-	}
+export function updateUI(config: UIConfig): void {
+  if (config.removeClass) {
+    config.removeClass.forEach(item => {
+      if (typeof item === 'string')
+        document.getElementById(item)?.classList.remove('active');
+      else if (typeof item === 'object')
+        document.getElementById(item.id)?.classList.remove(item.className || 'active');
+    });
+  }
 
-	if (config.addClass) {
-		config.addClass.forEach(item => {
-			if (typeof item === 'string')
-				document.getElementById(item)?.classList.add('active');
-			else if (typeof item === 'object')
-				document.getElementById(item.id)?.classList.add(item.className || 'active');
-		});
-	}
+  if (config.addClass) {
+    config.addClass.forEach(item => {
+      if (typeof item === 'string')
+        document.getElementById(item)?.classList.add('active');
+      else if (typeof item === 'object')
+        document.getElementById(item.id)?.classList.add(item.className || 'active');
+    });
+  }
 
-	if (config.setContent) {
-		Object.entries(config.setContent).forEach(([id, content]) => {
-			const element = document.getElementById(id);
-			if (element) element.innerHTML = content;
-		});
-	}
+  if (config.setContent) {
+    Object.entries(config.setContent).forEach(([id, content]) => {
+      const element = document.getElementById(id);
+      if (element) element.innerHTML = content;
+    });
+  }
 
-	if (config.resetForms) {
-		config.resetForms.forEach(formId => {
-			const form = document.getElementById(formId);
-			if (form && typeof form.reset === 'function')
-				form.reset();
-		});
-	}
+  if (config.resetForms) {
+    config.resetForms.forEach(formId => {
+      const form = document.getElementById(formId) as HTMLFormElement | null;
+      if (form && typeof form.reset === 'function')
+        form.reset();
+    });
+  }
 }
 
 /**
