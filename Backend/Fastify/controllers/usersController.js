@@ -260,13 +260,13 @@ export async function login2v2(request, reply) {
 	try {
 		const infos = await getUserFromToken(request)
 		if (!infos)
-			return reply.code(401).send({ success: false, error: 'Unauthorized' })
+			return reply.code(401).send({ success: false, message: 'You must be logged in to play 2v2', error: `infos: ${infos}` })
 		const user = infos.user
 		const accessToken = infos.accessToken
 		if (!user)
-			return reply.code(401).send({ error: 'Unauthorized' })
+			return reply.code(401).send({ success: false, message: 'You must be logged in to play 2v2', error: 'User not found' })
 		if (!accessToken)
-			return reply.code(401).send({ error: 'Unauthorized' })
+			return reply.code(401).send({ success: false, message: 'You must be logged in to play 2v2', error: 'Access token not found' })
 		const player2 = usersModel.getUserByUsername(username2)
 		const player3 = usersModel.getUserByUsername(username3)
 		const player4 = usersModel.getUserByUsername(username4)

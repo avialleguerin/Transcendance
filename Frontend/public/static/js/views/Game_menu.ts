@@ -451,7 +451,7 @@ export default class Game_menu extends AbstractView {
 
 
 				<div class="choose_your_opponent_multi" id="choose_your_opponent_multi_id">
-					<form class="choose_your_opponent_multi_content" id="choose_your_opponent_multi_form" onclick="login_2v2(event)">
+					<form class="choose_your_opponent_multi_content" id="choose_your_opponent_multi_form" onsubmit="login_2v2(event)">
 						<h1>CONNECT YOUR OPPONENTS</h1>
 
 						<div class="player-section">
@@ -717,7 +717,7 @@ export default class Game_menu extends AbstractView {
 
 	init_solo_game() {
 		document.getElementById("solo_1v1_btn").addEventListener("click", () => {
-			console.log("Solo 1v1 game started");
+			console.debug("Solo 1v1 game started");
 			startGame();
 			handleViewTransitions("vue3", "vue2");
 		});
@@ -725,7 +725,7 @@ export default class Game_menu extends AbstractView {
 
 	initEvents() {
 		document.getElementById("multiplayer_btn").addEventListener("click", () => {
-			// console.log("Multiplayer 2v2 game started");
+			console.debug("Multiplayer 2v2 game started");
 			startMultiGame();
 			handleViewTransitions("vue3", "vue2");
 		});
@@ -734,7 +734,7 @@ export default class Game_menu extends AbstractView {
 
 	tournament_view() {
 		document.getElementById("tournament_view").addEventListener("click", () => {
-			// console.log("Tournament view started");
+			console.debug("Tournament view started");
 			handleViewTransitions("tournament");
 		});
 	}
@@ -743,8 +743,8 @@ export default class Game_menu extends AbstractView {
 		const deconnect_btn = document.getElementById("deconnect_btn");
 
 		deconnect_btn.addEventListener("click", () => {
+			console.debug("Back to home page");
 			handleViewTransitions("vue1", "vue2");
-			// console.log("Back to home page");
 			window.history.back();
 		});
 	}
@@ -851,10 +851,9 @@ export default class Game_menu extends AbstractView {
 		const skin_id = document.getElementById('skin');
 		const skin_id_multi = document.getElementById('skin_multi');
 
-		console.log('skin_id', skin);
 
 		if (skin == false) {
-			console.log('skin_id');
+			console.debug('Skin is not initialized, hiding skin options and UI');
 			skin_id.classList.add('hidden');
 			skin_id_multi.classList.add('hidden');
 		}
@@ -900,7 +899,7 @@ export default class Game_menu extends AbstractView {
 		/***********************************************************************/
 
 		if (!view3.classList.contains('active')) {
-			console.log('view3 is active');
+			console.debug('Active view: view3 (Solo Game)');
 			back_to_menu_view3.addEventListener('click', () => {
 				view3.classList.remove('active');
 				view2.classList.add('active');
@@ -910,7 +909,7 @@ export default class Game_menu extends AbstractView {
 		}
 
 		if (!view4.classList.contains('active')) {
-			console.log('view4 is active');
+			console.log('Active view: view4 (Multiplayer Game)');
 			back_to_menu_view4.addEventListener('click', () => {
 				view4.classList.remove('active');
 				view2.classList.add('active');
@@ -938,12 +937,14 @@ export default class Game_menu extends AbstractView {
 
 		btn_back_home.addEventListener('click', () => {
 			if (view2.classList.contains('active')) {
+				console.debug('Back home button clicked, removing active class from view2');
 				view2.classList.remove('active');
 				view1.classList.remove('active');
 				btn_back_home.classList.remove('active');
 				btn_jouer.style.display = 'block';
 			}
 			if (view5.classList.contains('active')) {
+				console.debug('Back home button clicked, removing active class from view5');
 				view5.classList.remove('active');
 				view1.classList.remove('active');
 				btn_back_home.classList.remove('active');

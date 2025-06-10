@@ -67,7 +67,7 @@ export async function refreshInfos(request, reply) {
 	try {
 		const infos = await getUserFromToken(request)
 		if (!infos)
-			return reply.code(401).clearCookie("refreshToken").send({ success: false, error: 'Unauthorized' })
+			return reply.code(401).clearCookie("refreshToken").send({ success: false, error: `infos: ${infos}`, message: 'User is not logged', function: 'refreshInfos' })
 		const user = infos.user
 		const accessToken = infos.accessToken
 		if (!user)

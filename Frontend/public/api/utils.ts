@@ -3,7 +3,9 @@ import { handleViewTransitions } from '../srcs/game/gameplay/views/camera.js';
 export function notif(message, success = true) {
 	const notification = document.getElementById('resultMessage');
 	console.log("notif:", message, "success:", success);
+	console.debug(`notification : ${notification}`)
 	if (notification) {
+		console.debug("je passe dans le if (notif)")
 		document.getElementById('notification-container').style.display = 'flex';
 		const icon = success ?
 			`<img src='/assets/image/success.png' style='width:20px; height:20px; margin-right:5px;'>` :
@@ -27,6 +29,7 @@ export function notif(message, success = true) {
 }
 
 export async function fetchAPI(url, method, body = null, showNotification = true, formData = null) {
+	console.debug(`fetchAPI: url: ${url}, method: ${method}, body:`, body, "formData:", formData);
 	try {
 		let accessToken = sessionStorage.getItem('accessToken');
 
@@ -57,7 +60,7 @@ export async function fetchAPI(url, method, body = null, showNotification = true
 			notif(data.message, true);
 		else if (data.error && showNotification)
 			notif(data.error, false);
-		console.log("fetchAPI: data:", data.error ? data.error : data);
+		console.log("fetchAPI: data.error:", data.error);
 		return data;
 	} catch (err) {
 		console.error(`Error in API call to ${url}:`, err.message);

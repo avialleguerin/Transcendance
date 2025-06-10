@@ -2,14 +2,6 @@ import AbstractView from "./AbstractView.js";
 import { initGoogleSignIn, tokenClient } from '../../../api/auth.js';
 import { gameMenuView } from '../../../api/utils.js';
 import { notif } from '../../../api/utils.js';
-// import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.js";
-// import Game_menu from "./Game_menu.js";
-
-// Déclarations des fonctions externes
-// declare function notif(message: string, success: boolean): void;
-// declare function initGoogleSignIn(): void;
-// declare var tokenClient: any;
-//---
 
 
 export default class Home extends AbstractView {
@@ -245,11 +237,9 @@ export default class Home extends AbstractView {
 		const createAccountForm = document.getElementById("create_account_id");
 		const createAccountButton = document.getElementById("create-Account");
 		const alreadyHaveAccountButton = document.getElementById("alreadyHaveAccountButton_id");
-		const doubleAuthForm = document.getElementById("doubleAuthForm");
-		const backButton = document.getElementById("back");
 
 		createAccountButton.addEventListener("click", () => {
-			console.info("createAccountForm");
+			console.debug("Signin Form activated");
 			loginForm.classList.add("active");
 			createAccountForm.classList.add("active");
 			(document.getElementById("login-username") as HTMLInputElement).value = "";
@@ -257,7 +247,7 @@ export default class Home extends AbstractView {
 		});
 
 		alreadyHaveAccountButton.addEventListener("click", () => {
-			console.info("loginForm");
+			console.debug("Login Form activated");
 			createAccountForm.classList.remove("active");
 			loginForm.classList.remove("active");
 			(document.getElementById("registerForm") as HTMLFormElement).reset();
@@ -283,13 +273,11 @@ export default class Home extends AbstractView {
 		const googleSignUpBtn = document.getElementById("google-signup-btn");
 
 		const handleGoogleAuth = () => {
-			if (typeof tokenClient !== 'undefined' && tokenClient) {
-				console.debug("handleGoogleAuth");
+			console.debug("handleGoogleAuth");
+			if (typeof tokenClient !== 'undefined' && tokenClient)
 				tokenClient.requestAccessToken();
-			} else {
-				console.error(`Client Google OAuth non initialisé ${typeof tokenClient} && ${tokenClient} `, );
-				notif("Google connexion non initialised", false);
-			}
+			else 
+				console.error(`Google Auth Token not initialised : typeof=${typeof tokenClient} && ${tokenClient} `);
 		};
 
 		googleSignInBtn?.addEventListener("click", handleGoogleAuth);

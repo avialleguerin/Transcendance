@@ -2,6 +2,44 @@
 /****************TOURNAMENT_VIEW**********************************/
 /****************************************************************/
 
+#notification-container {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	display: flex;
+	justify-content: center;
+	z-index: 50;
+	margin-top: 1rem;
+}
+
+#resultMessage {
+	padding: 0.5rem 1rem;
+	border-radius: 0.25rem;
+	box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+	transition: all 0.3s ease;
+	transform: translateY(0);
+	opacity: 0;
+}
+
+.failure_notif {
+	background-color: #ef4444;
+	color: white;
+	padding: 0.5rem 1rem;
+	border-radius: 0.25rem;
+	box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+	font-weight: 500;
+}
+
+.success_notif {
+	background-color: #10b981;
+	color: white;
+	padding: 0.5rem 1rem;
+	border-radius: 0.25rem;
+	box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+	font-weight: 500;
+}
+
 .tournament_view {
     position: absolute;
     top: 50%;

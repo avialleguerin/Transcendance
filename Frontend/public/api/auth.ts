@@ -15,20 +15,17 @@ export async function login(event: Event): Promise<void> {
 		const data = await fetchAPI('/request/user/login', 'POST', { username, password }, true, false);
 		
 		if (!data.accessToken && !data.success) {
-			notif(data.message || `Connexion refused`, false);
+			notif(data.message || `Connexion refused`, false); console.debug(`${data.function}: ${data.error} - ${data.message}`);
 		} else if (data.success && data.connection_status === "partially_connected" && data.user.doubleAuth_status) {
 			notif(data.message || `You are partially connected`, true);
 			sessionStorage.setItem("userId", data.user.userId);
 			updateUI({ removeClass: [{ id:"doubleAuthForm", className: "hidden" }], addClass: ["loginForm", "doubleAuthForm"] });
 			$input("login-title").textContent = "Double Authentication";
 		} else if (data.success && data.connection_status === "connected") {
-			notif(data.message || `Logged in`, true);
+			notif(data.message || `Logged in`, true); console.debug(`${data.function}: ${data.message}. Logged with User: ${data.user.username}`);
 			setLocalStorage({ "Player1": data.user.username, "profile_picture": data.user.profile_picture });
 			connectWebSocket()
-			console.debug("Connected, Token :", sessionStorage.getItem("accessToken"));
-			setTimeout(() => {
-				gameMenuView();
-			}, 2000);
+			setTimeout(() => { gameMenuView(); }, 2000);
 			$form("loginForm").reset();
 			$input("login-password").value = "";
 		} else {
@@ -36,10 +33,135 @@ export async function login(event: Event): Promise<void> {
 			$input("login-password").value = "";
 			console.warn("login : ", data.error);
 		}
-	} catch (err) {
-		notif("Erreur de connexion", false);
-		console.error("Erreur lors de la connexion :", err);
-	}
+	} catch (err) { notif(`Connexion failed`, false); console.error(`login: ${err}`); }
+}
+
+/**
+ * Connect the user and the opeponent in 1v1 mode.
+ * @param event Form submission, where the second user enters his infos.
+ */
+export async function login_1v1(event: Event) {
+	console.debug(`function called: login_1v1`);
+	event.preventDefault();
+	const username = $input("1v1-username2").value;
+	const password = $input("1v1-password2").value;
+	if (!username || !password)	return notif("Please fill in all fields", false);
+
+	try {
+		const data = await fetchAPI('/request/user/login-1v1', 'POST', { username, password }, true, false);
+
+		if (data.success) {
+			if (data.player2.username === localStorage.getItem("Player1")) return notif("You cannot play against yourself", false);
+			notif(data.message, true); console.debug(`${data.function}: ${data.message}. Player2 ${data.player2.username} logged in successfully`);
+			setLocalStorage({ "Player2": data.player2.username });
+			updateUI({
+				removeClass: ["choose_your_opponent_1v1_form", "container"],
+				addClass: ["back_to_select_mode_view6", "view6"],
+				setContent: {"1v1-oponent-username1": localStorage.getItem("Player1"), "1v1-oponent-username2": localStorage.getItem("Player2")}
+			});
+		} else
+			notif(data.error, false);
+	} catch (err) { notif("Connexion to 1v1 failed", false); console.error(`login_1v1: ${err}`); }
+	$form("choose_your_opponent_1v1_form").reset();
+}
+
+/**
+ * Connect all the users in 2v2 mode.
+ * @param event Form submission, where all the users enter their infos.
+ */
+export async function login_2v2(event: Event) {
+	console.debug(`function called: login_2v2`);
+	event.preventDefault();
+	const username1 = localStorage.getItem("Player1");
+	const username2 = $input("2v2-username2").value, password2 = $input("2v2-password2").value;
+	const username3 = $input("2v2-username3").value, password3 = $input("2v2-password3").value;
+	const username4 = $input("2v2-username4").value, password4 = $input("2v2-password4").value;
+	if (!username2 || !password2 || !username3 || !password3 || !username4 || !password4)	return notif("Please fill in all fields", false);
+	if (username1 === username2 || username1 === username3 || username1 === username4 ||
+		username2 === username3 || username2 === username4 || username3 === username4)		return notif("There can't be the same player 2 times", false);
+
+	try {
+		const data = await fetchAPI('/request/user/login-2v2', 'POST', { username2, password2, username3, password3, username4, password4 }, true, false);
+
+		if (data.success) {
+			notif(data.message, true);
+			setLocalStorage({"Player2": data.player2.username, "Player3": data.player3.username, "Player4": data.player4.username });
+			updateUI({
+				removeClass: ["choose_your_opponent_multi_form", "container"],
+				addClass: ["back_to_select_mode_view8", "view8"],
+				setContent: {
+					"2v2-oponent-username1": localStorage.getItem("Player1"),
+					"2v2-oponent-username2": localStorage.getItem("Player2"),
+					"2v2-oponent-username3": localStorage.getItem("Player3"),
+					"2v2-oponent-username4": localStorage.getItem("Player4")
+				}
+			});
+		} else notif(data.error, false); //todo
+	} catch (err) { notif("Connexion to 2v2 failed", false); console.error(`login_2v2: ${err}`); }
+	$form("choose_your_opponent_multi_form").reset();
+}
+
+/**
+ * Connect all the users in tournament mode.
+ * @param event Form submission, where all the users enter their infos.
+ */
+export async function login_tournament(event: Event) {
+	console.debug(`function called: login_tournament`);
+	event.preventDefault();
+	const username1 = localStorage.getItem("Player1");
+	const username2 = $input("tournament-username2").value, password2 = $input("tournament-password2").value;
+	const username3 = $input("tournament-username3").value, password3 = $input("tournament-password3").value;
+	const username4 = $input("tournament-username4").value, password4 = $input("tournament-password4").value;
+	if (!username2 || !password2 || !username3 || !password3 || !username4 || !password4)	return notif("Please fill in all fields", false);
+	if (username1 === username2 || username1 === username3 || username1 === username4 ||
+		username2 === username3 || username2 === username4 || username3 === username4)		return notif("There can't be the same player 2 times", false);
+
+	try {
+		const data = await fetchAPI('/request/user/login-2v2', 'POST', { username2, password2, username3, password3, username4, password4 }, true, false);		
+
+		if (data.success) {
+			setLocalStorage({"Player2": data.player2.username, "Player3": data.player3.username, "Player4": data.player4.username });
+			updateUI({ setContent: { "Player1": localStorage.getItem("Player1"), "Player2": localStorage.getItem("Player2"), "Player3": localStorage.getItem("Player3"), "Player4": localStorage.getItem("Player4") }});
+			setLocalStorage({"current_player1": localStorage.getItem("Player1"), "current_player2": localStorage.getItem("Player2") });
+			const tournamentStarted = true;
+			localStorage.setItem('tournamentStarted', tournamentStarted.toString());
+			updateUI({ addClass: [{ id: "tournament_graphic_id", className: "active" }, { id: "container_name_player", className: "hidden"}] });
+			$("start_tournament").style.display = 'none';
+			$("back_to_menu_view_tournament").style.display = 'none';
+		}
+	} catch (err) { notif("Connexion to tournament failed", false); console.error(`login_tournament: ${err}`); }
+}
+
+export async function login_platformer(event: Event) {
+	console.debug(`function called: login_platformer`);
+	event.preventDefault();
+	const username = $input("platformer-username2").value;
+	const password = $input("platformer-password2").value;
+	if (!username || !password)	return notif("Please fill in all fields", false);
+	if (username === localStorage.getItem("Player1")) return notif("You cannot play against yourself", false);
+
+	try {
+		const data = await fetchAPI('/request/user/login-1v1', 'POST', { username, password }, true, false);
+
+		if (data.success) {
+			setLocalStorage({"Player1": localStorage.getItem("Player1"), "Player2": data.player2.username, "platformer_view": true });
+			$("start-platformer").click();
+			// PlatformerView(); //TODO
+		}
+	} catch (err) { notif("Connexion to platformer failed", false); console.error(`login_platformer: ${err}`); }
+	$form("choose_your_opponent_platformer_form").reset();
+}
+
+export async function logout() {
+	console.debug(`function called: logout`);
+
+	try {
+		disconnectWebSocket()
+		await fetchAPI('/request/user/logout', 'POST', {}, true);
+		sessionStorage.clear();
+		localStorage.clear();
+		homeView();
+	} catch (err) { notif(`Logout failed`, false); console.error(`logout: ${err}`); }
 }
 
 /**
@@ -60,170 +182,9 @@ export async function verify2FA(event: Event) {
 			console.info("2FA code valid!");
 			gameMenuView();
 		}
-	} catch (err) {
-		console.error("Erreur lors de la validation du code 2FA :", err);
-	}
+	} catch (err) { console.error(`Verify2FA: ${err}`); }
 }
 
-/**
- * Login for 1v1 mode.
- * @param event Form submission, where the second user enters his infos.
- */
-export async function login_1v1(event: Event) {
-	try {
-		event.preventDefault();
-		const username = $input("1v1-username2").value;
-		const password = $input("1v1-password2").value;
-		if (!username || !password)
-			return notif("Please fill in all fields", false);
-
-		const data = await fetchAPI('/request/user/login-1v1', 'POST', { username, password }, true, false);
-		if (data.success) {
-			if (data.player2.username === localStorage.getItem("Player1"))
-				return notif("You cannot play against yourself", false);
-			notif(data.message, true);
-			setLocalStorage({ "Player2": data.player2.username });
-			updateUI({
-				removeClass: ["choose_your_opponent_1v1_form", "container"],
-				addClass: ["back_to_select_mode_view6", "view6"],
-				setContent: {"1v1-oponent-username1": localStorage.getItem("Player1"), "1v1-oponent-username2": localStorage.getItem("Player2")}
-			});
-		} else
-			notif(data.error, false);
-	} catch (err) {
-		console.error("Erreur lors de la connexion :", err);
-		notif("Erreur de connexion", false);
-	}
-	$form("choose_your_opponent_1v1_form").reset();
-}
-
-export async function login_2v2(event: Event) {
-	event.preventDefault();
-	const username1 = localStorage.getItem("Player1");
-	const username2 = $input("2v2-username2").value;
-	const username3 = $input("2v2-username3").value;
-	const username4 = $input("2v2-username4").value;
-
-	const password2 = $input("2v2-password2").value;
-	const password3 = $input("2v2-password3").value;
-	const password4 = $input("2v2-password4").value;
-
-	if (!username2 || !password2 || !username3 || !password3 || !username4 || !password4)
-		return notif("Please fill in all fields", false);
-
-	try {
-		const data = await fetchAPI('/request/user/login-2v2', 'POST', { username2, password2, username3, password3, username4, password4 }, true, false);
-		if (data.success) {
-			if (username1 === username2 || username1 === username3 || username1 === username4 ||
-				username2 === username3 || username2 === username4 || username3 === username4)
-				return notif("There can't be the same player 2 times", false);
-			notif(data.message, true);
-			setLocalStorage({"Player2": data.player2.username, "Player3": data.player3.username, "Player4": data.player4.username });
-			updateUI({
-				removeClass: ["choose_your_opponent_multi_form", "container"],
-				addClass: ["back_to_select_mode_view8", "view8"],
-				setContent: {
-					"2v2-oponent-username1": localStorage.getItem("Player1"),
-					"2v2-oponent-username2": localStorage.getItem("Player2"),
-					"2v2-oponent-username3": localStorage.getItem("Player3"),
-					"2v2-oponent-username4": localStorage.getItem("Player4")
-				}
-			});
-		} else
-			notif(data.error, false);
-	} catch (err) {
-		console.error("Erreur lors de la connexion :", err);
-		notif("Connexion error", false);
-	}
-	$form("choose_your_opponent_1v1_form").reset();
-}
-
-export async function login_tournament(event: Event) {
-	event.preventDefault();
-	const username1 = localStorage.getItem("Player1");
-	const username2 = $input("tournament-username2").value;
-	const username3 = $input("tournament-username3").value;
-	const username4 = $input("tournament-username4").value;
-
-	const password2 = $input("tournament-password2").value;
-	const password3 = $input("tournament-password3").value;
-	const password4 = $input("tournament-password4").value;
-
-	if (!username2 || !password2 || !username3 || !password3 || !username4 || !password4)
-		return notif("Please fill in all fields", false);
-
-	try {
-		const data = await fetchAPI('/request/user/login-2v2', 'POST', { username2, password2, username3, password3, username4, password4 }, true, false);
-		if (data.success) {
-			if (username1 === username2 || username1 === username3 || username1 === username4 ||
-				username2 === username3 || username2 === username4 || username3 === username4)
-				return notif("There can't be the same player 2 times", false);
-			notif(data.message, true);
-			setLocalStorage({"Player2": data.player2.username, "Player3": data.player3.username, "Player4": data.player4.username });
-			updateUI({
-				setContent: {
-					"Player1": localStorage.getItem("Player1"),
-					"Player2": localStorage.getItem("Player2"),
-					"Player3": localStorage.getItem("Player3"),
-					"Player4": localStorage.getItem("Player4")
-			}});
-			setLocalStorage({"current_player1": localStorage.getItem("Player1"), "current_player2": localStorage.getItem("Player2") });
-			const tournamentStarted = true;
-			localStorage.setItem('tournamentStarted', tournamentStarted.toString());
-			updateUI({ addClass: [{ id: "tournament_graphic_id", className: "active" }, { id: "container_name_player", className: "hidden"}] });
-			document.getElementById("start_tournament").style.display = 'none';
-			document.getElementById("back_to_menu_view_tournament").style.display = 'none';
-			
-			// Mettre en surbrillance les joueurs initiaux
-		} else
-			notif(data.error, false);
-	} catch (err) {
-		console.error("Erreur lors de la connexion :", err);
-		notif("Connexion error", false);
-	}
-}
-
-export async function login_platformer(event: Event) {
-	event.preventDefault();
-	const username = $input("platformer-username2").value;
-	const password = $input("platformer-password2").value;
-	console.debug(`username : ${username}, password : ${password}`);
-	if (!username || !password)
-		return notif("Please fill in all fields", false);
-
-	try {
-		const data = await fetchAPI('/request/user/login-1v1', 'POST', { username, password }, true, false);
-		if (data.success) {
-			if (data.player2.username === localStorage.getItem("Player1"))
-				return notif("You cannot play against yourself", false);
-			notif(data.message, true);
-			localStorage.setItem("Player2", data.player2.username);
-			localStorage.setItem("platformer_view", 'true'); //REVIEW - a cause de ts jai du le mettre en string
-			$("start-platformer").click();
-			document.getElementById("platformer-oponent-username1").innerHTML = localStorage.getItem("Player1");
-			document.getElementById("platformer-oponent-username2").innerHTML = localStorage.getItem("Player2");
-			// PlatformerView(); //TODO
-		} else
-			notif(data.error, false);
-	} catch (err) {
-		console.error("Erreur lors de la connexion :", err);
-		notif("Erreur de connexion", false);
-	}
-	$form("choose_your_opponent_platformer_form").reset();
-}
-
-export async function logout() {
-	try {
-		disconnectWebSocket()
-		await fetchAPI('/request/user/logout', 'POST', {}, false);
-		sessionStorage.clear();
-		localStorage.clear();
-		console.info("Logged out successfully !");
-		homeView();
-	} catch (err) {
-		console.error("Erreur lors de la déconnexion :", err);
-	}
-}
 
 export async function register(event: Event) {
 	try {
@@ -250,52 +211,34 @@ export async function refreshInfos() {
 		const data = await fetchAPI('/request/user/refresh-infos', 'POST', {}, true, false);
 
 		if (!data.accessToken || data.deleted_account) {
+			console.warn(`Session expired or account deleted`);
 			sessionStorage.clear();
 			localStorage.clear();
-			homeView(); //TODO - bug de la page de chargement lors de la redirection vers '/' apres une suppression du user par exemple
+			homeView();
 			notif("Session expired, please log in again", false);
 		} else if (sessionStorage.getItem("accessToken") && sessionStorage.getItem("accessToken") !== "undefined") {
+			console.debug(`Access token found, refreshing user infos`);
 			localStorage.clear();
-			// setLocalStorage({"Player1": data.user.username, "profile_picture": data.user.profile_picture});
-			localStorage.setItem("Player1", data.user.username);
-			localStorage.setItem("profile_picture", data.user.profile_picture);
+			setLocalStorage({"Player1": data.user.username, "profile_picture": data.user.profile_picture});
 			gameMenuView();
 		}
 
 		if (data.success)
-			console.info("Infos refreshed successfully");
+			console.info(`${data.function}: ${data.message}. User: ${data.user.username}`);
 		else
-			console.warn("Error refreshing infos:", data.error);
+			console.debug(`${data.function}: ${data.error} - ${data.message}. If you are not logged in, this is normal.`);
 	} catch (err) {
 		console.error("Erreur lors du rafraîchissement des informations :", err);
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //* ==== GOOGLE SIGN-IN ==== *//
 
 
 window.addEventListener('DOMContentLoaded', () => {
 	refreshInfos();
-	setTimeout(() => { //FIXME - 
-		initGoogleSignIn();
-	}, 1000);
+	setTimeout(() => { initGoogleSignIn(); }, 1000);
 });
-
-
-
 
 
 interface GoogleTokenClient {
@@ -322,7 +265,6 @@ declare global {
 } declare const google: Window['google'];
 
 export let tokenClient: GoogleTokenClient | null = null;
-// let tokenClient;
 
 export async function initGoogleSignIn() {
 	console.trace("- `initGoogleSignIn()` called");
