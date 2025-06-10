@@ -10,6 +10,7 @@ async function verify2FA(event) {
 			sessionStorage.removeItem("userId")
 			localStorage.setItem("Player1", data.username);
 			localStorage.setItem("profile_picture", data.profile_picture);
+			// ✅ CORRECTION : Utiliser connectWebSocket au lieu de wsManager.connect()
 			connectWebSocket()
 			console.log("✅ 2FA code valid!");
 			history.pushState({}, '', '/Game_menu');
@@ -50,6 +51,7 @@ async function login(event) {
 			notif(data.message, true);
 			localStorage.setItem("Player1", data.user.username);
 			localStorage.setItem("profile_picture", data.user.profile_picture);
+			// ✅ CORRECTION : Utiliser connectWebSocket au lieu de wsManager.connect()
 			connectWebSocket()
 			console.log("✅ Connected, Token :", sessionStorage.getItem("accessToken"));
 			history.pushState({}, '', '/Game_menu');
@@ -242,7 +244,13 @@ async function login_platformer(event) {
 async function logout() {
 	try {
 		const user = localStorage.getItem("Player1");
-		disconnectWebSocket()
+		
+		// ✅ CORRECTION : Déconnecter le WebSocket AVANT l'appel API
+		disconnectWebSocket();
+		
+		// ✅ Attendre un peu pour que la déconnexion WebSocket soit effective
+		await new Promise(resolve => setTimeout(resolve, 100));
+		
 		await fetchAPI('/request/user/logout', 'POST', {}, false);
 		sessionStorage.clear();
 		localStorage.clear();
@@ -292,62 +300,9 @@ async function register(event) {
 	}
 }
 
-async function refreshInfos() {
-	try {
-		const data = await fetchAPI('/request/user/refresh-infos', 'POST', {}, true, false);
 
-		if (!data.accessToken || data.deleted_account) {
-			sessionStorage.clear();
-			localStorage.clear();
-			history.pushState({}, '', '/');
-			import('../static/js/views/Home.js').then((module) => { //TODO - bug de la page de chargement lors de la redirection vers '/' apres une suppression du user par exemple
-				console.log("Home module loaded");
-				const Home = module.default;
-				const homeInstance = new Home();
-				homeInstance.getHtml().then((html) => {
-					const appElement = document.getElementById('app');
-					if (appElement) {
-						appElement.innerHTML = html;
-						if (homeInstance.createAccount && typeof homeInstance.createAccount === 'function') {
-							homeInstance.createAccount();
-						}
-					}
-				});
-			});
-			notif("Session expired, please log in again", false);
-		} else if (sessionStorage.getItem("accessToken") && sessionStorage.getItem("accessToken") !== "undefined") {
-			localStorage.clear();
-			localStorage.setItem("Player1", data.user.username);
-			localStorage.setItem("profile_picture", data.user.profile_picture);
-			history.pushState({}, '', '/Game_menu');
-			import('../static/js/views/Game_menu.js').then(module => {
-				const GameMenu = module.default;
-				const gameMenuInstance = new GameMenu();
-				gameMenuInstance.getHtml().then(html => {
-					document.getElementById('app').innerHTML = html;
-					if (gameMenuInstance.game_menu) {
-						gameMenuInstance.game_menu();
-					}
-				});
-			});
-		}
 
-		if (data.success) {
-			console.log("Infos refreshed successfully");
-		} else {
-			console.error("❌ Error refreshing infos:", data.error);
-		}
-	} catch (err) {
-		console.error("Erreur lors du rafraîchissement des informations :", err);
-	}
-}
 
-window.addEventListener('DOMContentLoaded', () => {
-	refreshInfos();
-	setTimeout(() => { //FIXME - 
-		initGoogleSignIn();
-	}, 1000);
-});
 
 
 //* ==== GOOGLE SIGN-IN ==== *//
@@ -414,6 +369,13 @@ async function handleGoogleSignIn(response) {
 	}
 }
 
+
+window.addEventListener('DOMContentLoaded', () => {
+	refreshInfos();
+	setTimeout(() => { //FIXME - 
+		initGoogleSignIn();
+	}, 1000);
+});
 
 window.addEventListener('beforeunload', () => {
 	disconnectWebSocket()

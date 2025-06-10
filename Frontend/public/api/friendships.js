@@ -50,13 +50,13 @@ async function fetch_user_friendships() {
 		const pending = friendships.filter(f => f.status === 'pending');
 
 		const renderFriend = (friendship, showActions) => {
-			let statusClass = `${friendship.friendOnlineStatus ? 'friend_online_status status-online' : 'friend_online_status status-offline'}`;
+			let statusClass = `${friendship.friendOnlineStatus ? 'friend_online_status online' : 'friend_online_status offline'}`;
 			let statusTitle = `${friendship.friendOnlineStatus ? 'Online' : 'Offline'}`;
 			let friendshipProfilePicture = friendship.status === 'accepted' ? friendship.friendProfilePicture : 'default-profile-picture.png'; // Fallback to a default picture if none is provided
 			return `
-				<div class="friend">
+				<div id="friendId-${friendship.friendId}" class="friend">
 					<div class="friend-info">
-						<div class="${friendship.status === 'accepted'? statusClass : ''}" title="${statusTitle}"></div>
+						<div id="friendStatus-${friendship.friendId}" class="${friendship.status === 'accepted' ? statusClass : ''}" title="${statusTitle}"></div>
 						<img src="/uploads/${friendshipProfilePicture}" class="friend_photo" alt="Profile">
 						<div class="friend-details">
 							<p class="friend_name">${friendship.friend_username}</p>
@@ -348,3 +348,6 @@ async function togglePanel(event)
 	fetch_user_friendships();
 	fetch_user_games();
 }
+
+// ✅ AJOUT : Rendre la fonction accessible globalement pour les notifications WebSocket
+window.fetch_user_friendships = fetch_user_friendships;

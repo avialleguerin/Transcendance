@@ -1,7 +1,8 @@
 import { fastify } from '../server.js'
 import usersModel from '../models/usersModel.js'
 import friendshipsModel from '../models/friendshipsModel.js'
-import { getUserFromToken } from './utils.js'
+import { getUserFromToken, handleControllerError } from './utils.js'
+import { notifyFriend } from '../server.js'
 
 export async function getUserFriendships(request, reply) {
 	try {
@@ -43,27 +44,29 @@ export async function addFriend(request, reply) {
 		if (status.requestSent || status.requestReceived) {
 			return reply.code(400).send({ 
 				success: false,
-				message: "You are already friends or a friendship request is pending",
+				error: "Friendship already exists",
 				accessToken: infos.accessToken
 			});
 		}
 
-		friendshipsModel.createFriendship(user.userId, friendExists.userId);
+		friendshipsModel.createFriendship(infos.user.userId, friendExists.userId);
+		notifyFriend(infos.user.userId, friendExists.userId,`${infos.user.username} has sent you a friend request`);
 
 		return reply.code(201).send({ 
 			success: true,
-			message: `Friend added successfully`,
+			message: "Friendship request sent successfully",
 			accessToken: infos.accessToken
-		})
+		});
 	} catch (err) {
-		return reply.code(500).send({ error: "Internal server error" })
+		return handleControllerError(err, reply, infos?.accessToken, 'addFriend');
 	}
 }
 
 export async function acceptFriend(request, reply) {
 	const { friendshipId } = request.body
+	let infos;
 	try {
-		const infos = await getUserFromToken(request)
+		infos = await getUserFromToken(request)
 		if (!infos)
 			return reply.code(401).send({ error: "Unauthorized" })
 		const user = infos.user
@@ -79,16 +82,16 @@ export async function acceptFriend(request, reply) {
 		if (friendship.friendId !== user.userId)
 			return reply.code(403).send({ success: false, error: `You are not allowed to accept this friend`, accessToken: infos.accessToken })
 
-		friendshipsModel.acceptFriendship(friendship.userId, user.userId)
+		friendshipsModel.acceptFriendship(friendship.userId, infos.user.userId);
+		notifyFriend(user.userId, friendship.userId , `${user.username} has accepted your friend request`);
 
 		return reply.send({ 
 			success: true,
 			message: "Friend accepted successfully",
 			accessToken: infos.accessToken
-		})
+		});
 	} catch (err) {
-		fastify.log.error("Error accepting this friend:", err)
-		return reply.code(500).send({ error: "Internal server error" })
+		return reply.code(500).send({ error: "Internal server error:" + err.message })
 	}
 }
 
@@ -108,8 +111,9 @@ export async function deleteFriend(request, reply) {
 		if (!friendship)
 			return reply.code(404).send({ success: false, error: `Friend not found`, accessToken: infos.accessToken })
 		
+		const otherUserId = friendship.userId === user.userId ? friendship.friendId : friendship.userId;
 		friendshipsModel.deleteFriendship(friendship.userId, friendship.friendId)
-
+		notifyFriend(user.userId, otherUserId, `${user.username} has deleted you from their friends list`);
 		return reply.send({ 
 			success: true,
 			message: "Friend deleted successfully",

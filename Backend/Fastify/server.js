@@ -12,6 +12,7 @@ import { redisModel } from './models/redisModel.js';
 import cron from 'node-cron';
 // Models
 import usersModel from './models/usersModel.js';
+import friendshipsModel from './models/friendshipsModel.js';
 
 import colorLoggerPlugin from './utils/logger.js' // NOTE - bonus: Colorized logger plugin
 import websocket from '@fastify/websocket'
@@ -33,58 +34,119 @@ export const fastify = Fastify({
 	disableRequestLogging: true
 })
 
-// Enregistrer le plugin WebSocket
 await fastify.register(websocket)
 
-// Map pour stocker les connexions WebSocket actives
 const activeConnections = new Map()
 
-// Route WebSocket pour gérer les connexions
+function notifyFriendsStatusChange(userId, status) {
+	try {
+		const onlineStatus = status === 1 ? 'online' : 'offline'; // 'online' si status est 1, sinon 'offline'
+
+		const friends = friendshipsModel.getUserAcceptedFriendships(userId);
+		const user = usersModel.getUserById(userId); // Pour récupérer le username
+		
+		usersModel.updateOnlineStatus(userId, status)
+		usersModel.updateLastActivity(userId)
+
+		if (friends && friends.length > 0 && user) {
+			friends.forEach(friend => {
+				const friendUsername = friend.userId === userId ? friend.friendUsername : friend.userUsername;
+				const friendUserId = friend.userId === userId ? friend.friendUserId : friend.userId;
+				const friendConnection = activeConnections.get(friendUserId.toString());
+				
+				if (friendConnection) {
+					friendConnection.send(JSON.stringify({
+						type: 'friend_status_update',
+						userId: userId,
+						username: user.username,
+						status: onlineStatus,
+						timestamp: new Date().toISOString()
+					}));
+					console.log(`📡 Notified friend '${friendUsername}' about user '${user.username}' status: ${onlineStatus}`);
+				}
+			});
+		} else {
+			console.log(`👥 User ${userId} has no friends to notify or user not found`);
+		}
+	} catch (error) {
+		console.error('❌ Error notifying friends of status change:', error);
+	}
+}
+
+export function notifyFriend(fromUserId, toUserId, message) {
+	try {
+		const fromUser = usersModel.getUserById(fromUserId);
+		const toUserConnection = activeConnections.get(toUserId.toString());
+		console.log(`🔍 From user found: ${fromUser ? fromUser.username : 'NOT FOUND'}`);
+		console.log(`🔍 To user connection found: ${toUserConnection ? 'YES' : 'NO'}`);
+		console.log(`🔍 Active connections: ${Array.from(activeConnections.keys())}`);
+		if (toUserConnection && fromUser) {
+			toUserConnection.send(JSON.stringify({
+				type: "friend_request",
+				fromUserId: fromUserId,
+				fromUsername: fromUser.username,
+				fromProfilePicture: fromUser.profile_picture,
+				message: message,
+				timestamp: new Date().toISOString()
+			}));
+			console.log(`📬 Notified user ${toUserId} about message from ${fromUser.username}`);
+		}
+	} catch (error) {
+		console.error('❌ Error notifying friend message:', error);
+	}
+}
+
 fastify.register(async function (fastify) {
 	fastify.get('/ws', { websocket: true }, (connection, request) => {
-		const userId = request.query.userId
+			const userId = request.query.userId
 
-		if (userId && !isNaN(userId)) {
-			activeConnections.set(userId, connection)
-			
-			usersModel.updateOnlineStatus(userId, 1)
-			usersModel.updateLastActivity(userId)
-			
-			console.log(`User ${userId} connected via WebSocket`)
-			connection.on('message', (message) => {
-				const data = JSON.parse(message)
+			if (userId && !isNaN(userId)) {
+				activeConnections.set(userId, connection)
+				notifyFriendsStatusChange(userId, 1)
 				
-				if (data.type === 'heartbeat') {
-					usersModel.updateLastActivity(userId)
-					connection.send(JSON.stringify({ type: 'pong' }))
-				}
-			})
+				console.log(`User ${userId} connected via WebSocket`)
+				
+				connection.on('message', (message) => {
+					try {
+						const data = JSON.parse(message)
+						
+						if (data.type === 'heartbeat') {
+							usersModel.updateLastActivity(userId)
+							connection.send(JSON.stringify({ type: 'pong' }))
+						}
+					} catch (err) {
+						console.error('Error parsing WebSocket message:', err)
+					}
+				})
 
-			connection.on('close', () => {
-				console.log(`🔌 User ${userId} WebSocket disconnected`)
-				console.log(`Type of userId: ${typeof userId}`)
-				
-				activeConnections.delete(userId)
-				
-				// Vérifier que l'utilisateur existe
-				const user = usersModel.getUserById(userId)
-				console.log(`User found in DB:`, user)
-				
-				if (user) {
-					usersModel.updateLastActivity(userId)
-					const updateResult = usersModel.updateOnlineStatus(userId, 0)
-					console.log(`Update online status result:`, updateResult)
-					const userAfter = usersModel.getUserById(userId)
-					console.log(`User status after update:`, userAfter.online_status)
-					console.log(`✅ User ${userId} marked as offline`)
-				} else {
-					console.log(`⚠️ User ${userId} not found in database`)
-				}
-			})
-		}
-	})
+				connection.on('close', (code, reason) => {
+					console.log(`🔌 User ${userId} WebSocket disconnected - Code: ${code}, Reason: ${reason}`)
+					
+					// ✅ Supprimer immédiatement de la map des connexions actives
+					activeConnections.delete(userId)
+					
+					const user = usersModel.getUserById(userId)
+					if (user) {
+						// ✅ Marquer comme hors ligne immédiatement
+						notifyFriendsStatusChange(userId, 0)
+						console.log(`✅ User '${user.username}' marked as offline immediately`)
+					} else {
+						console.log(`⚠️ User '${user.username}' not found in database`)
+					}
+				})
+
+				// ✅ Gérer les erreurs de connexion
+				connection.on('error', (error) => {
+					console.error(`❌ WebSocket error for user ${userId}:`, error)
+					activeConnections.delete(userId)
+					notifyFriendsStatusChange(userId, 0)
+				})
+			} else {
+				console.warn('❌ Invalid userId for WebSocket connection')
+				connection.close(1008, 'Invalid userId')
+			}
+		})
 })
-
 
 
 setupRedisLogging(fastify); // Setup Redis logging with Fastify

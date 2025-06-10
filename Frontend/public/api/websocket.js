@@ -25,16 +25,23 @@ class WebSocketManager {
 		
 		this.socket.onmessage = (event) => {
 			const data = JSON.parse(event.data)
-			if (data.type === 'pong') {
+			if (data.type === 'pong')
 				console.log('Heartbeat response received')
-			}
+			// else if (data.type === 'friend_status_update')
+			// 	this.updateFriendStatus(data.userId, data.status, data.username)
+			else if (data.type === 'friend_request')
+				this.handleFriendRequest(data.message)
 		}
 		
 		this.socket.onclose = () => {
 			console.log('WebSocket disconnected')
 			this.stopHeartbeat()
-			// Tentative de reconnexion après 3 secondes
-			setTimeout(() => this.connect(), 3000)
+			// Tentative de reconnexion après 3 secondes si on a toujours un token
+			setTimeout(() => {
+				if (sessionStorage.getItem('accessToken')) {
+					this.connect()
+				}
+			}, 3000)
 		}
 		
 		this.socket.onerror = (error) => {
@@ -61,9 +68,11 @@ class WebSocketManager {
 		this.stopHeartbeat()
 		if (this.socket && this.socket.readyState === WebSocket.OPEN) {
 			console.log('Closing WebSocket connection...')
-			this.socket.close()
+			// ✅ Forcer la fermeture immédiate
+			this.socket.close(1000, 'User logout')
 		}
 		this.socket = null
+		console.log('✅ WebSocket disconnected and cleaned up')
 	}
 	
 	getUserIdFromToken() {
@@ -72,25 +81,79 @@ class WebSocketManager {
 		
 		try {
 			const payload = JSON.parse(atob(token.split('.')[1]))
-			return parseInt(payload.userId) // Convertir ici
+			return parseInt(payload.userId)
 		} catch (error) {
 			console.error('Error parsing token:', error)
 			return null
 		}
 	}
+
+	handleFriendRequest(message) {
+
+		fetch_user_friendships()
+		if (message)
+			notif(`${message}`, true)
+	}
+
+	handleFriendStatus(data) {
+		console.log(`📬 Friend request received from ${data.fromUsername}`)
+		notif(`${data.message}`, true)
+		fetch_user_friendships()
+
+		window.dispatchEvent(new CustomEvent('friendRequestReceived', {
+			detail: {
+				fromUserId: data.fromUserId,
+				fromUsername: data.fromUsername,
+				fromProfilePicture: data.fromProfilePicture,
+				message: data.message
+			}
+		}))
+		
+	// 	// Rafraîchir la liste des amis si elle est visible
+	// 	if (typeof window.fetch_user_friendships === 'function') {
+	// 		window.fetch_user_friendships()
+	// 	}
+	// }
+
+	// ✅ AJOUT : Fonction pour gérer l'acceptation d'une demande d'amitié
+// 	handleFriendRequestAccepted(data) {
+// 		console.log(`📬 Friend request accepted by ${data.fromUsername}`)
+		
+// 		// Afficher une notification visuelle
+// 		if (typeof window.notif === 'function') {
+// 			window.notif(`${data.fromUsername} has accepted your friend request`, true)
+// 		}
+		
+// 		// Déclencher un événement personnalisé
+// 		window.dispatchEvent(new CustomEvent('friendRequestAccepted', {
+// 			detail: {
+// 				fromUserId: data.fromUserId,
+// 				fromUsername: data.fromUsername,
+// 				fromProfilePicture: data.fromProfilePicture,
+// 				message: data.message
+// 			}
+// 		}))
+		
+// 		// Rafraîchir la liste des amis si elle est visible
+// 		if (typeof window.fetch_user_friendships === 'function') {
+// 			window.fetch_user_friendships()
+// 		}
+	}
 }
 
 // Instance globale du WebSocket
-const wsManager = new WebSocketManager()
+export const wsManager = new WebSocketManager()
 
-// Connexion automatique après login
-function connectWebSocket() {
+// Fonctions de compatibilité pour l'ancien code
+export function connectWebSocket() {
 	wsManager.connect()
 }
 
-// Déconnexion lors du logout
-function disconnectWebSocket() {
-	if (typeof wsManager !== 'undefined' && wsManager) {
-		wsManager.disconnect()
-	}
+export function disconnectWebSocket() {
+	wsManager.disconnect()
 }
+
+// ✅ AJOUT : Rendre les fonctions accessibles globalement pour les fichiers non-modules
+window.connectWebSocket = connectWebSocket;
+window.disconnectWebSocket = disconnectWebSocket;
+window.wsManager = wsManager;

@@ -3219,12 +3219,12 @@ to {
 }
 
 /* Statuts différents */
-.status-online {
+.online {
 	background-color: #2ecc71; /* Vert vif mais pas trop agressif */
 	box-shadow: 0 0 6px rgba(46, 204, 113, 0.7); /* Effet lumineux */
 }
 
-.status-offline {
+.offline {
 	background-color: #95a5a6; /* Gris neutre */
 }
 

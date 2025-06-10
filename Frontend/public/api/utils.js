@@ -3,11 +3,7 @@ function notif(message, success = true) {
 	console.log("notif:", message, "success:", success);
 	if (notification) {
 		document.getElementById('notification-container').style.display = 'flex';
-		const icon = success ?
-			`<img src='/srcs/game/assets/image/success.png' style='width:20px; height:20px; margin-right:5px;'>` :
-			`<img src='/srcs/game/assets/image/failure.png' style='width:20px; height:20px; margin-right:5px;'>`;
-
-		notification.innerHTML = `<div style='display:flex; align-items:center;'>${icon}<span>${message}</span></div>`;
+		notification.innerHTML = `<div style='display:flex; align-items:center;'><span>${message}</span></div>`;
 		if (success)
 			notification.className = `success_notif`
 		else
@@ -26,7 +22,7 @@ function notif(message, success = true) {
 
 async function fetchAPI(url, method, body = null, showNotification = true, formData = null) {
 	try {
-		accessToken = sessionStorage.getItem('accessToken');
+		const accessToken = sessionStorage.getItem('accessToken');
 		
 		const headers = {
 			"Authorization": `Bearer ${accessToken}`
@@ -65,3 +61,61 @@ async function fetchAPI(url, method, body = null, showNotification = true, formD
 	}
 }
 
+async function refreshInfos() {
+	try {
+		const data = await fetchAPI('/request/user/refresh-infos', 'POST', {}, true, false);
+
+		if (!data.accessToken || data.deleted_account) {
+			sessionStorage.clear();
+			localStorage.clear();
+			history.pushState({}, '', '/');
+			import('../static/js/views/Home.js').then((module) => {
+				console.log("Home module loaded");
+				const Home = module.default;
+				const homeInstance = new Home();
+				homeInstance.getHtml().then((html) => {
+					const appElement = document.getElementById('app');
+					if (appElement) {
+						appElement.innerHTML = html;
+						if (homeInstance.createAccount && typeof homeInstance.createAccount === 'function') {
+							homeInstance.createAccount();
+						}
+					}
+				});
+			});
+			notif("Session expired, please log in again", false);
+		} else if (sessionStorage.getItem("accessToken") && sessionStorage.getItem("accessToken") !== "undefined") {
+			// ✅ Utiliser window.connectWebSocket au lieu de l'import
+			if (typeof window.connectWebSocket === 'function') {
+				window.connectWebSocket();
+			}
+			localStorage.clear();
+			localStorage.setItem("Player1", data.user.username);
+			localStorage.setItem("profile_picture", data.user.profile_picture);
+			history.pushState({}, '', '/Game_menu');
+			import('../static/js/views/Game_menu.js').then(module => {
+				const GameMenu = module.default;
+				const gameMenuInstance = new GameMenu();
+				gameMenuInstance.getHtml().then(html => {
+					document.getElementById('app').innerHTML = html;
+					if (gameMenuInstance.game_menu) {
+						gameMenuInstance.game_menu();
+					}
+				});
+			});
+		}
+
+		if (data.success) {
+			console.log("Infos refreshed successfully");
+		} else {
+			console.error("❌ Error refreshing infos:", data.error);
+		}
+	} catch (err) {
+		console.error("Erreur lors du rafraîchissement des informations :", err);
+	}
+}
+
+// ✅ CORRECTION : Rendre la fonction accessible globalement
+window.refreshInfos = refreshInfos;
+window.fetchAPI = fetchAPI;
+window.notif = notif;
