@@ -39,12 +39,10 @@ export default class EndGameSecondeGame {
 		this.option5font = "15px 'Press Start 2P', Black Ops One";
 		this.option6font = "20px 'Press Start 2P', Black Ops One";
 
-		// Ajouter les propriétés pour la gestion de la souris
-		this.hoveredOption = -1;  // -1 signifie qu'aucune option n'est survolée
+		this.hoveredOption = -1;
 		this.boundMouseMove = this.handleMouseMove.bind(this);
 		this.boundMouseClick = this.handleMouseClick.bind(this);
-		
-		// Définir les zones de clic pour chaque option
+
 		this.buttonAreas = [
 			{ option: "Menu", x: 880, y: 530, width: 100, height: 30 },
 			{ option: "Restart", x: 880, y: 500, width: 120, height: 30 }
@@ -63,46 +61,39 @@ export default class EndGameSecondeGame {
 	}
 	
 	handleMouseMove(event) {
-		// Obtenir la position de la souris relative au canvas
 		const rect = canvas.getBoundingClientRect();
 		const x = event.clientX - rect.left;
 		const y = event.clientY - rect.top;
 		
-		// Réinitialiser la valeur de hoveredOption
 		this.hoveredOption = -1;
-		
-		// Vérifier si la souris est sur un bouton
+
 		for (let i = 0; i < this.buttonAreas.length; i++) {
 			const button = this.buttonAreas[i];
 			if (x >= button.x && x <= button.x + button.width &&
 				y >= button.y && y <= button.y + button.height) {
 				this.hoveredOption = i;
-				canvas.style.cursor = 'pointer';  // Changer le curseur en main
+				canvas.style.cursor = 'pointer';
 				break;
 			}
 		}
-		
-		// Si aucun bouton n'est survolé, remettre le curseur par défaut
+
 		if (this.hoveredOption === -1) {
 			canvas.style.cursor = 'default';
 		}
 	}
 
-	// Nouvelle méthode pour gérer les clics de souris
-	handleMouseClick(event) {
-		// Obtenir la position du clic relative au canvas
+	handleMouseClick(event)
+	{
 		const rect = canvas.getBoundingClientRect();
 		const x = event.clientX - rect.left;
 		const y = event.clientY - rect.top;
-		
-		// Vérifier si le clic est sur un bouton
+
 		for (let i = 0; i < this.buttonAreas.length; i++) {
 			const button = this.buttonAreas[i];
 			if (x >= button.x && x <= button.x + button.width &&
-				y >= button.y && y <= button.y + button.height) {
-				// Définir l'option sélectionnée sur celle qui a été cliquée
+				y >= button.y && y <= button.y + button.height)
+			{
 				this.selectedOption = i;
-				// Exécuter l'action associée à cette option
 				this.handleSelect();
 				break;
 			}
@@ -160,20 +151,15 @@ export default class EndGameSecondeGame {
 				localStorage.setItem("score_player2", this.Score);
 			}
 			this.MapMenu.nb_game_started++;
-			// if (typeof window.create_platformer === 'function') {
-			// 	window.create_platformer();
-			// }
 			this.create_platformer();
 			this.historyGame.saveGameIfNeeded(this.MapMenu.nb_game_started, this.winner, this.WinnerScore, this.gameCanvas.timer);
 			if (this.player && typeof this.player.reset_Game === "function") {
 				this.player.reset_Game();
 			}
-			
-			// 🔁 Reset la GameCanvas (à adapter selon ta classe GameCanvas)
-			if (this.gameCanvas) {
+			if (this.gameCanvas)
+			{
 				this.gameCanvas.nb_coin = 0;
 				this.gameCanvas.timer = 0;
-				// ajoute d'autres resets si t’en as (plateformes, objets, etc.)
 			}
 			
 			if (this.coins && Array.isArray(this.coins)) {
@@ -195,12 +181,10 @@ export default class EndGameSecondeGame {
 			if (this.player && typeof this.player.reset_Game === "function") {
 				this.player.reset_Game();
 			}
-			
-			// 🔁 Reset la GameCanvas (à adapter selon ta classe GameCanvas)
-			if (this.gameCanvas) {
+			if (this.gameCanvas)
+			{
 				this.gameCanvas.nb_coin = 0;
 				this.gameCanvas.timer = 0;
-				// ajoute d'autres resets si t’en as (plateformes, objets, etc.)
 			}
 			
 			if (this.coins && Array.isArray(this.coins)) {
@@ -212,8 +196,6 @@ export default class EndGameSecondeGame {
 					}
 				});
 			}
-			
-			// 🔁 Change l’état du jeu
 			this.disableControls();
 			gameState.previous = gameState.current;
 			gameState.current = GameState.Play;
@@ -232,11 +214,11 @@ export default class EndGameSecondeGame {
 
 		if (this.EndGame_FirstGame.Score > this.Score)
 		{
-			this.winner = "Player 1";
+			this.winner = `${localStorage.getItem("Player1")}`;
 		}
 		else if (this.EndGame_FirstGame.Score < this.Score)
 		{
-			this.winner = "Player 2";
+			this.winner = `${localStorage.getItem("Player2")}`;
 		}
 		this.option7 = this.winner;
 

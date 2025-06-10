@@ -3,8 +3,8 @@ import { createLoadingOverlay, removeLoadingOverlay } from './loading_screen.js'
 const views = {
 	default:
 	{
-		position: new BABYLON.Vector3(-45.79301951065982, 5.879735371044789, -31.342210947081313),
-		rotation: new BABYLON.Vector3(-0.029665280069011667, -2.566387085794712, 0)
+		position: new BABYLON.Vector3(-46.5848927854827, 7.033186073453854, -36.673950554376425),
+		rotation: new BABYLON.Vector3(-0.06270675424618415, -2.546876145234487, 0)
 	},
 	vue1:
 	{

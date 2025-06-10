@@ -25,7 +25,7 @@ console.log("historyIsVisible:", localStorage.getItem('historyIsVisible'));
 export default class Game_menu extends AbstractView {
 	constructor() {
 		super();
-		this.setTitle("Game_menu");
+		this.setTitle("game-menu");
 		const accessToken: string | null = sessionStorage.getItem('accessToken');
 		if (!accessToken || accessToken === undefined) {
 			history.pushState({}, '', '/');
@@ -47,7 +47,7 @@ export default class Game_menu extends AbstractView {
 
 	async getHtml(): Promise<string> {
 		return /*html*/`
-		<link rel="stylesheet" href="./static/js/css/game_menu.css">
+		<link rel="stylesheet" href="./static/js/css/Game_menu.css">
 		<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 		<div class="navbar_menu">
 			<div class="profile_photo_circle_nav_bar" id="profile_photo_circle_nav_bar"><img src="./uploads/${localStorage.getItem('profile_picture')}" alt="profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;"></div>
@@ -219,6 +219,7 @@ export default class Game_menu extends AbstractView {
 				<div class="friend_tabs">
 					<button id="tab-accepted" class="tab-btn active">Friends</button>
 					<button id="tab-pending" class="tab-btn">On hold</button>
+					<div class="notify_friend_demand" title="Friend Request"></div>
 				</div>
 
 				<!-- Sections d'amis -->
@@ -1669,15 +1670,16 @@ export default class Game_menu extends AbstractView {
 			panel_option_navbar.classList.remove('remove'); // retire l'animation de fermeture
 			void panel_option_navbar.offsetWidth; // force le reflow pour relancer l'animation si besoin
 			panel_option_navbar.classList.add('active');
+			option_btn_navBar.style.display = 'none';
 		});
 
 		option_btn_remove.addEventListener('click', () => {
 			console.log('Option deconnect back clicked');
 			// panel_option_navbar.classList.remove('active'); // retire l'animation d’ouverture
 			panel_option_navbar.classList.add('remove');
-			if (localStorage.getItem("historyIsVisible") === "true" && gameHistory.classList.contains('active')) {
-				gameHistory.classList.remove('active');
-			}
+			setTimeout(() => {
+				option_btn_navBar.style.display = 'block';
+			}, 800);
 		});
 
 		deconnect_btn_navBar.addEventListener('click', () => {

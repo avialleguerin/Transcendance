@@ -87,12 +87,12 @@ window.scene = new BABYLON.Scene(engine);
 scene.clearColor = new BABYLON.Color4(0, 0, 0, 1);
 scene.blockMaterialDirtyMechanism = true;
 
-window.camera = new BABYLON.FreeCamera("camera", new BABYLON.Vector3(-45.79301951065982, 5.879735371044789, -31.342210947081313), scene);
-camera.rotation = new BABYLON.Vector3(-0.029665280069011667, -2.566387085794712, 0);
+window.camera = new BABYLON.FreeCamera("camera", new BABYLON.Vector3(-46.5848927854827, 7.033186073453854, -36.673950554376425), scene);
+camera.rotation = new BABYLON.Vector3(-0.06270675424618415, -2.546876145234487, 0);
 camera.minZ = 0.1;
 camera.maxZ = 5000;
-// camera.attachControl(canvas, false);
-camera.speed = 1;
+camera.attachControl(canvas, true);
+camera.speed = 5;
 
 const pipeline = new BABYLON.DefaultRenderingPipeline("defaultPipeline", true, scene, [camera]);
 
@@ -482,6 +482,7 @@ engine.runRenderLoop(() => {
 			console.log(`FPS: ${debugFps} | Quality: ${qualityLevel} | Active Meshes: ${scene.getActiveMeshes().length}`);
 			lastDebugOutput = now;
 		}
+		console.log(camera.position, camera.rotation);
 
 		scene.render();
 

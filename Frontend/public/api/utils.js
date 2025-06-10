@@ -3,11 +3,8 @@ function notif(message, success = true) {
 	console.log("notif:", message, "success:", success);
 	if (notification) {
 		document.getElementById('notification-container').style.display = 'flex';
-		const icon = success ?
-			`<img src='/srcs/game/assets/image/success.png' style='width:20px; height:20px; margin-right:5px;'>` :
-			`<img src='/srcs/game/assets/image/failure.png' style='width:20px; height:20px; margin-right:5px;'>`;
 
-		notification.innerHTML = `<div style='display:flex; align-items:center;'>${icon}<span>${message}</span></div>`;
+		notification.innerHTML = `<div style='display:flex; align-items:center;'><span>${message}</span></div>`;
 		if (success)
 			notification.className = `success_notif`
 		else
