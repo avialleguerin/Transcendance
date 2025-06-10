@@ -1,7 +1,7 @@
 import AbstractView from "./AbstractView.js";
 import { initGoogleSignIn, tokenClient } from '../../../api/auth.js';
 import { gameMenuView } from '../../../api/utils.js';
-// import { notif } from '../../../api/utils.js';
+import { notif } from '../../../api/utils.js';
 // import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.js";
 // import Game_menu from "./Game_menu.js";
 
@@ -16,21 +16,21 @@ export default class Home extends AbstractView {
 	constructor() {
 		super();
 		this.setTitle("Home");
-		const accessToken : string | null = sessionStorage.getItem("accessToken");
-		if (accessToken && accessToken !== undefined) {
+		// const accessToken : string | null = sessionStorage.getItem("accessToken");
+		// if (accessToken && accessToken !== undefined) {
 			// gameMenuView();
-			history.pushState({}, '', '/Game_menu');
-			import('./Game_menu.js').then(module => {
-				const GameMenu = module.default;
-				const gameMenuInstance = new GameMenu();
-				gameMenuInstance.getHtml().then(html => {
-					document.getElementById('app').innerHTML = html;
-					if (gameMenuInstance.game_menu) {
-						gameMenuInstance.game_menu();
-					}
-				}); 
-			});
-		}
+			// history.pushState({}, '', '/Game_menu');
+			// import('./Game_menu.js').then(module => {
+			// 	const GameMenu = module.default;
+			// 	const gameMenuInstance = new GameMenu();
+			// 	gameMenuInstance.getHtml().then(html => {
+			// 		document.getElementById('app').innerHTML = html;
+			// 		if (gameMenuInstance.game_menu) {
+			// 			gameMenuInstance.game_menu();
+			// 		}
+			// 	}); 
+			// });
+		// }
 	}
 
 	async getHtml(): Promise<string> {
@@ -288,7 +288,7 @@ export default class Home extends AbstractView {
 				tokenClient.requestAccessToken();
 			} else {
 				console.error(`Client Google OAuth non initialisé ${typeof tokenClient} && ${tokenClient} `, );
-				// notif("Google connexion non initialised", false);
+				notif("Google connexion non initialised", false);
 			}
 		};
 
