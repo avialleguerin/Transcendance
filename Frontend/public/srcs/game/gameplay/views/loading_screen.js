@@ -18,7 +18,7 @@ export function createLoadingOverlay()
 			</div>
 		</div>
 	`;
-	console.log("Création de l'ovesssssssssssssssssssssssssssssssssssssssssssssssssrlay...");
+	console.log("Creation of the overlay...");
 	document.body.appendChild(loadingOverlay);
 }
 

@@ -1,5 +1,5 @@
 import AbstractView from "./AbstractView.js";
-// import { log } from '../../../api/utils.js';
+import { gameMenuView } from '../../../api/utils.js';
 // import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.js";
 // import Game_menu from "./Game_menu.js";
 
@@ -14,20 +14,21 @@ export default class Home extends AbstractView {
 	constructor() {
 		super();
 		this.setTitle("Home");
-		// const accessToken : string | null = sessionStorage.getItem("accessToken");
-		// if (accessToken && accessToken !== undefined) {
-		// 	history
-		// 	import('./Game_menu.js').then(module => {
-		// 		const GameMenu = module.default;
-		// 		const gameMenuInstance = new GameMenu();
-		// 		gameMenuInstance.getHtml().then(html => {
-		// 			document.getElementById('app').innerHTML = html;
-		// 			if (gameMenuInstance.game_menu) {
-		// 				gameMenuInstance.game_menu();
-		// 			}
-		// 		});
-		// 	});
-		// }
+		const accessToken : string | null = sessionStorage.getItem("accessToken");
+		if (accessToken && accessToken !== undefined) {
+			// gameMenuView();
+			history.pushState({}, '', '/Game_menu');
+			import('./Game_menu.js').then(module => {
+				const GameMenu = module.default;
+				const gameMenuInstance = new GameMenu();
+				gameMenuInstance.getHtml().then(html => {
+					document.getElementById('app').innerHTML = html;
+					if (gameMenuInstance.game_menu) {
+						gameMenuInstance.game_menu();
+					}
+				}); 
+			});
+		}
 	}
 
 	async getHtml(): Promise<string> {

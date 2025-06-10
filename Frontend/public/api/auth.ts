@@ -18,14 +18,15 @@ export async function login(event: Event): Promise<void> {
 			notif(`connexion refused : ${data.error}`, false);
 		} else if (data.success && data.connection_status === "partially_connected" && data.user.doubleAuth_status) {
 			sessionStorage.setItem("userId", data.user.userId);
-			updateUI({
-				removeClass: [{ id:"doubleAuthForm", className: "hidden" }],
-				addClass: ["loginForm", "doubleAuthForm"],
-			}); $input("login-title").textContent = "Double Authentication";
-
-			// document.getElementById("doubleAuthForm").classList.remove("hidden");
-			// document.getElementById("loginForm").classList.add("active");
-			// document.getElementById("doubleAuthForm").classList.add("active");
+			// updateUI({
+			// 	removeClass: [{ id:"doubleAuthForm", className: "hidden" }],
+			// 	addClass: ["loginForm", "doubleAuthForm"],
+			// }); $input("login-title").textContent = "Double Authentication";
+			
+			$input("login-title").textContent = "Double Authentication";
+			document.getElementById("doubleAuthForm").classList.remove("hidden");
+			document.getElementById("loginForm").classList.add("active");
+			document.getElementById("doubleAuthForm").classList.add("active");
 		} else if (data.success && data.connection_status === "connected") {
 			notif(data.message, true);
 			setLocalStorage({ "Player1": data.user.username, "profile_picture": data.user.profile_picture });
@@ -89,17 +90,17 @@ export async function login_1v1(event: Event) {
 				return notif("You cannot play against yourself", false);
 			notif(data.message, true);
 			setLocalStorage({ "Player2": data.player2.username });
-			updateUI({
-				removeClass: ["choose_your_opponent_1v1_form", "container"],
-				addClass: ["back_to_select_mode_view6", "view6"],
-				setContent: {"1v1-oponent-username1": localStorage.getItem("Player1"), "1v1-oponent-username2": localStorage.getItem("Player2")}
-			});
-			// document.getElementById("choose_your_opponent_1v1_form").classList.remove('active');
-			// document.getElementById("back_to_select_mode_view6").classList.add('active');
-			// document.getElementById("view6").classList.add('active');
-			// document.getElementById("container").classList.remove('active');
-			// document.getElementById("1v1-oponent-username1").innerHTML = localStorage.getItem("Player1");
-			// document.getElementById("1v1-oponent-username2").innerHTML = localStorage.getItem("Player2");
+			// updateUI({
+			// 	removeClass: ["choose_your_opponent_1v1_form", "container"],
+			// 	addClass: ["back_to_select_mode_view6", "view6"],
+			// 	setContent: {"1v1-oponent-username1": localStorage.getItem("Player1"), "1v1-oponent-username2": localStorage.getItem("Player2")}
+			// });
+			document.getElementById("choose_your_opponent_1v1_form").classList.remove('active');
+			document.getElementById("back_to_select_mode_view6").classList.add('active');
+			document.getElementById("view6").classList.add('active');
+			document.getElementById("container").classList.remove('active');
+			document.getElementById("1v1-oponent-username1").innerHTML = localStorage.getItem("Player1");
+			document.getElementById("1v1-oponent-username2").innerHTML = localStorage.getItem("Player2");
 		} else
 			notif(data.error, false);
 	} catch (err) {
@@ -131,24 +132,24 @@ export async function login_2v2(event: Event) {
 				return notif("There can't be the same player 2 times", false);
 			notif(data.message, true);
 			setLocalStorage({"Player2": data.player2.username, "Player3": data.player3.username, "Player4": data.player4.username });
-			updateUI({
-				removeClass: ["choose_your_opponent_multi_form", "container"],
-				addClass: ["back_to_select_mode_view8", "view8"],
-				setContent: {
-					"2v2-oponent-username1": localStorage.getItem("Player1"),
-					"2v2-oponent-username2": localStorage.getItem("Player2"),
-					"2v2-oponent-username3": localStorage.getItem("Player3"),
-					"2v2-oponent-username4": localStorage.getItem("Player4")
-				}
-			});
-			// document.getElementById("choose_your_opponent_multi_form").classList.remove('active');
-			// document.getElementById("back_to_select_mode_view8").classList.add('active');
-			// document.getElementById("view8").classList.add('active');
-			// document.getElementById("container").classList.remove('active');
-			// document.getElementById("2v2-oponent-username1").innerHTML = localStorage.getItem("Player1");
-			// document.getElementById("2v2-oponent-username2").innerHTML = localStorage.getItem("Player2");
-			// document.getElementById("2v2-oponent-username3").innerHTML = localStorage.getItem("Player3");
-			// document.getElementById("2v2-oponent-username4").innerHTML = localStorage.getItem("Player4");
+			// updateUI({
+			// 	removeClass: ["choose_your_opponent_multi_form", "container"],
+			// 	addClass: ["back_to_select_mode_view8", "view8"],
+			// 	setContent: {
+			// 		"2v2-oponent-username1": localStorage.getItem("Player1"),
+			// 		"2v2-oponent-username2": localStorage.getItem("Player2"),
+			// 		"2v2-oponent-username3": localStorage.getItem("Player3"),
+			// 		"2v2-oponent-username4": localStorage.getItem("Player4")
+			// 	}
+			// });
+			document.getElementById("choose_your_opponent_multi_form").classList.remove('active');
+			document.getElementById("back_to_select_mode_view8").classList.add('active');
+			document.getElementById("view8").classList.add('active');
+			document.getElementById("container").classList.remove('active');
+			document.getElementById("2v2-oponent-username1").innerHTML = localStorage.getItem("Player1");
+			document.getElementById("2v2-oponent-username2").innerHTML = localStorage.getItem("Player2");
+			document.getElementById("2v2-oponent-username3").innerHTML = localStorage.getItem("Player3");
+			document.getElementById("2v2-oponent-username4").innerHTML = localStorage.getItem("Player4");
 		} else
 			notif(data.error, false);
 	} catch (err) {
@@ -180,23 +181,23 @@ export async function login_tournament(event: Event) {
 				return notif("There can't be the same player 2 times", false);
 			notif(data.message, true);
 			setLocalStorage({"Player2": data.player2.username, "Player3": data.player3.username, "Player4": data.player4.username });
-			updateUI({
-				setContent: {
-					"Player1": localStorage.getItem("Player1"),
-					"Player2": localStorage.getItem("Player2"),
-					"Player3": localStorage.getItem("Player3"),
-					"Player4": localStorage.getItem("Player4")
-			}});
-			// document.getElementById("Player1").innerHTML = localStorage.getItem("Player1");
-			// document.getElementById("Player2").innerHTML = localStorage.getItem("Player2");
-			// document.getElementById("Player3").innerHTML = localStorage.getItem("Player3");
-			// document.getElementById("Player4").innerHTML = localStorage.getItem("Player4");
+			// updateUI({
+			// 	setContent: {
+			// 		"Player1": localStorage.getItem("Player1"),
+			// 		"Player2": localStorage.getItem("Player2"),
+			// 		"Player3": localStorage.getItem("Player3"),
+			// 		"Player4": localStorage.getItem("Player4")
+			// }});
+			document.getElementById("Player1").innerHTML = localStorage.getItem("Player1");
+			document.getElementById("Player2").innerHTML = localStorage.getItem("Player2");
+			document.getElementById("Player3").innerHTML = localStorage.getItem("Player3");
+			document.getElementById("Player4").innerHTML = localStorage.getItem("Player4");
 			setLocalStorage({"current_player1": localStorage.getItem("Player1"), "current_player2": localStorage.getItem("Player2") });
 			const tournamentStarted = true;
 			localStorage.setItem('tournamentStarted', tournamentStarted.toString());
-			updateUI({ addClass: [{ id: "tournament_graphic_id", className: "active" }, { id: "container_name_player", className: "hidden"}] });
-			// document.getElementById("container_name_player").classList.add('hidden');
-			// document.getElementById("tournament_graphic_id").classList.add('active');
+			// updateUI({ addClass: [{ id: "tournament_graphic_id", className: "active" }, { id: "container_name_player", className: "hidden"}] });
+			document.getElementById("container_name_player").classList.add('hidden');
+			document.getElementById("tournament_graphic_id").classList.add('active');
 			document.getElementById("start_tournament").style.display = 'none';
 			document.getElementById("back_to_menu_view_tournament").style.display = 'none';
 			
@@ -226,8 +227,8 @@ export async function login_platformer(event: Event) {
 			localStorage.setItem("Player2", data.player2.username);
 			localStorage.setItem("platformer_view", 'true'); //REVIEW - a cause de ts jai du le mettre en string
 			$("start-platformer").click();
-			// document.getElementById("platformer-oponent-username1").innerHTML = localStorage.getItem("Player1");
-			// document.getElementById("platformer-oponent-username2").innerHTML = localStorage.getItem("Player2");
+			document.getElementById("platformer-oponent-username1").innerHTML = localStorage.getItem("Player1");
+			document.getElementById("platformer-oponent-username2").innerHTML = localStorage.getItem("Player2");
 			// PlatformerView(); //TODO
 		} else
 			notif(data.error, false);
@@ -265,10 +266,10 @@ export async function register(event: Event) {
 		const data = await fetchAPI('/request/user/create-user', 'POST', { username, password });
 		
 		if (data.success) {
-			updateUI({removeClass: ["create_account_id", "loginform_id"], resetForm: "registerForm"});
-			// document.getElementById("registerForm").reset();
-			// document.getElementById("create_account_id").classList.remove("active");
-			// document.getElementById("loginform_id").classList.remove("active");
+			// updateUI({removeClass: ["create_account_id", "loginform_id"], resetForm: "registerForm"});
+			document.getElementById("registerForm").reset();
+			document.getElementById("create_account_id").classList.remove("active");
+			document.getElementById("loginform_id").classList.remove("active");
 		}
 	} catch (err) {
 		console.error("Erreur lors de l'inscription :", err);
@@ -286,9 +287,9 @@ export async function refreshInfos() {
 			notif("Session expired, please log in again", false);
 		} else if (sessionStorage.getItem("accessToken") && sessionStorage.getItem("accessToken") !== "undefined") {
 			localStorage.clear();
-			setLocalStorage({"Player1": data.user.username, "profile_picture": data.user.profile_picture});
-			// localStorage.setItem("Player1", data.user.username);
-			// localStorage.setItem("profile_picture", data.user.profile_picture);
+			// setLocalStorage({"Player1": data.user.username, "profile_picture": data.user.profile_picture});
+			localStorage.setItem("Player1", data.user.username);
+			localStorage.setItem("profile_picture", data.user.profile_picture);
 			gameMenuView();
 		}
 

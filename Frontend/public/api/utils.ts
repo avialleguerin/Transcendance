@@ -1,3 +1,5 @@
+import { handleViewTransitions } from '../srcs/game/gameplay/views/camera.js';
+
 export function notif(message, success = true) {
 	const notification = document.getElementById('resultMessage');
 	console.log("notif:", message, "success:", success);
@@ -65,7 +67,7 @@ export async function fetchAPI(url, method, body = null, showNotification = true
 	}
 }
 
-import { handleViewTransitions } from '../srcs/game/gameplay/views/camera.js';
+
 
 export function homeView() {
 	handleViewTransitions("default", "vue1");

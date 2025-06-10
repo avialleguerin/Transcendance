@@ -23,7 +23,9 @@ export default class Game_menu extends AbstractView {
 	constructor() {
 		super();
 		this.setTitle("Game_menu");
-		// homeView();
+		const accessToken: string | null = sessionStorage.getItem('accessToken');
+		if (!accessToken || accessToken === undefined)
+			homeView();
 	}
 
 	async getHtml(): Promise<string> {
@@ -713,29 +715,29 @@ export default class Game_menu extends AbstractView {
 		</div>
 	`;}
 
-	// init_solo_game() {
-	// 	document.getElementById("solo_1v1_btn").addEventListener("click", () => {
-	// 		console.log("Solo 1v1 game started");
-	// 		startGame();
-	// 		handleViewTransitions("vue3", "vue2");
-	// 	});
-	// }
+	init_solo_game() {
+		document.getElementById("solo_1v1_btn").addEventListener("click", () => {
+			console.log("Solo 1v1 game started");
+			startGame();
+			handleViewTransitions("vue3", "vue2");
+		});
+	}
 
-	// initEvents() {
-	// 	document.getElementById("multiplayer_btn").addEventListener("click", () => {
-	// 		// console.log("Multiplayer 2v2 game started");
-	// 		startMultiGame();
-	// 		handleViewTransitions("vue3", "vue2");
-	// 	});
-	// }
+	initEvents() {
+		document.getElementById("multiplayer_btn").addEventListener("click", () => {
+			// console.log("Multiplayer 2v2 game started");
+			startMultiGame();
+			handleViewTransitions("vue3", "vue2");
+		});
+	}
 
 
-	// tournament_view() {
-	// 	document.getElementById("tournament_view").addEventListener("click", () => {
-	// 		// console.log("Tournament view started");
-	// 		handleViewTransitions("tournament");
-	// 	});
-	// }
+	tournament_view() {
+		document.getElementById("tournament_view").addEventListener("click", () => {
+			// console.log("Tournament view started");
+			handleViewTransitions("tournament");
+		});
+	}
 
 	handleDeconnection() {
 		const deconnect_btn = document.getElementById("deconnect_btn");

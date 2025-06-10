@@ -121,6 +121,9 @@ export default class extends AbstractView {
 				</div>
 			</div>	
 		</div>
+		<div id="notification-container" class="fixed top-0 left-0 right-0 flex justify-center z-50 mt-4">
+			<p id="resultMessage" class="py-2 px-4 rounded shadow-lg transition-all duration-300 transform translate-y-0 opacity-0"></p>
+		</div>
 	`;
 	}
 
