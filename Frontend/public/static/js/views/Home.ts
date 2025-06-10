@@ -248,7 +248,7 @@ export default class Home extends AbstractView {
 		const backButton = document.getElementById("back");
 
 		createAccountButton.addEventListener("click", () => {
-			console.log("createAccountForm");
+			console.info("createAccountForm");
 			loginForm.classList.add("active");
 			createAccountForm.classList.add("active");
 			(document.getElementById("login-username") as HTMLInputElement).value = "";
@@ -256,7 +256,7 @@ export default class Home extends AbstractView {
 		});
 
 		alreadyHaveAccountButton.addEventListener("click", () => {
-			console.log("loginForm");
+			console.info("loginForm");
 			createAccountForm.classList.remove("active");
 			loginForm.classList.remove("active");
 			(document.getElementById("registerForm") as HTMLFormElement).reset();

@@ -1,26 +1,27 @@
+import { notif, fetchAPI, homeView, gameMenuView, platformerView, setLocalStorage, updateUI, $, $input, $form } from './utils.js';
 import { ApiResponse, LoginRequest, RegisterRequest, User } from './types.js';
-import { notif, fetchAPI, homeView, gameMenuView, platformerView, setLocalStorage, updateUI } from './utils.js';
 import { connectWebSocket, disconnectWebSocket } from './websocket.js';
-// import { log } from './utils.js';
 
-
-
-export async function login(event: Event) {
+/**
+ * Connect the user to the game menu.
+ * If the user has double authentication enabled, it will show the double authentication form.
+ * @param event Form submission event
+ */
+export async function login(event: Event): Promise<void> {
 	try {
 		event.preventDefault();
-		const username = (document.getElementById("login-username") as HTMLInputElement).value;
-		const password = (document.getElementById("login-password") as HTMLInputElement).value;
-		// const data: ApiResponse<{user: User, accessToken: string}> = await fetchAPI('/request/user/login', 'POST', { username, password }, true, false);
+		const username = $input("login-username").value;
+		const password = $input("login-password").value;
 		const data = await fetchAPI('/request/user/login', 'POST', { username, password }, true, false);
 		
 		if (!data.accessToken && !data.success) {
-			notif(data.error, false);
+			notif(`connexion refused : ${data.error}`, false);
 		} else if (data.success && data.connection_status === "partially_connected" && data.user.doubleAuth_status) {
 			sessionStorage.setItem("userId", data.user.userId);
 			updateUI({
 				removeClass: [{ id:"doubleAuthForm", className: "hidden" }],
 				addClass: ["loginForm", "doubleAuthForm"],
-			}); document.getElementById("login-title").textContent = "Double Authentication";
+			}); $input("login-title").textContent = "Double Authentication";
 
 			// document.getElementById("doubleAuthForm").classList.remove("hidden");
 			// document.getElementById("loginForm").classList.add("active");
@@ -29,36 +30,40 @@ export async function login(event: Event) {
 			notif(data.message, true);
 			setLocalStorage({ "Player1": data.user.username, "profile_picture": data.user.profile_picture });
 			connectWebSocket()
-			console.log("✅ Connected, Token :", sessionStorage.getItem("accessToken"));
+			console.debug("Connected, Token :", sessionStorage.getItem("accessToken"));
 			// gameMenuView();
 			setTimeout(() => {
 				gameMenuView();
 			}, 2000);
-			(document.getElementById("loginForm") as HTMLFormElement).reset();
-			(document.getElementById("login-password") as HTMLFormElement).value = "";
+			$form("loginForm").reset();
+			$input("login-password").value = "";
 		} else {
 			notif(data.error, false);
-			(document.getElementById("login-password") as HTMLFormElement).value = "";
-			console.log(data.error);
+			$input("login-password").value = "";
+			console.warn("login : ", data.error);
 		}
 	} catch (err) {
-		console.error("Erreur lors de la connexion :", err);
 		notif("Erreur de connexion", false);
+		console.error("Erreur lors de la connexion :", err);
 	}
 }
 
+/**
+ * Verify the 2FA code entered by the user.
+ * @param event 
+ */
 export async function verify2FA(event: Event) {
 	try {
 		event.preventDefault();
 		const userId = sessionStorage.getItem("userId");
-		const code = (document.getElementById("verify-2fa-code") as HTMLFormElement).value;
+		const code = $input("verify-2fa-code").value;
 		const data = await fetchAPI('/request/user/verify-2fa', 'POST', { userId, code });
 
 		if (data.success) {
 			sessionStorage.removeItem("userId")
 			setLocalStorage({"Player1": data.username, "profile_picture": data.profile_picture});
 			connectWebSocket()
-			console.log("2FA code valid!");
+			console.info("2FA code valid!");
 			gameMenuView();
 		}
 	} catch (err) {
@@ -66,11 +71,15 @@ export async function verify2FA(event: Event) {
 	}
 }
 
+/**
+ * Login for 1v1 mode.
+ * @param event Form submission, where the second user enters his infos.
+ */
 export async function login_1v1(event: Event) {
 	try {
 		event.preventDefault();
-		const username = (document.getElementById("1v1-username2") as HTMLFormElement).value;
-		const password = (document.getElementById("1v1-password2") as HTMLFormElement).value;
+		const username = $input("1v1-username2").value;
+		const password = $input("1v1-password2").value;
 		if (!username || !password)
 			return notif("Please fill in all fields", false);
 
@@ -97,19 +106,19 @@ export async function login_1v1(event: Event) {
 		console.error("Erreur lors de la connexion :", err);
 		notif("Erreur de connexion", false);
 	}
-	(document.getElementById("choose_your_opponent_1v1_form") as HTMLFormElement).reset();
+	$form("choose_your_opponent_1v1_form").reset();
 }
 
 export async function login_2v2(event: Event) {
 	event.preventDefault();
 	const username1 = localStorage.getItem("Player1");
-	const username2 = (document.getElementById("2v2-username2") as HTMLFormElement).value;
-	const username3 = (document.getElementById("2v2-username3") as HTMLFormElement).value;
-	const username4 = (document.getElementById("2v2-username4") as HTMLFormElement).value;
+	const username2 = $input("2v2-username2").value;
+	const username3 = $input("2v2-username3").value;
+	const username4 = $input("2v2-username4").value;
 
-	const password2 = (document.getElementById("2v2-password2") as HTMLFormElement).value;
-	const password3 = (document.getElementById("2v2-password3") as HTMLFormElement).value;
-	const password4 = (document.getElementById("2v2-password4") as HTMLFormElement).value;
+	const password2 = $input("2v2-password2").value;
+	const password3 = $input("2v2-password3").value;
+	const password4 = $input("2v2-password4").value;
 
 	if (!username2 || !password2 || !username3 || !password3 || !username4 || !password4)
 		return notif("Please fill in all fields", false);
@@ -152,13 +161,13 @@ export async function login_2v2(event: Event) {
 export async function login_tournament(event: Event) {
 	event.preventDefault();
 	const username1 = localStorage.getItem("Player1");
-	const username2 = (document.getElementById("tournament-username2") as HTMLFormElement).value;
-	const username3 = (document.getElementById("tournament-username3") as HTMLFormElement).value;
-	const username4 = (document.getElementById("tournament-username4") as HTMLFormElement).value;
+	const username2 = $input("tournament-username2").value;
+	const username3 = $input("tournament-username3").value;
+	const username4 = $input("tournament-username4").value;
 
-	const password2 = (document.getElementById("tournament-password2") as HTMLFormElement).value;
-	const password3 = (document.getElementById("tournament-password3") as HTMLFormElement).value;
-	const password4 = (document.getElementById("tournament-password4") as HTMLFormElement).value;
+	const password2 = $input("tournament-password2").value;
+	const password3 = $input("tournament-password3").value;
+	const password4 = $input("tournament-password4").value;
 
 	if (!username2 || !password2 || !username3 || !password3 || !username4 || !password4)
 		return notif("Please fill in all fields", false);
@@ -171,10 +180,17 @@ export async function login_tournament(event: Event) {
 				return notif("There can't be the same player 2 times", false);
 			notif(data.message, true);
 			setLocalStorage({"Player2": data.player2.username, "Player3": data.player3.username, "Player4": data.player4.username });
-			document.getElementById("Player1").innerHTML = localStorage.getItem("Player1");
-			document.getElementById("Player2").innerHTML = localStorage.getItem("Player2");
-			document.getElementById("Player3").innerHTML = localStorage.getItem("Player3");
-			document.getElementById("Player4").innerHTML = localStorage.getItem("Player4");
+			updateUI({
+				setContent: {
+					"Player1": localStorage.getItem("Player1"),
+					"Player2": localStorage.getItem("Player2"),
+					"Player3": localStorage.getItem("Player3"),
+					"Player4": localStorage.getItem("Player4")
+			}});
+			// document.getElementById("Player1").innerHTML = localStorage.getItem("Player1");
+			// document.getElementById("Player2").innerHTML = localStorage.getItem("Player2");
+			// document.getElementById("Player3").innerHTML = localStorage.getItem("Player3");
+			// document.getElementById("Player4").innerHTML = localStorage.getItem("Player4");
 			setLocalStorage({"current_player1": localStorage.getItem("Player1"), "current_player2": localStorage.getItem("Player2") });
 			const tournamentStarted = true;
 			localStorage.setItem('tournamentStarted', tournamentStarted.toString());
@@ -195,10 +211,9 @@ export async function login_tournament(event: Event) {
 
 export async function login_platformer(event: Event) {
 	event.preventDefault();
-	const username = (document.getElementById("platformer-username2") as HTMLFormElement).value;
-	const password = (document.getElementById("platformer-password2") as HTMLFormElement).value;
-	console.log("username :", username);
-	console.log("password :", password);
+	const username = $input("platformer-username2").value;
+	const password = $input("platformer-password2").value;
+	console.debug(`username : ${username}, password : ${password}`);
 	if (!username || !password)
 		return notif("Please fill in all fields", false);
 
@@ -210,7 +225,7 @@ export async function login_platformer(event: Event) {
 			notif(data.message, true);
 			localStorage.setItem("Player2", data.player2.username);
 			localStorage.setItem("platformer_view", 'true'); //REVIEW - a cause de ts jai du le mettre en string
-			document.getElementById("start-platformer").click();
+			$("start-platformer").click();
 			// document.getElementById("platformer-oponent-username1").innerHTML = localStorage.getItem("Player1");
 			// document.getElementById("platformer-oponent-username2").innerHTML = localStorage.getItem("Player2");
 			// PlatformerView(); //TODO
@@ -220,7 +235,7 @@ export async function login_platformer(event: Event) {
 		console.error("Erreur lors de la connexion :", err);
 		notif("Erreur de connexion", false);
 	}
-	(document.getElementById("choose_your_opponent_platformer_form") as HTMLFormElement).reset();
+	$form("choose_your_opponent_platformer_form").reset();
 }
 
 export async function logout() {
@@ -229,7 +244,7 @@ export async function logout() {
 		await fetchAPI('/request/user/logout', 'POST', {}, false);
 		sessionStorage.clear();
 		localStorage.clear();
-		console.log("✅ Logged out successfully !");
+		console.info("Logged out successfully !");
 		homeView();
 	} catch (err) {
 		console.error("Erreur lors de la déconnexion :", err);
@@ -237,16 +252,16 @@ export async function logout() {
 }
 
 export async function register(event: Event) {
-	event.preventDefault();
-
-	const username = (document.getElementById("register-username") as HTMLFormElement).value;
-	const password = (document.getElementById("register-password") as HTMLFormElement).value;
-	const confirmPassword = (document.getElementById("register-confirm-password") as HTMLFormElement).value;
-
-	if (password !== confirmPassword)
-		return notif("Passwords are different", false);
-
 	try {
+		event.preventDefault();
+
+		const username = $input("register-username").value;
+		const password = $input("register-password").value;
+		const confirmPassword = $input("register-confirm-password").value;
+
+		if (password !== confirmPassword)
+			return notif("Passwords are different", false);
+
 		const data = await fetchAPI('/request/user/create-user', 'POST', { username, password });
 		
 		if (data.success) {
@@ -278,9 +293,9 @@ export async function refreshInfos() {
 		}
 
 		if (data.success)
-			console.log("Infos refreshed successfully");
+			console.info("Infos refreshed successfully");
 		else
-			console.error("Error refreshing infos:", data.error);
+			console.warn("Error refreshing infos:", data.error);
 	} catch (err) {
 		console.error("Erreur lors du rafraîchissement des informations :", err);
 	}
@@ -320,18 +335,17 @@ declare global {
 	}
 } declare const google: Window['google'];
 
-// Variables globales
 let tokenClient: GoogleTokenClient | null = null;
 
 export async function initGoogleSignIn() {
-	console.log("URL actuelle:", window.location.origin);
+	console.debug("URL actuelle:", window.location.origin);
 
 	if (typeof google !== 'undefined' && google.accounts?.oauth2) {
 		try {
 			const config = await fetchAPI('/request/user/google-config', 'GET', null, false);
 			
 			if (!config.success || !config.client_id) {
-				console.error("Impossible de récupérer la configuration Google");
+				console.warn("Impossible de récupérer la configuration Google");
 				return;
 			}
 			tokenClient = google.accounts.oauth2.initTokenClient({
@@ -341,7 +355,7 @@ export async function initGoogleSignIn() {
 				callback: handleGoogleSignIn, // appelée une fois que le user accepte
 			});
 			localStorage.setItem("googleSignIn", "true"); // REVIEW - a cause de ts jai du le mettre en string
-			console.log("Google OAuth Token Client initialisé avec succès");
+			console.info("Google OAuth Token Client initialisé avec succès");
 		} catch (error) {
 			console.error("Erreur lors de l'initialisation OAuth:", error);
 		}

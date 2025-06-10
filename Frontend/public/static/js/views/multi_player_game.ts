@@ -8,7 +8,7 @@ import { isGameFinished } from "../../../srcs/game/gameplay/score.js";
 import { getIsTeam1Win, getIsTeam2Win } from "../../../srcs/game/gameplay/score.js";
 import { disable_skin_multi_podium_default } from "../../../srcs/game/gameplay/multiplayer/init_teamPlayer_podium_default.js";
 import { get_skin_is_init } from "../../../srcs/game/gameplay/solo/skin/init_skin_utils.js";
-import { log } from '../../../api/utils.js';
+// import { log } from '../../../api/utils.js';
 
 let space_pressed = false;
 let bool = false;

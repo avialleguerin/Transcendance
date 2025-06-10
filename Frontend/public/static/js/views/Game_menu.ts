@@ -16,11 +16,8 @@ import { homeView } from "../../../api/utils.js";
 let powerUP_nb = 0;
 let powerUP_nb_multi = 0;
 
-if (localStorage.getItem('historyIsVisible') === null) {
+if (localStorage.getItem('historyIsVisible') === null)
 	localStorage.setItem('historyIsVisible', 'false');
-}
-
-console.log("historyIsVisible:", localStorage.getItem('historyIsVisible'));
 
 export default class Game_menu extends AbstractView {
 	constructor() {
@@ -783,7 +780,6 @@ export default class Game_menu extends AbstractView {
 		const back_to_select_mode_view7 = document.getElementById('back_to_select_mode_view7');
 		const back_to_select_mode_view8 = document.getElementById('back_to_select_mode_view8');
 		const choose_your_opponent_platformer_form = document.getElementById('choose_your_opponent_platformer_form');
-
 		// const back_to_menu_view_tournament = document.getElementById('back_to_menu_view_tournament');
 
 		//*==== CGU & Privacy Policy Modals ====*/
@@ -791,61 +787,47 @@ export default class Game_menu extends AbstractView {
 		const cguModal = document.getElementById("cgu-modal");
 		const cguBackButton = document.getElementById("cgu-back-button");
 		
-		// Modifier l'event listener d'ouverture des CGU
 		showCguLink?.addEventListener("click", (e) => {
 			e.preventDefault();
 			cguModal?.classList.add("active");
-			// Ajouter cette ligne pour empêcher le scroll du contenu derrière
 			document.body.style.overflow = "hidden";
 		});
 
-		// Modifier les listeners de fermeture aussi
 		cguBackButton?.addEventListener("click", () => {
 			cguModal?.classList.remove("active");
-			// Réactiver le scroll quand on ferme
 			document.body.style.overflow = "";
 		});
 
-		// Ajout : fermer le modal en cliquant à l'extérieur
 		cguModal?.addEventListener("click", (event) => {
 			if (event.target === cguModal) {
 				cguModal?.classList.remove("active");
-				// Réactiver le scroll quand on ferme
 				document.body.style.overflow = "";
 			}
 		});
 
-		// Gestion de la Politique de Confidentialité
         const showPrivacyPolicyLink = document.getElementById("show-privacy-policy");
         const privacyPolicyModal = document.getElementById("privacy-policy-modal");
         const privacyPolicyBackButton = document.getElementById("privacy-policy-back-button");
 
-        // Modifier l'event listener d'ouverture de la Politique de Confidentialité
         showPrivacyPolicyLink?.addEventListener("click", (e) => {
             e.preventDefault();
             privacyPolicyModal?.classList.add("active");
-            // Ajouter cette ligne pour empêcher le scroll du contenu derrière
             document.body.style.overflow = "hidden";
         });
 
-        // Modifier les listeners de fermeture aussi
         privacyPolicyBackButton?.addEventListener("click", () => {
             privacyPolicyModal?.classList.remove("active");
-            // Réactiver le scroll quand on ferme
             document.body.style.overflow = "";
         });
 
-        // Ajout : fermer le modal en cliquant à l'extérieur
         privacyPolicyModal?.addEventListener("click", (event) => {
             if (event.target === privacyPolicyModal) {
                 privacyPolicyModal?.classList.remove("active");
-                // Réactiver le scroll quand on ferme
                 document.body.style.overflow = "";
             }
         });
 
 		btn_jouer.addEventListener('click', () => {
-			console.log('JOUER button clicked');
 			view1.classList.add('active');
 			view2.classList.add('active');
 			btn_back_home.classList.add('active');
@@ -859,9 +841,8 @@ export default class Game_menu extends AbstractView {
 				view5.classList.remove('active');
 				view2.classList.add('active');
 			} 
-			else if (!view2.classList.contains('active')) {
+			else if (!view2.classList.contains('active'))
 				view2.classList.add('active');
-			}
 		});
 
 		let skin = get_skin_is_init();

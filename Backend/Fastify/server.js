@@ -13,7 +13,7 @@ import cron from 'node-cron';
 // Models
 import usersModel from './models/usersModel.js';
 
-import colorLoggerPlugin from './utils/logger.js' // NOTE - bonus: Colorized logger plugin
+import colorLoggerPlugin from './utils/logger.js'
 import websocket from '@fastify/websocket'
 import { checkEmailConfig } from './utils/mailer.js'
 

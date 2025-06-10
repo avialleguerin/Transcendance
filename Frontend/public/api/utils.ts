@@ -124,29 +124,10 @@ export const setLocalStorage = (items) => {
 	});
 };
 
-// export function updateUI(config) {
-//     // Gestion des classes
-//     if (config.removeClass) {
-//         config.removeClass.forEach(id => {
-//             document.getElementById(id)?.classList.remove('active');
-//         });
-//     }
-
-//     if (config.addClass) {
-//         config.addClass.forEach(id => {
-//             document.getElementById(id)?.classList.add('active');
-//         });
-//     }
-
-//     // Gestion du contenu innerHTML
-//     if (config.setContent) {
-//         Object.entries(config.setContent).forEach(([id, content]) => {
-//             const element = document.getElementById(id);
-//             if (element) element.innerHTML = content;
-//         });
-//     }
-// }
-
+/**
+ * 
+ * @param config Configuration object for updating the UI
+ */
 export function updateUI(config) {
 	if (config.removeClass) {
 		config.removeClass.forEach(item => {
@@ -180,4 +161,23 @@ export function updateUI(config) {
 				form.reset();
 		});
 	}
+}
+
+/**
+ * Shorthand for document.getElementById with type casting
+ * @param id Element ID
+ * @returns HTML element with the specified type or null if not found
+ */
+export function $(id: string): HTMLElement | null {
+  return document.getElementById(id);
+}
+
+// For input elements specifically
+export function $input(id: string): HTMLInputElement {
+  return document.getElementById(id) as HTMLInputElement;
+}
+
+// For Form elements specifically
+export function $form(id: string): HTMLFormElement {
+  return document.getElementById(id) as HTMLFormElement;
 }
