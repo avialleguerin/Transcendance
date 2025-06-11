@@ -39,6 +39,8 @@ await fastify.register(websocket)
 // Map pour stocker les connexions WebSocket actives
 const activeConnections = new Map()
 
+
+
 // Route WebSocket pour gérer les connexions
 fastify.register(async function (fastify) {
 	fastify.get('/ws', { websocket: true }, (connection, request) => {

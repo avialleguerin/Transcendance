@@ -7,8 +7,7 @@ async function addFriend(event) {
 	
 	try {
 		const data = await fetchAPI('/request/friendship/add-friend', 'POST', { friend });
-		if (data.success)
-			fetch_user_friendships();
+		fetch_user_friendships();
 		document.getElementById("friend_name_input").value = "";
 	} catch (err) {
 		notif("Failed to add '" + friend + "' as a friend", false);
@@ -18,8 +17,7 @@ async function addFriend(event) {
 async function accept_friendship(friendshipId) {
 	try {
 		const data = await fetchAPI('/request/friendship/accept-friend', 'POST', { friendshipId });
-		if (data.success)
-			fetch_user_friendships();
+		fetch_user_friendships();
 	} catch (err) {
 		notif("Failed to accept this friend", false);
 	}
@@ -48,6 +46,12 @@ async function fetch_user_friendships() {
 
 		const accepted = friendships.filter(f => f.status === 'accepted');
 		const pending = friendships.filter(f => f.status === 'pending');
+		const hasReceivedRequests = pending.some(friend => user.userId === friend.friendId);
+
+		if (pending.length > 0 && hasReceivedRequests)
+			document.getElementById("notify_friend_demand").style.display = "block";
+		else
+			document.getElementById("notify_friend_demand").style.display = "none";
 
 		const renderFriend = (friendship, showActions) => {
 			let statusClass = `${friendship.friendOnlineStatus ? 'friend_online_status status-online' : 'friend_online_status status-offline'}`;

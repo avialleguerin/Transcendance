@@ -47,7 +47,7 @@ export default class Game_menu extends AbstractView {
 
 	async getHtml(): Promise<string> {
 		return /*html*/`
-		<link rel="stylesheet" href="./static/js/css/Game_menu.css">
+		<link rel="stylesheet" href="./static/js/css/game_menu.css">
 		<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 		<div class="navbar_menu">
 			<div class="profile_photo_circle_nav_bar" id="profile_photo_circle_nav_bar"><img src="./uploads/${localStorage.getItem('profile_picture')}" alt="profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;"></div>
@@ -219,7 +219,7 @@ export default class Game_menu extends AbstractView {
 				<div class="friend_tabs">
 					<button id="tab-accepted" class="tab-btn active">Friends</button>
 					<button id="tab-pending" class="tab-btn">On hold</button>
-					<div class="notify_friend_demand" title="Friend Request"></div>
+					<div id="notify_friend_demand" title="Friend Request"></div>
 				</div>
 
 				<!-- Sections d'amis -->
