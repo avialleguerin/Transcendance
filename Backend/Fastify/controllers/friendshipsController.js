@@ -2,7 +2,7 @@ import { fastify } from '../server.js'
 import usersModel from '../models/usersModel.js'
 import friendshipsModel from '../models/friendshipsModel.js'
 import { getUserFromToken, handleControllerError } from './utils.js'
-import { notifyFriend } from '../server.js'
+import { notifyFriend } from '../utils/websocket.js'
 
 export async function getUserFriendships(request, reply) {
 	try {
@@ -50,7 +50,7 @@ export async function addFriend(request, reply) {
 		}
 
 		friendshipsModel.createFriendship(infos.user.userId, friendExists.userId);
-		notifyFriend(infos.user.userId, friendExists.userId, "friend_request", `${infos.user.username} has sent you a friend request`);
+		notifyFriend(infos.user.userId, friendExists.userId, "friend_request", `You have a new friend request`);
 
 		return reply.code(201).send({ 
 			success: true,
@@ -113,7 +113,7 @@ export async function deleteFriend(request, reply) {
 		
 		const otherUserId = friendship.userId === user.userId ? friendship.friendId : friendship.userId;
 		friendshipsModel.deleteFriendship(friendship.userId, friendship.friendId)
-		notifyFriend(user.userId, otherUserId, "friend_deleted", `${user.username} has deleted you from their friends list`);
+		notifyFriend(user.userId, otherUserId, "friend_deleted");
 		return reply.send({ 
 			success: true,
 			message: "Friend deleted successfully",

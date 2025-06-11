@@ -12,13 +12,13 @@ import { redisModel } from './models/redisModel.js';
 import cron from 'node-cron';
 // Models
 import usersModel from './models/usersModel.js';
-import friendshipsModel from './models/friendshipsModel.js';
 
+import websocketPlugin from './utils/websocket.js';
 import colorLoggerPlugin from './utils/logger.js' // NOTE - bonus: Colorized logger plugin
 import websocket from '@fastify/websocket'
 import { checkEmailConfig } from './utils/mailer.js'
 
-// setting up the server
+// set server
 export const fastify = Fastify({
 	logger: { // trace - debug - info - warn - error - fatal
 		level: 'debug',
@@ -36,164 +36,51 @@ export const fastify = Fastify({
 
 await fastify.register(websocket)
 
-const activeConnections = new Map()
-
-function notifyFriendsStatusChange(userId, status) {
-	try {
-		const onlineStatus = status === 1 ? 'online' : 'offline'; // 'online' si status est 1, sinon 'offline'
-
-		const friends = friendshipsModel.getUserAcceptedFriendships(userId);
-		const user = usersModel.getUserById(userId); // Pour récupérer le username
-		
-		usersModel.updateOnlineStatus(userId, status)
-		usersModel.updateLastActivity(userId)
-
-		if (friends && friends.length > 0 && user) {
-			friends.forEach(friend => {
-				const friendUserId = friend.userId === userId ? friend.friendUserId : friend.userId;
-				const friendConnection = activeConnections.get(friendUserId.toString());
-				
-				if (friendConnection) {
-					friendConnection.send(JSON.stringify({
-						type: 'friend_status_update',
-						userId: userId,
-						username: user.username,
-						status: onlineStatus,
-						timestamp: new Date().toISOString()
-					}));
-				}
-			});
-		} else {
-			console.log(`👥 User ${userId} has no friends to notify or user not found`);
-		}
-	} catch (error) {
-		console.error('❌ Error notifying friends of status change:', error);
-	}
-}
-
-export function notifyFriend(fromUserId, toUserId, type, message) {
-	try {
-		const fromUser = usersModel.getUserById(fromUserId);
-		const toUserConnection = activeConnections.get(toUserId.toString());
-		if (toUserConnection && fromUser) {
-			toUserConnection.send(JSON.stringify({
-				type: type,
-				fromUserId: fromUserId,
-				fromUsername: fromUser.username,
-				fromProfilePicture: fromUser.profile_picture,
-				message: message,
-				timestamp: new Date().toISOString()
-			}));
-		}
-	} catch (error) {
-		console.error('❌ Error notifying friend message:', error);
-	}
-}
-
-fastify.register(async function (fastify) {
-	fastify.get('/ws', { websocket: true }, (connection, request) => {
-			const userId = request.query.userId
-
-			if (userId && !isNaN(userId)) {
-				activeConnections.set(userId, connection)
-				notifyFriendsStatusChange(userId, 1)
-				
-				console.log(`User ${userId} connected via WebSocket`)
-				
-				connection.on('message', (message) => {
-					try {
-						const data = JSON.parse(message)
-						
-						if (data.type === 'heartbeat') {
-							usersModel.updateLastActivity(userId)
-							connection.send(JSON.stringify({ type: 'pong' }))
-						}
-					} catch (err) {
-						console.error('Error parsing WebSocket message:', err)
-					}
-				})
-
-				connection.on('close', (code, reason) => {
-					console.log(`🔌 User ${userId} WebSocket disconnected - Code: ${code}, Reason: ${reason}`)
-					
-					// ✅ Supprimer immédiatement de la map des connexions actives
-					activeConnections.delete(userId)
-					
-					const user = usersModel.getUserById(userId)
-					if (user) {
-						// ✅ Marquer comme hors ligne immédiatement
-						notifyFriendsStatusChange(userId, 0)
-						console.log(`✅ User '${user.username}' marked as offline immediately`)
-					} else {
-						console.log(`⚠️ User '${user.username}' not found in database`)
-					}
-				})
-
-				// ✅ Gérer les erreurs de connexion
-				connection.on('error', (error) => {
-					console.error(`❌ WebSocket error for user ${userId}:`, error)
-					activeConnections.delete(userId)
-					notifyFriendsStatusChange(userId, 0)
-				})
-			} else {
-				console.warn('❌ Invalid userId for WebSocket connection')
-				connection.close(1008, 'Invalid userId')
-			}
-		})
-})
-
-
-setupRedisLogging(fastify); // Setup Redis logging with Fastify
+setupRedisLogging(fastify);
 await redisClient.connect();
 
 // registering plugins
 await fastify.register(fastifyMultipart, { attachFieldsToBody: true, limits: { fileSize: 5 * 1024 * 1024 } });
 await fastify.register(jwt, { secret: 'supersecretkey', cookie: { cookieName: 'token', signed: false } });
 await fastify.register(cookie);
-await fastify.register(colorLoggerPlugin) //optionnel - colorized logger plugin
+await fastify.register(colorLoggerPlugin)
+await fastify.register(websocketPlugin)
 
 // Exporter le logger pour utilisation globale
-export const log = fastify.logger; // Votre logger colorisé
+export const log = fastify.logger;
 
 
 fastify.register(routes, { prefix: '/request' })
 initDb();
 fastify.decorate('redis', redisClient);
-fastify.decorate('authenticate', async function (request, reply) {
-	try {
-		const accessToken = request.headers.authorization?.split(" ")[1];
-		const { refreshToken } = request.cookies;
-		// console.log("🔑 Access Token reçu :", accessToken);
-		// console.log("🔑 Refresh Token reçu :", refreshToken);
-		if (!refreshToken || refreshToken === "undefined" || refreshToken === "null")
-			return reply.code(401).send({ error: 'Token de rafraîchissement manquant' });
-		if (!accessToken || accessToken === "undefined" || accessToken === "null")
-			return reply.code(401).send({ error: 'Token d\'accès manquant' });
-		if (await redisModel.isTokenBlacklisted(accessToken))
-			return reply.code(401).send({ error: 'Token d\'accès invalide (blacklisté)' });
-		if (await redisModel.isTokenBlacklisted(refreshToken))
-			return reply.code(401).send({ error: 'Token de rafraîchissement invalide (blacklisté)' });
-		await request.jwtVerify();
+// fastify.decorate('authenticate', async function (request, reply) {
+// 	try {
+// 		const accessToken = request.headers.authorization?.split(" ")[1];
+// 		const { refreshToken } = request.cookies;
+// 		// fastify.log.info("🔑 Access Token reçu :", accessToken);
+// 		// fastify.log.info("🔑 Refresh Token reçu :", refreshToken);
+// 		if (!refreshToken || refreshToken === "undefined" || refreshToken === "null")
+// 			return reply.code(401).send({ error: 'Token de rafraîchissement manquant' });
+// 		if (!accessToken || accessToken === "undefined" || accessToken === "null")
+// 			return reply.code(401).send({ error: 'Token d\'accès manquant' });
+// 		if (await redisModel.isTokenBlacklisted(accessToken))
+// 			return reply.code(401).send({ error: 'Token d\'accès invalide (blacklisté)' });
+// 		if (await redisModel.isTokenBlacklisted(refreshToken))
+// 			return reply.code(401).send({ error: 'Token de rafraîchissement invalide (blacklisté)' });
+// 		await request.jwtVerify();
 
-		if (!request.user?.userId)
-			return reply.code(401).send({ error: "Unauthorized: invalid payload" });
-	} catch (err) {
-		console.error("❌ Erreur d'authentification :", err);
-		reply.code(401).send({ error: 'You are not authorized' });
-	}
-});
-
-// cron.schedule('* * * * *', () => {
-// 	// Marquer comme hors ligne les utilisateurs inactifs depuis plus de 2 minutes
-// 	const twoMinutesAgo = new Date(Date.now() - 2 * 60 * 1000).toISOString();
-// 	console.log(`Marking users inactive if offline since: ${twoMinutesAgo}`);
-// 	usersModel.setInactiveUsersOffline(twoMinutesAgo);
+// 		if (!request.user?.userId)
+// 			return reply.code(401).send({ error: "Unauthorized: invalid payload" });
+// 	} catch (err) {
+// 		console.error("❌ Erreur d'authentification :", err);
+// 		reply.code(401).send({ error: 'You are not authorized' });
+// 	}
 // });
 
 cron.schedule('0 0 * * *', () => {
-	console.log('Clean inactive users...');
+	fastify.log.info('Clean inactive users...');
 	const result = usersModel.deleteInactiveUsers();
-	console.log(`Number of supressed accounts : ${result.changes}`);
+	fastify.log.info(`Number of supressed accounts : ${result.changes}`);
 });
 
 // fastify.decorate('checkCGU', async function (request, reply) {  //REVIEW - Vérification CGU decoration
