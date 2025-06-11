@@ -50,7 +50,6 @@ function notifyFriendsStatusChange(userId, status) {
 
 		if (friends && friends.length > 0 && user) {
 			friends.forEach(friend => {
-				const friendUsername = friend.userId === userId ? friend.friendUsername : friend.userUsername;
 				const friendUserId = friend.userId === userId ? friend.friendUserId : friend.userId;
 				const friendConnection = activeConnections.get(friendUserId.toString());
 				
@@ -62,7 +61,6 @@ function notifyFriendsStatusChange(userId, status) {
 						status: onlineStatus,
 						timestamp: new Date().toISOString()
 					}));
-					console.log(`📡 Notified friend '${friendUsername}' about user '${user.username}' status: ${onlineStatus}`);
 				}
 			});
 		} else {
@@ -77,9 +75,6 @@ export function notifyFriend(fromUserId, toUserId, type, message) {
 	try {
 		const fromUser = usersModel.getUserById(fromUserId);
 		const toUserConnection = activeConnections.get(toUserId.toString());
-		console.log(`🔍 From user found: ${fromUser ? fromUser.username : 'NOT FOUND'}`);
-		console.log(`🔍 To user connection found: ${toUserConnection ? 'YES' : 'NO'}`);
-		console.log(`🔍 Active connections: ${Array.from(activeConnections.keys())}`);
 		if (toUserConnection && fromUser) {
 			toUserConnection.send(JSON.stringify({
 				type: type,
@@ -89,7 +84,6 @@ export function notifyFriend(fromUserId, toUserId, type, message) {
 				message: message,
 				timestamp: new Date().toISOString()
 			}));
-			console.log(`📬 Notified user ${toUserId} about message from ${fromUser.username}`);
 		}
 	} catch (error) {
 		console.error('❌ Error notifying friend message:', error);
