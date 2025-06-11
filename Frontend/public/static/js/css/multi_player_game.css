@@ -314,22 +314,30 @@ p {
 
 .winner {
   position: absolute;
-  top: 2%;
-  left: 32%;
+  top: 53%;
+  left: 28%;
   font-size: 2vw;
   font-family: 'Black Ops One', sans-serif;
   color: rgb(255, 255, 255);
   text-shadow: 2px 2px 2px #000000;
+  width: 25%;
+  align-items: center;
+  justify-content: center;
+  display: flex;
 }
 
 .looser {
   position: absolute;
-  top: 11%;
-  right: 28%;
+  top: 62%;
+  right: 20%;
   font-size: 2vw;
   font-family: 'Black Ops One', sans-serif;
   color: rgb(255, 255, 255);
   text-shadow: 2px 2px 2px #000000;
+  width: 25%;
+  align-items: center;
+  justify-content: center;
+  display: flex;
 }
 
 .container-EndGame h1 {
@@ -385,8 +393,8 @@ animation: none;
   background-color: transparent;
   color: rgb(255, 255, 255);
   border: none;
-  border-radius: 10px;
   cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   transition: all 0.3sease;
   background-image: url("../../../srcs/game/assets/image/boutton.svg");
   background-size: 100% auto;
@@ -394,12 +402,12 @@ animation: none;
   background-repeat: no-repeat;
   /* line-height: 3vh; */
   width: 170px;
-  height: 112px;
+  height: 95px;
   display: flex;
   justify-content: center;
   align-items: center;
-  bottom: -4%;
-
+  bottom: 0%;
+  background-color: #3a3a3a;
 }
 
 .nav-link {

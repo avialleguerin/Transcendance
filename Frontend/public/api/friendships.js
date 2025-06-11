@@ -1,5 +1,5 @@
-let historyIsActive = localStorage.getItem('historyIsVisible') === 'true';
-let bool = false;
+
+let bool = localStorage.getItem("bool", "true");
 
 async function addFriend(event) {
 	event.preventDefault();
@@ -52,7 +52,7 @@ async function fetch_user_friendships() {
 		const renderFriend = (friendship, showActions) => {
 			let statusClass = `${friendship.friendOnlineStatus ? 'friend_online_status online' : 'friend_online_status offline'}`;
 			let statusTitle = `${friendship.friendOnlineStatus ? 'Online' : 'Offline'}`;
-			let friendshipProfilePicture = friendship.status === 'accepted' ? friendship.friendProfilePicture : 'default-profile-picture.png'; // Fallback to a default picture if none is provided
+			let friendshipProfilePicture = friendship.status === 'accepted' ? friendship.friendProfilePicture : 'default-profile-picture.png';
 			return `
 				<div id="friendId-${friendship.friendId}" class="friend">
 					<div class="friend-info">
@@ -74,7 +74,7 @@ async function fetch_user_friendships() {
 							</div>
 						</div>
 					</div>
-					<button class="friend-btn delete-btn" onclick="delete_friendship(${friendship.friendshipId})">
+					<button id="btn_delete_friend" class="friend-btn delete-btn" onclick="delete_friendship(${friendship.friendshipId})">
 						<img src="/srcs/game/assets/image/trash.svg" alt="Delete Friend" class="delete-icon">
 					</button>
 				</div>
@@ -88,6 +88,7 @@ async function fetch_user_friendships() {
 		const exit_game_history_btn = document.getElementById('exit_game_history_btn');
 
 		const friendPhotos = document.querySelectorAll('.friend_photo');
+		const friendDeleteBtns = document.getElementById('btn_delete_friend');
 
 		friendPhotos.forEach(photo => {
 			photo.onclick = function() {
@@ -98,19 +99,47 @@ async function fetch_user_friendships() {
 					exit_game_history_btn.style.display = 'none';
 					localStorage.setItem('historyIsVisible', 'true');
 					historyIsActive = true;
-					bool = true;
+					localStorage.setItem("bool", "true");
+					localStorage.setItem('historyVisible', 'true');
+					friendDeleteBtns.style.display = 'none';
 				}
-				else if (bool === true && gameHistory.classList.contains('active')) {
+				else if (localStorage.getItem('bool') === "true" && gameHistory.classList.contains('active')) {
 					console.log("Closing game history view");
 					gameHistory.classList.remove('active');
 					exit_game_history_btn.style.display = 'block';
 					localStorage.setItem('historyIsVisible', 'false');
 					historyIsActive = false;
-					bool = false;
+					localStorage.setItem("bool", "false");
+					friendDeleteBtns.style.display = 'block';
+					localStorage.setItem('historyVisible', 'true');
+					console.log("bool =", localStorage.getItem("bool"));
 				}
 			};
 		});
 
+		const deleteButtons = document.querySelectorAll('.delete-btn');
+
+		if (deleteButtons && deleteButtons.length > 0) {
+			deleteButtons.forEach(button => {
+				button.addEventListener('click', function(event) {
+					event.stopPropagation();
+					if (gameHistory.classList.contains('active')) {
+						console.log("Fermeture de l'historique des jeux avant suppression");
+						gameHistory.classList.remove('active');
+						exit_game_history_btn.style.display = 'block';
+						localStorage.setItem('historyIsVisible', 'false');
+						localStorage.setItem('bool', 'false');
+						historyIsActive = false;
+						document.querySelectorAll('.delete-btn').forEach(btn => {
+							btn.style.display = 'block';
+						});
+					}
+				});
+			});
+		}
+
+
+	
 		document.getElementById('friends-pending').innerHTML =
 			pending.map(friend => {
 				const isReceivedRequest = user.userId === friend.friendId;

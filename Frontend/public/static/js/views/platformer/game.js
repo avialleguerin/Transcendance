@@ -300,12 +300,12 @@ export function initGame()
 		player.velocity.x = 0;
 	
 		if (keyRight.pressed) {
-			player.velocity.x = 3;
+			player.velocity.x = 5;
 			if (player.state !== "walk" && player.isGrounded && (player.velocity.y === 0 || player.velocity.y === 0.5))
 				player.changeState("walk");
 		}
 		else if (keyLeft.pressed) {
-			player.velocity.x = -3;
+			player.velocity.x = -5;
 			if (player.state !== "walk" && player.isGrounded && (player.velocity.y === 0 || player.velocity.y === 0.5))
 				player.changeState("walk");
 		}

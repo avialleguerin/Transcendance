@@ -25,7 +25,7 @@ console.log("historyIsVisible:", localStorage.getItem('historyIsVisible'));
 export default class Game_menu extends AbstractView {
 	constructor() {
 		super();
-		this.setTitle("game-menu");
+		this.setTitle("Game_menu");
 		const accessToken: string | null = sessionStorage.getItem('accessToken');
 		if (!accessToken || accessToken === undefined) {
 			history.pushState({}, '', '/');
@@ -219,7 +219,6 @@ export default class Game_menu extends AbstractView {
 				<div class="friend_tabs">
 					<button id="tab-accepted" class="tab-btn active">Friends</button>
 					<button id="tab-pending" class="tab-btn">On hold</button>
-					<div class="notify_friend_demand" title="Friend Request"></div>
 				</div>
 
 				<!-- Sections d'amis -->
@@ -469,7 +468,7 @@ export default class Game_menu extends AbstractView {
 
 
 				<div class="choose_your_opponent_multi" id="choose_your_opponent_multi_id">
-					<form class="choose_your_opponent_multi_content" id="choose_your_opponent_multi_form" onsubmit="login_2v2(event)">
+					<form class="choose_your_opponent_multi_content" id="choose_your_opponent_multi_form" onclick="login_2v2(event)">
 						<h1>CONNECT YOUR OPPONENTS</h1>
 
 						<div class="player-section">
@@ -1664,22 +1663,18 @@ export default class Game_menu extends AbstractView {
 		const panel_option_navbar = document.getElementById('panel_option_navbar');
 		const option_btn_remove = document.getElementById('option_btn_remove');
 		const deconnect_btn_navBar = document.getElementById('deconnect_btn_navBar');
-		const gameHistory = document.getElementById('game_history');
+
 		option_btn_navBar.addEventListener('click', () => {
 			console.log('Option deconnect clicked');
 			panel_option_navbar.classList.remove('remove'); // retire l'animation de fermeture
 			void panel_option_navbar.offsetWidth; // force le reflow pour relancer l'animation si besoin
 			panel_option_navbar.classList.add('active');
-			option_btn_navBar.style.display = 'none';
 		});
 
 		option_btn_remove.addEventListener('click', () => {
 			console.log('Option deconnect back clicked');
 			// panel_option_navbar.classList.remove('active'); // retire l'animation d’ouverture
 			panel_option_navbar.classList.add('remove');
-			setTimeout(() => {
-				option_btn_navBar.style.display = 'block';
-			}, 800);
 		});
 
 		deconnect_btn_navBar.addEventListener('click', () => {

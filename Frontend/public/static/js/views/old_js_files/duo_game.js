@@ -11,7 +11,7 @@ export default class extends AbstractView {
 	async getHtml() {
 		return /*html*/`
 			<link rel="stylesheet" href="./static/js/css/solo_game_1v1.css">
-			<script type="module" src="./static/js/script/game_menu.js"></script>
+			<script type="module" src="./static/js/script/Game_menu.js"></script>
 			<div class="container">
 				<h1>Solo_game</h1>
 				<div class="button-container">

@@ -348,10 +348,10 @@ export function UpdatePLayerPoseMulti(player_1, player_2, player_3, player_4) {
 		if (keys["k"] && player_3.position.x < maxX_player_3) {
 			player_3.position.x += paddleSpeed;
 		}
-		if (keys["o"] && player_4.position.x > minX_player_4) {
+		if (keys["ArrowUp"] && player_4.position.x > minX_player_4) {
 			player_4.position.x -= paddleSpeed;
 		}
-		if (keys["l"] && player_4.position.x < maxX_player_4) {
+		if (keys["ArrowDown"] && player_4.position.x < maxX_player_4) {
 			player_4.position.x += paddleSpeed;
 		}
 	}

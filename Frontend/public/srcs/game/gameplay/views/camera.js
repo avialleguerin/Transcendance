@@ -1,18 +1,10 @@
 import { createLoadingOverlay, removeLoadingOverlay } from './loading_screen.js';
-import { create_environment_view1, create_environment_view2 } from '../init_game.js';
-import { init_skins_perso_player1, init_skins_perso_player2 } from '../solo/skin/init_skin_perso.js';
-import { init_skins_perso_player1_multi, init_skins_perso_player2_multi, init_skins_perso_player3_multi, init_skins_perso_player4_multi } from '../multiplayer/init_skin_perso_multi.js';
-import { destroy_all_by_metadata_skin } from '../solo/skin/init_skin_perso.js';
-import { init_skins_perso_first, init_skins_perso_seconde } from '../solo/skin/init_skin_player_podium.js';
-import { init_skins_perso_player1_multi_podium, init_skins_perso_player2_multi_podium, init_skins_perso_player3_multi_podium, init_skins_perso_player4_multi_podium } from '../multiplayer/init_teamPlayer_podium.js';
-import { getSoloGameStart, getAIGameStart, getMultiGameStart } from '../babylon.js';
-
 
 const views = {
 	default:
 	{
-		position: new BABYLON.Vector3(-45.79301951065982, 5.879735371044789, -31.342210947081313),
-		rotation: new BABYLON.Vector3(-0.029665280069011667, -2.566387085794712, 0)
+		position: new BABYLON.Vector3(-46.5848927854827, 7.033186073453854, -36.673950554376425),
+		rotation: new BABYLON.Vector3(-0.06270675424618415, -2.546876145234487, 0)
 	},
 	vue1:
 	{
@@ -59,10 +51,9 @@ const views = {
 let currentTransitionAnimation = null;
 let isLoading = false;
 let targetView = null;
-// Fonction de transition améliorée avec courbe d'animation
+
 export function smoothTransition(targetPosition, targetRotation, duration = 1.5)
 {
-	// Annuler l'animation précédente si elle existe
 	if (currentTransitionAnimation) {
 		scene.onBeforeRenderObservable.remove(currentTransitionAnimation);
 	}
@@ -71,12 +62,16 @@ export function smoothTransition(targetPosition, targetRotation, duration = 1.5)
 	const startRotation = camera.rotation.clone();
 	const startTime = performance.now();
 
-	// Créer des vecteurs temporaires pour éviter la création d'objets pendant l'animation
 	const tempPosition = new BABYLON.Vector3();
 	const tempRotation = new BABYLON.Vector3();
 
-	// Fonction d'ease (lissage)
-	const easeInOutCubic = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+	function easeInOutCubic(t)
+	{
+		if (t < 0.5)
+			return 4 * t * t * t;
+		else
+			return 1 - Math.pow(-2 * t + 2, 3) / 2;
+	}
 
 	currentTransitionAnimation = scene.onBeforeRenderObservable.add(() => {
 		const currentTime = performance.now();
@@ -90,14 +85,10 @@ export function smoothTransition(targetPosition, targetRotation, duration = 1.5)
 			return;
 		}
 
-		// Appliquer la fonction d'ease
 		const easedT = easeInOutCubic(t);
-
-		// Interpolation de la position
+		
 		BABYLON.Vector3.LerpToRef(startPosition, targetPosition, easedT, tempPosition);
 		camera.position.copyFrom(tempPosition);
-
-		// Interpolation de la rotation
 		BABYLON.Vector3.LerpToRef(startRotation, targetRotation, easedT, tempRotation);
 		camera.rotation.copyFrom(tempRotation);
 	});
@@ -127,19 +118,19 @@ export function handleViewTransitions(viewName, previousView)
 	console.log(viewName, previousView);
 	if (isLoading)
 	return;
-if (!previousView)
-previousView = 'default';
+	if (!previousView)
+	previousView = 'default';
 
-if (viewName === 'vue1' && previousView === 'default')
-{
-	changeView('vue1', true);
-	setTimeout(() =>
+	if (viewName === 'vue1' && previousView === 'default')
 	{
-		window.currentView = 'vue1';
-		createLoadingOverlay();
-	}, 1200);
-	setTimeout(() =>
-	{
+		changeView('vue1', true);
+		setTimeout(() =>
+		{
+			window.currentView = 'vue1';
+			createLoadingOverlay();
+		}, 1200);
+		setTimeout(() =>
+		{
 			changeView('vue2', true);
 		}, 3500);
 		setTimeout(() => removeLoadingOverlay(), 5000);
@@ -190,18 +181,6 @@ if (viewName === 'vue1' && previousView === 'default')
 			isLoading = false;
 		}, 5000);
 	}
-	if (viewName === 'winner')
-	{
-		changeView('winner', true);
-	}
-	if (viewName === 'tournament')
-	{
-		changeView('tournament', true);
-	}
-	if (viewName === 'vue2' && previousView === 'tournament')
-	{
-		changeView('vue2', true);
-	}
 	if (viewName === 'tournament_game_start' && previousView === 'tournament')
 	{
 		createLoadingOverlay();
@@ -234,12 +213,14 @@ if (viewName === 'vue1' && previousView === 'default')
 			isLoading = false;
 		}, 5000);
 	}
-	if (viewName === 'platformer' && previousView === 'vue2')
-	{
-		changeView('platformer', true);
-	}
-	if (viewName === 'vue2' && previousView === 'platformer')
-	{
+	if (viewName === 'winner')
+		changeView('winner', true);
+	if (viewName === 'tournament')
+		changeView('tournament', true);
+	if (viewName === 'vue2' && previousView === 'tournament')
 		changeView('vue2', true);
-	}
+	if (viewName === 'platformer' && previousView === 'vue2')
+		changeView('platformer', true);
+	if (viewName === 'vue2' && previousView === 'platformer')
+		changeView('vue2', true);
 }
