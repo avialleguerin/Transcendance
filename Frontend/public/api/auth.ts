@@ -1,6 +1,23 @@
 import { notif, fetchAPI, homeView, gameMenuView, platformerView, setLocalStorage, updateUI, $, $input, $form } from './utils.js';
-import { ApiResponse, LoginRequest, RegisterRequest, User } from './types.js';
+import { ApiResponse, LoginRequest, RegisterRequest, User, GoogleTokenClient, GoogleSignInResponse,  } from './types.js';
 import { connectWebSocket, disconnectWebSocket } from './websocket.js';
+
+export let tokenClient: GoogleTokenClient | null = null;
+
+if (typeof window !== 'undefined') {
+	window.login = login;
+	window.register = register;
+	window.verify2FA = verify2FA;
+	window.logout = logout;
+	window.login_1v1 = login_1v1;
+	window.login_2v2 = login_2v2;
+	window.login_tournament = login_tournament;
+	window.login_platformer = login_platformer;
+	window.initGoogleSignIn = initGoogleSignIn;
+	window.tokenClient = tokenClient;
+}
+
+//* ==== LOG-INs ==== *//
 
 /**
  * Connect the user to the game menu.
@@ -13,12 +30,12 @@ export async function login(event: Event): Promise<void> {
 	const password = $input("login-password").value;
 
 	try {
-		const data = await fetchAPI('/request/user/login', 'POST', { username, password }, true, false);
+		const data: ApiResponse = await fetchAPI('/request/user/login', 'POST', { username, password }, true, false);
 		
 		if (!data.accessToken && !data.success)
 			console.debug(`${data.function}: ${data.error} - ${data.message}`);
 		else if (data.success && data.connection_status === "partially_connected" && data.user.doubleAuth_status) {
-			sessionStorage.setItem("userId", data.user.userId);
+			sessionStorage.setItem("userId", data.user.userId); // todo change userid to id
 			updateUI({ removeClass: [{ id:"doubleAuthForm", className: "hidden" }], addClass: ["loginForm", "doubleAuthForm"] });
 			$input("login-title").textContent = "Double Authentication";
 		} else if (data.success && data.connection_status === "connected") {
@@ -48,7 +65,7 @@ export async function login_1v1(event: Event) {
 	if (username === localStorage.getItem("Player1")) return notif("You cannot play against yourself", false);
 
 	try {
-		const data = await fetchAPI('/request/user/login-1v1', 'POST', { username, password }, true, false);
+		const data: ApiResponse  = await fetchAPI('/request/user/login-1v1', 'POST', { username, password }, true, false);
 
 		if (data.success) {
 			console.debug(`${data.function}: ${data.message}. Player2 ${data.player2.username} logged in successfully`);
@@ -67,7 +84,7 @@ export async function login_1v1(event: Event) {
  * Connect all the users in 2v2 mode.
  * @param event Form submission, where all the users enter their infos.
  */
-export async function login_2v2(event: Event) {
+export async function login_2v2(event: Event): Promise<void> {
 	console.debug(`function called: login_2v2`);
 	event.preventDefault();
 	const username1 = localStorage.getItem("Player1");
@@ -79,7 +96,7 @@ export async function login_2v2(event: Event) {
 		username2 === username3 || username2 === username4 || username3 === username4)		return notif("There can't be the same player 2 times", false);
 
 	try {
-		const data = await fetchAPI('/request/user/login-2v2', 'POST', { username2, password2, username3, password3, username4, password4 }, true, false);
+		const data: ApiResponse = await fetchAPI('/request/user/login-2v2', 'POST', { username2, password2, username3, password3, username4, password4 }, true, false);
 
 		if (data.success) {
 			setLocalStorage({"Player2": data.player2.username, "Player3": data.player3.username, "Player4": data.player4.username });
@@ -102,7 +119,7 @@ export async function login_2v2(event: Event) {
  * Connect all the users in tournament mode.
  * @param event Form submission, where all the users enter their infos.
  */
-export async function login_tournament(event: Event) {
+export async function login_tournament(event: Event): Promise<void> {
 	console.debug(`function called: login_tournament`);
 	event.preventDefault();
 	const username1 = localStorage.getItem("Player1");
@@ -152,6 +169,8 @@ export async function login_platformer(event: Event) {
 	} catch (err) { notif("Connexion to platformer failed", false); console.error(`login_platformer: ${err}`); }
 	$form("choose_your_opponent_platformer_form").reset();
 }
+
+//* ==== OTHER ==== *//
 
 /**
  * Log out the user, clear session and local storage, and redirect to home view.
@@ -236,49 +255,26 @@ export async function refreshInfos() {
 
 //* ==== GOOGLE SIGN-IN ==== *//
 
-window.addEventListener('DOMContentLoaded', () => {
-	refreshInfos();
-	setTimeout(() => { initGoogleSignIn(); }, 1000);
-});
-
-interface GoogleTokenClient {
-	requestAccessToken(): void;
-}
-
-interface GoogleSignInResponse {
-	access_token: string;
-	error?: string;
-}
-
-declare global {
-	interface Window {
-		google: {
-			accounts: {
-				oauth2: {
-					initTokenClient(config: any): GoogleTokenClient;
-				}
-			}
-		};
-		initGoogleSignIn: () => void;
-		tokenClient: GoogleTokenClient | null;
-	}
-} declare const google: Window['google'];
-
-export let tokenClient: GoogleTokenClient | null = null;
-
-export async function initGoogleSignIn() {
+/**
+ * Initialize Google Sign-In by fetching the client ID and setting up the token client.
+ * This function is called when the DOM is fully loaded.
+ * It checks if the Google OAuth API is available and initializes the token client.
+ * If the client ID is not available, it logs a warning.
+ * @returns {Promise<void>}
+ */
+export async function initGoogleSignIn(): Promise<void> {
 	console.trace("- `initGoogleSignIn()` called");
 
 	if (typeof google !== 'undefined' && google.accounts?.oauth2) {
 		try {
-			const config = await fetchAPI('/request/user/google-config', 'GET', null, false);
+			const data = await fetchAPI('/request/user/google-config', 'GET', null, false);
 			
-			if (!config.success || !config.client_id) {
+			if (!data.success || !data.client_id) {
 				console.warn("Impossible de récupérer la configuration Google");
 				return;
 			}
 			tokenClient = google.accounts.oauth2.initTokenClient({
-				client_id: config.client_id,
+				client_id: data.client_id,
 				scope: "openid email profile",
 				callback: handleGoogleSignIn,
 			});
@@ -291,23 +287,6 @@ export async function initGoogleSignIn() {
 		console.warn("Google OAuth API non disponible");
 	}
 }
-
-// Make functions available globally for HTML event handlers and TypeScript
-if (typeof window !== 'undefined') {
-    (window as any).login = login;
-	(window as any).login = login;
-	(window as any).register = register;
-	(window as any).verify2FA = verify2FA;
-	(window as any).logout = logout;
-	(window as any).login_1v1 = login_1v1;
-	(window as any).login_2v2 = login_2v2;
-	(window as any).login_tournament = login_tournament;
-	(window as any).login_platformer = login_platformer;
-	(window as any).initGoogleSignIn = initGoogleSignIn;
-	// (window as any).tokenClient = tokenClient;
-}
-// window.initGoogleSignIn = initGoogleSignIn;
-window.tokenClient = tokenClient;
 
 export async function handleGoogleSignIn(response: { access_token: string }) {
 	try {
@@ -329,6 +308,11 @@ export async function handleGoogleSignIn(response: { access_token: string }) {
 		notif("Connexion Google failed", false);
 	}
 }
+
+window.addEventListener('DOMContentLoaded', () => {
+	refreshInfos();
+	setTimeout(() => { initGoogleSignIn(); }, 1000);
+});
 
 //* ==== WEB SOCKET ==== *//
 

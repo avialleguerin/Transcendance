@@ -1,23 +1,34 @@
-import { notif, fetchAPI } from './utils.js';
+import { notif, fetchAPI, $, $input, $form } from './utils.js';
+import { Friendship, GameScore } from './types.js';
 
 let historyIsActive = localStorage.getItem('historyIsVisible') === 'true';
 let bool = false;
 
-export async function addFriend(event) {
+if (typeof window !== 'undefined') {
+	window.addFriend = addFriend;
+	window.accept_friendship = accept_friendship;
+	window.delete_friendship = delete_friendship;
+	window.fetch_user_friendships = fetch_user_friendships;
+	window.fetch_user_games = fetch_user_games;
+	window.fetch_user_games_big = fetch_user_games_big;
+	window.togglePanel = togglePanel;
+}
+
+export async function addFriend(event: Event): Promise<void> {
 	event.preventDefault();
-	const friend = document.getElementById("friend_name_input").value;
+	const friend = $input("friend_name_input").value;
 	
 	try {
 		const data = await fetchAPI('/request/friendship/add-friend', 'POST', { friend });
 		if (data.success)
 			fetch_user_friendships();
-		document.getElementById("friend_name_input").value = "";
+		$input("friend_name_input").value = "";
 	} catch (err) {
 		notif("Failed to add '" + friend + "' as a friend", false);
 	}
 }
 
-export async function accept_friendship(friendshipId) {
+export async function accept_friendship(friendshipId: number): Promise<void> {
 	try {
 		const data = await fetchAPI('/request/friendship/accept-friend', 'POST', { friendshipId });
 		if (data.success)
@@ -27,34 +38,31 @@ export async function accept_friendship(friendshipId) {
 	}
 }
 
-export async function delete_friendship(friendshipId) {
+export async function delete_friendship(friendshipId: number): Promise<void> {
 	try {
 		const data = await fetchAPI('/request/friendship/delete-friend', 'DELETE', { friendshipId });
 		if (data.success)
 			fetch_user_friendships();
 	} catch (err) {
-		notif("Failed to accept this friend", false);
+		notif("Failed to delete this friend", false);
 	}
 }
 
-export async function fetch_user_friendships() {
+export async function fetch_user_friendships(): Promise<void> {
 	try {
 		const data = await fetchAPI('/request/friendship/get-user-friendships', 'GET', null, false);
-		if (!data.success) {
-			notif(data.error, false);
-			return;
-		}
+		if (!data.success) return;
 
 		const friendships = data.friendships;
 		const user = data.user;
+		const accepted:	Friendship[] = friendships.filter((f: Friendship) => f.status === 'accepted');
+		const pending:	Friendship[] = friendships.filter((f: Friendship) => f.status === 'pending');
 
-		const accepted = friendships.filter(f => f.status === 'accepted');
-		const pending = friendships.filter(f => f.status === 'pending');
 
-		const renderFriend = (friendship, showActions) => {
-			let statusClass = `${friendship.friendOnlineStatus ? 'friend_online_status status-online' : 'friend_online_status status-offline'}`;
-			let statusTitle = `${friendship.friendOnlineStatus ? 'Online' : 'Offline'}`;
-			let friendshipProfilePicture = friendship.status === 'accepted' ? friendship.friendProfilePicture : 'default-profile-picture.png'; // Fallback to a default picture if none is provided
+		const renderFriend = (friendship: Friendship, showActions: boolean): string => {
+			let statusClass: string = `${friendship.friendOnlineStatus ? 'friend_online_status status-online' : 'friend_online_status status-offline'}`;
+			let statusTitle: string = `${friendship.friendOnlineStatus ? 'Online' : 'Offline'}`;
+			let friendshipProfilePicture: string = friendship.status === 'accepted' ? friendship.friendProfilePicture : 'default-profile-picture.png'; // Fallback to a default picture if none is provided
 			return `
 				<div class="friend">
 					<div class="friend-info">
@@ -124,7 +132,7 @@ export async function fetch_user_friendships() {
 	}
 }
 
-export async function fetch_user_games() {
+export async function fetch_user_games(): Promise<void> {
 	try {
 		console.log("fetch_user_games");
 		const data = await fetchAPI('/request/game/get-user-games', 'GET', null, false);
@@ -135,7 +143,7 @@ export async function fetch_user_games() {
 		const games = data.games;
 		const userId = data.user.userId;
 		if (games && games.length > 0) {
-			document.getElementById('games-table').innerHTML = games.map(game => {
+			document.getElementById('games-table').innerHTML = games.map((game: GameScore) => {
 				let dispScoreLeft = game.score_left;
 				let dispScoreRight = game.score_right;
 				const leftWinOriginal = (game.score_left - game.score_right) > 0;
@@ -230,7 +238,7 @@ export async function fetch_user_games() {
 	}
 }
 
-export async function fetch_user_games_big(username) {
+export async function fetch_user_games_big(username: string): Promise<void> {
 	try {
 		console.log("fetch_user_games");
 		const data = await fetchAPI('/request/game/get-friend-games', 'POST', { username }, null, false);
@@ -249,7 +257,7 @@ export async function fetch_user_games_big(username) {
 		document.getElementById("games_played_history").innerHTML = `${user.games_lost + user.games_won}`;
 		document.getElementById("win_rate_history").innerHTML = `${(user.games_won + user.games_lost) > 0 ? Math.round((user.games_won / (user.games_won + user.games_lost)) * 100) : 0} %`;
 		if (games && games.length > 0) {
-			document.getElementById('games-table-big').innerHTML = games.map(game => {
+			document.getElementById('games-table-big').innerHTML = games.map((game: GameScore) => {
 				let dispScoreLeft = game.score_left;
 				let dispScoreRight = game.score_right;
 				const leftWinOriginal = (game.score_left - game.score_right) > 0;
@@ -344,18 +352,8 @@ export async function fetch_user_games_big(username) {
 	}
 }
 
-export async function togglePanel(event)
-{
+export async function togglePanel(event: Event): Promise<void> {
 	event.preventDefault();
-	fetch_user_friendships();
-	fetch_user_games();
+	await fetch_user_friendships(); //REVIEW - i add await
+	await fetch_user_games();
 }
-
-// Make functions available globally for HTML event handlers
-window.addFriend = addFriend;
-window.accept_friendship = accept_friendship;
-window.delete_friendship = delete_friendship;
-window.fetch_user_friendships = fetch_user_friendships;
-window.fetch_user_games = fetch_user_games;
-window.fetch_user_games_big = fetch_user_games_big;
-window.togglePanel = togglePanel;

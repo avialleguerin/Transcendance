@@ -1,4 +1,9 @@
+// import { WebSocketManager } from "./types"
+
 export class WebSocketManager {
+	private socket: WebSocket | null;
+	private heartbeatInterval: NodeJS.Timeout | null;
+	
 	constructor() {
 		this.socket = null
 		this.heartbeatInterval = null

@@ -1,17 +1,10 @@
 import { notif } from './utils.js';
 
-export async function create_1v1_game(event, player1, player2) {
+export async function create_1v1_game(event: Event, player1: string, player2: string): Promise<void> {
 	event.preventDefault();
-
-	// const player1 = localStorage.getItem("Player1");
-	// const player2 = localStorage.getItem("Player2");
 	const score_left = localStorage.getItem("score_left");
 	const score_right = localStorage.getItem("score_right");
-
-	if (!player1 || !player2) {
-		notif("Please select two players", false);
-		return ;
-	}
+	if (!player1 || !player2) return notif("Please select two players", false);
 
 	const response = await fetch('/request/game/create-1v1-game', {
 		method: 'POST',
@@ -22,15 +15,14 @@ export async function create_1v1_game(event, player1, player2) {
 		credentials: 'include',
 	});
 	const data = await response.json();
-	if (!data.success)
-		notif(data.error, false);
+	if (!data.success) return notif(data.error, false);
 	if (localStorage.getItem("tournamentStarted") !== "true")
 		localStorage.removeItem("Player2");
 	else
 		localStorage.setItem("tournamentCount", (parseInt(localStorage.getItem("tournamentCount")) + 1).toString());
 };
 
-export async function create_2v2_game(event) {
+export async function create_2v2_game(event: Event): Promise<void> {
 	event.preventDefault();
 
 	const player1 = localStorage.getItem("Player1");

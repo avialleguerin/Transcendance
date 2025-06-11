@@ -1,6 +1,7 @@
 import { handleViewTransitions } from '../srcs/game/gameplay/views/camera.js';
+import { ClassModification, UIConfig } from './types.js';
 
-export function notif(message, success = true) {
+export function notif(message: string, success = true) {
 	const notification = document.getElementById('resultMessage');
 	console.log("notif:", message, "success:", success);
 	console.debug(`notification : ${notification}`)
@@ -28,19 +29,19 @@ export function notif(message, success = true) {
 	}
 }
 
-export async function fetchAPI(url, method, body = null, showNotification = true, formData = null) {
-	console.debug(`fetchAPI: url: ${url}, method: ${method}, body:`, body, "formData:", formData);
+export async function fetchAPI(url: string, method: string, body: any = null, showNotification = true, formData: boolean | FormData | null = null): Promise<any> {
+	console.debug(`fetchAPI: ${url}:[${method}] - body: ${body} - Notif: ${showNotification} - formData: ${formData}.`);
 	try {
 		let accessToken = sessionStorage.getItem('accessToken');
 
-		const headers = {
+		const headers: Record<string, string> = {
 			"Authorization": `Bearer ${accessToken}`
 		};
 
 		if (body && !formData)
 			headers["Content-Type"] = "application/json";
 
-		const options = {
+		const options: RequestInit = {
 			method,
 			headers,
 			credentials: 'include'
@@ -48,7 +49,7 @@ export async function fetchAPI(url, method, body = null, showNotification = true
 
 		if (body && !formData)
 			options.body = JSON.stringify(body);
-		else if (formData)
+		else if (formData) // instanceof FormData)
 			options.body = formData;
 
 		const response = await fetch(url, options);
@@ -63,7 +64,7 @@ export async function fetchAPI(url, method, body = null, showNotification = true
 		console.log("fetchAPI: data.error:", data.error);
 		return data;
 	} catch (err) {
-		console.error(`Error in API call to ${url}:`, err.message);
+		console.error(`Error in API call to ${url}: ${err}`);
 		if (showNotification)
 			notif("Une erreur s'est produite lors de la communication avec le serveur", false);
 		throw err;
@@ -72,7 +73,7 @@ export async function fetchAPI(url, method, body = null, showNotification = true
 
 
 
-export function homeView() {
+export function homeView(): void {
 	handleViewTransitions("default", "vue1");
 	history.pushState({}, '', '/');
 	import('../static/js/views/Home.js').then((module) => {
@@ -90,7 +91,7 @@ export function homeView() {
 	});
 }
 
-export function gameMenuView() {
+export function gameMenuView(): void {
 	handleViewTransitions("vue1", "default");
 	history.pushState({}, '', '/Game_menu');
 	import('../static/js/views/Game_menu.js').then(module => {
@@ -105,10 +106,9 @@ export function gameMenuView() {
 	});
 }
 
-export function platformerView() {
+export function platformerView(): void {
 	history.pushState({}, '', '/platformer');
 	import('../static/js/views/platformer/PlatformView.js').then((module) => {
-		console.log("Home module loaded");
 		const PlatformerView = module.default;
 		const platformerInstance = new PlatformerView();
 		platformerInstance.getHtml().then((html) => {
@@ -123,38 +123,28 @@ export function platformerView() {
 	});
 }
 
-export const setLocalStorage = (items) => {
+export const setLocalStorage = (items: Record<string, any>) => {
 	Object.entries(items).forEach(([key, value]) => {
 		localStorage.setItem(key, value);
 	});
 };
 
-
-
-interface ClassModification {
-  id: string;
-  className?: string;
-}
-
-interface UIConfig {
-  removeClass?: (string | ClassModification)[];
-  addClass?: (string | ClassModification)[];
-  setContent?: Record<string, string>;
-  resetForms?: string[];
+export function getLocalStorage(key: string): string | null {
+	return localStorage.getItem(key);
 }
 
 /**
- * 
+ * function facilitating UI updates by adding/removing classes, setting content, and resetting forms
  * @param config Configuration object for updating the UI
  */
 export function updateUI(config: UIConfig): void {
   if (config.removeClass) {
-    config.removeClass.forEach(item => {
-      if (typeof item === 'string')
-        document.getElementById(item)?.classList.remove('active');
-      else if (typeof item === 'object')
-        document.getElementById(item.id)?.classList.remove(item.className || 'active');
-    });
+	config.removeClass.forEach((item: string | ClassModification) => {
+	  if (typeof item === 'string')
+		document.getElementById(item)?.classList.remove('active');
+	  else if (typeof item === 'object')
+		document.getElementById(item.id)?.classList.remove(item.className || 'active');
+	});
   }
 
   if (config.addClass) {
@@ -199,4 +189,9 @@ export function $input(id: string): HTMLInputElement {
 // For Form elements specifically
 export function $form(id: string): HTMLFormElement {
   return document.getElementById(id) as HTMLFormElement;
+}
+
+export function onSubmit(formId: string, handler: (event: Event) => void) {
+    const form = document.getElementById(formId);
+    form?.addEventListener("submit", handler);
 }
