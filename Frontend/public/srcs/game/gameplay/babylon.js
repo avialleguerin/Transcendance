@@ -482,7 +482,7 @@ engine.runRenderLoop(() => {
 			console.log(`FPS: ${debugFps} | Quality: ${qualityLevel} | Active Meshes: ${scene.getActiveMeshes().length}`);
 			lastDebugOutput = now;
 		}
-		console.log(camera.position, camera.rotation);
+		// console.log(camera.position, camera.rotation);
 
 		scene.render();
 

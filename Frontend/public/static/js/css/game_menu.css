@@ -3248,7 +3248,7 @@ to {
 	background-color: #95a5a6; /* Gris neutre */
 }
 
-.notify_friend_demand {
+#notify_friend_demand {
 	width: 10px;
 	height: 10px;
 	border-radius: 50%;
@@ -3259,6 +3259,7 @@ to {
 	box-shadow: 0 0 6px rgba(204, 46, 46, 0.7);
 	top: 6.8%;
 	left: 76%;
+	display: none;
 }
 
 
