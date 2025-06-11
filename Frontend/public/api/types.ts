@@ -119,6 +119,17 @@ export interface UIConfig {
 	setContent?: Record<string, string>;
 	resetForms?: string[];
 }
+
+//* INDEX
+export interface Route {
+	path: string;
+	view: any;
+}
+
+export interface RouteMatch {
+	route: Route;
+	isMatch: boolean;
+}
  
 declare global {
 	const google: Window['google'];

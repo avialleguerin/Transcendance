@@ -5,18 +5,9 @@ import multi_player_game from "./views/multi_player_game.js";
 import tournament from "./views/tournament.js";
 import tournament_game from "./views/tournament_game.js";
 import PlatformView  from "./views/platformer/PlatformView.js";
-// import { log } from "../../utils/logger.js";
+import { Route, RouteMatch } from "../../api/types.js";
 
-// Définition d'interfaces
-interface Route {
-	path: string;
-	view: any; // Idéalement on devrait définir un type plus précis ici
-}
 
-interface RouteMatch {
-	route: Route;
-	isMatch: boolean;
-}
 
 let leave_game_var: boolean = false;
 
