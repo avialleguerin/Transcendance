@@ -50,7 +50,7 @@ export async function addFriend(request, reply) {
 		}
 
 		friendshipsModel.createFriendship(infos.user.userId, friendExists.userId);
-		notifyFriend(infos.user.userId, friendExists.userId,`${infos.user.username} has sent you a friend request`);
+		notifyFriend(infos.user.userId, friendExists.userId, "friend_request", `${infos.user.username} has sent you a friend request`);
 
 		return reply.code(201).send({ 
 			success: true,
@@ -83,7 +83,7 @@ export async function acceptFriend(request, reply) {
 			return reply.code(403).send({ success: false, error: `You are not allowed to accept this friend`, accessToken: infos.accessToken })
 
 		friendshipsModel.acceptFriendship(friendship.userId, infos.user.userId);
-		notifyFriend(user.userId, friendship.userId , `${user.username} has accepted your friend request`);
+		notifyFriend(user.userId, friendship.userId , "friend_request", `${user.username} has accepted your friend request`);
 
 		return reply.send({ 
 			success: true,
@@ -113,7 +113,7 @@ export async function deleteFriend(request, reply) {
 		
 		const otherUserId = friendship.userId === user.userId ? friendship.friendId : friendship.userId;
 		friendshipsModel.deleteFriendship(friendship.userId, friendship.friendId)
-		notifyFriend(user.userId, otherUserId, `${user.username} has deleted you from their friends list`);
+		notifyFriend(user.userId, otherUserId, "friend_deleted", `${user.username} has deleted you from their friends list`);
 		return reply.send({ 
 			success: true,
 			message: "Friend deleted successfully",

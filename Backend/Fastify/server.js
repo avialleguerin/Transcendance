@@ -73,7 +73,7 @@ function notifyFriendsStatusChange(userId, status) {
 	}
 }
 
-export function notifyFriend(fromUserId, toUserId, message) {
+export function notifyFriend(fromUserId, toUserId, type, message) {
 	try {
 		const fromUser = usersModel.getUserById(fromUserId);
 		const toUserConnection = activeConnections.get(toUserId.toString());
@@ -82,7 +82,7 @@ export function notifyFriend(fromUserId, toUserId, message) {
 		console.log(`🔍 Active connections: ${Array.from(activeConnections.keys())}`);
 		if (toUserConnection && fromUser) {
 			toUserConnection.send(JSON.stringify({
-				type: "friend_request",
+				type: type,
 				fromUserId: fromUserId,
 				fromUsername: fromUser.username,
 				fromProfilePicture: fromUser.profile_picture,

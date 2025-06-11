@@ -27,10 +27,12 @@ class WebSocketManager {
 			const data = JSON.parse(event.data)
 			if (data.type === 'pong')
 				console.log('Heartbeat response received')
-			// else if (data.type === 'friend_status_update')
-			// 	this.updateFriendStatus(data.userId, data.status, data.username)
 			else if (data.type === 'friend_request')
 				this.handleFriendRequest(data.message)
+			else if (data.type === 'friend_deleted')
+				this.handleFriendRequest()
+			else if (data.type === 'friend_status_update')
+				this.handleFriendRequest()
 		}
 		
 		this.socket.onclose = () => {
@@ -89,56 +91,11 @@ class WebSocketManager {
 	}
 
 	handleFriendRequest(message) {
-
 		fetch_user_friendships()
 		if (message)
 			notif(`${message}`, true)
 	}
 
-	handleFriendStatus(data) {
-		console.log(`📬 Friend request received from ${data.fromUsername}`)
-		notif(`${data.message}`, true)
-		fetch_user_friendships()
-
-		window.dispatchEvent(new CustomEvent('friendRequestReceived', {
-			detail: {
-				fromUserId: data.fromUserId,
-				fromUsername: data.fromUsername,
-				fromProfilePicture: data.fromProfilePicture,
-				message: data.message
-			}
-		}))
-		
-	// 	// Rafraîchir la liste des amis si elle est visible
-	// 	if (typeof window.fetch_user_friendships === 'function') {
-	// 		window.fetch_user_friendships()
-	// 	}
-	// }
-
-	// ✅ AJOUT : Fonction pour gérer l'acceptation d'une demande d'amitié
-// 	handleFriendRequestAccepted(data) {
-// 		console.log(`📬 Friend request accepted by ${data.fromUsername}`)
-		
-// 		// Afficher une notification visuelle
-// 		if (typeof window.notif === 'function') {
-// 			window.notif(`${data.fromUsername} has accepted your friend request`, true)
-// 		}
-		
-// 		// Déclencher un événement personnalisé
-// 		window.dispatchEvent(new CustomEvent('friendRequestAccepted', {
-// 			detail: {
-// 				fromUserId: data.fromUserId,
-// 				fromUsername: data.fromUsername,
-// 				fromProfilePicture: data.fromProfilePicture,
-// 				message: data.message
-// 			}
-// 		}))
-		
-// 		// Rafraîchir la liste des amis si elle est visible
-// 		if (typeof window.fetch_user_friendships === 'function') {
-// 			window.fetch_user_friendships()
-// 		}
-	}
 }
 
 // Instance globale du WebSocket
