@@ -8,21 +8,6 @@ export default class Home extends AbstractView {
 	constructor() {
 		super();
 		this.setTitle("Home");
-		// const accessToken : string | null = sessionStorage.getItem("accessToken");
-		// if (accessToken && accessToken !== undefined) {
-			// gameMenuView();
-			// history.pushState({}, '', '/Game_menu');
-			// import('./Game_menu.js').then(module => {
-			// 	const GameMenu = module.default;
-			// 	const gameMenuInstance = new GameMenu();
-			// 	gameMenuInstance.getHtml().then(html => {
-			// 		document.getElementById('app').innerHTML = html;
-			// 		if (gameMenuInstance.game_menu) {
-			// 			gameMenuInstance.game_menu();
-			// 		}
-			// 	}); 
-			// });
-		// }
 	}
 
 	async getHtml(): Promise<string> {
@@ -41,7 +26,7 @@ export default class Home extends AbstractView {
                         <div class="cgu-text">
                             <h2>1. Introduction</h2>
                             <p>Welcome to Transcendance. By using our application, you accept these terms of use.</p>
-                            <p>Data controller: Transcendance Project Team - École 42<br>
+                            <p>Data controller: Transcendance Project Team - 42 School<br>
                             Contact: ozasahin@student.42lyon.fr<br>
                             Data Protection Officer (DPO): Mr. SAHIN O.</p>
                             
