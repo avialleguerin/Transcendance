@@ -31,11 +31,7 @@ async function fetchAPI(url, method, body = null, showNotification = true, formD
 		if (body && !formData)
 			headers["Content-Type"] = "application/json";
 
-		const options = {
-			method,
-			headers,
-			credentials: 'include'
-		};
+		const options = { method, headers, credentials: 'include' };
 
 		if (body && !formData)
 			options.body = JSON.stringify(body);
@@ -54,7 +50,6 @@ async function fetchAPI(url, method, body = null, showNotification = true, formD
 		console.log("fetchAPI: data:", data.error ? data.error : data);
 		return data;
 	} catch (err) {
-		console.error(`Error in API call to ${url}:`, err.message);
 		if (showNotification)
 			notif("Une erreur s'est produite lors de la communication avec le serveur", false);
 		throw err;

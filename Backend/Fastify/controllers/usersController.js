@@ -14,6 +14,21 @@ import path from 'path'
 const uploadDir = '/usr/share/nginx/uploads'
 const SECRET_LENGHT = 30
 
+const IMAGE_SECURITY = {
+	MAGIC_BYTES: {
+		PNG: [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A],
+		JPEG_FF_D8_FF_E0: [0xFF, 0xD8, 0xFF, 0xE0],
+		JPEG_FF_D8_FF_E1: [0xFF, 0xD8, 0xFF, 0xE1],
+		JPEG_FF_D8_FF_E2: [0xFF, 0xD8, 0xFF, 0xE2],
+		JPEG_FF_D8_FF_E3: [0xFF, 0xD8, 0xFF, 0xE3],
+		JPEG_FF_D8_FF_DB: [0xFF, 0xD8, 0xFF, 0xDB],
+		JPEG_FF_D8_FF_EE: [0xFF, 0xD8, 0xFF, 0xEE]
+	},
+	MAX_FILE_SIZE: 5 * 1024 * 1024,
+	ALLOWED_EXTENSIONS: ['.png', '.jpg', '.jpeg'],
+	MAX_DIMENSIONS: { width: 2048, height: 2048 }
+};
+
 export async function googleConfig(request, reply) {
 	try {
 		fastify.log.debug("ID du client Google :" + process.env.GOOGLE_CLIENT_ID);
@@ -27,6 +42,110 @@ export async function googleConfig(request, reply) {
 	}
 }
 
+// export async function googleSignIn(request, reply) {
+// 	try {
+// 		const { access_token } = request.body;
+// 		if (!access_token) {
+// 			return reply.code(400).send({ 
+// 				success: false, 
+// 				error: 'Google access_token is required' 
+// 			});
+// 		}
+
+// 		const response = await fetch(`https://www.googleapis.com/oauth2/v2/userinfo?access_token=${access_token}`);
+		
+// 		if (!response.ok) {
+// 			fastify.log.error('Google API error:', response.status);
+// 			return reply.code(401).send({ 
+// 				success: false, 
+// 				error: 'Invalid Google access token' 
+// 			});
+// 		}
+
+// 		const googleUser = await response.json();
+// 		if (!googleUser.id)
+// 			return reply.code(401).send({ success: false, error: 'Invalid Google user data'});
+		
+// 		const { id: googleId, name, picture: profilePictureUrl, email } = googleUser;
+		
+// 		let user = usersModel.getUserByGoogleId(googleId);
+// 		let isNewUser = false;
+// 		let tempPassword = null;
+// 		if (!user || user.anonymized_at) {
+
+// 			if (user && user.anonymized_at)
+// 				fastify.log.info(`User with Google ID ${googleId} was previously anonymized, creating new account`);
+		
+			
+// 			const username = name.replace(/\s+/g, '').toLowerCase().substring(0,10);
+// 			const randomPassword = Math.random().toString(36).substring(2, 17);
+// 			const hashedPassword = await hashPassword(randomPassword);
+
+// 			// Stocker le mot de passe temporaire pour l'email
+// 			tempPassword = randomPassword;
+// 			isNewUser = true;
+			
+// 			let profilePicture = "default-profile-picture.png";
+// 			if (profilePictureUrl) {
+// 				try {
+// 					const imageResponse = await fetch(profilePictureUrl);
+// 					if (imageResponse.ok) {
+// 						const imageBuffer = await imageResponse.arrayBuffer();
+// 						const buffer = Buffer.from(imageBuffer);
+						
+// 						const contentType = imageResponse.headers.get('content-type');
+// 						let extension = '.jpg';
+// 						if (contentType?.includes('png')) extension = '.png';
+// 						else if (contentType?.includes('gif')) extension = '.gif';
+// 						else if (contentType?.includes('webp')) extension = '.webp';
+						
+// 						const filename = `${Date.now()}-${username}-pp${extension}`;
+// 						const filePath = path.join(uploadDir, filename);
+						
+// 						await fs.writeFile(filePath, buffer);
+// 						profilePicture = filename;
+						
+// 						fastify.log.info(`Google profile picture saved: ${filename}`);
+// 					} else {
+// 						fastify.log.warn('Failed to download Google profile picture');
+// 					}
+// 				} catch (error) {
+// 					fastify.log.error('Error downloading Google profile picture:' + error);
+// 				}
+// 			}
+			
+// 			const newUserInfo = usersModel.createGoogleUser(username, hashedPassword, googleId, profilePicture);
+// 			user = usersModel.getUserById(newUserInfo.lastInsertRowid);
+// 		}
+// 		const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, { expiresIn: '15m' });
+// 		const refreshToken = fastify.jwt.sign({ userId: user.userId }, { expiresIn: '7d' });
+		
+// 		usersModel.updateLastActivity(user.userId);
+
+// 		if (isNewUser && tempPassword && email) {
+// 			try {
+// 				fastify.log.info(`Envoi de l'email de bienvenue à ${email} pour l'utilisateur ${user.username}`);
+// 				const emailSent = await sendWelcomeEmail(email, user.username, tempPassword);
+// 				if (emailSent)
+// 					fastify.log.info(`Email de bienvenue envoyé à ${email} pour l'utilisateur ${user.username}`);
+// 			} catch (emailError) {
+// 				fastify.log.error('Erreur lors de l\'envoi de l\'email de bienvenue:' + emailError);
+// 			}
+// 		}
+// 		return reply.setCookie('refreshToken', refreshToken, {
+// 				path: '/',
+// 				httpOnly: true,
+// 				secure: true,
+// 				sameSite: 'strict',
+// 				expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+// 			}).code(200).send({ success: true, message: 'Google Sign-In successful', connection_status: "connected", user: user, accessToken: accessToken });
+			
+// 	} catch (error) {
+// 		fastify.log.error('Google Sign-In error:' + error);
+// 		return reply.code(500).send({ success: false, error: 'Google Sign-In failed' });
+// 	}
+// }
+
 export async function googleSignIn(request, reply) {
 	try {
 		const { access_token } = request.body;
@@ -38,7 +157,7 @@ export async function googleSignIn(request, reply) {
 		}
 
 		const response = await fetch(`https://www.googleapis.com/oauth2/v2/userinfo?access_token=${access_token}`);
-		
+
 		if (!response.ok) {
 			fastify.log.error('Google API error:', response.status);
 			return reply.code(401).send({ 
@@ -55,18 +174,16 @@ export async function googleSignIn(request, reply) {
 		
 		let user = usersModel.getUserByGoogleId(googleId);
 		let isNewUser = false;
-        let tempPassword = null;
+		let tempPassword = null;
 		if (!user || user.anonymized_at) {
 
 			if (user && user.anonymized_at)
 				fastify.log.info(`User with Google ID ${googleId} was previously anonymized, creating new account`);
 		
-			
 			const username = name.replace(/\s+/g, '').toLowerCase().substring(0,10);
 			const randomPassword = Math.random().toString(36).substring(2, 17);
 			const hashedPassword = await hashPassword(randomPassword);
 
-			// Stocker le mot de passe temporaire pour l'email
 			tempPassword = randomPassword;
 			isNewUser = true;
 			
@@ -77,20 +194,19 @@ export async function googleSignIn(request, reply) {
 					if (imageResponse.ok) {
 						const imageBuffer = await imageResponse.arrayBuffer();
 						const buffer = Buffer.from(imageBuffer);
-						
-						const contentType = imageResponse.headers.get('content-type');
-						let extension = '.jpg';
-						if (contentType?.includes('png')) extension = '.png';
-						else if (contentType?.includes('gif')) extension = '.gif';
-						else if (contentType?.includes('webp')) extension = '.webp';
-						
-						const filename = `${Date.now()}-${username}-pp${extension}`;
-						const filePath = path.join(uploadDir, filename);
-						
-						await fs.writeFile(filePath, buffer);
-						profilePicture = filename;
-						
-						fastify.log.info(`✅ Google profile picture saved: ${filename}`);
+						try {
+							const imageValidation = await validateImageFile(buffer, 'google-profile.jpg');
+							const secureFilename = generateSecureFilename(username, imageValidation.extension);
+							const filePath = path.join(uploadDir, secureFilename);
+							
+							await fs.writeFile(filePath, buffer);
+							profilePicture = secureFilename;
+							
+							fastify.log.info(`Google profile picture validated and saved: ${secureFilename}`);
+						} catch (validationError) {
+							fastify.log.warn(`Google profile picture validation failed: ${validationError.message}, using default`);
+							profilePicture = "default-profile-picture.png";
+						}
 					} else {
 						fastify.log.warn('Failed to download Google profile picture');
 					}
@@ -102,29 +218,6 @@ export async function googleSignIn(request, reply) {
 			const newUserInfo = usersModel.createGoogleUser(username, hashedPassword, googleId, profilePicture);
 			user = usersModel.getUserById(newUserInfo.lastInsertRowid);
 		}
-		const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, { expiresIn: '15m' });
-		const refreshToken = fastify.jwt.sign({ userId: user.userId }, { expiresIn: '7d' });
-		
-		usersModel.updateLastActivity(user.userId);
-
-		if (isNewUser && tempPassword && email) {
-            try {
-				fastify.log.info(`Envoi de l'email de bienvenue à ${email} pour l'utilisateur ${user.username}`);
-                const emailSent = await sendWelcomeEmail(email, user.username, tempPassword);
-                if (emailSent)
-                    fastify.log.info(`📧 Email de bienvenue envoyé à ${email} pour l'utilisateur ${user.username}`);
-            } catch (emailError) {
-                fastify.log.error('Erreur lors de l\'envoi de l\'email de bienvenue:' + emailError);
-            }
-        }
-		return reply.setCookie('refreshToken', refreshToken, {
-				path: '/',
-				httpOnly: true,
-				secure: true,
-				sameSite: 'strict',
-				expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-			}).code(200).send({ success: true, message: 'Google Sign-In successful', connection_status: "connected", user: user, accessToken: accessToken });
-			
 	} catch (error) {
 		fastify.log.error('Google Sign-In error:' + error);
 		return reply.code(500).send({ success: false, error: 'Google Sign-In failed' });
@@ -378,65 +471,226 @@ export async function changeProfile(request, reply) {
 	}
 }
 
+
+function checkMagicBytes(buffer, magicBytes) {
+	if (buffer.length < magicBytes.length) return false;
+	for (let i = 0; i < magicBytes.length; i++)
+		if (buffer[i] !== magicBytes[i]) return false;
+	return true;
+}
+
+function validateImageType(buffer) {
+	const { MAGIC_BYTES } = IMAGE_SECURITY;
+
+	if (checkMagicBytes(buffer, MAGIC_BYTES.PNG))
+		return { isValid: true, type: 'png', extension: '.png' };
+
+	const jpegVariants = [
+		MAGIC_BYTES.JPEG_FF_D8_FF_E0,
+		MAGIC_BYTES.JPEG_FF_D8_FF_E1,
+		MAGIC_BYTES.JPEG_FF_D8_FF_E2,
+		MAGIC_BYTES.JPEG_FF_D8_FF_E3,
+		MAGIC_BYTES.JPEG_FF_D8_FF_DB,
+		MAGIC_BYTES.JPEG_FF_D8_FF_EE
+	];
+
+	for (const variant of jpegVariants)
+		if (checkMagicBytes(buffer, variant))
+			return { isValid: true, type: 'jpeg', extension: '.jpg' };
+
+	return { isValid: false, type: null, extension: null };
+}
+
+async function validateImageFile(buffer, originalFilename) {
+	if (buffer.length > IMAGE_SECURITY.MAX_FILE_SIZE)
+		throw new Error(`File size too large. Maximum allowed: ${IMAGE_SECURITY.MAX_FILE_SIZE / (1024 * 1024)}MB`);
+
+	const typeValidation = validateImageType(buffer);
+	if (!typeValidation.isValid)
+		throw new Error('Invalid image format. Only PNG and JPEG files are allowed.');
+
+	const originalExt = path.extname(originalFilename).toLowerCase();
+	if (!IMAGE_SECURITY.ALLOWED_EXTENSIONS.includes(originalExt))
+		throw new Error('Invalid file extension. Only .png, .jpg, and .jpeg are allowed.');
+
+	if (typeValidation.type === 'png' && !['.png'].includes(originalExt))
+		fastify.log.warn(`File extension mismatch: ${originalExt} but detected PNG`);
+
+	if (typeValidation.type === 'jpeg' && !['.jpg', '.jpeg'].includes(originalExt))
+		fastify.log.warn(`File extension mismatch: ${originalExt} but detected JPEG`);
+
+	return typeValidation;
+}
+
+function generateSecureFilename(username, extension) {
+	const timestamp = Date.now();
+	const randomString = Math.random().toString(36).substring(2, 8);
+	const sanitizedUsername = username.replace(/[^a-zA-Z0-9]/g, '');
+	return `${timestamp}-${sanitizedUsername}-${randomString}${extension}`;
+}
+
 export async function changeProfilePicture(request, reply) {
 	try {
 		const file = await request.body['profile-picture'];
 		if (!file)
-			return reply.code(400).send({ error: 'No file uploaded' })
+			return reply.code(400).send({ 
+				success: false, 
+				error: 'No file uploaded' 
+			});
 
-		const infos = await getUserFromToken(request)
+		const infos = await getUserFromToken(request);
 		if (!infos)
-			return reply.code(401).send({ success: false, error: 'Unauthorized' })
-		const user = infos.user
-		const accessToken = infos.accessToken
+			return reply.code(401).send({ 
+				success: false, 
+				error: 'Unauthorized' 
+			});
+		
+		const user = infos.user;
+		const accessToken = infos.accessToken;
 		if (!user)
-			return reply.code(404).send({ error: 'User not found' })
+			return reply.code(404).send({ 
+				success: false, 
+				error: 'User not found' 
+			});
 
-		const filename = `${Date.now()}-${user.username}-pp${path.extname(file.filename)}`;
-		const filePath = path.join(uploadDir, filename);
-
-		if(file._buf) {
-			await fs.writeFile(filePath, file._buf);
+		let fileBuffer;
+		if (file._buf)
+			fileBuffer = file._buf;
+		else if (file.file) {
+			const chunks = [];
+			for await (const chunk of file.file)
+				chunks.push(chunk);
+			fileBuffer = Buffer.concat(chunks);
 		} else {
-			const fileStream = await fs.open(filePath, 'w');
-			const writeStream = fileStream.createWriteStream();
-			await pipeline(file.file, writeStream);
+			return reply.code(400).send({ 
+				success: false, 
+				error: 'Invalid file format' 
+			});
 		}
 
+		let imageValidation;
+		try {
+			imageValidation = await validateImageFile(fileBuffer, file.filename);
+			fastify.log.info(`Image validation passed: ${imageValidation.type} format detected`);
+		} catch (validationError) {
+			fastify.log.warn(`Image validation failed: ${validationError.message}`);
+			return reply.code(400).send({ 
+				success: false, 
+				error: validationError.message 
+			});
+		}
+
+		const secureFilename = generateSecureFilename(user.username, imageValidation.extension);
+		const filePath = path.join(uploadDir, secureFilename);
+
+		try {
+			await fs.writeFile(filePath, fileBuffer);
+			fastify.log.info(`Profile picture saved: ${secureFilename}`);
+		} catch (writeError) {
+			fastify.log.error(`Error writing file: ${writeError.message}`);
+			return reply.code(500).send({ 
+				success: false, 
+				error: 'Failed to save image file' 
+			});
+		}
 
 		const oldProfilePicture = user.profile_picture;
-
 		if (oldProfilePicture !== "default-profile-picture.png") {
 			try {
 				const oldFilePath = path.join(uploadDir, oldProfilePicture);
 				const fileExists = await fs.access(oldFilePath)
-				.then(() => true)
-				.catch(() => false);
+					.then(() => true)
+					.catch(() => false);
 				
 				if (fileExists) {
 					fastify.log.info(`🗑️ Deleting old profile picture: ${oldFilePath}`);
 					await fs.unlink(oldFilePath);
-				} else {
-					fastify.log.info(`⚠️ Old profile picture doesn't exist: ${oldFilePath}`);
-				}
+				} else
+					fastify.log.info(`Old profile picture doesn't exist: ${oldFilePath}`);
 			} catch (deleteErr) {
-				fastify.log.error(`❌ Error deleting old profile picture: ${deleteErr.message}`);
+				fastify.log.error(`Error deleting old profile picture: ${deleteErr.message}`);
 			}
 		}
 
-		usersModel.updateProfilePicture(user.userId, filename)
+		usersModel.updateProfilePicture(user.userId, secureFilename);
 
-		reply.code(200).send({
+		return reply.code(200).send({
 			success: true,
 			accessToken: accessToken,
 			message: 'Profile picture updated successfully!',
-			profile_picture: `uploads/${filename}`
+			profile_picture: `uploads/${secureFilename}`
 		});
+
 	} catch (err) {
-		fastify.log.error("❌ Error uploading new profile picture :", err);
-		return reply.code(500).send({ error: err.message });
+		fastify.log.error("Error uploading new profile picture:", err);
+		return reply.code(500).send({ 
+			success: false, 
+			error: 'Internal server error while uploading image' 
+		});
 	}
 }
+
+
+// export async function changeProfilePicture(request, reply) {
+// 	try {
+// 		const file = await request.body['profile-picture'];
+// 		if (!file)
+// 			return reply.code(400).send({ error: 'No file uploaded' })
+
+// 		const infos = await getUserFromToken(request)
+// 		if (!infos)
+// 			return reply.code(401).send({ success: false, error: 'Unauthorized' })
+// 		const user = infos.user
+// 		const accessToken = infos.accessToken
+// 		if (!user)
+// 			return reply.code(404).send({ error: 'User not found' })
+
+// 		const filename = `${Date.now()}-${user.username}-pp${path.extname(file.filename)}`;
+// 		const filePath = path.join(uploadDir, filename);
+
+// 		if(file._buf) {
+// 			await fs.writeFile(filePath, file._buf);
+// 		} else {
+// 			const fileStream = await fs.open(filePath, 'w');
+// 			const writeStream = fileStream.createWriteStream();
+// 			await pipeline(file.file, writeStream);
+// 		}
+
+
+// 		const oldProfilePicture = user.profile_picture;
+
+// 		if (oldProfilePicture !== "default-profile-picture.png") {
+// 			try {
+// 				const oldFilePath = path.join(uploadDir, oldProfilePicture);
+// 				const fileExists = await fs.access(oldFilePath)
+// 				.then(() => true)
+// 				.catch(() => false);
+				
+// 				if (fileExists) {
+// 					fastify.log.info(`Deleting old profile picture: ${oldFilePath}`);
+// 					await fs.unlink(oldFilePath);
+// 				} else {
+// 					fastify.log.info(`Old profile picture doesn't exist: ${oldFilePath}`);
+// 				}
+// 			} catch (deleteErr) {
+// 				fastify.log.error(`Error deleting old profile picture: ${deleteErr.message}`);
+// 			}
+// 		}
+
+// 		usersModel.updateProfilePicture(user.userId, filename)
+
+// 		reply.code(200).send({
+// 			success: true,
+// 			accessToken: accessToken,
+// 			message: 'Profile picture updated successfully!',
+// 			profile_picture: `uploads/${filename}`
+// 		});
+// 	} catch (err) {
+// 		fastify.log.error("Error uploading new profile picture :", err);
+// 		return reply.code(500).send({ error: err.message });
+// 	}
+// }
+
 
 export async function deleteAccount(request, reply) {
 	try {
@@ -474,10 +728,10 @@ export async function deleteAccount(request, reply) {
 					fastify.log.info(`🗑️ deleting old profile picture: ${oldFilePath}`);
 					await fs.unlink(oldFilePath);
 				} else {
-					fastify.log.info(`⚠️ Old profile picture doesn't exist: ${oldFilePath}`);
+					fastify.log.info(`Old profile picture doesn't exist: ${oldFilePath}`);
 				}
 			} catch (deleteErr) {
-				fastify.log.error(`❌ Error deleting old profile picture: ${deleteErr.message}`);
+				fastify.log.error(`Error deleting old profile picture: ${deleteErr.message}`);
 			}
 		}
 		const info = usersModel.anonymizeUser(user.userId)
