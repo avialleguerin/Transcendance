@@ -88,11 +88,12 @@ async function login_1v1(event) {
 	if (!username || !password)
 		return notif("Please fill in all fields", false);
 
+	if (username === localStorage.getItem("Player1"))
+		return notif("You cannot play against yourself", false);
+
 	try {
 		const data = await fetchAPI('/request/user/login-1v1', 'POST', { username, password }, true, false);
 		if (data.success) {
-			if (data.player2.username === localStorage.getItem("Player1"))
-				return notif("You cannot play against yourself", false);
 			notif(data.message, true);
 			localStorage.setItem("Player2", data.player2.username);
 			document.getElementById("choose_your_opponent_1v1_form").classList.remove('active');

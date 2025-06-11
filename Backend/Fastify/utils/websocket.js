@@ -28,8 +28,6 @@ function notifyFriendsStatus(userId, status) {
 				const friendUserId = friend.userId === userId ? friend.friendUserId : friend.userId;
 				notifyFriend(userId, friendUserId, 'friend_status_update')
 			});
-		} else {
-			fastify.log.info(`👥 User ${userId} has no friends to notify or user not found`);
 		}
 	} catch (error) {
 		console.error('❌ Error notifying friends of status change:', error);
@@ -43,8 +41,6 @@ export default function websocketPlugin(fastify) {
 			if (userId && !isNaN(userId)) {
 				activeConnections.set(userId, connection)
 				notifyFriendsStatus(userId, 1)
-				
-				fastify.log.info(`User ${userId} connected via WebSocket`)
 				
 				connection.on('message', (message) => {
 					try {
@@ -64,12 +60,8 @@ export default function websocketPlugin(fastify) {
 					activeConnections.delete(userId)
 					
 					const user = usersModel.getUserById(userId)
-					if (user) {
+					if (user)
 						notifyFriendsStatus(userId, 0)
-						fastify.log.info(`✅ User '${user.username}' marked as offline immediately`)
-					} else {
-						fastify.log.info(`⚠️ User '${user.username}' not found in database`)
-					}
 				})
 				connection.on('error', (error) => {
 					console.error(`❌ WebSocket error for user ${userId}:`, error)
