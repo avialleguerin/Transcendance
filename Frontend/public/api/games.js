@@ -28,6 +28,8 @@ async function create_1v1_game(event, player1, player2) {
 		localStorage.removeItem("Player2");
 	else
 		localStorage.setItem("tournamentCount", (parseInt(localStorage.getItem("tournamentCount")) + 1).toString());
+	localStorage.removeItem("score_left");
+	localStorage.removeItem("score_right");
 };
 
 async function create_2v2_game(event) {
@@ -59,4 +61,6 @@ async function create_2v2_game(event) {
 	localStorage.removeItem("Player2");
 	localStorage.removeItem("Player3");
 	localStorage.removeItem("Player4");
+	localStorage.removeItem("score_left");
+	localStorage.removeItem("score_right");
 };

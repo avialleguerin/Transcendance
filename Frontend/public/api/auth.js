@@ -124,13 +124,13 @@ async function login_2v2(event) {
 
 	if (!username2 || !password2 || !username3 || !password3 || !username4 || !password4)
 		return notif("Please fill in all fields", false);
+	if (username1 === username2 || username1 === username3 || username1 === username4 ||
+		username2 === username3 || username2 === username4 || username3 === username4)
+		return notif("There can't be the same player 2 times", false);
 
 	try {
 		const data = await fetchAPI('/request/user/login-2v2', 'POST', { username2, password2, username3, password3, username4, password4 }, true, false);
 		if (data.success) {
-			if (username1 === username2 || username1 === username3 || username1 === username4 ||
-				username2 === username3 || username2 === username4 || username3 === username4)
-				return notif("There can't be the same player 2 times", false);
 			notif(data.message, true);
 			localStorage.setItem("Player2", data.player2.username);
 			localStorage.setItem("Player3", data.player3.username);
@@ -165,13 +165,13 @@ async function login_tournament(event) {
 
 	if (!username2 || !password2 || !username3 || !password3 || !username4 || !password4)
 		return notif("Please fill in all fields", false);
+	if (username1 === username2 || username1 === username3 || username1 === username4 ||
+		username2 === username3 || username2 === username4 || username3 === username4)
+		return notif("There can't be the same player 2 times", false);
 
 	try {
 		const data = await fetchAPI('/request/user/login-2v2', 'POST', { username2, password2, username3, password3, username4, password4 }, true, false);
 		if (data.success) {
-			if (username1 === username2 || username1 === username3 || username1 === username4 ||
-				username2 === username3 || username2 === username4 || username3 === username4)
-				return notif("There can't be the same player 2 times", false);
 			notif(data.message, true);
 			localStorage.setItem("Player2", data.player2.username);
 			localStorage.setItem("Player3", data.player3.username);
@@ -182,14 +182,11 @@ async function login_tournament(event) {
 			document.getElementById("Player4").innerHTML = localStorage.getItem("Player4");
 			localStorage.setItem("current_player1", localStorage.getItem("Player1"));
 			localStorage.setItem("current_player2", localStorage.getItem("Player2"));
-			const tournamentStarted = true;
-			localStorage.setItem('tournamentStarted', tournamentStarted.toString());
+			localStorage.setItem('tournamentStarted', "true");
 			document.getElementById("container_name_player").classList.add('hidden');
 			document.getElementById("tournament_graphic_id").classList.add('active');
 			document.getElementById("start_tournament").style.display = 'none';
 			document.getElementById("back_to_menu_view_tournament").style.display = 'none';
-			
-			// Mettre en surbrillance les joueurs initiaux
 		} else
 			notif(data.error, false);
 	} catch (err) {
