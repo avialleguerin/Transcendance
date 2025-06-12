@@ -382,5 +382,5 @@ async function togglePanel(event)
 	fetch_user_games();
 }
 
-// ✅ AJOUT : Rendre la fonction accessible globalement pour les notifications WebSocket
+// AJOUT : Rendre la fonction accessible globalement pour les notifications WebSocket
 window.fetch_user_friendships = fetch_user_friendships;

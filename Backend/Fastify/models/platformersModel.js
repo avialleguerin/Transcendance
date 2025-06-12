@@ -1,4 +1,3 @@
-//CRUD Model actually and MVC Structure
 import db from "../utils/db.js";
 
 export const CREATE_PLATFORMERS_TABLE = `

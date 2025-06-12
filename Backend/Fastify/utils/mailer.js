@@ -1,7 +1,6 @@
 import nodemailer from 'nodemailer';
 import { fastify } from '../server.js';
 
-// Email transporter configuration with error handling
 const createTransporter = () => {
 	try {
 		return nodemailer.createTransport({
@@ -10,7 +9,7 @@ const createTransporter = () => {
 			user: process.env.GMAIL_USER,
 			pass: process.env.GMAIL_PASS
 		},
-		// Additional security options
+
 		secure: true,
 		tls: {
 			rejectUnauthorized: false
@@ -29,7 +28,6 @@ const createTransporter = () => {
  * @param {string} tempPassword - Temporary password
  */
 export default async function sendWelcomeEmail(to, username, tempPassword) {
-	// Check environment variables
 	if (!process.env.GMAIL_USER || !process.env.GMAIL_PASS) {
 		fastify.log.warn('Email environment variables not configured, email not sent');
 		return false;
@@ -40,8 +38,8 @@ export default async function sendWelcomeEmail(to, username, tempPassword) {
 	const mailOptions = {
 		from: `"Transcendance Game" <${process.env.GMAIL_USER}>`,
 		to,
-		subject: "🎮 Welcome to Transcendance - Temporary Credentials",
-		html: `
+		subject: "Welcome to Transcendance - Temporary Credentials",
+		html: /*html*/`
 		<!DOCTYPE html>
 		<html>
 		<head>
@@ -58,7 +56,7 @@ export default async function sendWelcomeEmail(to, username, tempPassword) {
 		<body>
 			<div class="container">
 			<div class="header">
-				<h2>🎮 Welcome to Transcendance!</h2>
+				<h2>Welcome to Transcendance!</h2>
 			</div>
 			<div class="content">
 				<p>Hello <strong>${username}</strong>,</p>
@@ -75,7 +73,7 @@ export default async function sendWelcomeEmail(to, username, tempPassword) {
 				</div>
 				
 				<div class="warning">
-				<h4>⚠️ Important:</h4>
+				<h4>Important:</h4>
 				<p>For your security, we strongly recommend that you:</p>
 				<ul>
 					<li>Login and change this temporary password</li>
@@ -87,7 +85,7 @@ export default async function sendWelcomeEmail(to, username, tempPassword) {
 				<p style="margin-top: 20px;">
 				<a href="${process.env.FRONTEND_URL || 'https://localhost:8443'}" 
 					style="background: #667eea; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; display: inline-block;">
-					🎮 Access Transcendance
+					Access Transcendance
 				</a>
 				</p>
 				
@@ -99,7 +97,6 @@ export default async function sendWelcomeEmail(to, username, tempPassword) {
 		</body>
 		</html>
 		`,
-		// Text version for clients that don't support HTML
 		text: `
 		Welcome ${username} to Transcendance!
 		
@@ -119,14 +116,14 @@ export default async function sendWelcomeEmail(to, username, tempPassword) {
 		fastify.log.info(`📧 Welcome email sent to ${to}: ${info.messageId}`);
 		return true;
 	} catch (err) {
-		fastify.log.error(`❌ Error sending email to ${to}:` + err);
+		fastify.log.error(`Error sending email to ${to}:` + err);
 		return false;
 	}
 }
 
 export function checkEmailConfig() {
 	if (!process.env.GMAIL_USER || !process.env.GMAIL_PASS) {
-		fastify.log.warn('⚠️ Email configuration missing - Emails will not be sent');
+		fastify.log.warn('Email configuration missing - Emails will not be sent');
 		return false;
 	}
 	fastify.log.info('Mail initialized successfully');

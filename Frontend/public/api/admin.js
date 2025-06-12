@@ -350,7 +350,7 @@ async function delete_user(userId) {
 }
 
 async function force_delete_user(userId) {
-	if (confirm('⚠️ PERMANENT DELETION WARNING ⚠️\n\nThis will PERMANENTLY DELETE the user and BREAK all game references!\nThis action cannot be undone.\n\nAre you absolutely sure?')) {
+	if (confirm('PERMANENT DELETION WARNING ⚠️\n\nThis will PERMANENTLY DELETE the user and BREAK all game references!\nThis action cannot be undone.\n\nAre you absolutely sure?')) {
 		try {
 			console.log('Try to force delete user with ID:', userId);
 			const response = await fetch('/request/admin/force-delete-user', { 

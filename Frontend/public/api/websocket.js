@@ -70,11 +70,11 @@ class WebSocketManager {
 		this.stopHeartbeat()
 		if (this.socket && this.socket.readyState === WebSocket.OPEN) {
 			console.log('Closing WebSocket connection...')
-			// ✅ Forcer la fermeture immédiate
+			// Forcer la fermeture immédiate
 			this.socket.close(1000, 'User logout')
 		}
 		this.socket = null
-		console.log('✅ WebSocket disconnected and cleaned up')
+		console.log('WebSocket disconnected and cleaned up')
 	}
 	
 	getUserIdFromToken() {
@@ -110,7 +110,7 @@ export function disconnectWebSocket() {
 	wsManager.disconnect()
 }
 
-// ✅ AJOUT : Rendre les fonctions accessibles globalement pour les fichiers non-modules
+// AJOUT : Rendre les fonctions accessibles globalement pour les fichiers non-modules
 window.connectWebSocket = connectWebSocket;
 window.disconnectWebSocket = disconnectWebSocket;
 window.wsManager = wsManager;

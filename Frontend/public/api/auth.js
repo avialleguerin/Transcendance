@@ -10,9 +10,9 @@ async function verify2FA(event) {
 			sessionStorage.removeItem("userId")
 			localStorage.setItem("Player1", data.username);
 			localStorage.setItem("profile_picture", data.profile_picture);
-			// ✅ CORRECTION : Utiliser connectWebSocket au lieu de wsManager.connect()
+			// CORRECTION : Utiliser connectWebSocket au lieu de wsManager.connect()
 			connectWebSocket()
-			console.log("✅ 2FA code valid!");
+			console.log("2FA code valid!");
 			history.pushState({}, '', '/Game_menu');
 			import('../static/js/views/Game_menu.js').then(module => {
 				const GameMenu = module.default;
@@ -51,9 +51,9 @@ async function login(event) {
 			notif(data.message, true);
 			localStorage.setItem("Player1", data.user.username);
 			localStorage.setItem("profile_picture", data.user.profile_picture);
-			// ✅ CORRECTION : Utiliser connectWebSocket au lieu de wsManager.connect()
+			// CORRECTION : Utiliser connectWebSocket au lieu de wsManager.connect()
 			connectWebSocket()
-			console.log("✅ Connected, Token :", sessionStorage.getItem("accessToken"));
+			console.log("Connected, Token :", sessionStorage.getItem("accessToken"));
 			history.pushState({}, '', '/Game_menu');
 			setTimeout(() => {
 				history.pushState({}, '', '/Game_menu');
@@ -245,16 +245,16 @@ async function logout() {
 	try {
 		const user = localStorage.getItem("Player1");
 		
-		// ✅ CORRECTION : Déconnecter le WebSocket AVANT l'appel API
+		// CORRECTION : Déconnecter le WebSocket AVANT l'appel API
 		disconnectWebSocket();
 		
-		// ✅ Attendre un peu pour que la déconnexion WebSocket soit effective
+		// Attendre un peu pour que la déconnexion WebSocket soit effective
 		await new Promise(resolve => setTimeout(resolve, 100));
 		
 		await fetchAPI('/request/user/logout', 'POST', {}, false);
 		sessionStorage.clear();
 		localStorage.clear();
-		console.log("✅ Logged out successfully !");
+		console.log("Logged out successfully !");
 		history.pushState({}, '', '/');
 		import('../static/js/views/Home.js').then((module) => {
 			console.log("Home module loaded");
@@ -316,7 +316,7 @@ async function initGoogleSignIn() {
 			const config = await fetchAPI('/request/user/google-config', 'GET', null, false);
 			
 			if (!config.success || !config.client_id) {
-				console.error("❌ Impossible de récupérer la configuration Google");
+				console.error("Impossible de récupérer la configuration Google");
 				return;
 			}
 			tokenClient = google.accounts.oauth2.initTokenClient({
