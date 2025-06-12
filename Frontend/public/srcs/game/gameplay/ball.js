@@ -10,6 +10,7 @@ const BALL_RADIUS = 1;
 const PADDLE_WIDTH = 10;
 const PADDLE_HEIGHT = 1.5;
 const PADDLE_DEPTH = 1.5;
+let previousX = null;
 
 export function createBall(scene) {
 	if (!scene) {
@@ -76,7 +77,7 @@ function getRandomDirection()
 
 let ballDirection = getRandomDirection();
 
-
+let xBlockedFrames = 0;
 
 export function MoveBall(player_1, player_2, ball, player_1_bonus, player_2_bonus) {
 
@@ -89,13 +90,35 @@ export function MoveBall(player_1, player_2, ball, player_1_bonus, player_2_bonu
 		return;
 	}
 
+
+	if (previousX !== null) {
+		if (Math.abs(ball.position.x - previousX) < 0.01) {
+			xBlockedFrames++;
+			if (xBlockedFrames > 10) {
+				resetBall(ball);
+				xBlockedFrames = 0;
+			}
+		} else {
+			xBlockedFrames = 0;
+		}
+	}
+	previousX = ball.position.x;
+
 	const BALL_RADIUS = 1.5;
+
+	if (ballSpeed >= 2.5)
+		ballSpeed = 2.5;
+
+	console.log("ballSpeed", ballSpeed);
+	console.log("ball_position", ball.position);
 
 	ball.position.x += ballDirection.x * ballSpeed;
 	ball.position.z += ballDirection.z * ballSpeed;
 
 	ball.rotate(BABYLON.Axis.X, 0.1 * ballSpeed);
 	ball.rotate(BABYLON.Axis.Z, 0.1 * ballDirection.x * ballSpeed);
+
+	if (ball.position.x )
 
 	if (ball.position.z <= FIELD_BOTTOM + BALL_RADIUS) {
 		ball.position.z = FIELD_BOTTOM + BALL_RADIUS;
@@ -195,6 +218,19 @@ export function MoveBall2v2(player_1, player_2, player_3, player_4, ball)
 
 	if (!player_1 || !player_2 || !player_3 || !player_4)
 		return;
+
+	if (previousX !== null) {
+		if (Math.abs(ball.position.x - previousX) < 0.01) {
+			xBlockedFrames++;
+			if (xBlockedFrames > 10) {
+				resetBall(ball);
+				xBlockedFrames = 0;
+			}
+		} else {
+			xBlockedFrames = 0;
+		}
+	}
+	previousX = ball.position.x;
 
 	const BALL_RADIUS = 1.5;
 	const PADDLE_WIDTH = 10;

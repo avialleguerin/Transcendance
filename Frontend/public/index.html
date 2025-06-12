@@ -9,7 +9,6 @@
 	<script src="https://accounts.google.com/gsi/client" async defer></script>
 	<!-- <script>console.log = function () {};</script> -->
 	<style>
-		/* Style global */
 		body {
 			margin: 0;
 			padding: 0;
@@ -20,17 +19,15 @@
 		body.allow-scroll {
 			overflow: hidden;
 		}
-
-		/* Les boutons en haut qui ne bougent jamais */
 		.navbar {
-			position: fixed; /* Rendre la barre de navigation fixe */
+			position: fixed;
 			top: 0%;
 			left: 0;
 			width: 100%;
 			background-color: #000000;
 			padding: 10px 0;
 			display: flex;
-			justify-content: center; /* Centrer les boutons */
+			justify-content: center;
 			z-index: 3;
 		}
 
@@ -50,12 +47,11 @@
 			background-color: #6f45a0;
 		}
 
-		/* Le contenu principal en dessous des boutons */
 		#renderCanvas {
 			width: 100%;
 			height: 100%;
-			display: block; /* Élimine l'espace blanc sous le canvas */
-			touch-action: none; /* Améliore la prise en charge tactile */
+			display: block;
+			touch-action: none;
 		}
 
 		#app {
@@ -86,32 +82,12 @@
 
 	<!-- <script src="./utils/logger.js"></script> -->
 	<script type="module" src="./api/utils.js"></script>
+	<script type="module" src="./api/websocket.js"></script>
 	<script type="module" src="./api/auth.js"></script>
 	<script type="module" src="./api/userManagement.js"></script>
 	<script type="module" src="./api/friendships.js"></script>
 	<script type="module" src="./api/games.js"></script>
-	<script type="module" src="./api/websocket.js"></script>
 
 </body>
 
 </html>
-
-
-		<!-- <style>
-		/* Style global pour empêcher le défilement */
-		body, html {
-			margin: 0;
-			padding: 0;
-			width: 100%;
-			height: 100%;
-			overflow: hidden; /* Empêche le défilement */
-		}
-		
-		/* Le canvas remplit tout l'espace disponible */
-		#renderCanvas {
-			width: 100%;
-			height: 100%;
-			display: block; /* Élimine l'espace blanc sous le canvas */
-			touch-action: none; /* Améliore la prise en charge tactile */
-		}
-	</style> -->

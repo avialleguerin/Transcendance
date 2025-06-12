@@ -26,7 +26,6 @@ export function removeLoadingOverlay()
 {
 	if (loadingOverlay)
 	{
-		console.log("Suppression de l'overlay...");
 		loadingOverlay.style.opacity = '0';
 		setTimeout(() =>
 		{
@@ -34,10 +33,8 @@ export function removeLoadingOverlay()
 			{
 				document.body.removeChild(loadingOverlay);
 				loadingOverlay = null;
-				console.log("Overlay supprimé");
 			}
 			isLoading = false;
-			console.log("isLoading:", isLoading);
 			if (targetView)
 			{
 				changeView(targetView);
@@ -46,7 +43,3 @@ export function removeLoadingOverlay()
 		}, 1000);
 	}
 }
-
-{/* <div class="loading-text">
-Chargement<span>.</span><span>.</span><span>.</span>
-</div> */}

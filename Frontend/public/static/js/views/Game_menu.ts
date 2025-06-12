@@ -22,7 +22,7 @@ if (localStorage.getItem('historyIsVisible') === null)
 export default class Game_menu extends AbstractView {
 	constructor() {
 		super();
-		this.setTitle("Game_menu");
+		this.setTitle("game-menu");
 		const accessToken: string | null = sessionStorage.getItem('accessToken');
 		if (!accessToken || accessToken === undefined)
 			homeView();
@@ -200,8 +200,9 @@ export default class Game_menu extends AbstractView {
 
 				<!-- Boutons de navigation -->
 				<div class="friend_tabs">
-					<button id="tab-accepted" class="tab-btn active">Friend</button>
+					<button id="tab-accepted" class="tab-btn active">Friends</button>
 					<button id="tab-pending" class="tab-btn">On hold</button>
+					<div id="notify_friend_demand" title="Friend Request"></div>
 				</div>
 
 				<!-- Sections d'amis -->
@@ -236,7 +237,7 @@ export default class Game_menu extends AbstractView {
 		<div class="view1" id="view1">
 			<div class="view1-content">
 				<button id="view1_btn" class="btn">GAME MODE</button>
-				<button id="settings_btn" class="btn">SETTINGS</button>
+				<button id="settings_btn" class="btn">OPTIONS</button>
 			</div>
 		</div>
 		<div class="back-home" id="back-home">
@@ -277,10 +278,10 @@ export default class Game_menu extends AbstractView {
 				</div>
 				<div class="view5" id="view5">
 					<div class="view5-content">
-						<h1>SETTINGS</h1>
+						<h1>OPTIONS</h1>
 						<div id="select_parametres" class="select_parametres">
-							<button id="profile_parrametre_btn" class="btn">PROFILE</button>
-							<button id="parrametre_jeux_btn" class="btn">GAME</button>
+							<button id="profile_parrametre_btn" class="btn">PROFILE SETTINGS</button>
+							<button id="parrametre_jeux_btn" class="btn">GAME SETTINGS</button>
 							<button id="Game_History_btn" class="btn" onclick="fetch_user_games_big('${localStorage.getItem('Player1')}')">GAME HISTORY</button>
 						</div>
 					</div>
@@ -1631,18 +1632,22 @@ export default class Game_menu extends AbstractView {
 		const panel_option_navbar = document.getElementById('panel_option_navbar');
 		const option_btn_remove = document.getElementById('option_btn_remove');
 		const deconnect_btn_navBar = document.getElementById('deconnect_btn_navBar');
-
+		const gameHistory = document.getElementById('game_history');
 		option_btn_navBar.addEventListener('click', () => {
 			console.log('Option deconnect clicked');
 			panel_option_navbar.classList.remove('remove'); // retire l'animation de fermeture
 			void panel_option_navbar.offsetWidth; // force le reflow pour relancer l'animation si besoin
 			panel_option_navbar.classList.add('active');
+			option_btn_navBar.style.display = 'none';
 		});
 
 		option_btn_remove.addEventListener('click', () => {
 			console.log('Option deconnect back clicked');
 			// panel_option_navbar.classList.remove('active'); // retire l'animation d’ouverture
 			panel_option_navbar.classList.add('remove');
+			setTimeout(() => {
+				option_btn_navBar.style.display = 'block';
+			}, 800);
 		});
 
 		deconnect_btn_navBar.addEventListener('click', () => {

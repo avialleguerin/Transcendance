@@ -113,9 +113,9 @@ export function updateScore(side)
 	}
 	if (soloGameStart)
 	{
-		if (scoreLeft === 5 || scoreRight === 5) {
+		if (scoreLeft === 1 || scoreRight === 1) {
 			SetIsGameFinished(true);
-			if (scoreLeft === 5)
+			if (scoreLeft === 1)
 			{
 				isPlayer1_win = true;
 				isPlayer2_win = false;

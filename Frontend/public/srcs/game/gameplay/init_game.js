@@ -70,8 +70,6 @@ export function init_game(scene)
 // ========================= VIEW 1 =========================
 
 export function create_environment_view1(scene) {
-	// destroy_environement_view1();
-
 	view1Meshes = [];
 
 	const grassTexture = new BABYLON.Texture("/srcs/game/assets/image/perfect-green-grass.jpg", scene);
@@ -138,8 +136,6 @@ export function create_environment_view1(scene) {
 // ========================= VIEW 2 =========================
 
 export function create_environment_view2(scene) {
-	// destroy_environement_view2();
-
 	view2Meshes = [];
 
 	BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/3d_object/", "versionFinalV2.glb", scene, function (meshes) {
@@ -182,7 +178,8 @@ export function create_environment_view2(scene) {
 
 // ========================= VIEW 3 =========================
 
-export function create_environment_view3(scene) {
+export function create_environment_view3(scene)
+{
 	view3Meshes = [];
 
 	const grassMaterial = new BABYLON.StandardMaterial("grassMaterial", scene);

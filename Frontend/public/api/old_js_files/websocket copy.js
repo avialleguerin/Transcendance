@@ -25,16 +25,25 @@ export class WebSocketManager {
 		
 		this.socket.onmessage = (event) => {
 			const data = JSON.parse(event.data)
-			if (data.type === 'pong') {
+			if (data.type === 'pong')
 				console.log('Heartbeat response received')
-			}
+			else if (data.type === 'friend_request')
+				this.handleFriendRequest(data.message)
+			else if (data.type === 'friend_deleted')
+				this.handleFriendRequest()
+			else if (data.type === 'friend_status_update')
+				this.handleFriendRequest()
 		}
 		
 		this.socket.onclose = () => {
 			console.log('WebSocket disconnected')
 			this.stopHeartbeat()
-			// Tentative de reconnexion après 3 secondes
-			setTimeout(() => this.connect(), 3000)
+			// Tentative de reconnexion après 3 secondes si on a toujours un token
+			setTimeout(() => {
+				if (sessionStorage.getItem('accessToken')) {
+					this.connect()
+				}
+			}, 3000)
 		}
 		
 		this.socket.onerror = (error) => {
@@ -61,9 +70,11 @@ export class WebSocketManager {
 		this.stopHeartbeat()
 		if (this.socket && this.socket.readyState === WebSocket.OPEN) {
 			console.log('Closing WebSocket connection...')
-			this.socket.close()
+			// Forcer la fermeture immédiate
+			this.socket.close(1000, 'User logout')
 		}
 		this.socket = null
+		console.log('WebSocket disconnected and cleaned up')
 	}
 	
 	getUserIdFromToken() {
@@ -72,25 +83,33 @@ export class WebSocketManager {
 		
 		try {
 			const payload = JSON.parse(atob(token.split('.')[1]))
-			return parseInt(payload.userId) // Convertir ici
+			return parseInt(payload.userId)
 		} catch (error) {
 			console.error('Error parsing token:', error)
 			return null
 		}
 	}
+
+	handleFriendRequest(message) {
+		fetch_user_friendships()
+		if (message)
+			notif(`${message}`, true)
+	}
+
 }
 
 // Instance globale du WebSocket
 export const wsManager = new WebSocketManager()
 
-// Connexion automatique après login
 export function connectWebSocket() {
 	wsManager.connect()
 }
 
-// Déconnexion lors du logout
 export function disconnectWebSocket() {
-	if (typeof wsManager !== 'undefined' && wsManager) {
-		wsManager.disconnect()
-	}
+	wsManager.disconnect()
 }
+
+// AJOUT : Rendre les fonctions accessibles globalement pour les fichiers non-modules
+window.connectWebSocket = connectWebSocket;
+window.disconnectWebSocket = disconnectWebSocket;
+window.wsManager = wsManager;

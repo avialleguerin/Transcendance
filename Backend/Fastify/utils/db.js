@@ -4,7 +4,7 @@ import { CREATE_USERS_TABLE } from '../models/usersModel.js';
 import { CREATE_GAMES_TABLE } from '../models/gamesModel.js';
 import { CREATE_FRIENDSHIPS_TABLE } from '../models/friendshipsModel.js';
 import { CREATE_PLATFORMERS_TABLE } from '../models/platformersModel.js';
-import { fastify } from '../server.js'; // Import Fastify instance
+import { fastify } from '../server.js';
 
 const dbFile = "Data/db/database.sqlite";
 

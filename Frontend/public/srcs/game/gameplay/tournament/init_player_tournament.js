@@ -137,11 +137,11 @@ export function move_player_tournament(player_1_tournament, player_2_tournament)
 	{
 		player_1_tournament.position.x += paddleSpeed;
 	}
-	if (keys["i"] && player_2_tournament.position.x > minX)
+	if (keys["ArrowUp"] && player_2_tournament.position.x > minX)
 	{
 		player_2_tournament.position.x -= paddleSpeed;
 	}
-	if (keys["k"] && player_2_tournament.position.x < maxX)
+	if (keys["ArrowDown"] && player_2_tournament.position.x < maxX)
 	{
 		player_2_tournament.position.x += paddleSpeed;
 	}

@@ -11,6 +11,7 @@ export default class MapMenu_c {
 		this.mapPreview = new Image();
 		this.mapPreview.src = "/srcs/game/assets/City/bg.png";
 		this.mapPreviewLoaded = false;
+		this.txt = "COMING SOON...";
 
 		this.mapPreview.onload = () => {
 			this.mapPreviewLoaded = true;
@@ -108,7 +109,7 @@ export default class MapMenu_c {
 
 		c.font = this.titleFont;
 		c.textAlign = "center";	
-		c.fillStyle = "#FFD700"; // doré
+		c.fillStyle = "#FFD700";
 		c.shadowColor = "#000";
 		c.shadowBlur = 10;
 		c.fillText(this.title, canvas.width / 2, canvas.height / 4);
@@ -121,13 +122,20 @@ export default class MapMenu_c {
 			c.drawImage(this.mapPreview, imgX, imgY, imgWidth, imgHeight);
 		}
 
+		c.fillStyle = "white";
+		c.font = "20px 'Press Start 2P', Black Ops One";
+		c.textAlign = "center";
+		c.fillStyle = "#FFD700";
+		c.fillText(this.txt, 705, 280);
+
+
 		const optionPositions = [
-			{ x: 350, y: 350 }, // position de "Carte 1"
-			{ x: 700, y: 350}, // position de "Carte 2"
-			{ x: 950, y: 550 }, // position de "Retour"
+			{ x: 350, y: 350 },
+			{ x: 700, y: 350},
+			{ x: 950, y: 550 },
 		];
-		
-		// Mettre à jour les zones de clic en fonction des positions réelles des options
+
+
 		this.buttonAreas[0] = { option: "Carte 1", x: optionPositions[0].x - 100, y: optionPositions[0].y - 30, width: 200, height: 40 };
 		this.buttonAreas[1] = { option: "Carte 2", x: optionPositions[1].x - 100, y: optionPositions[1].y - 30, width: 200, height: 40 };
 		this.buttonAreas[2] = { option: "Retour", x: optionPositions[2].x - 100, y: optionPositions[2].y - 30, width: 200, height: 40 };

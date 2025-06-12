@@ -45,6 +45,8 @@ export async function init_game_multiplayer(scene) {
     else {
         console.log("init_game_multiplayer else");
         already_init();
+        loadScoreModel(0, true);
+        loadScoreModel(0, false);
         reset_player_pos_multi(player_1, player_2, player_3, player_4);
         return { player_1, player_2, player_3, player_4, ball };
     }

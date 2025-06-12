@@ -219,7 +219,7 @@ export async function login_platformer(event) {
 
 export async function logout() {
 	try {
-		disconnectWebSocket()
+		disconnectWebSocket(); // await new Promise(resolve => setTimeout(resolve, 100));
 		await fetchAPI('/request/user/logout', 'POST', {}, false);
 		sessionStorage.clear();
 		localStorage.clear();
@@ -254,31 +254,31 @@ export async function register(event) {
 	}
 }
 
-export async function refreshInfos() {
-	try {
-		const data = await fetchAPI('/request/user/refresh-infos', 'POST', {}, true, false);
+// export async function refreshInfos() { //REVIEW - check utils
+// 	try {
+// 		const data = await fetchAPI('/request/user/refresh-infos', 'POST', {}, true, false);
 
-		if (!data.accessToken || data.deleted_account) {
-			sessionStorage.clear();
-			localStorage.clear();
-			homeView(); //TODO - bug de la page de chargement lors de la redirection vers '/' apres une suppression du user par exemple
-			notif("Session expired, please log in again", false);
-		} else if (sessionStorage.getItem("accessToken") && sessionStorage.getItem("accessToken") !== "undefined") {
-			localStorage.clear();
-			setLocalStorage({"Player1": data.user.username, "profile_picture": data.user.profile_picture});
-			// localStorage.setItem("Player1", data.user.username);
-			// localStorage.setItem("profile_picture", data.user.profile_picture);
-			gameMenuView();
-		}
+// 		if (!data.accessToken || data.deleted_account) {
+// 			sessionStorage.clear();
+// 			localStorage.clear();
+// 			homeView(); //TODO - bug de la page de chargement lors de la redirection vers '/' apres une suppression du user par exemple
+// 			notif("Session expired, please log in again", false);
+// 		} else if (sessionStorage.getItem("accessToken") && sessionStorage.getItem("accessToken") !== "undefined") {
+// 			localStorage.clear();
+// 			setLocalStorage({"Player1": data.user.username, "profile_picture": data.user.profile_picture});
+// 			// localStorage.setItem("Player1", data.user.username);
+// 			// localStorage.setItem("profile_picture", data.user.profile_picture);
+// 			gameMenuView();
+// 		}
 
-		if (data.success)
-			console.log("Infos refreshed successfully");
-		else
-			console.error("Error refreshing infos:", data.error);
-	} catch (err) {
-		console.error("Erreur lors du rafraîchissement des informations :", err);
-	}
-}
+// 		if (data.success)
+// 			console.log("Infos refreshed successfully");
+// 		else
+// 			console.error("Error refreshing infos:", data.error);
+// 	} catch (err) {
+// 		console.error("Erreur lors du rafraîchissement des informations :", err);
+// 	}
+// }
 
 window.addEventListener('DOMContentLoaded', () => {
 	refreshInfos();
@@ -298,7 +298,7 @@ export async function initGoogleSignIn() {
 			const config = await fetchAPI('/request/user/google-config', 'GET', null, false);
 			
 			if (!config.success || !config.client_id) {
-				console.error("❌ Impossible de récupérer la configuration Google");
+				console.error("Impossible de récupérer la configuration Google");
 				return;
 			}
 			tokenClient = google.accounts.oauth2.initTokenClient({
