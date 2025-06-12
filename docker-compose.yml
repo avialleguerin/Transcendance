@@ -60,7 +60,7 @@ services:
       - ./Frontend/public/static/js/css:/usr/share/nginx/dist/static/js/css:ro 
       - ./Frontend/public/static/js/index.css:/usr/share/nginx/dist/static/js/index.css:ro  
       - ./Frontend/public/index.html:/usr/share/nginx/dist/index.html:ro
-      - ./Frontend/public/api:/usr/share/nginx/dist/api:ro
+      # - ./Frontend/public/api:/usr/share/nginx/dist/api:ro
       - ./Frontend/dist/api:/usr/share/nginx/dist/api:ro
       # - ./Frontend/public/srcs/game/assets/image:/usr/share/nginx/dist/srcs/game/assets/image:ro
       #For mdp for admin panel

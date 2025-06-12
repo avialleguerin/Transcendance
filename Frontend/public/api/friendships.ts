@@ -38,7 +38,7 @@ export async function accept_friendship(friendshipId: number): Promise<void> {
 	}
 }
 
-export async function delete_friendship(friendshipId: number): Promise<void> {
+export async function delete_friendship(friendshipId: string | number): Promise<void> {
 	try {
 		const data = await fetchAPI('/request/friendship/delete-friend', 'DELETE', { friendshipId });
 		if (data.success)
@@ -100,10 +100,10 @@ export async function fetch_user_friendships(): Promise<void> {
 		const friendPhotos = document.querySelectorAll('.friend_photo');
 
 		friendPhotos.forEach(photo => {
-			photo.onclick = function() {
+			(photo as HTMLElement).onclick = function() {
 				if (!gameHistory.classList.contains('active')) {
 					console.log("Opening game history view");
-					fetch_user_games_big(this.nextElementSibling.querySelector('.friend_name').textContent);
+					fetch_user_games_big((this as HTMLElement).nextElementSibling.querySelector('.friend_name').textContent);
 					gameHistory.classList.add('active');
 					exit_game_history_btn.style.display = 'none';
 					localStorage.setItem('historyIsVisible', 'true');

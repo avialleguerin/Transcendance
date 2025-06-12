@@ -25,15 +25,22 @@ export interface User {
 	id: number;
 	username: string;
 	userId?: string;
+	google_id?: string;
+	games_won?: number;
+	games_lost?: number;
+	cgu_version?: string;
 	email?: string;
-	doubleAuth_status?: boolean;
+	doubleAuth_status?: boolean | number;
 	profile_picture?: string;
 	online_status?: number;
 	last_activity?: string;
+	created_at?: string;
+	deleted_at?: string;
 }
 
 export interface GameResult {
 	id: number;
+	gameId: number;
 	user1_name: string;
 	user2_name: string;
 	user3_name?: string;
@@ -41,6 +48,16 @@ export interface GameResult {
 	score_left: number;
 	score_right: number;
 	created_at: string;
+}
+
+export interface GameScore extends GameResult {
+	score_left: number;
+	score_right: number;
+	user1_id: number; user1_username: string; user1ProfilePicture?: string;
+	user2_id: number; user2_username: string; user2ProfilePicture?: string;
+	user3_id?: number; user3_username?: string; user3ProfilePicture?: string;
+	user4_id?: number; user4_username?: string; user4ProfilePicture?: string;
+	// created_at: string;
 }
 
 export interface LoginRequest {
@@ -53,11 +70,12 @@ export interface RegisterRequest extends LoginRequest {
 }
 
 export interface Friendship {
+	friendshipId: number;
 	friendId: number;
 	friend_username: string;
+	username?: string;
 	status: string; // or 'accepted' | 'pending';
 	created_at: string;
-	friendshipId: number;
 	user1_name: string;
 	user2_name: string;
 	friendOnlineStatus?: boolean;
@@ -68,6 +86,8 @@ export interface PlatformerGame {
 	platformerId?: number;
 	user1_name?: string;
 	user2_name?: string;
+	score_user1?: number;
+	score_user2?: number;
 	created_at?: string;
 }
 
@@ -87,15 +107,6 @@ export interface GameModeData {
 	player4?: string;
 }
 
-export interface GameScore {
-	score_left: number;
-	score_right: number;
-	user1_id: number; user1_username: string; user1ProfilePicture?: string;
-	user2_id: number; user2_username: string; user2ProfilePicture?: string;
-	user3_id?: number; user3_username?: string; user3ProfilePicture?: string;
-	user4_id?: number; user4_username?: string; user4ProfilePicture?: string;
-	// created_at: string;
-}
 
 export interface GoogleTokenClient {
 	requestAccessToken(): void;
@@ -158,7 +169,7 @@ declare global {
 		//* friendship.ts
 		addFriend: (event: Event) => Promise<void>;
 		accept_friendship: (friendshipId: number) => Promise<void>;
-		delete_friendship: (friendshipId: number) => Promise<void>;
+		delete_friendship: (friendshipId: string | number) => Promise<void>;
 		fetch_user_friendships: () => Promise<void>;
 		fetch_user_games: () => Promise<void>;
 		fetch_user_games_big: (username: string) => Promise<void>;
@@ -178,5 +189,31 @@ declare global {
 		//* utils.ts
 		notif: (message: string, success: boolean) => void;
 		handleViewTransitions: (viewName: string, previousView?: string) => void;
+
+		//* admin.ts
+		add_user_modal: () => Promise<void>;
+		add_game_modal: () => Promise<void>;
+		add_platformer_modal: () => Promise<void>;
+		add_friendship_modal: () => Promise<void>;
+		close_user_modal: () => Promise<void>;
+		close_game_modal: () => Promise<void>;
+		close_platformer_modal: () => Promise<void>;
+		close_friendship_modal: () => Promise<void>;
+		
+		fetchAPI: (url: string, method: string, body: any, showNotification?: boolean, formData?: boolean | FormData | null) => Promise<any>;
+		fetch_users: () => Promise<void>;
+		fetch_games: () => Promise<void>;
+		fetch_platformers: () => Promise<void>;
+		fetch_friendships: () => Promise<void>;
+		fetch_deleted_users: () => Promise<void>;
+		delete_user: (userId: string) => Promise<void>;
+		force_delete_user: (userId: string) => Promise<void>;
+		delete_game: (gameId: string) => Promise<void>;
+		delete_platformer: (platformerId: string) => Promise<void>;
+		// delete_friendship: (friendshipId: number) => Promise<void>;
+		create_user: (event: Event) => Promise<void>;
+		create_game: (event: Event) => Promise<void>;
+		create_platformer: (event: Event) => Promise<void>;
+		create_friendship: (event: Event) => Promise<void>;
 	}
-}
+}``

@@ -99,15 +99,15 @@
 				<h2 class="text-2xl font-semibold text-center mb-2">Add User</h2>
 				<div class="mb-2">
 					<label for="username" class="block text-gray-700 font-medium">Username :</label>
-					<input type="text" id="addUser-username" name="username" placeholder="Username" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
+					<input type="text" id="addUser-username" name="username" placeholder="Username" autocomplete="username" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
 				</div>
 				<div class="mb-2">
 					<label for="password" class="block text-gray-700 font-medium">Password :</label>
-					<input type="password" id="addUser-password" name="password" placeholder="Password" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
+					<input type="password" id="addUser-password" name="password" placeholder="Password" autocomplete="new-password" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
 				</div>
 				<div class="mb-2">
 					<label for="password" class="block text-gray-700 font-medium">Confirm password :</label>
-					<input type="password" id="addUser-confirm-password" name="password" placeholder="Password" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
+					<input type="password" id="addUser-confirm-password" name="password" placeholder="Password" autocomplete="new-password" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
 				</div>
 				<button type="submit" class="w-full bg-violet-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-violet-600 transition">Add</button>
 				<button type="button" class="mt-4 w-full border border-violet-500 text-violet-500 font-bold py-2 px-4 rounded-lg hover:bg-violet-500 hover:text-white transition" onclick="close_user_modal()">Cancel</button>
@@ -140,14 +140,14 @@
 
 		<div id="addFriendshipModal" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 hidden w-[400px]">
 			<form id="addFriendshipForm" class="mx-auto bg-white p-6 rounded-lg shadow-lg" onsubmit="create_friendship(event)">
-				<h2 class="text-2xl font-semibold text-center mb-2">Add User</h2>
+				<h2 class="text-2xl font-semibold text-center mb-2">Add Friendship</h2>
 				<div class="mb-2">
 					<label for="username" class="block text-gray-700 font-medium">User :</label>
-					<input type="text" id="addFriendship-user" name="username" placeholder="Username" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
+					<input type="text" id="addFriendship-user" name="username" placeholder="Username" autocomplete="username" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
 				</div>
 				<div class="mb-2">
 					<label for="username" class="block text-gray-700 font-medium">Friend username :</label>
-					<input type="text" id="addFriendship-friend" name="username" placeholder="Username" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
+					<input type="text" id="addFriendship-friend" name="friendname" placeholder="friendname" autocomplete="friendname" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
 				</div>
 				<button type="submit" class="w-full bg-violet-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-violet-600 transition">Add</button>
 				<button type="button" class="mt-4 w-full border border-violet-500 text-violet-500 font-bold py-2 px-4 rounded-lg hover:bg-violet-500 hover:text-white transition" onclick="close_friendship_modal()">Cancel</button>
@@ -465,8 +465,30 @@
 
 	</main>
 
+	<!-- <script type="module" src="../dist/api/utils.js"></script> -->
 	<script type="module" src="./api/admin.js"></script>
-	<script type="module" src="./api/utils.js"></script>
+	<!-- Ajoutez ce script juste avant la fermeture de </body> -->
+	<!-- <script>
+		// Affiche des informations de débogage sur l'emplacement
+		console.log("==== INFORMATIONS DE LOCALISATION ====");
+		console.log("Location (URL complète):", window.location.href);
+		console.log("Pathname:", window.location.pathname);
+		console.log("Origin:", window.location.origin);
+		console.log("Requête pour admin.js:", new URL("/api/admin.js", window.location.href).href);
+		
+		// Essaie de charger un script test pour vérifier les chemins
+		fetch("../dist/api/admin.js")
+			.then(response => {
+				console.log("Statut de la requête admin.js:", response.status, response.ok ? "OK" : "ÉCHEC");
+				return response.text();
+			})
+			.then(text => console.log("Longueur du fichier admin.js:", text.length, "caractères. Les premiers caractères sont:", text.slice(0, 1000)))
+			.catch(error => console.error("Erreur de chargement:", error));
+		
+		// Affiche la structure du document
+		console.log("Document base URI:", document.baseURI);
+		console.log("Document referrer:", document.referrer);
+	</script> -->
 	<script>
 		function showTab(tabId) {
 			const tabNames = {

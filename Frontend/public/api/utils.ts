@@ -49,7 +49,7 @@ export async function fetchAPI(url: string, method: string, body: any = null, sh
 
 		if (body && !formData)
 			options.body = JSON.stringify(body);
-		else if (formData) // instanceof FormData)
+		else if (formData && formData instanceof FormData) // instanceof FormData)
 			options.body = formData;
 
 		const response = await fetch(url, options);
@@ -115,7 +115,9 @@ export function platformerView(): void {
 			const appElement = document.getElementById('app');
 			if (appElement) {
 				appElement.innerHTML = html;
-				if (platformerInstance.createAccount && typeof platformerInstance.createAccount === 'function') {
+				// if (platformerInstance.createAccount && typeof platformerInstance.createAccount === 'function') {
+				//todo: changer init to createAccount je crois
+				if (platformerInstance.init_game_platformer && typeof platformerInstance.init_game_platformer === 'function') {
 					platformerInstance.init_game_platformer();
 				}
 			}
