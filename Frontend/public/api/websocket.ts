@@ -96,7 +96,7 @@ export class WebSocketManager {
 		}
 	}
 
-	handleFriendRequest(message) {
+	handleFriendRequest(message: string | null) {
 		fetch_user_friendships()
 		console.warn('Friend request received:', message)
 		if (message)
@@ -115,9 +115,7 @@ export function connectWebSocket() {
 
 // Déconnexion lors du logout
 export function disconnectWebSocket() {
-	if (typeof wsManager !== 'undefined' && wsManager) {
-		wsManager.disconnect()
-	}
+	wsManager.disconnect()
 }
 
 // AJOUT : Rendre les fonctions accessibles globalement pour les fichiers non-modules

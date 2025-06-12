@@ -42,7 +42,7 @@ export async function login(event: Event): Promise<void> {
 			console.debug(`${data.function}: ${data.message}. Logged with User: ${data.user.username}`);
 			setLocalStorage({ "Player1": data.user.username, "profile_picture": data.user.profile_picture });
 			connectWebSocket()
-			setTimeout(() => { gameMenuView(); }, 2000);
+			gameMenuView();
 			$form("loginForm").reset();
 			$input("login-password").value = "";
 		} else {
@@ -208,6 +208,8 @@ export async function verify2FA(event: Event) {
 	} catch (err) { console.error(`verify2FA: ${err}`); }
 }
 
+
+
 /**
  * Register a new user.
  * @param event User infos
@@ -230,7 +232,7 @@ export async function register(event: Event) {
 /**
  * Refresh user infos by making an API call.
  */
-export async function refreshInfos() {
+export async function refreshInfos() { //REVIEW - maybe put in utils
 	try {
 		const data = await fetchAPI('/request/user/refresh-infos', 'POST', {}, true, false);
 
@@ -299,8 +301,7 @@ export async function handleGoogleSignIn(response: { access_token: string }) {
 			if (data.user.profile_picture)
 				localStorage.setItem("profile_picture", data.user.profile_picture);
 			notif("Connexion Google réussie !", true);
-			// gameMenuView(); //TODO il y avait un delai de -> 2000
-			setTimeout(() => { gameMenuView(); }, 2000);
+			gameMenuView();
 		} else
 			notif(data.error || "Erreur lors de la connexion Google", false);
 	} catch (err) {

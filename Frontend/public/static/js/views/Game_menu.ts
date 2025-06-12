@@ -353,7 +353,7 @@ export default class Game_menu extends AbstractView {
 				<div class="parrametres_profile" id="parametres_profile">
 					<div class="parametres_profile_content">
 						<h1>PROFILE SETTINGS</h1>
-						<form id="modif_profil" class="modif_profile" onsubmit="accessProfileInfo(event)">
+						<form id="modif_profile" class="modif_profile" onsubmit="accessProfileInfo(event)">
 							<label for="mdp">Password</label>
 							<input type="password" id="password" name="password" placeholder="Password" required>
 							<button type="submit" class="btn_valider_mdp">Valider</button>

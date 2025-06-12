@@ -2,7 +2,9 @@ import { notif, fetchAPI, $, $input, $form } from './utils.js';
 import { Friendship, GameScore } from './types.js';
 
 let historyIsActive = localStorage.getItem('historyIsVisible') === 'true';
-let bool = false;
+// let bool = false;
+// let bool = localStorage.getItem("bool", "true");
+
 
 if (typeof window !== 'undefined') {
 	window.addFriend = addFriend;
@@ -19,20 +21,16 @@ export async function addFriend(event: Event): Promise<void> {
 	const friend = $input("friend_name_input").value;
 	
 	try {
-		const data = await fetchAPI('/request/friendship/add-friend', 'POST', { friend });
-		if (data.success)
-			fetch_user_friendships();
+		await fetchAPI('/request/friendship/add-friend', 'POST', { friend });
+		// fetch_user_friendships();
 		$input("friend_name_input").value = "";
-	} catch (err) {
-		notif("Failed to add '" + friend + "' as a friend", false);
-	}
+	} catch (err) { notif("Failed to add '" + friend + "' as a friend", false); }
 }
 
 export async function accept_friendship(friendshipId: number): Promise<void> {
 	try {
-		const data = await fetchAPI('/request/friendship/accept-friend', 'POST', { friendshipId });
-		if (data.success)
-			fetch_user_friendships();
+		await fetchAPI('/request/friendship/accept-friend', 'POST', { friendshipId });
+		// fetch_user_friendships();
 	} catch (err) {
 		notif("Failed to accept this friend", false);
 	}
@@ -40,9 +38,8 @@ export async function accept_friendship(friendshipId: number): Promise<void> {
 
 export async function delete_friendship(friendshipId: string | number): Promise<void> {
 	try {
-		const data = await fetchAPI('/request/friendship/delete-friend', 'DELETE', { friendshipId });
-		if (data.success)
-			fetch_user_friendships();
+		await fetchAPI('/request/friendship/delete-friend', 'DELETE', { friendshipId });
+		// fetch_user_friendships();
 	} catch (err) {
 		notif("Failed to delete this friend", false);
 	}
@@ -58,15 +55,22 @@ export async function fetch_user_friendships(): Promise<void> {
 		const accepted:	Friendship[] = friendships.filter((f: Friendship) => f.status === 'accepted');
 		const pending:	Friendship[] = friendships.filter((f: Friendship) => f.status === 'pending');
 
+		const hasReceivedRequests = pending.some(friend => user.userId === friend.friendId);
+
+		if (pending.length > 0 && hasReceivedRequests)
+			document.getElementById("notify_friend_demand").style.display = "block";
+		else
+			document.getElementById("notify_friend_demand").style.display = "none";
+
 
 		const renderFriend = (friendship: Friendship, showActions: boolean): string => {
-			let statusClass: string = `${friendship.friendOnlineStatus ? 'friend_online_status status-online' : 'friend_online_status status-offline'}`;
+			let statusClass: string = `${friendship.friendOnlineStatus ? 'friend_online_status online' : 'friend_online_status offline'}`;
 			let statusTitle: string = `${friendship.friendOnlineStatus ? 'Online' : 'Offline'}`;
-			let friendshipProfilePicture: string = friendship.status === 'accepted' ? friendship.friendProfilePicture : 'default-profile-picture.png'; // Fallback to a default picture if none is provided
+			let friendshipProfilePicture: string = friendship.status === 'accepted' ? friendship.friendProfilePicture : 'default-profile-picture.png';
 			return `
-				<div class="friend">
+				<div id="friendId-${friendship.friendId}" class="friend">
 					<div class="friend-info">
-						<div class="${friendship.status === 'accepted'? statusClass : ''}" title="${statusTitle}"></div>
+						<div id="friendStatus-${friendship.friendId}" class="${friendship.status === 'accepted' ? statusClass : ''}" title="${statusTitle}"></div>
 						<img src="/uploads/${friendshipProfilePicture}" class="friend_photo" alt="Profile">
 						<div class="friend-details">
 							<p class="friend_name">${friendship.friend_username}</p>
@@ -84,7 +88,7 @@ export async function fetch_user_friendships(): Promise<void> {
 							</div>
 						</div>
 					</div>
-					<button class="friend-btn delete-btn" onclick="delete_friendship(${friendship.friendshipId})">
+					<button id="btn_delete_friend" class="friend-btn delete-btn" onclick="delete_friendship(${friendship.friendshipId})">
 						<img src="/assets/image/trash.svg" alt="Delete Friend" class="delete-icon">
 					</button>
 				</div>
@@ -98,6 +102,7 @@ export async function fetch_user_friendships(): Promise<void> {
 		const exit_game_history_btn = document.getElementById('exit_game_history_btn');
 
 		const friendPhotos = document.querySelectorAll('.friend_photo');
+		const friendDeleteBtns = document.getElementById('btn_delete_friend');
 
 		friendPhotos.forEach(photo => {
 			(photo as HTMLElement).onclick = function() {
@@ -108,19 +113,47 @@ export async function fetch_user_friendships(): Promise<void> {
 					exit_game_history_btn.style.display = 'none';
 					localStorage.setItem('historyIsVisible', 'true');
 					historyIsActive = true;
-					bool = true;
+					localStorage.setItem("bool", "true");
+					localStorage.setItem('historyVisible', 'true');
+					friendDeleteBtns.style.display = 'none';
 				}
-				else if (bool === true && gameHistory.classList.contains('active')) {
+				else if (localStorage.getItem('bool') === "true" && gameHistory.classList.contains('active')) {
 					console.log("Closing game history view");
 					gameHistory.classList.remove('active');
 					exit_game_history_btn.style.display = 'block';
 					localStorage.setItem('historyIsVisible', 'false');
 					historyIsActive = false;
-					bool = false;
+					localStorage.setItem("bool", "false");
+					friendDeleteBtns.style.display = 'block';
+					localStorage.setItem('historyVisible', 'true');
+					console.log("bool =", localStorage.getItem("bool"));
 				}
 			};
 		});
 
+		const deleteButtons = document.querySelectorAll('.delete-btn');
+
+		if (deleteButtons && deleteButtons.length > 0) {
+			deleteButtons.forEach(button => {
+				button.addEventListener('click', function(event) {
+					event.stopPropagation();
+					if (gameHistory.classList.contains('active')) {
+						console.log("Fermeture de l'historique des jeux avant suppression");
+						gameHistory.classList.remove('active');
+						exit_game_history_btn.style.display = 'block';
+						localStorage.setItem('historyIsVisible', 'false');
+						localStorage.setItem('bool', 'false');
+						historyIsActive = false;
+						document.querySelectorAll('.delete-btn').forEach(btn => {
+							btn.style.display = 'block';
+						});
+					}
+				});
+			});
+		}
+
+
+	
 		document.getElementById('friends-pending').innerHTML =
 			pending.map(friend => {
 				const isReceivedRequest = user.userId === friend.friendId;

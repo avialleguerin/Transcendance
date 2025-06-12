@@ -39,7 +39,7 @@ export async function accessProfileInfo(event: Event): Promise<void> {
 		const data = await fetchAPI('/request/user/access-profile-infos', 'PUT', { password }, false);
 
 		if (data.success) {
-			$("modif_profil").classList.add('hidden'); //todo: use updateUI
+			$("modif_profile").classList.add('hidden'); //todo: use updateUI
 			$("btn_back_home").classList.remove('active');
 			$("profile_param_unlocked_id").classList.add('active');
 			$input("password").value = "";
@@ -98,9 +98,7 @@ export async function anonymize_user(): Promise<void> {
 	if (confirm('Do you really want to anonymize your account ?')) {
 		try {
 			const data = await fetchAPI('/request/user/anonymize-account', 'PUT');
-
-			if (data.success)
-				fetchProfile(); //REVIEW - they are this here: fetchProfilePicture();
+			fetchProfile(); //REVIEW - they are this here: fetchProfilePicture();
 		} catch (err) { console.error(`anonymize_user: ${err}`); }
 	}
 }
@@ -144,10 +142,11 @@ export async function fetchProfile(): Promise<void> {
 			const doubleAuth = $input("active_fa");
 			if (user.doubleAuth_status)
 				doubleAuth.checked = true;
-			else if (doubleAuth.classList.contains("checked"))
-				doubleAuth.classList.remove("checked"); //REVIEW - i move if structure: if, else{ if } => if, else if, else 
-			else
+			else {
 				doubleAuth.checked = false;
+				if (doubleAuth.classList.contains("checked"))
+					doubleAuth.classList.remove("checked");
+			}
 		}
 	} catch (err) { console.error(`fetchProfile: ${err}`); }
 }
@@ -161,11 +160,9 @@ export async function updateProfileInfo(event: Event): Promise<void> {
 	if (newPassword && (!confirmPassword || newPassword !== confirmPassword)) return notif("Passwords do not match!", false);
 
 	try {
-		const data = await fetchAPI('/request/user/update-profile', 'PUT', { newUsername, newPassword });
+		await fetchAPI('/request/user/update-profile', 'PUT', { newUsername, newPassword });
 	
-		if (data.success) {
-			$form("updateProfileForm").reset();
-			fetchProfile();
-		}
+		$form("updateProfileForm").reset();
+		fetchProfile();
 	} catch (err) { console.error(`updateProfileInfo: ${err}`); }
 }
