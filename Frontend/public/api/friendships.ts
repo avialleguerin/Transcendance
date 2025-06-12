@@ -22,7 +22,7 @@ export async function addFriend(event: Event): Promise<void> {
 	
 	try {
 		await fetchAPI('/request/friendship/add-friend', 'POST', { friend });
-		// fetch_user_friendships();
+		fetch_user_friendships();
 		$input("friend_name_input").value = "";
 	} catch (err) { notif("Failed to add '" + friend + "' as a friend", false); }
 }
@@ -30,7 +30,7 @@ export async function addFriend(event: Event): Promise<void> {
 export async function accept_friendship(friendshipId: number): Promise<void> {
 	try {
 		await fetchAPI('/request/friendship/accept-friend', 'POST', { friendshipId });
-		// fetch_user_friendships();
+		fetch_user_friendships();
 	} catch (err) {
 		notif("Failed to accept this friend", false);
 	}
@@ -39,7 +39,7 @@ export async function accept_friendship(friendshipId: number): Promise<void> {
 export async function delete_friendship(friendshipId: string | number): Promise<void> {
 	try {
 		await fetchAPI('/request/friendship/delete-friend', 'DELETE', { friendshipId });
-		// fetch_user_friendships();
+		fetch_user_friendships();
 	} catch (err) {
 		notif("Failed to delete this friend", false);
 	}

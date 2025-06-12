@@ -245,6 +245,7 @@ export async function refreshInfos() { //REVIEW - maybe put in utils
 			console.debug(`Access token found, refreshing user infos`);
 			localStorage.clear();
 			setLocalStorage({"Player1": data.user.username, "profile_picture": data.user.profile_picture});
+			connectWebSocket();
 			gameMenuView();
 		}
 

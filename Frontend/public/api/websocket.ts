@@ -37,9 +37,9 @@ export class WebSocketManager {
 			else if (data.type === 'friend_request')
 				this.handleFriendRequest(data.message)
 			else if (data.type === 'friend_deleted')
-				this.handleFriendRequest()
+				this.handleFriendRequest(null)
 			else if (data.type === 'friend_status_update')
-				this.handleFriendRequest()
+				this.handleFriendRequest(null)
 		}
 		
 		this.socket.onclose = () => {
