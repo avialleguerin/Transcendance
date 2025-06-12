@@ -1,5 +1,9 @@
 import { User, GameResult, PlatformerGame, Friendship } from './types.js';
-import { $, $input, $form } from './utils.js';
+// import { $, $input, $form } from './utils.js';
+
+function $(id: string): HTMLElement | null { return document.getElementById(id); }
+function $input(id: string): HTMLInputElement { return document.getElementById(id) as HTMLInputElement; }
+function $form(id: string): HTMLFormElement { return document.getElementById(id) as HTMLFormElement; }
 
 export function notif(message: string, success = true): void {
 	const notification = document.getElementById('resultMessage');
@@ -132,30 +136,6 @@ export async function fetch_deleted_users(): Promise<void> {
 		console.error('Error fetching deleted users:', err);
 	}
 }
-
-//// async function fetch_games() {
-//// 	try {
-//// 		const response = await fetch('/request/admin/get-all-games', {
-//// 			method: 'GET',
-//// 		});
-//// 		const games = await response.json();
-//// 		document.getElementById('games-table').innerHTML = games.map(game => /*html*/`
-//// 			<tr class="border-collapse text-sm hover:shadow-lg hover:rounded-xl hover:-translate-y-1 transition-all duration-200 ease-in-out cursor-pointer">
-//// 				<td class="bg-white px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${game.gameId}</td>
-//// 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.user1_name}</td>
-//// 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.user2_name}</td>
-//// 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.user3_name ? `${game.user3_name}` : '—'}</td>
-//// 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.user4_name ? `${game.user4_name}` : '—'}</td>
-//// 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.score_left}</td>
-//// 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.score_right}</td>
-//// 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${game.created_at}</td>
-//// 				<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0"><button class="bg-red-200 hover:bg-red-300 m-2 text-red-500 hover:text-red-600 px-4 py-1 rounded-full transition-colors duration-300 ease-in-out" onclick="delete_game(${game.gameId})">Delete</button></td>
-//// 			</tr>
-//// 		`).join('');
-//// 	} catch (err) {
-//// 		console.error('Erreur lors de la récupération des Jeux :', err);
-//// 	}
-//// }
 
 export async function fetch_games(): Promise<void> {
 	try {
@@ -545,13 +525,13 @@ export async function close_friendship_modal() {
 	$input("addFriendshipModal").classList.add("hidden");
 }
 
-// window.addEventListener('DOMContentLoaded', () => {
-// 	fetch_users();
-// 	fetch_games();
-// 	fetch_platformers();
-// 	fetch_friendships();
-// 	fetch_deleted_users();
-// });
+window.addEventListener('DOMContentLoaded', () => {
+	fetch_users();
+	fetch_games();
+	fetch_platformers();
+	fetch_friendships();
+	fetch_deleted_users();
+});
 
 window.addEventListener('DOMContentLoaded', () => {
 	if (typeof window !== 'undefined') {

@@ -150,27 +150,27 @@ export function updateUI(config: UIConfig): void {
   }
 
   if (config.addClass) {
-    config.addClass.forEach(item => {
-      if (typeof item === 'string')
-        document.getElementById(item)?.classList.add('active');
-      else if (typeof item === 'object')
-        document.getElementById(item.id)?.classList.add(item.className || 'active');
-    });
+	config.addClass.forEach(item => {
+	  if (typeof item === 'string')
+		document.getElementById(item)?.classList.add('active');
+	  else if (typeof item === 'object')
+		document.getElementById(item.id)?.classList.add(item.className || 'active');
+	});
   }
 
   if (config.setContent) {
-    Object.entries(config.setContent).forEach(([id, content]) => {
-      const element = document.getElementById(id);
-      if (element) element.innerHTML = content;
-    });
+	Object.entries(config.setContent).forEach(([id, content]) => {
+	  const element = document.getElementById(id);
+	  if (element) element.innerHTML = content;
+	});
   }
 
   if (config.resetForms) {
-    config.resetForms.forEach(formId => {
-      const form = document.getElementById(formId) as HTMLFormElement | null;
-      if (form && typeof form.reset === 'function')
-        form.reset();
-    });
+	config.resetForms.forEach(formId => {
+	  const form = document.getElementById(formId) as HTMLFormElement | null;
+	  if (form && typeof form.reset === 'function')
+		form.reset();
+	});
   }
 }
 
@@ -179,21 +179,11 @@ export function updateUI(config: UIConfig): void {
  * @param id Element ID
  * @returns HTML element with the specified type or null if not found
  */
-export function $(id: string): HTMLElement | null {
-  return document.getElementById(id);
-}
-
-// For input elements specifically
-export function $input(id: string): HTMLInputElement {
-  return document.getElementById(id) as HTMLInputElement;
-}
-
-// For Form elements specifically
-export function $form(id: string): HTMLFormElement {
-  return document.getElementById(id) as HTMLFormElement;
-}
+export function $(id: string): HTMLElement | null { return document.getElementById(id); }
+export function $input(id: string): HTMLInputElement { return document.getElementById(id) as HTMLInputElement; }
+export function $form(id: string): HTMLFormElement { return document.getElementById(id) as HTMLFormElement; }
 
 export function onSubmit(formId: string, handler: (event: Event) => void) {
-    const form = document.getElementById(formId);
-    form?.addEventListener("submit", handler);
+	const form = document.getElementById(formId);
+	form?.addEventListener("submit", handler);
 }

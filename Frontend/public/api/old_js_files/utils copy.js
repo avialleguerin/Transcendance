@@ -1,13 +1,9 @@
-export function notif(message, success = true) {
+function notif(message, success = true) {
 	const notification = document.getElementById('resultMessage');
 	console.log("notif:", message, "success:", success);
 	if (notification) {
 		document.getElementById('notification-container').style.display = 'flex';
-		const icon = success ?
-			`<img src='/assets/image/success.png' style='width:20px; height:20px; margin-right:5px;'>` :
-			`<img src='/assets/image/failure.png' style='width:20px; height:20px; margin-right:5px;'>`;
-
-		notification.innerHTML = `<div style='display:flex; align-items:center;'>${icon}<span>${message}</span></div>`;
+		notification.innerHTML = `<div style='display:flex; align-items:center;'><span>${message}</span></div>`;
 		if (success)
 			notification.className = `success_notif`
 		else
@@ -24,9 +20,9 @@ export function notif(message, success = true) {
 	}
 }
 
-export async function fetchAPI(url, method, body = null, showNotification = true, formData = null) {
+async function fetchAPI(url, method, body = null, showNotification = true, formData = null) {
 	try {
-		let accessToken = sessionStorage.getItem('accessToken');
+		const accessToken = sessionStorage.getItem('accessToken');
 		
 		const headers = {
 			"Authorization": `Bearer ${accessToken}`
@@ -65,119 +61,61 @@ export async function fetchAPI(url, method, body = null, showNotification = true
 	}
 }
 
-import { handleViewTransitions } from '../srcs/game/gameplay/views/camera.js';
+async function refreshInfos() {
+	try {
+		const data = await fetchAPI('/request/user/refresh-infos', 'POST', {}, true, false);
 
-export function homeView() {
-	handleViewTransitions("default", "vue1");
-	history.pushState({}, '', '/');
-	import('../static/js/views/Home.js').then((module) => {
-		const Home = module.default;
-		const homeInstance = new Home();
-		homeInstance.getHtml().then((html) => {
-			const appElement = document.getElementById('app');
-			if (appElement) {
-				appElement.innerHTML = html;
-				if (homeInstance.createAccount && typeof homeInstance.createAccount === 'function') {
-					homeInstance.createAccount();
-				}
+		if (!data.accessToken || data.deleted_account) {
+			sessionStorage.clear();
+			localStorage.clear();
+			history.pushState({}, '', '/');
+			import('../static/js/views/Home.js').then((module) => {
+				console.log("Home module loaded");
+				const Home = module.default;
+				const homeInstance = new Home();
+				homeInstance.getHtml().then((html) => {
+					const appElement = document.getElementById('app');
+					if (appElement) {
+						appElement.innerHTML = html;
+						if (homeInstance.createAccount && typeof homeInstance.createAccount === 'function') {
+							homeInstance.createAccount();
+						}
+					}
+				});
+			});
+			notif("Session expired, please log in again", false);
+		} else if (sessionStorage.getItem("accessToken") && sessionStorage.getItem("accessToken") !== "undefined") {
+			// Utiliser window.connectWebSocket au lieu de l'import
+			if (typeof window.connectWebSocket === 'function') {
+				window.connectWebSocket();
 			}
-		});
-	});
+			localStorage.clear();
+			localStorage.setItem("Player1", data.user.username);
+			localStorage.setItem("profile_picture", data.user.profile_picture);
+			history.pushState({}, '', '/Game_menu');
+			import('../static/js/views/Game_menu.js').then(module => {
+				const GameMenu = module.default;
+				const gameMenuInstance = new GameMenu();
+				gameMenuInstance.getHtml().then(html => {
+					document.getElementById('app').innerHTML = html;
+					if (gameMenuInstance.game_menu) {
+						gameMenuInstance.game_menu();
+					}
+				});
+			});
+		}
+
+		if (data.success) {
+			console.log("Infos refreshed successfully");
+		} else {
+			console.error("Error refreshing infos:", data.error);
+		}
+	} catch (err) {
+		console.error("Erreur lors du rafraîchissement des informations :", err);
+	}
 }
 
-export function gameMenuView() {
-	handleViewTransitions("vue1", "default");
-	history.pushState({}, '', '/Game_menu');
-	import('../static/js/views/Game_menu.js').then(module => {
-		const GameMenu = module.default;
-		const gameMenuInstance = new GameMenu();
-		gameMenuInstance.getHtml().then(html => {
-			document.getElementById('app').innerHTML = html;
-			if (gameMenuInstance.game_menu) {
-				gameMenuInstance.game_menu();
-			}
-		});
-	});
-}
-
-export function platformerView() {
-	history.pushState({}, '', '/platformer');
-	import('../static/js/views/platformer/PlatformView.js').then((module) => {
-		console.log("Home module loaded");
-		const PlatformerView = module.default;
-		const platformerInstance = new PlatformerView();
-		platformerInstance.getHtml().then((html) => {
-			const appElement = document.getElementById('app');
-			if (appElement) {
-				appElement.innerHTML = html;
-				if (platformerInstance.createAccount && typeof platformerInstance.createAccount === 'function') {
-					platformerInstance.init_game_platformer();
-				}
-			}
-		});
-	});
-}
-
-export const setLocalStorage = (items) => {
-	Object.entries(items).forEach(([key, value]) => {
-		localStorage.setItem(key, value);
-	});
-};
-
-// export function updateUI(config) {
-//     // Gestion des classes
-//     if (config.removeClass) {
-//         config.removeClass.forEach(id => {
-//             document.getElementById(id)?.classList.remove('active');
-//         });
-//     }
-    
-//     if (config.addClass) {
-//         config.addClass.forEach(id => {
-//             document.getElementById(id)?.classList.add('active');
-//         });
-//     }
-    
-//     // Gestion du contenu innerHTML
-//     if (config.setContent) {
-//         Object.entries(config.setContent).forEach(([id, content]) => {
-//             const element = document.getElementById(id);
-//             if (element) element.innerHTML = content;
-//         });
-//     }
-// }
-
-export function updateUI(config) {
-    if (config.removeClass) {
-        config.removeClass.forEach(item => {
-            if (typeof item === 'string')
-                document.getElementById(item)?.classList.remove('active');
-            else if (typeof item === 'object')
-                document.getElementById(item.id)?.classList.remove(item.className || 'active');
-        });
-    }
-    
-    if (config.addClass) {
-        config.addClass.forEach(item => {
-            if (typeof item === 'string')
-                document.getElementById(item)?.classList.add('active');
-            else if (typeof item === 'object')
-                document.getElementById(item.id)?.classList.add(item.className || 'active');
-        });
-    }
-    
-    if (config.setContent) {
-        Object.entries(config.setContent).forEach(([id, content]) => {
-            const element = document.getElementById(id);
-            if (element) element.innerHTML = content;
-        });
-    }
-
-    if (config.resetForms) {
-        config.resetForms.forEach(formId => {
-            const form = document.getElementById(formId);
-            if (form && typeof form.reset === 'function')
-                form.reset();
-        });
-    }
-}
+// CORRECTION : Rendre la fonction accessible globalement
+window.refreshInfos = refreshInfos;
+window.fetchAPI = fetchAPI;
+window.notif = notif;
