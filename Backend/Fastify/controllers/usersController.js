@@ -297,7 +297,12 @@ export async function login(request, reply) {
 			return reply.code(401).send({ success: false, error: 'Invalid credentials' })
 		
 		if (user.doubleAuth_status)
-			return reply.code(200).send({success: true, connection_status: "partially_connected", message: 'Double authentication required', user: user})
+		{
+			const ticket = Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
+			await redisModel.setex(`2fa_ticket_${ticket}`, 300, user.userId.toString());
+			return reply.code(200).send({success: true, connection_status: "partially_connected", doubleAuth_status: user.doubleAuth_status, message: 'Double authentication required', ticket: ticket})
+		}
+			// return reply.code(200).send({success: true, connection_status: "partially_connected", message: 'Double authentication required', user: user})
 		
 		const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, {expiresIn: '15m' })
 		const refreshToken = fastify.jwt.sign({ userId: user.userId }, {expiresIn: '7d' })
@@ -315,7 +320,7 @@ export async function login(request, reply) {
 			expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
 		})
 		.code(200)
-		.send({ success: true, message: 'Logged in', connection_status: "connected", user: user, doubleAuth_status: user.doubleAuth_status, accessToken: accessToken })
+		.send({ success: true, message: 'Logged in', connection_status: "connected", username: user.username, profile_picture: user.profile_picture, doubleAuth_status: user.doubleAuth_status, accessToken: accessToken })
 	} catch (err) {
 		fastify.log.error("Error during login : " + err.message)
 		return reply.code(500).send({ error: err.message })
@@ -748,11 +753,16 @@ export async function deleteAccount(request, reply) {
 }
 
 export async function verifyDoubleAuth(request, reply) {
-	const { userId, code } = request.body
 	try {
-		const user = usersModel.getUserById(userId)
-		if (!user)
-			return reply.code(400).send({ success: false, error: 'User not found' })
+		const { ticket, code } = request.body
+		if (!ticket || !code)
+			return reply.code(400).send({ success: false, error: 'Ticket and code are required' })
+		const userId = await redisModel.get(`2fa_ticket_${ticket}`);
+		if (!userId) {
+			return reply.code(401).send({ success: false, error: 'Invalid or expired authentication session' });}
+		const user = usersModel.getUserById(userId);
+		if (!user || !user.doubleAuth_secret)
+			return reply.code(400).send({ success: false, error: 'Invalid user or 2FA not enabled' })
 		if (!user.doubleAuth_secret)
 			return reply.code(400).send({ success: false, error: '2FA not enabled' })
 
@@ -764,9 +774,9 @@ export async function verifyDoubleAuth(request, reply) {
 		})
 
 		if (isValid) {
+			await redisModel.del(`2fa_ticket_${ticket}`);
 			const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, { expiresIn: '15m' })
 			const refreshToken = fastify.jwt.sign({ userId: user.userId }, { expiresIn: '7d' })
-			usersModel.updateDoubleAuth_status(user.userId, 1)
 			usersModel.updateLastActivity(user.userId)
 			reply
 			.setCookie('refreshToken', refreshToken, {
@@ -776,7 +786,7 @@ export async function verifyDoubleAuth(request, reply) {
 				sameSite: 'strict',
 				expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
 			})
-			.send({ success:true, message: '2FA validated successfully!', username: user.username, profile_picture: user.profile_picture, connection_status: "connected", accessToken: accessToken })
+			.send({ success: true, message: '2FA validated successfully!', username: user.username, profile_picture: user.profile_picture, connection_status: "connected", accessToken: accessToken })
 		} else
 			return reply.code(401).send({ success: false, error: 'Invalid 2FA code' })
 	} catch (err) {

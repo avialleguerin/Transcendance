@@ -16,4 +16,13 @@ export const redisModel = {
 	removeDoubleAuth: async (token) => {
 		return await redisClient.del(`doubleAuth:${token}`);
 	},
+	get: async (key) => {
+		return await redisClient.get(key);
+	},
+	setex: async (key, seconds, value) => {
+		return await redisClient.setEx(key, seconds, value);
+	},
+	del: async (key) => {
+		return await redisClient.del(key);
+	},
 }

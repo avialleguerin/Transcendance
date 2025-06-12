@@ -1,16 +1,15 @@
 async function verify2FA(event) {
 	event.preventDefault();
-	const userId = sessionStorage.getItem("userId");
+	const ticket = sessionStorage.getItem("authTicket");
 	const code = document.getElementById("verify-2fa-code").value;
 
 	try {
-		const data = await fetchAPI('/request/user/verify-2fa', 'POST', { userId, code });
+		const data = await fetchAPI('/request/user/verify-2fa', 'POST', { ticket, code });
 
 		if (data.success) {
-			sessionStorage.removeItem("userId")
+			sessionStorage.removeItem("authTicket")
 			localStorage.setItem("Player1", data.username);
 			localStorage.setItem("profile_picture", data.profile_picture);
-			// ✅ CORRECTION : Utiliser connectWebSocket au lieu de wsManager.connect()
 			connectWebSocket()
 			console.log("✅ 2FA code valid!");
 			history.pushState({}, '', '/Game_menu');
@@ -41,17 +40,16 @@ async function login(event) {
 		
 		if (!data.accessToken && !data.success) {
 			notif(data.error, false);
-		} else if (data.success && data.connection_status === "partially_connected" && data.user.doubleAuth_status) {
-			sessionStorage.setItem("userId", data.user.userId);
+		} else if (data.success && data.connection_status === "partially_connected" && data.doubleAuth_status) {
+			sessionStorage.setItem("authTicket", data.ticket);
 			document.getElementById("doubleAuthForm").classList.remove("hidden");
 			document.getElementById("loginForm").classList.add("active");
 			document.getElementById("login-title").textContent = "Double Authentication";
 			document.getElementById("doubleAuthForm").classList.add("active");
 		} else if (data.success && data.connection_status === "connected") {
 			notif(data.message, true);
-			localStorage.setItem("Player1", data.user.username);
-			localStorage.setItem("profile_picture", data.user.profile_picture);
-			// ✅ CORRECTION : Utiliser connectWebSocket au lieu de wsManager.connect()
+			localStorage.setItem("Player1", data.username);
+			localStorage.setItem("profile_picture", data.profile_picture);
 			connectWebSocket()
 			console.log("✅ Connected, Token :", sessionStorage.getItem("accessToken"));
 			history.pushState({}, '', '/Game_menu');

@@ -58,6 +58,12 @@ ip:
 	@echo "${GREEN}Game URL:${RESET} http://$(LOCAL_IP):8080 → https://$(LOCAL_IP):8443"
 	@echo "${GREEN}Admin URL:${RESET} http://$(LOCAL_IP):8081 → https://$(LOCAL_IP):8143"
 
+#Test
+test:
+	@echo "\n${BLUE}Running tests...${RESET}"
+	@./testTrenscendence
+	@echo "${GREEN}✓ Tests completed successfully.${RESET}"
+
 #NGINX
 reload-nginx:
 	@echo "\n${BLUE}Reloading Nginx inside the container...${RESET}"
