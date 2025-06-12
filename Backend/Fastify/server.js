@@ -17,7 +17,7 @@ import { checkEmailConfig } from './utils/mailer.js'
 const logActive = process.env.LOG_ACTIVE === 'true';
 
 export const fastify = Fastify({
-	logger: logActive ?{
+	logger: logActive ? {
 		level: 'debug',
 		transport: {
 			target: 'pino-pretty',
@@ -28,7 +28,7 @@ export const fastify = Fastify({
 			}
 		}
 	} : false,
-	disableRequestLogging: !logActive
+	disableRequestLogging: true
 })
 
 await fastify.register(websocket)
@@ -39,9 +39,9 @@ await fastify.register(fastifyMultipart, { attachFieldsToBody: true, limits: { f
 await fastify.register(jwt, { secret: 'supersecretkey', cookie: { cookieName: 'token', signed: false } });
 await fastify.register(cookie);
 await fastify.register(colorLoggerPlugin)
+export const log = fastify.logger;
 await fastify.register(websocketPlugin)
 
-export const log = fastify.logger;
 
 
 fastify.register(routes, { prefix: '/request' })
