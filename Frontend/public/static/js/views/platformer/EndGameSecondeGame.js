@@ -99,35 +99,6 @@ export default class EndGameSecondeGame {
 			}
 		}
 	}
-
-	create_platformer() {
-
-		const player1 = localStorage.getItem("Player1");
-		const player2 = localStorage.getItem("Player2");
-		const score_player1 = localStorage.getItem("score_player1");
-		const score_player2 = localStorage.getItem("score_player2");
-	
-		if (!player1 || !player2) {
-			notif("Please select two players", false);
-			return ;
-		}
-	
-		const response = fetch('/request/platformer/create-platformer', {
-			method: 'POST',
-			headers: { 
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({ player1, player2, score_player1, score_player2 }),
-			credentials: 'include',
-		});
-		const data = response.json();
-		if (!data.success)
-			notif(data.error, false);
-		localStorage.removeItem("Player2");
-		localStorage.removeItem("score_player1");
-		localStorage.removeItem("score_player2");
-	};
-
 	handleSelect()
 	{
 		console.log("Game Finished");
@@ -139,20 +110,21 @@ export default class EndGameSecondeGame {
 
 			if (this.Score > this.EndGame_FirstGame.Score)
 			{
-				this.WinnerScore = this.Score; // Player 2 wins
+				this.WinnerScore = this.Score;
 				localStorage.setItem("score_player1", this.Score);
 				console.log("this.EndGame_FirstGame.Score =", this.EndGame_FirstGame.Score);
 				localStorage.setItem("score_player2", this.EndGame_FirstGame.Score);
 			}
 			else
 			{
-				this.WinnerScore = this.EndGame_FirstGame.Score; // Player 1 wins
+				this.WinnerScore = this.EndGame_FirstGame.Score;
 				localStorage.setItem("score_player1", this.EndGame_FirstGame.Score);
 				localStorage.setItem("score_player2", this.Score);
 			}
-			this.MapMenu.nb_game_started++;
-			this.create_platformer();
-			this.historyGame.saveGameIfNeeded(this.MapMenu.nb_game_started, this.winner, this.WinnerScore, this.gameCanvas.timer);
+			// this.MapMenu.nb_game_started++;
+			if (!localStorage.getItem('platformer_game_created')) {
+				window.create_platformer();
+			// this.historyGame.saveGameIfNeeded(this.MapMenu.nb_game_started, this.winner, this.WinnerScore, this.gameCanvas.timer);
 			if (this.player && typeof this.player.reset_Game === "function") {
 				this.player.reset_Game();
 			}
@@ -177,6 +149,7 @@ export default class EndGameSecondeGame {
 		}
 
 		if (selected === "Restart") {
+			localStorage.removeItem('platformer_game_created');
 			this.EndGame_FirstGame.first_game_finished = false;
 			if (this.player && typeof this.player.reset_Game === "function") {
 				this.player.reset_Game();

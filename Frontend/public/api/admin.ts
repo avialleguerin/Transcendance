@@ -10,25 +10,17 @@ export function notif(message: string, success = true): void {
 	console.log("notif:", message, "success:", success);
 	console.debug(`notification : ${notification}`)
 	if (notification) {
-		console.debug("je passe dans le if (notif)")
 		document.getElementById('notification-container').style.display = 'flex';
-		const icon = success ?
-			`<img src='/assets/image/success.png' style='width:20px; height:20px; margin-right:5px;'>` :
-			`<img src='/assets/image/failure.png' style='width:20px; height:20px; margin-right:5px;'>`;
-
-		notification.innerHTML = `<div style='display:flex; align-items:center;'>${icon}<span>${message}</span></div>`;
-		if (success)
-			notification.className = `success_notif`
-		else
-			notification.className = `failure_notif`;
+		notification.innerHTML = `<div style='display:flex; align-items:center;'><span>${message}</span></div>`;
+		notification.className = `py-2 px-4 rounded shadow-lg ${success ? 'bg-green-500' : 'bg-red-500'} text-white font-medium`;
 
 		setTimeout(() => {
-			notification.style.opacity = '1';
+			notification.classList.add('opacity-100');
 		}, 10);
 
 		setTimeout(() => {
-			notification.style.opacity = '0';
-			document.getElementById('notification-container').style.display = 'none';
+			notification.classList.remove('opacity-100');
+			notification.classList.add('opacity-0');
 		}, 3000);
 	}
 }
@@ -192,7 +184,7 @@ export async function fetch_platformers(): Promise<void> {
 			<tr class="border-collapse text-sm hover:shadow-lg hover:rounded-xl hover:-translate-y-1 transition-all duration-200 ease-in-out cursor-pointer">
 				<td class="bg-white px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${platformer.platformerId}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.user1_name}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.score_user1} - ${platformer.score_user2}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.score_player1} - ${platformer.score_player2}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.user2_name}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.created_at}</td>
 				<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0"><button class="bg-red-200 hover:bg-red-300 m-2 text-red-500 hover:text-red-600 px-4 py-1 rounded-full transition-colors duration-300 ease-in-out" onclick="delete_platformer(${platformer.platformerId})">Delete</button></td>
@@ -231,10 +223,8 @@ export async function create_user(event: Event): Promise<void> {
 	const password = $input("addUser-password").value;
 	const confirmPassword = $input("addUser-confirm-password").value;
 
-	if (password !== confirmPassword) {
-		notif("Passwords are different", false);
-		return ;
-	}
+	if (password !== confirmPassword)
+		return notif("Passwords are different", false);
 
 	const response = await fetch('/request/user/create-user', {
 		method: 'POST',
@@ -246,8 +236,7 @@ export async function create_user(event: Event): Promise<void> {
 	});
 	const data = await response.json();
 	if (data.success) {
-		notif(`User added : ${data.username} `, true);
-		$('resultMessage').textContent = `User added : ${data.username}`;
+		notif(`User '${data.username}' added successfully`, true);
 		$form("addUserForm").reset();
 		close_user_modal();
 	} else
@@ -263,10 +252,8 @@ export async function create_game(event: Event): Promise<void> {
 	const user3 = $input("addGame-user3").value;
 	const user4 = $input("addGame-user4").value;
 
-	if (!user1 || !user2) {
-		notif("Please select two users", false);
-		return ;
-	}
+	if (!user1 || !user2)
+		return notif("Please select two users", false);
 
 	const response = await fetch('/request/admin/create-game', {
 		method: 'POST',
@@ -280,9 +267,8 @@ export async function create_game(event: Event): Promise<void> {
 	if (data.success) {
 		notif(`Game added : ${data.user1} vs ${data.user2}`, true);
 		close_game_modal();
-	} else {
+	} else
 		notif(data.error, false);
-	}
 	$form("addGameForm").reset();
 	fetch_games();
 };
@@ -292,20 +278,18 @@ export async function create_platformer(event: Event): Promise<void> {
 
 	const username1 = $input("addPlatformer-username1").value;
 	const username2 = $input("addPlatformer-username2").value;
-	const score_user1 = $input("addPlatformer-score1").value;
-	const score_user2 = $input("addPlatformer-score2").value;
+	const score_player1 = $input("addPlatformer-score1").value;
+	const score_player2 = $input("addPlatformer-score2").value;
 
-	if (!username1 || !username2 || !score_user1 || !score_user2) {
-		notif("Please select the users and their scores", false);
-		return ;
-	}
+	if (!username1 || !username2 || !score_player1 || !score_player2)
+		return notif("Please select the users and their scores", false);
 
 	const response = await fetch('/request/admin/create-platformer', {
 		method: 'POST',
 		headers: { 
 			"Content-Type": "application/json",
 		},
-		body: JSON.stringify({ username1, username2, score_user1, score_user2 }),
+		body: JSON.stringify({ username1, username2, score_player1, score_player2 }),
 		credentials: 'include',
 	});
 	const data = await response.json();
@@ -325,10 +309,8 @@ export async function create_friendship(event: Event): Promise<void> {
 	const user_username = $input("addFriendship-user").value;
 	const friend_username = $input("addFriendship-friend").value;
 	console.log(user_username, friend_username)
-	if (!user_username || !friend_username) {
-		notif("Please select two users", false);
-		return ;
-	}
+	if (!user_username || !friend_username)
+		return notif("Please select two users", false);
 
 	const response = await fetch('/request/admin/create-friendship', {
 		method: 'POST',
@@ -362,14 +344,11 @@ export async function delete_user(userId: string): Promise<void> {
 			},);
 			const data = await response.json();
 			console.log('Response from server:', data);
-			if (data.success) {
+			if (data.success)
 				console.log('User deleted successfully');
-			} else {
-				console.error('Delete failed:', data.error);
+			else
 				notif(data.error || 'Failed to delete user', false);
-			}
 		} catch (err) {
-			console.error('Erreur lors de la suppression :', err);
 			notif('Failed to delete user' + err, false);
 		}
 	}
@@ -393,15 +372,11 @@ export async function force_delete_user(userId: string): Promise<void> {
 			},);
 			const data = await response.json();
 			console.log('Response from server:', data);
-			if (data.success) {
-				console.log('User permanently deleted');
+			if (data.success)
 				notif('User permanently deleted', true);
-			} else {
-				console.error('Force delete failed:', data.error);
+			else
 				notif(data.error || 'Failed to permanently delete user', false);
-			}
 		} catch (err) {
-			console.error('Erreur lors de la suppression forcée :', err);
 			notif('Failed to force delete user' + err, false);
 		}
 	}

@@ -78,11 +78,11 @@ export async function create1v1Game(request, reply) {
 		if (score_left < score_right) {
 			usersModel.updateGamesLost(player1User.userId)
 			usersModel.updateGamesWon(player2User.userId)
-			fastify.log.info(`🏆 1v1 game result: ${player2} wins against ${player1}`)
+			fastify.log.info(`1v1 game result: ${player2} wins against ${player1}`)
 		} else {
 			usersModel.updateGamesWon(player1User.userId)
 			usersModel.updateGamesLost(player2User.userId)
-			fastify.log.info(`🏆 1v1 game result: ${player1} wins against ${player2}`)
+			fastify.log.info(`1v1 game result: ${player1} wins against ${player2}`)
 		}
 
 		fastify.log.info(`1v1 game created successfully: ${player1} vs ${player2}`)
@@ -152,13 +152,13 @@ export async function create2v2Game(request, reply) {
 			usersModel.updateGamesLost(player2User.userId)
 			usersModel.updateGamesWon(player3User.userId)
 			usersModel.updateGamesWon(player4User.userId)
-			fastify.log.info(`🏆 2v2 game result: ${player3} & ${player4} win against ${player1} & ${player2}`)
+			fastify.log.info(`2v2 game result: ${player3} & ${player4} win against ${player1} & ${player2}`)
 		} else {
 			usersModel.updateGamesWon(player1User.userId)
 			usersModel.updateGamesWon(player2User.userId)
 			usersModel.updateGamesLost(player3User.userId)
 			usersModel.updateGamesLost(player4User.userId)
-			fastify.log.info(`🏆 2v2 game result: ${player1} & ${player2} win against ${player3} & ${player4}`)
+			fastify.log.info(`2v2 game result: ${player1} & ${player2} win against ${player3} & ${player4}`)
 		}
 
 		fastify.log.info(`2v2 game created successfully: ${player1} & ${player2} vs ${player3} & ${player4}`)

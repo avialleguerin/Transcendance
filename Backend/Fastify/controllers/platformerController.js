@@ -29,9 +29,9 @@ export async function getUserPlatformer(request, reply) {
 }
 
 export async function createPlatformer(request, reply) {
-	const { player1, player2, score_player1, score_player2 } = request.body
-
+	
 	try {
+		const { player1, player2, score_player1, score_player2 } = request.body
 		const infos = await getUserFromToken(request)
 		if (!infos) {
 			fastify.log.warn('Platformer creation denied: Unauthorized request')

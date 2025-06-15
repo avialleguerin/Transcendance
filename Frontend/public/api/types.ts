@@ -86,8 +86,8 @@ export interface PlatformerGame {
 	platformerId?: number;
 	user1_name?: string;
 	user2_name?: string;
-	score_user1?: number;
-	score_user2?: number;
+	score_player1?: number;
+	score_player2?: number;
 	created_at?: string;
 }
 
@@ -210,7 +210,6 @@ declare global {
 		force_delete_user: (userId: string) => Promise<void>;
 		delete_game: (gameId: string) => Promise<void>;
 		delete_platformer: (platformerId: string) => Promise<void>;
-		// delete_friendship: (friendshipId: number) => Promise<void>;
 		create_user: (event: Event) => Promise<void>;
 		create_game: (event: Event) => Promise<void>;
 		create_platformer: (event: Event) => Promise<void>;

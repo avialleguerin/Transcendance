@@ -41,7 +41,6 @@ export default class Game_menu extends AbstractView {
 			
 		</div>
 
-
 		<div id="cgu-modal" class="cgu-modal">
 			<div class="cgu-content">
 				<h1>Conditions Générales d'Utilisation</h1>
@@ -403,11 +402,11 @@ export default class Game_menu extends AbstractView {
 								<button id="anonymize_btn" class="btn_anonymize_btn" onclick="anonymize_user()">Anonymize me</button>
 							</div>
 							<div class="cgu-container">
-                                <label for="accept-cgu"><a href="#" id="show-cgu" class="cgu-link">Conditions Générales d'Utilisation</a></label>
-                            </div>
-                            <div class="privacy-policy-container">
-                                <label for="accept-privacy-policy"><a href="#" id="show-privacy-policy" class="cgu-link">Politique de Confidentialité</a></label>
-                            </div>
+								<label for="accept-cgu"><a href="#" id="show-cgu" class="cgu-link">Conditions Générales d'Utilisation</a></label>
+							</div>
+							<div class="privacy-policy-container">
+								<label for="accept-privacy-policy"><a href="#" id="show-privacy-policy" class="cgu-link">Politique de Confidentialité</a></label>
+							</div>
 							
 						</div>
 					</div>
@@ -711,9 +710,7 @@ export default class Game_menu extends AbstractView {
 				</button>
 			</div>
 		</div>
-		<div id="notification-container" class="fixed top-0 left-0 right-0 flex justify-center z-50 mt-4">
-			<p id="resultMessage" class="py-2 px-4 rounded shadow-lg transition-all duration-300 transform translate-y-0 opacity-0"></p>
-		</div>
+		
 	`;}
 
 	init_solo_game() {
@@ -783,7 +780,6 @@ export default class Game_menu extends AbstractView {
 		const back_to_select_mode_view7 = document.getElementById('back_to_select_mode_view7');
 		const back_to_select_mode_view8 = document.getElementById('back_to_select_mode_view8');
 		const choose_your_opponent_platformer_form = document.getElementById('choose_your_opponent_platformer_form');
-		// const back_to_menu_view_tournament = document.getElementById('back_to_menu_view_tournament');
 
 		//*==== CGU & Privacy Policy Modals ====*/
 		const showCguLink = document.getElementById("show-cgu");
@@ -808,27 +804,27 @@ export default class Game_menu extends AbstractView {
 			}
 		});
 
-        const showPrivacyPolicyLink = document.getElementById("show-privacy-policy");
-        const privacyPolicyModal = document.getElementById("privacy-policy-modal");
-        const privacyPolicyBackButton = document.getElementById("privacy-policy-back-button");
+		const showPrivacyPolicyLink = document.getElementById("show-privacy-policy");
+		const privacyPolicyModal = document.getElementById("privacy-policy-modal");
+		const privacyPolicyBackButton = document.getElementById("privacy-policy-back-button");
 
-        showPrivacyPolicyLink?.addEventListener("click", (e) => {
-            e.preventDefault();
-            privacyPolicyModal?.classList.add("active");
-            document.body.style.overflow = "hidden";
-        });
+		showPrivacyPolicyLink?.addEventListener("click", (e) => {
+			e.preventDefault();
+			privacyPolicyModal?.classList.add("active");
+			document.body.style.overflow = "hidden";
+		});
 
-        privacyPolicyBackButton?.addEventListener("click", () => {
-            privacyPolicyModal?.classList.remove("active");
-            document.body.style.overflow = "";
-        });
+		privacyPolicyBackButton?.addEventListener("click", () => {
+			privacyPolicyModal?.classList.remove("active");
+			document.body.style.overflow = "";
+		});
 
-        privacyPolicyModal?.addEventListener("click", (event) => {
-            if (event.target === privacyPolicyModal) {
-                privacyPolicyModal?.classList.remove("active");
-                document.body.style.overflow = "";
-            }
-        });
+		privacyPolicyModal?.addEventListener("click", (event) => {
+			if (event.target === privacyPolicyModal) {
+				privacyPolicyModal?.classList.remove("active");
+				document.body.style.overflow = "";
+			}
+		});
 
 		btn_jouer.addEventListener('click', () => {
 			view1.classList.add('active');
@@ -919,18 +915,6 @@ export default class Game_menu extends AbstractView {
 			});
 		}
 
-		// back_to_menu_view_tournament.addEventListener('click', () => {
-		// 	handleViewTransitions("vue2", "tournament");
-		// 	tournament_view.classList.remove('active');
-		// 	setTimeout(() => {
-		// 		view2.classList.add('active');
-		// 		view1.classList.add('active');
-		// 		btn_back_home.classList.add('active');
-		// 	} , 1000);
-		// });
-
-
-
 		/***********************************************************************/
 		/**************************BACK_HOME************************************/
 		/***********************************************************************/
@@ -954,14 +938,7 @@ export default class Game_menu extends AbstractView {
 
 		});
 
-		// prepar_game_1v1.addEventListener('click', () => {
-		// 	view3.classList.remove('active');
-		// 	view6.classList.add('active');
-		// 	back_to_select_mode_view6.classList.add('active');
-		// });
-
 		const choose_your_opponent_1v1_form = document.getElementById('choose_your_opponent_1v1_form');
-		// const validate_login = document.getElementById('validate-opponent-login');
 
 		prepar_game_1v1.addEventListener('click', () => {
 			console.log('Prepar game 1v1 clicked');
@@ -969,23 +946,8 @@ export default class Game_menu extends AbstractView {
 			choose_your_opponent_1v1_form.classList.add('active');
 			back_to_select_mode_view6.classList.add('active');
 			container_menu.classList.add('active');
-			container_menu.scrollTop = 0; // Reset scroll position to the top
+			container_menu.scrollTop = 0;
 		});
-
-		// validate_login.addEventListener('click', () => {
-		// 	console.log('Prepar game 1v1 clicked');
-		// 	choose_your_opponent_1v1_form.classList.remove('active');
-		// 	back_to_select_mode_view6.classList.add('active');
-		// 	view6.classList.add('active');
-		// 	container_menu.classList.remove('active');
-		// });
-
-
-		// prepar_game_multi.addEventListener('click', () => {
-		// 	view4.classList.remove('active');
-		// 	view8.classList.add('active');
-		// 	back_to_select_mode_view8.classList.add('active');
-		// });
 		
 		const choose_your_opponent_multi_form = document.getElementById('choose_your_opponent_multi_form');
 		const validate_multi_opponent = document.getElementById('validate_multi_opponent');
@@ -997,15 +959,6 @@ export default class Game_menu extends AbstractView {
 			container_menu.classList.add('active');
 			container_menu.scrollTop = 0;
 		});
-
-		// validate_multi_opponent.addEventListener('click', () => {
-		// 	console.log('Prepar game multi clicked');
-		// 	choose_your_opponent_multi_form.classList.remove('active');
-		// 	back_to_select_mode_view8.classList.add('active');
-		// 	view8.classList.add('active');
-		// 	container_menu.classList.remove('active');
-		// });
-
 
 		/***********************************************************************/
 		/**************************BACK_TO_MENU********************************/
@@ -1026,28 +979,28 @@ export default class Game_menu extends AbstractView {
 			}
 		
 
-            if (skin_perso.classList.contains('checked')) {
+			if (skin_perso.classList.contains('checked')) {
 				skin_perso.classList.remove('checked');
-                if (choose_your_skin.classList.contains('active')) {
+				if (choose_your_skin.classList.contains('active')) {
 					choose_your_skin.classList.remove('active');
 					solo_1v1_btn.style.display = 'block';
 					custom_ta_game.style.visibility = 'visible';
 				}
 			}
-            if (power_selector.classList.contains('active')) {
+			if (power_selector.classList.contains('active')) {
 				power_selector.classList.remove('active');
 				powerUP.classList.remove('checked');
 				reset_powerUP_grenade();
 				reset_powerUP_teammate();
 				reset_powerUP_inverse_player();
 				powerUP_nb = 0;
-                if (number_powerUP_1.classList.contains('checked')) {
+				if (number_powerUP_1.classList.contains('checked')) {
 					number_powerUP_1.classList.remove('checked');
 				}
-                if (number_powerUP_3.classList.contains('checked')) {
+				if (number_powerUP_3.classList.contains('checked')) {
 					number_powerUP_3.classList.remove('checked');
 				}
-                if (number_powerUP_5.classList.contains('checked')) {
+				if (number_powerUP_5.classList.contains('checked')) {
 					number_powerUP_5.classList.remove('checked');
 				}
 			}
@@ -1060,29 +1013,29 @@ export default class Game_menu extends AbstractView {
 			view3.classList.add('active');
 			view7.classList.remove('active');
 			back_to_select_mode_view7.classList.remove('active');
-            if (skin_perso.classList.contains('checked')) {
+			if (skin_perso.classList.contains('checked')) {
 				skin_perso.classList.remove('checked');
-                if (choose_your_skin.classList.contains('active')) {
+				if (choose_your_skin.classList.contains('active')) {
 					choose_your_skin.classList.remove('active');
 					solo_1v1_btn.style.display = 'block';
 					custom_ta_game.style.visibility = 'visible';
 					disable_skin_perso_player_solo();
 				}
 			}
-            if (power_selector.classList.contains('active')) {
+			if (power_selector.classList.contains('active')) {
 				power_selector.classList.remove('active');
 				powerUP.classList.remove('checked');
 				reset_powerUP_grenade();
 				reset_powerUP_teammate();
 				reset_powerUP_inverse_player();
 				powerUP_nb = 0;
-                if (number_powerUP_1.classList.contains('checked')) {
+				if (number_powerUP_1.classList.contains('checked')) {
 					number_powerUP_1.classList.remove('checked');
 				}
-                if (number_powerUP_3.classList.contains('checked')) {
+				if (number_powerUP_3.classList.contains('checked')) {
 					number_powerUP_3.classList.remove('checked');
 				}
-                if (number_powerUP_5.classList.contains('checked')) {
+				if (number_powerUP_5.classList.contains('checked')) {
 					number_powerUP_5.classList.remove('checked');
 				}
 			}
@@ -1099,29 +1052,29 @@ export default class Game_menu extends AbstractView {
 				container_menu.classList.remove('active');
 				container_menu.scrollTop = 0;
 			}
-            if (skin_perso_game_multi.classList.contains('checked')) {
+			if (skin_perso_game_multi.classList.contains('checked')) {
 				skin_perso_game_multi.classList.remove('checked');
-                if (choose_your_skin_game_multi.classList.contains('active')) {
+				if (choose_your_skin_game_multi.classList.contains('active')) {
 					choose_your_skin_game_multi.classList.remove('active');
 					multiplayer_btn.style.display = 'block';
 					custom_ta_game_multi.style.visibility = 'visible';
 					disable_skin_multi();
 				}
 			}
-            if (power_selector_game_multi.classList.contains('active')) {
+			if (power_selector_game_multi.classList.contains('active')) {
 				power_selector_game_multi.classList.remove('active');
 				powerUP_multi.classList.remove('checked');
 				reset_powerUP_grenadeTeam_player();
 				reset_powerUP_freeze_Team_player();
 				powerUP_nb = 0;
 				powerUP_nb_multi = 0;
-                if (number_powerUP_1_game_multi.classList.contains('checked')) {
+				if (number_powerUP_1_game_multi.classList.contains('checked')) {
 					number_powerUP_1_game_multi.classList.remove('checked');
 				}
-                if (number_powerUP_3_game_multi.classList.contains('checked')) {
+				if (number_powerUP_3_game_multi.classList.contains('checked')) {
 					number_powerUP_3_game_multi.classList.remove('checked');
 				}
-                if (number_powerUP_5_game_multi.classList.contains('checked')) {
+				if (number_powerUP_5_game_multi.classList.contains('checked')) {
 					number_powerUP_5_game_multi.classList.remove('checked');
 				}
 			}
@@ -1146,13 +1099,13 @@ export default class Game_menu extends AbstractView {
 				reset_powerUP_inverse_player();
 				powerUP_nb = 0;
 				powerUP_nb_multi = 0;
-                if (number_powerUP_1.classList.contains('checked')) {
+				if (number_powerUP_1.classList.contains('checked')) {
 					number_powerUP_1.classList.remove('checked');
 				}
-                if (number_powerUP_3.classList.contains('checked')) {
+				if (number_powerUP_3.classList.contains('checked')) {
 					number_powerUP_3.classList.remove('checked');
 				}
-                if (number_powerUP_5.classList.contains('checked')) {
+				if (number_powerUP_5.classList.contains('checked')) {
 					number_powerUP_5.classList.remove('checked');
 				}
 			}
@@ -1215,20 +1168,20 @@ export default class Game_menu extends AbstractView {
 				reset_powerUP_freeze_Team_player();
 				powerUP_nb = 0;
 				powerUP_nb_multi = 0;
-                if (number_powerUP_1_game_multi.classList.contains('checked')) {
+				if (number_powerUP_1_game_multi.classList.contains('checked')) {
 					number_powerUP_1_game_multi.classList.remove('checked');
 				}
-                if (number_powerUP_3_game_multi.classList.contains('checked')) {
+				if (number_powerUP_3_game_multi.classList.contains('checked')) {
 					number_powerUP_3_game_multi.classList.remove('checked');
 				}
-                if (number_powerUP_5_game_multi.classList.contains('checked')) {
+				if (number_powerUP_5_game_multi.classList.contains('checked')) {
 					number_powerUP_5_game_multi.classList.remove('checked');
 				}
 			}
 		});
 
 		number_powerUP_1_game_multi.addEventListener('click', () => {
-            number_powerUP_1_game_multi.classList.toggle('checked');
+			number_powerUP_1_game_multi.classList.toggle('checked');
 			number_powerUP_3_game_multi.classList.remove('checked');
 			number_powerUP_5_game_multi.classList.remove('checked');
 			console.log('1 powerUP selected and 3 and 5 unselected');
@@ -1238,7 +1191,7 @@ export default class Game_menu extends AbstractView {
 		});
 
 		number_powerUP_3_game_multi.addEventListener('click', () => {
-            number_powerUP_3_game_multi.classList.toggle('checked');
+			number_powerUP_3_game_multi.classList.toggle('checked');
 			number_powerUP_1_game_multi.classList.remove('checked');
 			number_powerUP_5_game_multi.classList.remove('checked');
 			console.log('3 powerUP selected and 1 and 5 unselected');
@@ -1247,7 +1200,7 @@ export default class Game_menu extends AbstractView {
 			powerUP_nb_multi = 3;
 		});
 		number_powerUP_5_game_multi.addEventListener('click', () => {
-            number_powerUP_5_game_multi.classList.toggle('checked');
+			number_powerUP_5_game_multi.classList.toggle('checked');
 			number_powerUP_1_game_multi.classList.remove('checked');
 			number_powerUP_3_game_multi.classList.remove('checked');
 			console.log('5 powerUP selected and 1 and 3 unselected');
@@ -1255,7 +1208,7 @@ export default class Game_menu extends AbstractView {
 			init_powerUP_freeze_Team_player(5);
 			powerUP_nb_multi = 5;
 		});
-        if (getValue_leave_game() == true) {
+		if (getValue_leave_game() == true) {
 			powerUP_nb = 0;
 			powerUP_nb_multi = 0;
 			setLeaveGameVar(false);
@@ -1282,7 +1235,7 @@ export default class Game_menu extends AbstractView {
 				custom_ta_game.style.visibility = 'hidden';
 				enable_skin_perso_player_solo();
 
-				valide_ton_skin.addEventListener('click', () => { // NOTE - I removed the if statement here
+				valide_ton_skin.addEventListener('click', () => {
 					console.log('Valide ton skin button clicked');
 					choose_your_skin.classList.remove('active');
 					solo_1v1_btn.style.display = 'block';
@@ -1290,7 +1243,7 @@ export default class Game_menu extends AbstractView {
 					disable_skin_perso_player_solo_and_save();
 				});
 			}
-            else {
+			else {
 				console.log('Skin perso is inactive');
 				if (choose_your_skin.classList.contains('active')) {
 					choose_your_skin.classList.remove('active');
@@ -1349,7 +1302,7 @@ export default class Game_menu extends AbstractView {
 				custom_ta_game_multi.style.visibility = 'hidden';
 				enable_skin_multi();
 
-				valide_ton_skin_game_multi.addEventListener('click', () => { // NOTE - I removed the if statement here for Typescript
+				valide_ton_skin_game_multi.addEventListener('click', () => {
 					console.log('Valide ton skin button clicked');
 					choose_your_skin_game_multi.classList.remove('active');
 					multiplayer_btn.style.display = 'block';
@@ -1491,7 +1444,6 @@ export default class Game_menu extends AbstractView {
 			if (parametre_jeu_view.classList.contains('active')) {
 				parametre_jeu_view.classList.remove('active');
 				view5.classList.add('active');
-				// btn_back_home.classList.remove('active');
 				view1.classList.add('active');
 				container_menu.classList.remove('active');
 				container_menu.scrollTop = 0;
@@ -1500,7 +1452,6 @@ export default class Game_menu extends AbstractView {
 			if (parametre_profile_view.classList.contains('active')) {
 				parametre_profile_view.classList.remove('active');
 				view5.classList.add('active');
-				// btn_back_home.classList.remove('active');
 				view1.classList.add('active');
 				container_menu.classList.remove('active');
 				container_menu.scrollTop = 0;
@@ -1514,32 +1465,10 @@ export default class Game_menu extends AbstractView {
 
 		const valid_mdp = document.getElementById('valid_mdp');
 		const modif_profil = document.getElementById('modif_profil');
-		// const modif_profil_photo = document.getElementById('profile_photo_circle');
 		const profile_param_unlocked_id = document.getElementById('profile_param_unlocked_id');
 		const valid_profile_info = document.getElementById('valid_profile_info');
 		const fa_selector = document.getElementById('fa_selector');
 		const active_fa = document.getElementById('active_fa') as HTMLInputElement;;
-
-
-		// valid_mdp.addEventListener('click', () => {
-		// 	console.log('Valide mdp clicked');
-		// 	modif_profil.classList.add('hidden');
-		// 	btn_back_home.classList.remove('active');
-		// 	profile_param_unlocked_id.classList.add('active');
-		// });
-
-		// modif_profil_photo.addEventListener('click', () => {
-		// 	console.log('modif profile photo clicked');
-		// 	document.getElementById("profile_photo_input").click();
-		// 	changeProfilePicture();
-		// });
-
-		// valid_profile_info.addEventListener('click', () => {
-		// 	console.log('Valide profile info clicked');
-		// 	profile_param_unlocked_id.classList.remove('active');
-		// 	modif_profil.classList.remove('hidden');
-		// 	btn_back_home.classList.add('active');
-		// });
 
 		const code_validation_id = document.getElementById('code_validation_id');
 		const cancel_fa = document.getElementById('cancel_fa');
@@ -1552,7 +1481,6 @@ export default class Game_menu extends AbstractView {
 			}
 			else {
 				console.log('FA is inactive');
-				// fa_selector.classList.remove('active');
 				fa_selector.classList.add('hidden');
 
 			}
@@ -1593,36 +1521,6 @@ export default class Game_menu extends AbstractView {
 			container_menu.classList.remove('active');
 			container_menu.scrollTop = 0; // Reset scroll position to the top
 		});
-
-		// const valider_opponent_btn_platformer = document.getElementById('valider_opponent_btn_platformer');
-
-		// valider_opponent_btn_platformer.addEventListener('click', () => {
-		// 	handleViewTransitions("vue2", "platformer");
-		// });
-		// /***********************************************************************/
-		// /*************************Option deconnected****************************/
-		// /***********************************************************************/
-
-		// const option_deconnect = document.getElementById('option_deconnect');
-		// const option_btn = document.getElementById('option_btn');
-		// const option_deconnected_btn = document.getElementById('option_deconnected_btn');
-
-		// option_btn.addEventListener('click', () => {
-		// 	console.log('Option deconnect clicked');
-		// 	option_deconnect.classList.add('active');	
-		// 	view5.classList.remove('active');
-		// 	btn_back_home.classList.remove('active');
-		// 	view1.classList.remove('active');
-		// });
-
-		// option_deconnected_btn.addEventListener('click', () => {
-		// 	console.log('Option deconnect back clicked');
-		// 	option_deconnect.classList.remove('active');
-		// 	view5.classList.add('active');
-		// 	btn_back_home.classList.add('active');
-		// 	view1.classList.add('active');
-		// });
-
 
 		/***********************************************************************/
 		/*************************navbar****************************************/
@@ -1687,13 +1585,11 @@ export default class Game_menu extends AbstractView {
 		});
 
 		document.getElementById("multiplayer_btn").addEventListener("click", () => {
-			// console.log("Multiplayer 2v2 game started");
 			startMultiGame();
 			handleViewTransitions("vue3", "vue2");
 		});
 
 		document.getElementById("tournament_view").addEventListener("click", () => {
-			// console.log("Tournament view started");
 			handleViewTransitions("tournament");
 		});
 

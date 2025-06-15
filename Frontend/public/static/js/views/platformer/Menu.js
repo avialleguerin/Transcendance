@@ -188,11 +188,11 @@ export default class Menu {
 			this.disableControls();
 			console.log("History selected");
 			console.log("this.Game_History = ", this.Game_History);
-			if (typeof this.Game_History.Game_History.saveGameIfNeeded === "function")
-			{
-				console.log("this.Game_History.Game_History.saveGameIfNeeded()");
-				this.Game_History.Game_History.saveGameIfNeeded();
-			}
+			// if (typeof this.Game_History.Game_History.saveGameIfNeeded === "function")
+			// {
+			// 	console.log("this.Game_History.Game_History.saveGameIfNeeded()");
+			// 	this.Game_History.Game_History.saveGameIfNeeded();
+			// }
 			gameState.previous = gameState.current;
 			gameState.current = GameState.GameHistory;
 		}
