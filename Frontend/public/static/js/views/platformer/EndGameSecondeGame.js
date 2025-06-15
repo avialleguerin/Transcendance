@@ -122,12 +122,11 @@ export default class EndGameSecondeGame {
 				localStorage.setItem("score_player2", this.Score);
 			}
 			// this.MapMenu.nb_game_started++;
-			if (!localStorage.getItem('platformer_game_created')) {
+			if (!localStorage.getItem('platformer_game_created'))
 				window.create_platformer();
 			// this.historyGame.saveGameIfNeeded(this.MapMenu.nb_game_started, this.winner, this.WinnerScore, this.gameCanvas.timer);
-			if (this.player && typeof this.player.reset_Game === "function") {
+			if (this.player && typeof this.player.reset_Game === "function")
 				this.player.reset_Game();
-			}
 			if (this.gameCanvas)
 			{
 				this.gameCanvas.nb_coin = 0;
@@ -288,9 +287,8 @@ export default class EndGameSecondeGame {
 			}
 
 			c.fillText(option, pos.x, pos.y);
-			if (index === this.hoveredOption) {
+			if (index === this.hoveredOption)
 				c.strokeStyle = "#88CCFF";
-			}
 			c.shadowColor = "transparent";
 			c.shadowBlur = 0;
 		});
