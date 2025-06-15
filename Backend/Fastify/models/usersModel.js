@@ -1,4 +1,3 @@
-//CRUD Model actually and MVC Structure
 import db from "../utils/db.js";
 import { getCurrentCGUVersion } from "../utils/cgu.js";
 
@@ -23,8 +22,6 @@ export const CREATE_USERS_TABLE = `
 `;
 
 const usersModel = {
-	//** CRUD */
-	
 	//* Create
 	createUser: (username, password) => { const currentCGUVersion = "1.0"; db.prepare("INSERT INTO users (username, password, cgu_version) VALUES (?, ?, ?)").run(username, password, currentCGUVersion); return { username }; },
 

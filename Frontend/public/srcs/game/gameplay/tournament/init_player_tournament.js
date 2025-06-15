@@ -37,7 +37,7 @@ export function init_players_tournament(scene, player_1_tournament, player_2_tou
 	}, scene);
 	player_1_tournament.position = new BABYLON.Vector3(-7, 301, -120);
 	player_1_tournament.checkPaddleCollision = true;
-	player_1_tournament.metadata = { isPlayer_paddle: true };  // Tag ajouté pour identifier ce mesh comme joueur
+	player_1_tournament.metadata = { isPlayer_paddle: true };  
 	player_1_tournament.visibility = 0;
 	
 	player_2_tournament = new BABYLON.MeshBuilder.CreateBox("player_2_tournament", {
@@ -47,7 +47,7 @@ export function init_players_tournament(scene, player_1_tournament, player_2_tou
 	}, scene);
 	player_2_tournament.position = new BABYLON.Vector3(-7, 301, -24);
 	player_2_tournament.checkPaddleCollision = true;
-	player_2_tournament.metadata = { isPlayer_paddle: true };  // Tag ajouté pour identifier ce mesh comme joueur
+	player_2_tournament.metadata = { isPlayer_paddle: true };  
 	player_2_tournament.visibility = 0;
 
 	BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/player/", "PlayerIdleAnnimation.glb", scene, function (newMeshes) {
@@ -56,14 +56,14 @@ export function init_players_tournament(scene, player_1_tournament, player_2_tou
 			rootMesh.position = player_1_tournament.position.clone();
 			rootMesh.scaling = new BABYLON.Vector3(6, 6, 6);
 			rootMesh.rotationQuaternion = BABYLON.Quaternion.FromEulerAngles(0, Math.PI, 0);
-			rootMesh.metadata = { isPlayer: true };  // Tag ajouté pour identifier ce mesh comme joueur
+			rootMesh.metadata = { isPlayer: true };  
 		}
 	
 		newMeshes.forEach(mesh => {
 			if (mesh instanceof BABYLON.Mesh) {
 				mesh.rotationQuaternion = null;
 				mesh.rotation = new BABYLON.Vector3(Math.PI, 0, 0);
-				mesh.metadata = { isPlayer: true };  // Tag ajouté pour identifier ce mesh comme joueur
+				mesh.metadata = { isPlayer: true };  
 			}
 		});
 	
@@ -101,7 +101,7 @@ export function init_players_tournament(scene, player_1_tournament, player_2_tou
 		playerRepere.position = new BABYLON.Vector3(-7, 301, -24.5);
 		playerRepere.material = new BABYLON.StandardMaterial("playerRepereMat", scene);
 		playerRepere.material.emissiveColor = new BABYLON.Color3.Red();
-		playerRepere.metadata = { isPlayerRepere: true };  // Tag ajouté pour le repère du joueur 2
+		playerRepere.metadata = { isPlayerRepere: true }; 
 	
 		// Synchronisation continue de la position
 		scene.registerBeforeRender(() => {

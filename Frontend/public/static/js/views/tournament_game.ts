@@ -21,30 +21,13 @@ export default class extends AbstractView {
 		};
 
 		this.boundKeyPressHandler = this.handleKeyPress.bind(this);
-    
 		document.addEventListener("keydown", this.boundKeyPressHandler);
 
-		if (window.location.pathname === "/tournament_game") {
+		if (window.location.pathname === "/tournament_game")
 			this.gameLoop = setInterval(() => { this.checkGameOver_tournament(); 1000 });
-		}
-		// const accessToken: string | null = sessionStorage.getItem('accessToken');
-		// if (!accessToken || accessToken === undefined) {
-		// 	history.pushState({}, '', '/');
-		// 	import('./Home.js').then((module: any) => {
-		// 		const Home = module.default;
-		// 		const homeInstance = new Home();
-		// 		homeInstance.getHtml().then((html: string) => {
-		// 			const appElement = document.getElementById('app');
-		// 			if (appElement) {
-		// 				appElement.innerHTML = html;
-		// 				if (homeInstance.createAccount && typeof homeInstance.createAccount === 'function') {
-		// 					homeInstance.createAccount();
-		// 				}
-		// 			}
-		// 		});
-		// 	});
-		// }
-		homeView();
+		const accessToken = sessionStorage.getItem("accessToken");
+		if (!accessToken || accessToken === undefined)
+			homeView();
 	}
 
 	async getHtml() {

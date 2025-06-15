@@ -26,7 +26,7 @@
 
 //     error(message: string, context?: any): void {
 //         const msg = context ? `${message} ${JSON.stringify(context)}` : message;
-//         console.error(`❌ ${msg}`);
+//         console.error(`${msg}`);
 //     }
 // }
 

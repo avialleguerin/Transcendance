@@ -86,7 +86,6 @@
 							</tr>
 						</thead>
 						<tbody class="bg-white " id="users-table">
-							 <!-- Data will be injected here by JavaScript -->
 						</tbody>
 					</table>
 				</div>
@@ -456,7 +455,6 @@
 							</tr>
 						</thead>
 						<tbody id="deleted-users-table">
-							<!-- Data will be injected here by JavaScript -->
 						</tbody>
 					</table>
 				</div>
@@ -464,31 +462,7 @@
 		</div>
 
 	</main>
-
-	<!-- <script type="module" src="../dist/api/utils.js"></script> -->
 	<script type="module" src="./api/admin.js"></script>
-	<!-- Ajoutez ce script juste avant la fermeture de </body> -->
-	<!-- <script>
-		// Affiche des informations de débogage sur l'emplacement
-		console.log("==== INFORMATIONS DE LOCALISATION ====");
-		console.log("Location (URL complète):", window.location.href);
-		console.log("Pathname:", window.location.pathname);
-		console.log("Origin:", window.location.origin);
-		console.log("Requête pour admin.js:", new URL("/api/admin.js", window.location.href).href);
-		
-		// Essaie de charger un script test pour vérifier les chemins
-		fetch("../dist/api/admin.js")
-			.then(response => {
-				console.log("Statut de la requête admin.js:", response.status, response.ok ? "OK" : "ÉCHEC");
-				return response.text();
-			})
-			.then(text => console.log("Longueur du fichier admin.js:", text.length, "caractères. Les premiers caractères sont:", text.slice(0, 1000)))
-			.catch(error => console.error("Erreur de chargement:", error));
-		
-		// Affiche la structure du document
-		console.log("Document base URI:", document.baseURI);
-		console.log("Document referrer:", document.referrer);
-	</script> -->
 	<script>
 		function showTab(tabId) {
 			const tabNames = {
@@ -500,7 +474,6 @@
 				'deleted-tab': 'Deleted Users'
 			};
 			
-			// Stock the active tab in localStorage
 			localStorage.setItem('transcendance_admin_active_tab', tabId);
 			
 			document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
@@ -518,7 +491,6 @@
 		}
 	
 		window.onload = () => {
-			// Get the last active tab or use 'users-tab' by default
 			const lastActiveTab = localStorage.getItem('transcendance_admin_active_tab') || 'users-tab';
 			showTab(lastActiveTab);
 		}

@@ -20,93 +20,93 @@ export default class Home extends AbstractView {
 				</div>
 
 				<!-- Terms of Use Modal -->
-                <div id="cgu-modal" class="cgu-modal">
-                    <div class="cgu-content">
-                        <h1>Terms of Use</h1>
-                        <div class="cgu-text">
-                            <h2>1. Introduction</h2>
-                            <p>Welcome to Transcendance. By using our application, you accept these terms of use.</p>
-                            <p>Data controller: Transcendance Project Team - 42 School<br>
-                            Contact: ozasahin@student.42lyon.fr<br>
-                            Data Protection Officer (DPO): Mr. SAHIN O.</p>
-                            
-                            <h2>2. Service Description</h2>
-                            <p>Transcendance is an online gaming platform allowing users to play Pong and other games, communicate and interact with other users.</p>
-                            
-                            <h2>3. Registration and Account</h2>
-                            <p>To use our service, you must create an account with accurate and up-to-date information. We only collect data necessary for providing our services.</p>
-                            
-                            <h2>4. User Behavior</h2>
-                            <p>Users agree to respect other members and not publish offensive or illegal content.</p>
-                            
-                            <h2>5. Intellectual Property</h2>
-                            <p>All intellectual property rights related to Transcendance belong to their respective owners.</p>
-                            
-                            <h2>6. Data Protection</h2>
-                            <p>We are committed to protecting your personal data in accordance with the General Data Protection Regulation (GDPR).</p>
-                            <h3>6.1 Data collected</h3>
-                            <p>We collect the following categories of data:
-                            <ul>
-                                <li>Identification data (internal ID, username, avatar)</li>
-                                <li>Authentication data (via Google Sign-In)</li>
-                                <li>Profile data (status, preferences)</li>
-                                <li>Usage data (game history, scores, rankings)</li>
-                            </ul>
-                            </p>
-                            <h3>6.2 Processing purposes</h3>
-                            <p>Your data is processed for the following purposes:
-                            <ul>
-                                <li>Provision of the Transcendance online game service</li>
-                                <li>User account administration</li>
-                                <li>Social features (friends)</li>
-                                <li>Recording game statistics and rankings</li>
-                            </ul>
-                            </p>
-                            <h3>6.3 Retention period</h3>
-                            <p>Your data is kept for the duration of the project and up to 1 month after the final evaluation.</p>
-                            <h3>6.4 Data recipients</h3>
-                            <p>Your data may be accessible to:
-                            <ul>
-                                <li>Project team members</li>
-                                <li>Teaching staff and evaluators at École 42</li>
-                                <li>Other users (only for public profile data)</li>
-                            </ul>
-                            </p>
-                            <h3>6.5 Your rights</h3>
-                            <p>In accordance with GDPR, you have the following rights:
-                            <ul>
-                                <li>Right of access to your data</li>
-                                <li>Right to rectification</li>
-                                <li>Right to erasure ("right to be forgotten")</li>
-                                <li>Right to restriction of processing</li>
-                                <li>Right to data portability</li>
-                                <li>Right to object</li>
-                            </ul>
-                            To exercise these rights, contact us at: ozasahin@student.42lyon.fr
-                            </p>
-                            <h3>6.6 Security measures</h3>
-                            <p>We implement the following technical and organizational measures:
-                            <ul>
-                                <li>Encryption of passwords and sensitive data</li>
-                                <li>Secure authentication (Google Sign-In)</li>
-                                <li>Two-factor authentication (2FA)</li>
-                                <li>Secure sessions with expiration (JWT)</li>
-                                <li>Protection against common web vulnerabilities</li>
-                            </ul>
-                            </p>
-                            
-                            <h2>7. Terms Modification</h2>
-                            <p>We reserve the right to modify these terms at any time. Users will be notified of important changes.</p>
-                            
-                            <h2>8. Duration and Termination</h2>
-                            <p>Access to our service may be suspended or terminated in case of non-compliance with these terms.</p>
-                            
-                            <h2>9. Data Transfers</h2>
-                            <p>No personal data is transferred outside the European Union. All data is hosted on servers located in the EU.</p>
-                        </div>
-                        <button id="cgu-back-button" class="cgu-back-button">Back</button>
-                    </div>
-                </div>
+				<div id="cgu-modal" class="cgu-modal">
+					<div class="cgu-content">
+						<h1>Terms of Use</h1>
+						<div class="cgu-text">
+							<h2>1. Introduction</h2>
+							<p>Welcome to Transcendance. By using our application, you accept these terms of use.</p>
+							<p>Data controller: Transcendance Project Team - 42 School<br>
+							Contact: ozasahin@student.42lyon.fr<br>
+							Data Protection Officer (DPO): Mr. SAHIN O.</p>
+							
+							<h2>2. Service Description</h2>
+							<p>Transcendance is an online gaming platform allowing users to play Pong and other games, communicate and interact with other users.</p>
+							
+							<h2>3. Registration and Account</h2>
+							<p>To use our service, you must create an account with accurate and up-to-date information. We only collect data necessary for providing our services.</p>
+							
+							<h2>4. User Behavior</h2>
+							<p>Users agree to respect other members and not publish offensive or illegal content.</p>
+							
+							<h2>5. Intellectual Property</h2>
+							<p>All intellectual property rights related to Transcendance belong to their respective owners.</p>
+							
+							<h2>6. Data Protection</h2>
+							<p>We are committed to protecting your personal data in accordance with the General Data Protection Regulation (GDPR).</p>
+							<h3>6.1 Data collected</h3>
+							<p>We collect the following categories of data:
+							<ul>
+								<li>Identification data (internal ID, username, avatar)</li>
+								<li>Authentication data (via Google Sign-In)</li>
+								<li>Profile data (status, preferences)</li>
+								<li>Usage data (game history, scores, rankings)</li>
+							</ul>
+							</p>
+							<h3>6.2 Processing purposes</h3>
+							<p>Your data is processed for the following purposes:
+							<ul>
+								<li>Provision of the Transcendance online game service</li>
+								<li>User account administration</li>
+								<li>Social features (friends)</li>
+								<li>Recording game statistics and rankings</li>
+							</ul>
+							</p>
+							<h3>6.3 Retention period</h3>
+							<p>Your data is kept for the duration of the project and up to 1 month after the final evaluation.</p>
+							<h3>6.4 Data recipients</h3>
+							<p>Your data may be accessible to:
+							<ul>
+								<li>Project team members</li>
+								<li>Teaching staff and evaluators at École 42</li>
+								<li>Other users (only for public profile data)</li>
+							</ul>
+							</p>
+							<h3>6.5 Your rights</h3>
+							<p>In accordance with GDPR, you have the following rights:
+							<ul>
+								<li>Right of access to your data</li>
+								<li>Right to rectification</li>
+								<li>Right to erasure ("right to be forgotten")</li>
+								<li>Right to restriction of processing</li>
+								<li>Right to data portability</li>
+								<li>Right to object</li>
+							</ul>
+							To exercise these rights, contact us at: ozasahin@student.42lyon.fr
+							</p>
+							<h3>6.6 Security measures</h3>
+							<p>We implement the following technical and organizational measures:
+							<ul>
+								<li>Encryption of passwords and sensitive data</li>
+								<li>Secure authentication (Google Sign-In)</li>
+								<li>Two-factor authentication (2FA)</li>
+								<li>Secure sessions with expiration (JWT)</li>
+								<li>Protection against common web vulnerabilities</li>
+							</ul>
+							</p>
+							
+							<h2>7. Terms Modification</h2>
+							<p>We reserve the right to modify these terms at any time. Users will be notified of important changes.</p>
+							
+							<h2>8. Duration and Termination</h2>
+							<p>Access to our service may be suspended or terminated in case of non-compliance with these terms.</p>
+							
+							<h2>9. Data Transfers</h2>
+							<p>No personal data is transferred outside the European Union. All data is hosted on servers located in the EU.</p>
+						</div>
+						<button id="cgu-back-button" class="cgu-back-button">Back</button>
+					</div>
+				</div>
 
 				<!-- Politique de Confidentialité Modal -->
 				<div id="privacy-policy-modal" class="cgu-modal">
@@ -246,12 +246,12 @@ export default class Home extends AbstractView {
 		showCguLink?.addEventListener("click", (e) => { e.preventDefault(); cguModal?.classList.add("active"); });
 		cguBackButton?.addEventListener("click", () => { cguModal?.classList.remove("active"); });
 
-        const showPrivacyPolicyLink = document.getElementById("show-privacy-policy");
-        const privacyPolicyModal = document.getElementById("privacy-policy-modal");
-        const privacyPolicyBackButton = document.getElementById("privacy-policy-back-button");
+		const showPrivacyPolicyLink = document.getElementById("show-privacy-policy");
+		const privacyPolicyModal = document.getElementById("privacy-policy-modal");
+		const privacyPolicyBackButton = document.getElementById("privacy-policy-back-button");
 
-        showPrivacyPolicyLink?.addEventListener("click", (e) => { e.preventDefault(); privacyPolicyModal?.classList.add("active"); });
-        privacyPolicyBackButton?.addEventListener("click", () => { privacyPolicyModal?.classList.remove("active"); });
+		showPrivacyPolicyLink?.addEventListener("click", (e) => { e.preventDefault(); privacyPolicyModal?.classList.add("active"); });
+		privacyPolicyBackButton?.addEventListener("click", () => { privacyPolicyModal?.classList.remove("active"); });
 
 		//*==== Google Sign-In =====*/
 		const googleSignInBtn = document.getElementById("google-signin-btn");

@@ -234,7 +234,7 @@ export async function register(event: Event) {
  */
 export async function refreshInfos() { //REVIEW - maybe put in utils
 	try {
-		const data = await fetchAPI('/request/user/refresh-infos', 'POST', {}, true, false);
+		const data = await fetchAPI('/request/user/refresh-infos', 'POST', {}, false, false);
 
 		if (!data.accessToken || data.deleted_account) {
 			console.warn(`Session expired or account deleted`);

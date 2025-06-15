@@ -151,9 +151,6 @@ export async function fetch_user_friendships(): Promise<void> {
 				});
 			});
 		}
-
-
-	
 		document.getElementById('friends-pending').innerHTML =
 			pending.map(friend => {
 				const isReceivedRequest = user.userId === friend.friendId;

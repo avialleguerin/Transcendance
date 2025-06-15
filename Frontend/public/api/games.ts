@@ -1,5 +1,11 @@
 import { notif } from './utils.js';
 
+if (typeof window !== 'undefined') {
+	window.create_1v1_game = create_1v1_game;
+	window.create_2v2_game = create_2v2_game;
+}
+
+
 export async function create_1v1_game(event: Event, player1: string, player2: string): Promise<void> {
 	event.preventDefault();
 	const score_left = localStorage.getItem("score_left");
