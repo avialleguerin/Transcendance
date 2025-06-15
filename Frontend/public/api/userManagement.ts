@@ -1,4 +1,5 @@
-import { notif, fetchAPI, $, $input, $form, updateUI } from './utils.js';
+import { notif, fetchAPI, $, $input, $form, updateUI, gameMenuView, homeView } from './utils.js';
+import { disconnectWebSocket } from './websocket.js';
 
 if (typeof window !== 'undefined') {
 	window.accessProfileInfo = accessProfileInfo;
@@ -99,6 +100,7 @@ export async function anonymize_user(): Promise<void> {
 		try {
 			const data = await fetchAPI('/request/user/anonymize-account', 'PUT');
 			fetchProfile(); //REVIEW - they are this here: fetchProfilePicture();
+			fetch
 		} catch (err) { console.error(`anonymize_user: ${err}`); }
 	}
 }
@@ -106,27 +108,17 @@ export async function anonymize_user(): Promise<void> {
 export async function delete_account(): Promise<void> {
 	if (confirm('Do you really want to delete your account ?')) {
 		try {
-			const data = await fetchAPI('/request/user/delete-account', 'DELETE');
+			const data = await fetchAPI('/request/user/delete-account', 'DELETE')
+
+			console.log("delete_account: data :", data)
 
 			if (data.success) {
-				sessionStorage.removeItem("accessToken");
-				history.pushState({}, '', '/'); //todo: simplify this
-				import('../static/js/views/Home.js').then((module) => {
-					console.log("Home module loaded");
-					const Home = module.default;
-					const homeInstance = new Home();
-					homeInstance.getHtml().then((html) => {
-						const appElement = document.getElementById('app');
-						if (appElement) {
-							appElement.innerHTML = html;
-							if (homeInstance.createAccount && typeof homeInstance.createAccount === 'function') {
-								homeInstance.createAccount();
-							}
-						}
-					});
-				});
+				disconnectWebSocket()
+				sessionStorage.clear()
+				localStorage.clear()
+				homeView() //todo: why there is no transition here ?
 			}
-		} catch (err) { console.error(`delete_account: ${err}`); }
+		} catch (err) { console.error(`delete_account: ${err}`) }
 	}
 }
 
@@ -136,7 +128,7 @@ export async function fetchProfile(): Promise<void> {
 
 		if (data.user) {
 			const user = data.user;
-			$("profile_photo_circle").innerHTML = `<img src="./${data.profile_picture}" alt="${user.username} profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+			document.getElementById("profile_photo_circle").innerHTML = `<img src="./${data.profile_picture}" alt="${user.username} profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
 			const username = $input("change_username");
 			username.placeholder = user.username;
 			const doubleAuth = $input("active_fa");

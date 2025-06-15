@@ -41,7 +41,7 @@ export async function fetchAPI(url: string, method: string, body: any = null, sh
 			method,
 			headers: {
 				"Authorization": `Bearer ${accessToken}`,
-				"Content-Type": body && !formData ? "application/json" : undefined
+				...(body && !formData ? { "Content-Type": "application/json" } : {})
 			},
 			credentials: 'include'
 		};

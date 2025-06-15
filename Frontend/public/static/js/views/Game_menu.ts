@@ -394,7 +394,7 @@ export default class Game_menu extends AbstractView {
 								<button id="deconnect_btn" class="btn_deconnect_btn" onclick="logout()">Deconnexion</button>
 							</div>
 							<div class="btn_delete">
-								<button id="delete_btn" class="btn_delete_btn" onclick="delete_account()">Delete account</button>
+								<button id="delete_btn" class="btn_delete_btn" onclick="delete_account()">Delete account</button> //STUB
 							</div>
 							<div class="export_btn">
 								<button id="export_btn" class="btn_export_btn" onclick="export_data()">Export data</button>
