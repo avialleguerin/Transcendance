@@ -243,7 +243,7 @@ export async function refreshInfos() { //REVIEW - maybe put in utils
 			homeView();
 		} else if (sessionStorage.getItem("accessToken") && sessionStorage.getItem("accessToken") !== "undefined") {
 			console.debug(`Access token found, refreshing user infos`);
-			localStorage.clear();
+			// localStorage.clear();
 			setLocalStorage({"Player1": data.user.username, "profile_picture": data.user.profile_picture});
 			connectWebSocket();
 			gameMenuView();

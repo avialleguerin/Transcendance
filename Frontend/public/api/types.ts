@@ -190,6 +190,11 @@ declare global {
 		notif: (message: string, success: boolean) => void;
 		handleViewTransitions: (viewName: string, previousView?: string) => void;
 
+		//* index.ts - Cookie popup management
+		showPersistentPopup: () => void;
+		hidePersistentPopup: () => void;
+		getCookieConsent: () => string;
+
 		//* admin.ts
 		add_user_modal: () => Promise<void>;
 		add_game_modal: () => Promise<void>;
