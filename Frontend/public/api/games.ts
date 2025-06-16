@@ -4,6 +4,7 @@ if (typeof window !== 'undefined') {
 	window.create_1v1_game = create_1v1_game;
 	window.create_2v2_game = create_2v2_game;
 	window.create_platformer = create_platformer;
+	window.get_platformers = get_platformers;
 }
 
 
@@ -61,3 +62,14 @@ export async function create_platformer(): Promise<void> {
 	localStorage.removeItem("score_player1");
 	localStorage.removeItem("score_player2");
 };
+
+export async function get_platformers(): Promise<any>
+{
+	const data = await fetchAPI('/request/platformer/get-user-platformers', 'GET', null, true);
+	console.log("Platformers:", data.platformers);
+	if (!data.success) {
+		notif(data.error, false);
+		return [];
+	}
+	return data.platformers;
+}

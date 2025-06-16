@@ -214,5 +214,6 @@ declare global {
 		create_game: (event: Event) => Promise<void>;
 		create_platformer: (event: Event) => Promise<void>;
 		create_friendship: (event: Event) => Promise<void>;
+		get_platformers: () => Promise<any>;
 	}
 }``

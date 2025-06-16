@@ -2271,7 +2271,6 @@ input[type="file"] {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	cursor: pointer;
 	position: relative;
 	background-size: cover;
 	background-position: center;

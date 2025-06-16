@@ -5,170 +5,123 @@ import { getUserFromToken } from './utils.js'
 
 export async function getUserGames(request, reply) {
 	let username = null
-	if (request.body)
-		username = request.body.username
+	
+	if (request.body) username = request.body.username
+
 	try {
 		const infos = await getUserFromToken(request)
-		if (!infos) {
-			fastify.log.warn('Games access denied: Unauthorized request')
-			return reply.code(401).send({ error: "Unauthorized" })
-		}
+		if (!infos) return reply.code(401).send({ error: "Unauthorized" })
+
 		let user = infos.user
-		if (!user) {
-			fastify.log.warn('Games access denied: User not found in token')
-			return reply.code(401).send({ error: "User not found" })
-		}
-		if (!infos.accessToken) {
-			fastify.log.warn('Games access denied: Missing access token')
-			return reply.code(401).send({ error: "Unauthorized" })
-		}
+		if (!user) return reply.code(401).send({ error: "User not found" })
+		if (!infos.accessToken) return reply.code(401).send({ error: "Unauthorized" })
+		
 		if (username) {
+			if (typeof username !== 'string' || username.trim() === '') return reply.code(400).send({ error: "Invalid username", accessToken: infos.accessToken })
+			
 			user = usersModel.getUserByUsername(username)
-			fastify.log.info(`Retrieving games for specific user: ${username}`)
+			if (!user || user.anonymized_at) return reply.code(404).send({ error: "User not found", accessToken: infos.accessToken })
 		}
+		
 		const games = gamesModel.getUserGames(user.userId)
-		fastify.log.info(`Games retrieved for user: ${user.username} (${games.length} found)`)
 		return reply.send({ success: true, user: user, games: games, accessToken: infos.accessToken })
 	} catch (err) {
-		fastify.log.error(`Error retrieving user games: ${err.message}`)
-		return reply.code(500).send({ error: err.message })
+		return reply.code(500).send({ error: "Internal server error", accessToken: infos?.accessToken })
 	}
 }
 
 export async function create1v1Game(request, reply) {
 	const { player1, player2, score_left, score_right } = request.body
+	let infos;
+
+	if (!player1 || !player2 || score_left === undefined || score_right === undefined) return reply.code(400).send({ success: false, error: "Missing parameters" })
+	if (typeof player1 !== 'string' || typeof player2 !== 'string') return reply.code(400).send({ success: false, error: "Player names must be strings" })
+	if (player1.trim() === '' || player2.trim() === '') return reply.code(400).send({ success: false, error: "Player names cannot be empty" })
+	if (player1 === player2) return reply.code(400).send({ success: false, error: "Cannot create a game with the same player" })
+
+	const scoreLeft = parseInt(score_left, 10)
+	const scoreRight = parseInt(score_right, 10)
+	if (isNaN(scoreLeft) || isNaN(scoreRight) || scoreLeft < 0 || scoreRight < 0) return reply.code(400).send({ success: false, error: "Scores must be valid positive numbers" })
 
 	try {
-		if (!player1 || !player2 || score_left === undefined || score_right === undefined) {
-			fastify.log.warn('1v1 game creation failed: Missing parameters')
-			return reply.code(400).send({ success: false, error: "Missing parameters" })
-		}
-
-		const infos = await getUserFromToken(request)
-		if (!infos) {
-			fastify.log.warn('1v1 game creation denied: Unauthorized request')
-			return reply.code(401).send({ error: "Unauthorized" })
-		}
-		const user = infos.user
-		if (!user) {
-			fastify.log.warn('1v1 game creation failed: User not found in token')
-			return reply.code(401).send({ error: "User not found" })
-		}
-		if (!infos.accessToken) {
-			fastify.log.warn('1v1 game creation denied: Missing access token')
-			return reply.code(401).send({ error: "Unauthorized" })
-		}
+		infos = await getUserFromToken(request)
+		if (!infos) return reply.code(401).send({ error: "Unauthorized" })
+		if (!infos.user) return reply.code(401).send({ error: "User not found" })
+		if (!infos.accessToken) return reply.code(401).send({ error: "Unauthorized" })
 
 		const player1User = usersModel.getUserByUsername(player1)
 		const player2User = usersModel.getUserByUsername(player2)
 		
-		if (!player1User) {
-			fastify.log.warn(`1v1 game creation failed: Player1 '${player1}' not found`)
-			return reply.code(404).send({ success: false, error: `Player '${player1}' not found`, accessToken: infos.accessToken })
-		}
-		if (!player2User) {
-			fastify.log.warn(`1v1 game creation failed: Player2 '${player2}' not found`)
-			return reply.code(404).send({ success: false, error: `Player '${player2}' not found`, accessToken: infos.accessToken })
-		}
+		if (!player1User || player1User.anonymized_at) return reply.code(404).send({ success: false, error: `Player '${player1}' not found`, accessToken: infos.accessToken })
+		if (!player2User || player2User.anonymized_at) return reply.code(404).send({ success: false, error: `Player '${player2}' not found`, accessToken: infos.accessToken })
 
-		fastify.log.info(`Creating 1v1 game: ${player1} (${score_left}) vs ${player2} (${score_right})`)
+		gamesModel.create1v1Game(player1User.userId, player2User.userId, scoreLeft, scoreRight)
 		
-		gamesModel.create1v1Game(player1User.userId, player2User.userId, score_left, score_right)
-		
-		if (score_left < score_right) {
+		if (scoreLeft < scoreRight) {
 			usersModel.updateGamesLost(player1User.userId)
 			usersModel.updateGamesWon(player2User.userId)
-			fastify.log.info(`1v1 game result: ${player2} wins against ${player1}`)
 		} else {
 			usersModel.updateGamesWon(player1User.userId)
 			usersModel.updateGamesLost(player2User.userId)
-			fastify.log.info(`1v1 game result: ${player1} wins against ${player2}`)
 		}
 
-		fastify.log.info(`1v1 game created successfully: ${player1} vs ${player2}`)
-		return reply.code(201).send({ 
-			success: true,
-			message: "Game finished successfully",
-			accessToken: infos.accessToken
-		})
+		return reply.code(201).send({ success: true, message: "Game finished successfully", accessToken: infos.accessToken })
 	} catch (err) {
-		fastify.log.error(`Error creating 1v1 game: ${err.message}`)
-		return reply.code(500).send({ error: err.message })
+		return reply.code(500).send({ error: "Internal server error", accessToken: infos?.accessToken })
 	}
 }
 
 export async function create2v2Game(request, reply) {
 	const { player1, player2, player3, player4, score_left, score_right } = request.body
+	let infos;
+
+	if (!player1 || !player2 || !player3 || !player4 || score_left === undefined || score_right === undefined)
+		return reply.code(400).send({ success: false, error: "Missing parameters" })
+	if (typeof player1 !== 'string' || typeof player2 !== 'string' || typeof player3 !== 'string' || typeof player4 !== 'string')
+		return reply.code(400).send({ success: false, error: "Player names must be strings" })
+	if (player1.trim() === '' || player2.trim() === '' || player3.trim() === '' || player4.trim() === '')
+		return reply.code(400).send({ success: false, error: "Player names cannot be empty" })
+
+	const players = [player1, player2, player3, player4]
+	const uniquePlayers = new Set(players)
+	if (uniquePlayers.size !== players.length) return reply.code(400).send({ success: false, error: "Cannot create a game with duplicate players" })
+
+	const scoreLeft = parseInt(score_left, 10)
+	const scoreRight = parseInt(score_right, 10)
+	if (isNaN(scoreLeft) || isNaN(scoreRight) || scoreLeft < 0 || scoreRight < 0) return reply.code(400).send({ success: false, error: "Scores must be valid positive numbers" })
 
 	try {
-		if (!player1 || !player2 || !player3 || !player4 || score_left === undefined || score_right === undefined) {
-			fastify.log.warn('2v2 game creation failed: Missing parameters')
-			return reply.code(400).send({ success: false, error: "Missing parameters" })
-		}
-
-		const infos = await getUserFromToken(request)
-		if (!infos) {
-			fastify.log.warn('2v2 game creation denied: Unauthorized request')
-			return reply.code(401).send({ error: "Unauthorized" })
-		}
-		const user = infos.user
-		if (!user) {
-			fastify.log.warn('2v2 game creation failed: User not found in token')
-			return reply.code(401).send({ error: "User not found" })
-		}
-		if (!infos.accessToken) {
-			fastify.log.warn('2v2 game creation denied: Missing access token')
-			return reply.code(401).send({ error: "Unauthorized" })
-		}
+		infos = await getUserFromToken(request)
+		if (!infos) return reply.code(401).send({ error: "Unauthorized" })
+		if (!infos.user) return reply.code(401).send({ error: "User not found" })
+		if (!infos.accessToken) return reply.code(401).send({ error: "Unauthorized" })
 
 		const player1User = usersModel.getUserByUsername(player1)
 		const player2User = usersModel.getUserByUsername(player2)
 		const player3User = usersModel.getUserByUsername(player3)
 		const player4User = usersModel.getUserByUsername(player4)
 		
-		if (!player1User) {
-			fastify.log.warn(`2v2 game creation failed: Player1 '${player1}' not found`)
-			return reply.code(404).send({ success: false, error: `Player '${player1}' not found`, accessToken: infos.accessToken })
-		}
-		if (!player2User) {
-			fastify.log.warn(`2v2 game creation failed: Player2 '${player2}' not found`)
-			return reply.code(404).send({ success: false, error: `Player '${player2}' not found`, accessToken: infos.accessToken })
-		}
-		if (!player3User) {
-			fastify.log.warn(`2v2 game creation failed: Player3 '${player3}' not found`)
-			return reply.code(404).send({ success: false, error: `Player '${player3}' not found`, accessToken: infos.accessToken })
-		}
-		if (!player4User) {
-			fastify.log.warn(`2v2 game creation failed: Player4 '${player4}' not found`)
-			return reply.code(404).send({ success: false, error: `Player '${player4}' not found`, accessToken: infos.accessToken })
-		}
+		if (!player1User || player1User.anonymized_at) return reply.code(404).send({ success: false, error: `Player '${player1}' not found`, accessToken: infos.accessToken })
+		if (!player2User || player2User.anonymized_at) return reply.code(404).send({ success: false, error: `Player '${player2}' not found`, accessToken: infos.accessToken })
+		if (!player3User || player3User.anonymized_at) return reply.code(404).send({ success: false, error: `Player '${player3}' not found`, accessToken: infos.accessToken })
+		if (!player4User || player4User.anonymized_at) return reply.code(404).send({ success: false, error: `Player '${player4}' not found`, accessToken: infos.accessToken })
 
-		fastify.log.info(`Creating 2v2 game: ${player1} & ${player2} (${score_left}) vs ${player3} & ${player4} (${score_right})`)
-		
-		gamesModel.create2v2Game(player1User.userId, player2User.userId, player3User.userId, player4User.userId, score_left, score_right)
+		gamesModel.create2v2Game(player1User.userId, player2User.userId, player3User.userId, player4User.userId, scoreLeft, scoreRight)
 
-		if (score_left < score_right) {
+		if (scoreLeft < scoreRight) {
 			usersModel.updateGamesLost(player1User.userId)
 			usersModel.updateGamesLost(player2User.userId)
 			usersModel.updateGamesWon(player3User.userId)
 			usersModel.updateGamesWon(player4User.userId)
-			fastify.log.info(`2v2 game result: ${player3} & ${player4} win against ${player1} & ${player2}`)
 		} else {
 			usersModel.updateGamesWon(player1User.userId)
 			usersModel.updateGamesWon(player2User.userId)
 			usersModel.updateGamesLost(player3User.userId)
 			usersModel.updateGamesLost(player4User.userId)
-			fastify.log.info(`2v2 game result: ${player1} & ${player2} win against ${player3} & ${player4}`)
 		}
 
-		fastify.log.info(`2v2 game created successfully: ${player1} & ${player2} vs ${player3} & ${player4}`)
-		return reply.code(201).send({ 
-			success: true,
-			message: "Game finished successfully",
-			accessToken: infos.accessToken
-		})
+		return reply.code(201).send({ success: true, message: "Game finished successfully", accessToken: infos.accessToken })
 	} catch (err) {
-		fastify.log.error(`Error creating 2v2 game: ${err.message}`)
-		return reply.code(500).send({ error: err.message })
+		return reply.code(500).send({ error: "Internal server error", accessToken: infos?.accessToken })
 	}
 }

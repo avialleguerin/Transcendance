@@ -1,5 +1,6 @@
 import { c, canvas } from "./constants.js";
 import { gameState, GameState } from "./constants.js";
+import { get_platformers } from "../../../../api/games.js";
 
 export default class GameHistory {
 	constructor({ EndGame_SecondeGame, historyDB }) {
@@ -9,9 +10,9 @@ export default class GameHistory {
 		this.historyDB = historyDB;
 		this.lastGame = null;
 
-		this.gameHistory = this.historyDB.getHistory() || [];
-		if (EndGame_SecondeGame && EndGame_SecondeGame.nb_game > 0)
-			this.saveGameIfNeeded(EndGame_SecondeGame.nb_game, EndGame_SecondeGame.winner, EndGame_SecondeGame.score, EndGame_SecondeGame.time_endGame);
+		// Initialiser avec un tableau vide et charger les données de façon asynchrone
+		this.gameHistory = [];
+		this.loadGameHistory();
 
 		this.options = ["Retour"];
 		this.selectedOption = 0;
@@ -25,6 +26,18 @@ export default class GameHistory {
 			{ option: "Retour", x: 900, y: 530, width: 100, height: 40 }
 		];
 		console.log("GameHistory initialisé, nombre d'entrées:", this.gameHistory.length);
+	}
+
+	// Nouvelle méthode pour charger l'historique de façon asynchrone
+	async loadGameHistory() {
+		try {
+			const games = await get_platformers();
+			this.gameHistory = games || [];
+			console.log("GameHistory loaded, number of games:", this.gameHistory.length);
+		} catch (error) {
+			console.error("Error loading game history:", error);
+			this.gameHistory = [];
+		}
 	}
 
 	enableControls()
@@ -57,17 +70,17 @@ export default class GameHistory {
 		c.font = "20px 'Press Start 2P', Black Ops One";
 		c.textAlign = "left";
 		c.fillText("Game History :", 200, 200);
-
-		if (this.gameHistory.length > 0)
-		{
-			this.gameHistory.forEach((game, index) =>
-			{
+		
+		if (this.gameHistory.length > 0) {
+			this.gameHistory.forEach((game, index) => {
 				const yPosition = 240 + index * 40;
-				c.fillText(`${game.game}: Winner: ${game.winner}, Score: ${game.score}`, 400, yPosition);
+				const winner = game.score_player1 > game.score_player2 ? game.player1 : game.player2;
+				const winnerScore = game.score_player1 > game.score_player2 ? game.score_player1 : game.score_player2;
+				c.fillText(`Game ${index + 1} : ${game.player1} (${game.score_player1}) vs ${game.player2} (${game.score_player2}) - Winner : ${winner} (${winnerScore})`, 200, yPosition);
 			});
+		} else {
+			c.fillText("Loading game history...", 400, 240);
 		}
-		else
-			c.fillText("No game history available", 400, 240);
 
 		const optionPositions = [{ x: 900, y: 550 }];
 
