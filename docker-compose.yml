@@ -25,7 +25,7 @@ services:
     depends_on:
       - redis
       - vault
-    volumes: # TODO - Changer "app" -> "Fatsify" pour ques les nodes modules s'installe efficacement
+    volumes: # TODO - Changer "app" -> "Fatsify" for the node modules to be installed efficiently
       - ./Backend/Fastify:/app
       - /app/node_modules    # Preserve the modules installed in the container 
       - ./Data/vault_data:/app/vault/data
@@ -40,8 +40,8 @@ services:
     ports:
       - "8080:8080"
       - "8081:8081"
-      - "8443:8443"            # HTTPS
-      - "8143:8143"            # HTTPS Admin
+      - "8443:8443"
+      - "8143:8143"
     depends_on:
       - fastify
       - tsengine
@@ -49,22 +49,17 @@ services:
       - NGINX_ENVSUBST_TEMPLATE_DIR=off
     volumes:
       - ./Security/Nginx/conf.d:/etc/nginx/conf.d
-      - ./Security/ModSecurity:/etc/modsecurity.d
-      - ./Frontend/public:/usr/share/nginx/html:ro  #The Main Website
-      - ./Frontend/admin:/usr/share/nginx/admin:ro  #The Admin Website
-      # - ./Security/RGPD/Cartography.md:/usr/share/nginx/html/Cartography.md:ro
-      - ./Data/uploads:/usr/share/nginx/uploads
-      #TMP for Typescript
-      - ./Frontend/dist:/usr/share/nginx/dist                 # The compiled JS files
+      - ./Security/Nginx/passwd:/etc/nginx/passwd
+      - ./Security/ModSecurity:/etc/modsecurity
+      - ./Frontend/public:/usr/share/nginx/html:ro
       - ./Frontend/public/srcs:/usr/share/nginx/dist/srcs:ro 
       - ./Frontend/public/static/js/css:/usr/share/nginx/dist/static/js/css:ro 
       - ./Frontend/public/static/js/index.css:/usr/share/nginx/dist/static/js/index.css:ro  
       - ./Frontend/public/index.html:/usr/share/nginx/dist/index.html:ro
-      # - ./Frontend/public/api:/usr/share/nginx/dist/api:ro
+      - ./Frontend/dist:/usr/share/nginx/dist
       - ./Frontend/dist/api:/usr/share/nginx/dist/api:ro
-      # - ./Frontend/public/srcs/game/assets/image:/usr/share/nginx/dist/srcs/game/assets/image:ro
-      #For mdp for admin panel
-      - ./Security/Nginx/passwd:/etc/nginx/passwd
+      - ./Frontend/admin:/usr/share/nginx/admin:ro
+      - ./Data/uploads:/usr/share/nginx/uploads
 
   tsengine:
     image: node:20-alpine

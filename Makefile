@@ -32,10 +32,14 @@ MSG_NLOG_SUCCESS	:= ${GREEN}✓ Logs deactivated (LOG_ACTIVE=false).${RESET}
 
 
 # Docker Compose
-NO_LOGS 	:= --no-attach vault --no-attach redis --no-attach nginx #--no-attach tsengine #--no-attach fastify
+NO_LOGS 	:= --no-attach vault --no-attach redis --no-attach tsengine #--no-attach nginx ##--no-attach fastify
 
 # Variables BABYLON
 BABYLON_FILE = ./Frontend/public/srcs/game/gameplay/babylon.js
+
+# Security Script
+SCRIPT_SECURITY = ./Security/requests-test.sh
+
 
 all:
 	@make build
@@ -75,11 +79,6 @@ ip:
 	@echo "${GREEN}Game URL:${RESET} http://$(LOCAL_IP):8080 → https://$(LOCAL_IP):8443"
 	@echo "${GREEN}Admin URL:${RESET} http://$(LOCAL_IP):8081 → https://$(LOCAL_IP):8143"
 
-#Test
-test:
-	@echo "\n${BLUE}Running tests...${RESET}"
-	@./testTrenscendence
-	@echo "${GREEN}✓ Tests completed successfully.${RESET}"
 
 #NGINX
 reload-nginx:
@@ -89,6 +88,11 @@ reload-nginx:
 
 debug-files:
 	@docker exec nginx ls -la /usr/share/nginx/dist/ || echo "websocket.js NOT FOUND"
+
+sectest:
+	@chmod +x $(SCRIPT_SECURITY)
+	@$(SCRIPT_SECURITY) all
+
 
 #OPTIONS
 normal:
@@ -113,4 +117,4 @@ nlog:
 	@sed -i 's/^LOG_ACTIVE=.*/LOG_ACTIVE=false/' .env || echo "LOG_ACTIVE=false" >> .env
 	@echo "$(MSG_NLOG_SUCCESS)"
 
-.PHONY: up all down re fixer reload-nginx normal with_skin log nlog
+.PHONY: all up build down re fixer ip reload-nginx debug-files sectest normal with_skin log nlog

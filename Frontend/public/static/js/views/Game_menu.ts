@@ -1650,11 +1650,7 @@ export default class Game_menu extends AbstractView {
 			}, 800);
 		});
 
-		deconnect_btn_navBar.addEventListener('click', () => {
-			console.log('Deconnect button clicked');
-			handleViewTransitions("vue1", "vue2");
-			window.history.back();
-		});
+
 
 		/***********************************************************************/
 		/*************************Game History**********************************/
