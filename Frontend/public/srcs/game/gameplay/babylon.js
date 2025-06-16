@@ -91,7 +91,6 @@ window.camera = new BABYLON.FreeCamera("camera", new BABYLON.Vector3(-46.5848927
 camera.rotation = new BABYLON.Vector3(-0.06270675424618415, -2.546876145234487, 0);
 camera.minZ = 0.1;
 camera.maxZ = 5000;
-camera.attachControl(canvas, true);
 camera.speed = 5;
 
 const pipeline = new BABYLON.DefaultRenderingPipeline("defaultPipeline", true, scene, [camera]);
@@ -450,7 +449,7 @@ engine.runRenderLoop(() => {
 		if (Multi_gameStart && !gameIsFinished) {
 			if (!initialized) {
 				initialize_Multiplayer_game();
-				initialized = true;
+				initialized = true;PROFILE
 			}
 			if (initialized) {
 				if (scene.inputStates.space && !play)
