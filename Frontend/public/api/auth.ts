@@ -32,6 +32,7 @@ export async function login(event: Event): Promise<void> {
 	try {
 		const data: ApiResponse = await fetchAPI('/request/user/login', 'POST', { username, password }, true, false);
 		
+		
 		if (!data.accessToken && !data.success)
 			console.debug(`${data.function}: ${data.error} - ${data.message}`);
 		else if (data.success && data.connection_status === "partially_connected" && data.user.doubleAuth_status) {

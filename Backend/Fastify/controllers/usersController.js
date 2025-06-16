@@ -154,7 +154,9 @@ export async function googleSignIn(request, reply) {
 				success: true, 
 				message: 'Google Sign-In successful', 
 				connection_status: "connected", 
-				user: user, 
+				// user: user, //todo: change to multiple infos
+				name: user.username,
+				avatar: user.profile_picture,
 				accessToken: accessToken 
 			})
 			
@@ -292,7 +294,16 @@ export async function login(request, reply) {
 			expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
 		})
 		.code(200)
-		.send({ success: true, message: 'Logged in', connection_status: "connected", username: user.username, profile_picture: user.profile_picture, doubleAuth_status: user.doubleAuth_status, accessToken: accessToken })
+		.send({ success: true,
+			message: 'Logged in',
+			connection_status: "connected",
+			user: user,
+			username: user.username,
+			userId: user.userId,
+			profile_picture: user.profile_picture,
+			doubleAuth_status: user.doubleAuth_status,
+			accessToken: accessToken
+		})
 	} catch (err) {
 		fastify.log.error(`Critical login error for ${username}: ${err.message}`)
 		return reply.code(500).send({ error: err.message })
