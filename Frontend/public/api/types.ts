@@ -5,6 +5,8 @@ export interface ApiResponse<T = any> {
 	accessToken?: string;
 	connection_status?: string;
 	user?: User;
+	ticket?: string;
+	doubleAuth_status?: string;
 	player2?: User;
 	player3?: User;
 	player4?: User;
@@ -179,7 +181,8 @@ declare global {
 		accessProfileInfo: (event: Event) => Promise<void>;
 		changeProfilePicture: (event: Event) => Promise<void>;
 		activate2FA: (event: Event) => Promise<void>;
-		update_doubleAuth: () => Promise<void>;
+		enable_doubleAuth: () => Promise<void>;
+		disable_doubleAuth: () => Promise<void>;
 		export_data: () => Promise<void>;
 		anonymize_user: () => Promise<void>;
 		delete_account: () => Promise<void>;

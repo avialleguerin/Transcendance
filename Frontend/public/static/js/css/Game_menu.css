@@ -1,4 +1,4 @@
-#notification-container {
+/* #notification-container {
 	position: fixed;
 	top: 5%;
 	left: 0;
@@ -34,7 +34,7 @@
 	border-radius: 0.25rem;
 	box-shadow: 0 10px 15px -3px rgb(4, 255, 0), 0 4px 6px -2px rgb(55, 255, 0);
 	font-family: 'Black Ops One', sans-serif;
-}
+} */
 
 .container_menu {
 	position: absolute;

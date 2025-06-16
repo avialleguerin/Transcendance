@@ -385,7 +385,7 @@ export default class Game_menu extends AbstractView {
 									<input type="password" id="confirm_change_password" name="confirm_password" placeholder="******">
 								</div>
 								<div id="fa_selector" class="fa_selector">
-									<p>2FA :<input type="checkbox" id="active_fa" class="active_fa" onchange="this.checked ? update_doubleAuth() : update_doubleAuth()" /></p>
+									<p>2FA :<input type="checkbox" id="active_fa" class="active_fa" onchange="this.checked ? enable_doubleAuth() : disable_doubleAuth()" /></p>
 								</div>
 								<button type="submit" id="valid_profile_info" class="valid_profile_info_btn">Valider</button>
 							</form>
@@ -393,7 +393,7 @@ export default class Game_menu extends AbstractView {
 								<button id="deconnect_btn" class="btn_deconnect_btn" onclick="logout()">Deconnexion</button>
 							</div>
 							<div class="btn_delete">
-								<button id="delete_btn" class="btn_delete_btn" onclick="delete_account()">Delete account</button> //STUB
+								<button id="delete_btn" class="btn_delete_btn" onclick="delete_account()">Delete account</button>
 							</div>
 							<div class="export_btn">
 								<button id="export_btn" class="btn_export_btn" onclick="export_data()">Export data</button>
