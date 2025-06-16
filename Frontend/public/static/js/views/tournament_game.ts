@@ -2,10 +2,12 @@ import AbstractView from "./AbstractView.js";
 import { getPlayer_1_win, getPlayer_2_win, isGameFinished } from "../../../srcs/game/gameplay/score.js";
 import { leave_tournament_game } from "../../../srcs/game/gameplay/babylon.js";
 import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.js";
+import { homeView } from "../../../api/utils.js";
+// import { log } from '../../../utils/logger.js';
 export default class extends AbstractView {
-	private cooldowns: Record<string, boolean>;
-	private cooldownTimes: Record<string, number>;
-	private gameLoop: number;  // NOTE - or 'any'
+	private cooldowns:		Record<string, boolean>;
+	private cooldownTimes:	Record<string, number>;
+	private gameLoop:		ReturnType<typeof setInterval> | null;
 	private boundKeyPressHandler: (event: KeyboardEvent) => void;
 
 	constructor() {
@@ -19,29 +21,13 @@ export default class extends AbstractView {
 		};
 
 		this.boundKeyPressHandler = this.handleKeyPress.bind(this);
-    
 		document.addEventListener("keydown", this.boundKeyPressHandler);
 
-		if (window.location.pathname === "/tournament_game") {
+		if (window.location.pathname === "/tournament_game")
 			this.gameLoop = setInterval(() => { this.checkGameOver_tournament(); 1000 });
-		}
-		const accessToken: string | null = sessionStorage.getItem('accessToken');
-		if (!accessToken || accessToken === undefined) {
-			history.pushState({}, '', '/');
-			import('./Home.js').then((module: any) => {
-				const Home = module.default;
-				const homeInstance = new Home();
-				homeInstance.getHtml().then((html: string) => {
-					const appElement = document.getElementById('app');
-					if (appElement) {
-						appElement.innerHTML = html;
-						if (homeInstance.createAccount && typeof homeInstance.createAccount === 'function') {
-							homeInstance.createAccount();
-						}
-					}
-				});
-			});
-		}
+		const accessToken = sessionStorage.getItem("accessToken");
+		if (!accessToken || accessToken === undefined)
+			homeView();
 	}
 
 	async getHtml() {
@@ -57,7 +43,9 @@ export default class extends AbstractView {
 			</div>
 			<button class="leave_game_2" id="leave_game_2_id" onclick="create_1v1_game(event, '${localStorage.getItem('current_player1')}', '${localStorage.getItem('current_player2')}')">Quitter la partie</button>
 		</div>
-	</div>
+		<div id="notification-container" class="fixed top-0 left-0 right-0 flex justify-center z-50 mt-4">
+			<p id="resultMessage" class="py-2 px-4 rounded shadow-lg transition-all duration-300 transform translate-y-0 opacity-0"></p>
+		</div>
 	`;
 	}
 

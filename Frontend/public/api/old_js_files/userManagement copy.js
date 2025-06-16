@@ -1,26 +1,6 @@
-// async function updateProfileInfo(event) {
-// 	event.preventDefault();
-// 	const newUsername = document.getElementById("change_username").value;
-// 	const newPassword = document.getElementById("change_password").value;
-	
-// 	if (newUsername === "" && newPassword === "")
-// 		return notif("Please fill at least one field !", false);
-	
-// 	try {
-// 		const data = await fetchAPI('/request/user/update-profile', 'PUT', { newUsername, newPassword });
+import { notif, fetchAPI } from './utils.js';
 
-// 		if (data.success) {
-// 			document.getElementById("updateProfileForm").reset();
-// 			fetchProfile();
-// 			console.log("Profile updated successfully, print pp");
-// 		}
-// 	} catch (err) {
-// 		console.log("Failed to update profile");
-// 	}
-// }
-
-
-async function changeProfilePicture(event) {
+export async function changeProfilePicture(event) {
 	event.preventDefault();
 	const input = document.getElementById('profile_photo_input');
 	const formData = new FormData();
@@ -41,7 +21,7 @@ async function changeProfilePicture(event) {
 	}
 }
 
-async function accessProfileInfo(event) {
+export async function accessProfileInfo(event) {
 	event.preventDefault();
 	const password = document.getElementById("password").value;
 
@@ -61,7 +41,7 @@ async function accessProfileInfo(event) {
 	}
 }
 
-async function activate2FA(event) {
+export async function activate2FA(event) {
 	event.preventDefault();
 	const code = document.getElementById("activate-2fa-code").value;
 	
@@ -75,7 +55,7 @@ async function activate2FA(event) {
 	}
 }
 
-async function update_doubleAuth() {
+export async function update_doubleAuth() {
 	try {
 		const data = await fetchAPI('/request/user/update-2fa', 'PUT');
 
@@ -88,7 +68,7 @@ async function update_doubleAuth() {
 	}
 }
 
-async function export_data() {
+export async function export_data() {
 	try {
 		notif("Preparing your data for download...", true);
 		
@@ -126,7 +106,7 @@ async function export_data() {
 	}
 }
 
-async function anonymize_user() {
+export async function anonymize_user() {
 	if (confirm('Do you really want to anonymize your account ?')) {
 		try {
 			const data = await fetchAPI('/request/user/anonymize-account', 'PUT');
@@ -143,7 +123,7 @@ async function anonymize_user() {
 	}
 }
 
-async function delete_account() {
+export async function delete_account() {
 	if (confirm('Do you really want to delete your account ?')) {
 		try {
 			const data = await fetchAPI('/request/user/delete-account', 'DELETE');
@@ -173,7 +153,7 @@ async function delete_account() {
 	}
 }
 
-async function fetchProfile() {
+export async function fetchProfile() {
 	try {
 		const data = await fetchAPI('/request/profile', 'GET', null, false);
 
@@ -200,7 +180,7 @@ async function fetchProfile() {
 	}
 }
 
-async function updateProfileInfo(event) {
+export async function updateProfileInfo(event) {
 	event.preventDefault();
 	const newUsername = document.getElementById("change_username").value;
 	const newPassword = document.getElementById("change_password").value;
@@ -223,3 +203,16 @@ async function updateProfileInfo(event) {
 		console.log("Failed to update profile");
 	}
 }
+
+// Create organized namespace instead of direct window exposure
+// window.uM = { accessProfileInfo, changeProfilePicture, activate2FA, update_doubleAuth, export_data, anonymize_user, delete_account, updateProfileInfo };
+
+// Keep compatibility with existing code (can be removed later)
+window.accessProfileInfo = accessProfileInfo;
+window.changeProfilePicture = changeProfilePicture;
+window.activate2FA = activate2FA;
+window.update_doubleAuth = update_doubleAuth;
+window.export_data = export_data;
+window.anonymize_user = anonymize_user;
+window.delete_account = delete_account;
+window.updateProfileInfo = updateProfileInfo;

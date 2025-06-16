@@ -115,22 +115,21 @@ export function changeView(viewName, force = false) {
 export function handleViewTransitions(viewName, previousView)
 {
 	console.log("je rentre dans handleViewTransitions");
-	console.log(viewName, previousView);
+	// console.log(viewName, previousView);
+	console.log(`${previousView} -> ${viewName}`);
 	if (isLoading)
-	return;
+		return;
 	if (!previousView)
 	previousView = 'default';
 
 	if (viewName === 'vue1' && previousView === 'default')
 	{
 		changeView('vue1', true);
-		setTimeout(() =>
-		{
+		setTimeout(() => {
 			window.currentView = 'vue1';
 			createLoadingOverlay();
 		}, 1200);
-		setTimeout(() =>
-		{
+		setTimeout(() => {
 			changeView('vue2', true);
 		}, 3500);
 		setTimeout(() => removeLoadingOverlay(), 5000);

@@ -2,7 +2,7 @@ import Vault from 'node-vault';
 
 const vault = Vault({
 	endopint: 'http://vault:8200',
-	token: 'root' // ⚠️ Remplacer avec AppRole en production
+	token: 'root' // TODO Remplacer avec AppRole en production
 });
 
 // const role_id = "8a5c7e1b-xxxx-xxxx-xxxx-xxxxxxxxxxxx";

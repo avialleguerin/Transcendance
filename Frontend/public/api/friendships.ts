@@ -1,51 +1,60 @@
+import { notif, fetchAPI, $, $input, $form } from './utils.js';
+import { Friendship, GameScore } from './types.js';
 
-let bool = localStorage.getItem("bool", "true");
+let historyIsActive = localStorage.getItem('historyIsVisible') === 'true';
+// let bool = false;
+// let bool = localStorage.getItem("bool", "true");
 
-async function addFriend(event) {
+
+if (typeof window !== 'undefined') {
+	window.addFriend = addFriend;
+	window.accept_friendship = accept_friendship;
+	window.delete_friendship = delete_friendship;
+	window.fetch_user_friendships = fetch_user_friendships;
+	window.fetch_user_games = fetch_user_games;
+	window.fetch_user_games_big = fetch_user_games_big;
+	window.togglePanel = togglePanel;
+}
+
+export async function addFriend(event: Event): Promise<void> {
 	event.preventDefault();
-	const friend = document.getElementById("friend_name_input").value;
+	const friend = $input("friend_name_input").value;
 	
 	try {
-		const data = await fetchAPI('/request/friendship/add-friend', 'POST', { friend });
+		await fetchAPI('/request/friendship/add-friend', 'POST', { friend });
 		fetch_user_friendships();
-		document.getElementById("friend_name_input").value = "";
-	} catch (err) {
-		notif("Failed to add '" + friend + "' as a friend", false);
-	}
+		$input("friend_name_input").value = "";
+	} catch (err) { notif("Failed to add '" + friend + "' as a friend", false); }
 }
 
-async function accept_friendship(friendshipId) {
+export async function accept_friendship(friendshipId: number): Promise<void> {
 	try {
-		const data = await fetchAPI('/request/friendship/accept-friend', 'POST', { friendshipId });
+		await fetchAPI('/request/friendship/accept-friend', 'POST', { friendshipId });
 		fetch_user_friendships();
 	} catch (err) {
 		notif("Failed to accept this friend", false);
 	}
 }
 
-async function delete_friendship(friendshipId) {
+export async function delete_friendship(friendshipId: string | number): Promise<void> {
 	try {
-		const data = await fetchAPI('/request/friendship/delete-friend', 'DELETE', { friendshipId });
-		if (data.success)
-			fetch_user_friendships();
+		await fetchAPI('/request/friendship/delete-friend', 'DELETE', { friendshipId });
+		fetch_user_friendships();
 	} catch (err) {
-		notif("Failed to accept this friend", false);
+		notif("Failed to delete this friend", false);
 	}
 }
 
-async function fetch_user_friendships() {
+export async function fetch_user_friendships(): Promise<void> {
 	try {
 		const data = await fetchAPI('/request/friendship/get-user-friendships', 'GET', null, false);
-		if (!data.success) {
-			notif(data.error, false);
-			return;
-		}
+		if (!data.success) return;
 
 		const friendships = data.friendships;
 		const user = data.user;
+		const accepted:	Friendship[] = friendships.filter((f: Friendship) => f.status === 'accepted');
+		const pending:	Friendship[] = friendships.filter((f: Friendship) => f.status === 'pending');
 
-		const accepted = friendships.filter(f => f.status === 'accepted');
-		const pending = friendships.filter(f => f.status === 'pending');
 		const hasReceivedRequests = pending.some(friend => user.userId === friend.friendId);
 
 		if (pending.length > 0 && hasReceivedRequests)
@@ -53,10 +62,11 @@ async function fetch_user_friendships() {
 		else
 			document.getElementById("notify_friend_demand").style.display = "none";
 
-		const renderFriend = (friendship, showActions) => {
-			let statusClass = `${friendship.friendOnlineStatus ? 'friend_online_status online' : 'friend_online_status offline'}`;
-			let statusTitle = `${friendship.friendOnlineStatus ? 'Online' : 'Offline'}`;
-			let friendshipProfilePicture = friendship.status === 'accepted' ? friendship.friendProfilePicture : 'default-profile-picture.png';
+
+		const renderFriend = (friendship: Friendship, showActions: boolean): string => {
+			let statusClass: string = `${friendship.friendOnlineStatus ? 'friend_online_status online' : 'friend_online_status offline'}`;
+			let statusTitle: string = `${friendship.friendOnlineStatus ? 'Online' : 'Offline'}`;
+			let friendshipProfilePicture: string = friendship.status === 'accepted' ? friendship.friendProfilePicture : 'default-profile-picture.png';
 			return `
 				<div id="friendId-${friendship.friendId}" class="friend">
 					<div class="friend-info">
@@ -79,7 +89,7 @@ async function fetch_user_friendships() {
 						</div>
 					</div>
 					<button id="btn_delete_friend" class="friend-btn delete-btn" onclick="delete_friendship(${friendship.friendshipId})">
-						<img src="/srcs/game/assets/image/trash.svg" alt="Delete Friend" class="delete-icon">
+						<img src="/assets/image/trash.svg" alt="Delete Friend" class="delete-icon">
 					</button>
 				</div>
 			`;
@@ -95,10 +105,10 @@ async function fetch_user_friendships() {
 		const friendDeleteBtns = document.getElementById('btn_delete_friend');
 
 		friendPhotos.forEach(photo => {
-			photo.onclick = function() {
+			(photo as HTMLElement).onclick = function() {
 				if (!gameHistory.classList.contains('active')) {
 					console.log("Opening game history view");
-					fetch_user_games_big(this.nextElementSibling.querySelector('.friend_name').textContent);
+					fetch_user_games_big((this as HTMLElement).nextElementSibling.querySelector('.friend_name').textContent);
 					gameHistory.classList.add('active');
 					exit_game_history_btn.style.display = 'none';
 					localStorage.setItem('historyIsVisible', 'true');
@@ -141,9 +151,6 @@ async function fetch_user_friendships() {
 				});
 			});
 		}
-
-
-	
 		document.getElementById('friends-pending').innerHTML =
 			pending.map(friend => {
 				const isReceivedRequest = user.userId === friend.friendId;
@@ -155,7 +162,7 @@ async function fetch_user_friendships() {
 	}
 }
 
-async function fetch_user_games() {
+export async function fetch_user_games(): Promise<void> {
 	try {
 		console.log("fetch_user_games");
 		const data = await fetchAPI('/request/game/get-user-games', 'GET', null, false);
@@ -166,7 +173,7 @@ async function fetch_user_games() {
 		const games = data.games;
 		const userId = data.user.userId;
 		if (games && games.length > 0) {
-			document.getElementById('games-table').innerHTML = games.map(game => {
+			document.getElementById('games-table').innerHTML = games.map((game: GameScore) => {
 				let dispScoreLeft = game.score_left;
 				let dispScoreRight = game.score_right;
 				const leftWinOriginal = (game.score_left - game.score_right) > 0;
@@ -261,7 +268,7 @@ async function fetch_user_games() {
 	}
 }
 
-async function fetch_user_games_big(username) {
+export async function fetch_user_games_big(username: string): Promise<void> {
 	try {
 		console.log("fetch_user_games");
 		const data = await fetchAPI('/request/game/get-friend-games', 'POST', { username }, null, false);
@@ -273,7 +280,6 @@ async function fetch_user_games_big(username) {
 		const userId = user.userId;
 		const games = data.games;
 		document.getElementById("profile_photo_circle_Game_History").innerHTML = `<img src="/uploads/${data.user.profile_picture}" alt="${data.username} profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
-		document.getElementById("profile_photo_circle_Game_History").classList.remove(`${data.user.online_status ? 'offline' : 'online'}`);
 		document.getElementById("profile_photo_circle_Game_History").classList.add(`${data.user.online_status ? 'online' : 'offline'}`);
 		document.getElementById("game_history_username").innerHTML = `${data.user.username}`;
 		document.getElementById("games_won_history").innerHTML = `${user.games_won}`;
@@ -281,7 +287,7 @@ async function fetch_user_games_big(username) {
 		document.getElementById("games_played_history").innerHTML = `${user.games_lost + user.games_won}`;
 		document.getElementById("win_rate_history").innerHTML = `${(user.games_won + user.games_lost) > 0 ? Math.round((user.games_won / (user.games_won + user.games_lost)) * 100) : 0} %`;
 		if (games && games.length > 0) {
-			document.getElementById('games-table-big').innerHTML = games.map(game => {
+			document.getElementById('games-table-big').innerHTML = games.map((game: GameScore) => {
 				let dispScoreLeft = game.score_left;
 				let dispScoreRight = game.score_right;
 				const leftWinOriginal = (game.score_left - game.score_right) > 0;
@@ -376,12 +382,8 @@ async function fetch_user_games_big(username) {
 	}
 }
 
-async function togglePanel(event)
-{
+export async function togglePanel(event: Event): Promise<void> {
 	event.preventDefault();
-	fetch_user_friendships();
-	fetch_user_games();
+	await fetch_user_friendships(); //REVIEW - i add await
+	await fetch_user_games();
 }
-
-// ✅ AJOUT : Rendre la fonction accessible globalement pour les notifications WebSocket
-window.fetch_user_friendships = fetch_user_friendships;

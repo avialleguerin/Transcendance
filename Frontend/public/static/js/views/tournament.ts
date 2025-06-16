@@ -2,40 +2,25 @@ import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.
 import AbstractView from "./AbstractView.js";
 import { startTournamentGame } from "../../../srcs/game/gameplay/babylon.js";
 import { getPlayer_1_win } from "../../../srcs/game/gameplay/score.js";
-let count = 0;
+import { homeView } from "../../../api/utils.js";
 
+let count = 0;
 let tournamentStarted = false;
 let tournament_finished = false;
 let tournament_leave = false;
-
-let secondeChance = false; // Variable pour la seconde chance
+let secondeChance = false;
 
 
 export default class extends AbstractView {
-	private gameLoop: number;  // NOTE - or 'any'
+	private gameLoop: ReturnType<typeof setInterval> | null;
     constructor() {
         super();
         this.setTitle("Tournament");
-		if (window.location.pathname === "/tournament") {
+		if (window.location.pathname === "/tournament")
 			this.gameLoop = setInterval(() => this.checktournamentstart(), 1000);
-		}
 		const accessToken: string | null = sessionStorage.getItem('accessToken');
-		if (!accessToken || accessToken === undefined) {
-			history.pushState({}, '', '/');
-			import('./Home.js').then((module: any) => {
-				const Home = module.default;
-				const homeInstance = new Home();
-				homeInstance.getHtml().then((html: string) => {
-					const appElement = document.getElementById('app');
-					if (appElement) {
-						appElement.innerHTML = html;
-						if (homeInstance.createAccount && typeof homeInstance.createAccount === 'function') {
-							homeInstance.createAccount();
-						}
-					}
-				});
-			});
-		}
+		if (!accessToken || accessToken === undefined)
+			homeView();
 		// tournamentStarted = localStorage.getItem('tournamentStarted') === 'true';
     }
 
@@ -118,6 +103,9 @@ export default class extends AbstractView {
 				</div>
 			</div>	
 		</div>
+		<div id="notification-container" class="fixed top-0 left-0 right-0 flex justify-center z-50 mt-4">
+			<p id="resultMessage" class="py-2 px-4 rounded shadow-lg transition-all duration-300 transform translate-y-0 opacity-0"></p>
+		</div>
 	`;
 	}
 
@@ -139,42 +127,34 @@ export default class extends AbstractView {
 
 			console.log(`Match ${count} terminé.`);
 			
-			// Récupérer les éléments joueurs pour updateTournamentState
 			const Player1 = document.getElementById('Player1');
 			const Player2 = document.getElementById('Player2');
 			const Player3 = document.getElementById('Player3');
 			const Player4 = document.getElementById('Player4');
 			
-			// Mettre à jour l'état du tournoi AVANT de vérifier la fin
 			updateTournamentState(count, Player1, Player2, Player3, Player4);
 			
-			// Maintenant récupérer l'état de la seconde chance (potentiellement mis à jour)
 			secondeChance = localStorage.getItem('secondChance') === 'true';
 			
-			// Vérifier si le tournoi est marqué comme terminé
 			const tournamentFinishedFlag = localStorage.getItem('tournament_finished') === 'true';
 			
 			console.log(`SecondChance: ${secondeChance}, TournamentFinished: ${tournamentFinishedFlag}`);
 			
-			// Afficher la fin du tournoi seulement si explicitement marqué comme terminé
 			if (tournamentFinishedFlag) {
 				document.getElementById('finiched_game').style.display = 'block';
 				tournament_finished = true;
-				// Réinitialiser la seconde chance après le tournoi
 				localStorage.removeItem('secondChance');
 				secondeChance = false;
 			}
 		});
 	}
 
-	// Fonction d'initialisation du tournoi
 	init_tournament() {
 		const Player1 = document.getElementById('Player1');
 		const Player2 = document.getElementById('Player2');
 		const Player3 = document.getElementById('Player3');
 		const Player4 = document.getElementById('Player4');
 
-		// Récupérer l'état depuis localStorage
 		secondeChance = localStorage.getItem('secondChance') === 'true';
 		count = parseInt(localStorage.getItem('tournamentCount')) || 0;
 		

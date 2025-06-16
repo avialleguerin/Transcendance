@@ -1,26 +1,22 @@
-// Moduls
-import Fastify from "fastify";
-import { initDb } from "./utils/db.js";
-// import { authenticate } from "./utils/vault.js";
-import jwt from "@fastify/jwt";
-import cookie from "@fastify/cookie";
-import fastifyMultipart from '@fastify/multipart';
-// Pages
-import routes from "./routes/routes.js"
-import { redisClient, setupRedisLogging } from './utils/redis.js';
-import { redisModel } from './models/redisModel.js';
-import cron from 'node-cron';
-// Models
-import usersModel from './models/usersModel.js';
 
-import websocketPlugin from './utils/websocket.js';
-import colorLoggerPlugin from './utils/logger.js' // NOTE - bonus: Colorized logger plugin
+import Fastify from "fastify"
+import { initDb } from "./utils/db.js"
+import jwt from "@fastify/jwt"
+import cookie from "@fastify/cookie"
+import fastifyMultipart from '@fastify/multipart'
+import routes from "./routes/routes.js"
+import { redisClient, setupRedisLogging } from './utils/redis.js'
+import cron from 'node-cron'
+import usersModel from './models/usersModel.js'
+import websocketPlugin from './utils/websocket.js'
+import colorLoggerPlugin from './utils/logger.js'
 import websocket from '@fastify/websocket'
 import { checkEmailConfig } from './utils/mailer.js'
 
-// set server
+const logActive = process.env.LOG_ACTIVE === 'true';
+
 export const fastify = Fastify({
-	logger: { // trace - debug - info - warn - error - fatal
+	logger: logActive ? {
 		level: 'debug',
 		transport: {
 			target: 'pino-pretty',
@@ -30,142 +26,33 @@ export const fastify = Fastify({
 				ignore: 'pid,hostname',
 			}
 		}
-	},
+	} : false,
 	disableRequestLogging: true
 })
 
 await fastify.register(websocket)
-
 setupRedisLogging(fastify);
 await redisClient.connect();
 
-// registering plugins
 await fastify.register(fastifyMultipart, { attachFieldsToBody: true, limits: { fileSize: 5 * 1024 * 1024 } });
 await fastify.register(jwt, { secret: 'supersecretkey', cookie: { cookieName: 'token', signed: false } });
 await fastify.register(cookie);
 await fastify.register(colorLoggerPlugin)
+export const log = fastify.logger;
 await fastify.register(websocketPlugin)
 
-// Exporter le logger pour utilisation globale
-export const log = fastify.logger;
 
 
 fastify.register(routes, { prefix: '/request' })
 initDb();
 fastify.decorate('redis', redisClient);
-// fastify.decorate('authenticate', async function (request, reply) {
-// 	try {
-// 		const accessToken = request.headers.authorization?.split(" ")[1];
-// 		const { refreshToken } = request.cookies;
-// 		// fastify.log.info("🔑 Access Token reçu :", accessToken);
-// 		// fastify.log.info("🔑 Refresh Token reçu :", refreshToken);
-// 		if (!refreshToken || refreshToken === "undefined" || refreshToken === "null")
-// 			return reply.code(401).send({ error: 'Token de rafraîchissement manquant' });
-// 		if (!accessToken || accessToken === "undefined" || accessToken === "null")
-// 			return reply.code(401).send({ error: 'Token d\'accès manquant' });
-// 		if (await redisModel.isTokenBlacklisted(accessToken))
-// 			return reply.code(401).send({ error: 'Token d\'accès invalide (blacklisté)' });
-// 		if (await redisModel.isTokenBlacklisted(refreshToken))
-// 			return reply.code(401).send({ error: 'Token de rafraîchissement invalide (blacklisté)' });
-// 		await request.jwtVerify();
-
-// 		if (!request.user?.userId)
-// 			return reply.code(401).send({ error: "Unauthorized: invalid payload" });
-// 	} catch (err) {
-// 		console.error("❌ Erreur d'authentification :", err);
-// 		reply.code(401).send({ error: 'You are not authorized' });
-// 	}
-// });
 
 cron.schedule('0 0 * * *', () => {
 	fastify.log.info('Clean inactive users...');
 	const result = usersModel.deleteInactiveUsers();
 	fastify.log.info(`Number of supressed accounts : ${result.changes}`);
+	console.log(`Number of supressed accounts : ${result.changes}`);
 });
-
-// fastify.decorate('checkCGU', async function (request, reply) {  //REVIEW - Vérification CGU decoration
-// 	try {
-// 		// Skip pour les routes qui ne nécessitent pas de vérification
-// 		const skipRoutes = ['/login', '/register', '/accept-cgu', '/cgu'];
-// 		if (skipRoutes.some(route => request.url.includes(route))) {
-// 			return;
-// 		}
-		
-// 		// On vérifie que l'utilisateur est authentifié
-// 		const { userId } = request.user || {};
-// 		if (!userId) return;
-		
-// 		// On récupère les infos utilisateur
-// 		const user = usersModel.getUserById(userId);
-// 		if (!user) {
-// 			return reply.code(401).send({ 
-// 			error: "USER_NOT_FOUND", 
-// 			message: "Utilisateur non trouvé" 
-// 			});
-// 		}
-		
-// 		// On vérifie la version des CGU
-// 		const currentCGUVersion = getCurrentCGUVersion();
-// 		if (user.cgu_version !== currentCGUVersion) {
-// 			return reply.code(403).send({
-// 			error: "CGU_UPDATE_REQUIRED",
-// 			message: "Vous devez accepter les nouvelles conditions générales d'utilisation",
-// 			currentVersion: currentCGUVersion
-// 			});
-// 		}
-// 	} catch (err) {
-// 		console.error("❌ Erreur de vérification des CGU :", err);
-// 		// Ne pas bloquer la requête en cas d'erreur
-// 	}
-// });
-
-// fastify.decorate('authenticate', async function (request, reply) {
-// 	try {
-// 		// 1. Vérification JWT
-// 		const accessToken = request.headers.authorization?.split(" ")[1];
-// 		const { refreshToken } = request.cookies;
-		
-// 		if (!refreshToken || refreshToken === "undefined" || refreshToken === "null")
-// 			return reply.code(401).send({ error: 'Token de rafraîchissement manquant' });
-// 		if (!accessToken || accessToken === "undefined" || accessToken === "null")
-// 			return reply.code(401).send({ error: 'Token d\'accès manquant' });
-// 		if (await redisModel.isTokenBlacklisted(accessToken))
-// 			return reply.code(401).send({ error: 'Token d\'accès invalide (blacklisté)' });
-// 		if (await redisModel.isTokenBlacklisted(refreshToken))
-// 			return reply.code(401).send({ error: 'Token de rafraîchissement invalide (blacklisté)' });
-// 		await request.jwtVerify();
-	
-// 		if (!request.user?.userId)
-// 			return reply.code(401).send({ error: "Unauthorized: invalid payload" });
-		
-// 		// 2. Vérification CGU (après authentification réussie)
-// 		// Vérifier si cette route doit être exemptée de la vérification CGU
-// 		const skipRoutes = ['/login', '/register', '/accept-cgu', '/cgu', '/auth'];
-// 		if (!skipRoutes.some(route => request.url.includes(route))) {
-// 			// Récupérer les informations utilisateur
-// 			const user = usersModel.getUserById(request.user.userId);
-// 			if (!user) {
-// 			return reply.code(401).send({ 
-// 				error: "USER_NOT_FOUND", 
-// 				message: "Utilisateur non trouvé" 
-// 			});
-// 			}
-			
-// 			// Vérifier la version des CGU
-// 			const currentCGUVersion = getCurrentCGUVersion();
-// 			if (user.cgu_version !== currentCGUVersion) {
-// 			return reply.code(403).send({
-// 				error: "CGU_UPDATE_REQUIRED",
-// 				message: "Vous devez accepter les nouvelles conditions générales d'utilisation",
-// 				currentVersion: currentCGUVersion
-// 			});
-// 			}
-// 		}
-// 	} catch (err) {
-// 		console.error("❌ Erreur d'authentification :", err);
-// 		reply.code(401).send({ error: 'You are not authorized' });
-// 	}
-// });
 
 /**
  * Main function for run the server

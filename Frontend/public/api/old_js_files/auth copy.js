@@ -1,9 +1,18 @@
+<<<<<<< HEAD:Frontend/public/api/auth.js
 async function verify2FA(event) {
 	event.preventDefault();
 	const ticket = sessionStorage.getItem("authTicket");
 	const code = document.getElementById("verify-2fa-code").value;
+=======
+import { notif, fetchAPI, homeView, gameMenuView, platformerView, setLocalStorage, updateUI } from './utils.js';
+import { connectWebSocket, disconnectWebSocket } from './websocket.js';
+>>>>>>> rgpd:Frontend/public/api/old_js_files/auth copy.js
 
+// import { log } from '../utils/logger.js';
+
+export async function login(event) {
 	try {
+<<<<<<< HEAD:Frontend/public/api/auth.js
 		const data = await fetchAPI('/request/user/verify-2fa', 'POST', { ticket, code });
 
 		if (data.success) {
@@ -36,10 +45,16 @@ async function login(event) {
 	const password = document.getElementById("login-password").value;
 	
 	try {
+=======
+		event.preventDefault();
+		const username = document.getElementById("login-username").value;
+		const password = document.getElementById("login-password").value;
+>>>>>>> rgpd:Frontend/public/api/old_js_files/auth copy.js
 		const data = await fetchAPI('/request/user/login', 'POST', { username, password }, true, false);
 		
 		if (!data.accessToken && !data.success) {
 			notif(data.error, false);
+<<<<<<< HEAD:Frontend/public/api/auth.js
 		} else if (data.success && data.connection_status === "partially_connected" && data.doubleAuth_status) {
 			sessionStorage.setItem("authTicket", data.ticket);
 			document.getElementById("doubleAuthForm").classList.remove("hidden");
@@ -50,22 +65,24 @@ async function login(event) {
 			notif(data.message, true);
 			localStorage.setItem("Player1", data.username);
 			localStorage.setItem("profile_picture", data.profile_picture);
+=======
+		} else if (data.success && data.connection_status === "partially_connected" && data.user.doubleAuth_status) {
+			sessionStorage.setItem("userId", data.user.userId);
+			updateUI({
+				removeClass: [{ id:"doubleAuthForm", className: "hidden" }],
+				addClass: ["loginForm", "doubleAuthForm"],
+			}); document.getElementById("login-title").textContent = "Double Authentication";
+
+			// document.getElementById("doubleAuthForm").classList.remove("hidden");
+			// document.getElementById("loginForm").classList.add("active");
+			// document.getElementById("doubleAuthForm").classList.add("active");
+		} else if (data.success && data.connection_status === "connected") {
+			notif(data.message, true);
+			setLocalStorage({ "Player1": data.user.username, "profile_picture": data.user.profile_picture });
+>>>>>>> rgpd:Frontend/public/api/old_js_files/auth copy.js
 			connectWebSocket()
 			console.log("✅ Connected, Token :", sessionStorage.getItem("accessToken"));
-			history.pushState({}, '', '/Game_menu');
-			setTimeout(() => {
-				history.pushState({}, '', '/Game_menu');
-				import('../static/js/views/Game_menu.js').then(module => {
-					const GameMenu = module.default;
-					const gameMenuInstance = new GameMenu();
-					gameMenuInstance.getHtml().then(html => {
-						document.getElementById('app').innerHTML = html;
-						if (gameMenuInstance.game_menu) {
-							gameMenuInstance.game_menu();
-						}
-					});
-				});
-			}, 2000);
+			gameMenuView();
 			document.getElementById("loginForm").reset();
 			document.getElementById("login-password").value = "";
 		} else {
@@ -79,6 +96,7 @@ async function login(event) {
 	}
 }
 
+<<<<<<< HEAD:Frontend/public/api/auth.js
 async function login_1v1(event) {
 	event.preventDefault();
 	const username = document.getElementById("1v1-username2").value;
@@ -89,17 +107,50 @@ async function login_1v1(event) {
 	if (username === localStorage.getItem("Player1"))
 		return notif("You cannot play against yourself", false);
 
+=======
+export async function verify2FA(event) {
+>>>>>>> rgpd:Frontend/public/api/old_js_files/auth copy.js
 	try {
+		event.preventDefault();
+		const userId = sessionStorage.getItem("userId");
+		const code = document.getElementById("verify-2fa-code").value;
+		const data = await fetchAPI('/request/user/verify-2fa', 'POST', { userId, code });
+
+		if (data.success) {
+			sessionStorage.removeItem("userId")
+			setLocalStorage({"Player1": data.username, "profile_picture": data.profile_picture});
+			connectWebSocket()
+			console.log("2FA code valid!");
+			gameMenuView();
+		}
+	} catch (err) {
+		console.error("Erreur lors de la validation du code 2FA :", err);
+	}
+}
+
+export async function login_1v1(event) {
+	try {
+		event.preventDefault();
+		const username = document.getElementById("1v1-username2").value;
+		const password = document.getElementById("1v1-password2").value;
+		if (!username || !password)
+			return notif("Please fill in all fields", false);
+
 		const data = await fetchAPI('/request/user/login-1v1', 'POST', { username, password }, true, false);
 		if (data.success) {
 			notif(data.message, true);
-			localStorage.setItem("Player2", data.player2.username);
-			document.getElementById("choose_your_opponent_1v1_form").classList.remove('active');
-			document.getElementById("back_to_select_mode_view6").classList.add('active');
-			document.getElementById("view6").classList.add('active');
-			document.getElementById("container").classList.remove('active');
-			document.getElementById("1v1-oponent-username1").innerHTML = localStorage.getItem("Player1");
-			document.getElementById("1v1-oponent-username2").innerHTML = localStorage.getItem("Player2");
+			setLocalStorage({ "Player2": data.player2.username });
+			updateUI({
+				removeClass: ["choose_your_opponent_1v1_form", "container"],
+				addClass: ["back_to_select_mode_view6", "view6"],
+				setContent: {"1v1-oponent-username1": localStorage.getItem("Player1"), "1v1-oponent-username2": localStorage.getItem("Player2")}
+			});
+			// document.getElementById("choose_your_opponent_1v1_form").classList.remove('active');
+			// document.getElementById("back_to_select_mode_view6").classList.add('active');
+			// document.getElementById("view6").classList.add('active');
+			// document.getElementById("container").classList.remove('active');
+			// document.getElementById("1v1-oponent-username1").innerHTML = localStorage.getItem("Player1");
+			// document.getElementById("1v1-oponent-username2").innerHTML = localStorage.getItem("Player2");
 		} else
 			notif(data.error, false);
 	} catch (err) {
@@ -109,7 +160,7 @@ async function login_1v1(event) {
 	document.getElementById("choose_your_opponent_1v1_form").reset();
 }
 
-async function login_2v2(event) {
+export async function login_2v2(event) {
 	event.preventDefault();
 	const username1 = localStorage.getItem("Player1");
 	const username2 = document.getElementById("2v2-username2").value;
@@ -130,17 +181,25 @@ async function login_2v2(event) {
 		const data = await fetchAPI('/request/user/login-2v2', 'POST', { username2, password2, username3, password3, username4, password4 }, true, false);
 		if (data.success) {
 			notif(data.message, true);
-			localStorage.setItem("Player2", data.player2.username);
-			localStorage.setItem("Player3", data.player3.username);
-			localStorage.setItem("Player4", data.player4.username);
-			document.getElementById("choose_your_opponent_multi_form").classList.remove('active');
-			document.getElementById("back_to_select_mode_view8").classList.add('active');
-			document.getElementById("view8").classList.add('active');
-			document.getElementById("container").classList.remove('active');
-			document.getElementById("2v2-oponent-username1").innerHTML = localStorage.getItem("Player1");
-			document.getElementById("2v2-oponent-username2").innerHTML = localStorage.getItem("Player2");
-			document.getElementById("2v2-oponent-username3").innerHTML = localStorage.getItem("Player3");
-			document.getElementById("2v2-oponent-username4").innerHTML = localStorage.getItem("Player4");
+			setLocalStorage({"Player2": data.player2.username, "Player3": data.player3.username, "Player4": data.player4.username });
+			updateUI({
+				removeClass: ["choose_your_opponent_multi_form", "container"],
+				addClass: ["back_to_select_mode_view8", "view8"],
+				setContent: {
+					"2v2-oponent-username1": localStorage.getItem("Player1"),
+					"2v2-oponent-username2": localStorage.getItem("Player2"),
+					"2v2-oponent-username3": localStorage.getItem("Player3"),
+					"2v2-oponent-username4": localStorage.getItem("Player4")
+				}
+			});
+			// document.getElementById("choose_your_opponent_multi_form").classList.remove('active');
+			// document.getElementById("back_to_select_mode_view8").classList.add('active');
+			// document.getElementById("view8").classList.add('active');
+			// document.getElementById("container").classList.remove('active');
+			// document.getElementById("2v2-oponent-username1").innerHTML = localStorage.getItem("Player1");
+			// document.getElementById("2v2-oponent-username2").innerHTML = localStorage.getItem("Player2");
+			// document.getElementById("2v2-oponent-username3").innerHTML = localStorage.getItem("Player3");
+			// document.getElementById("2v2-oponent-username4").innerHTML = localStorage.getItem("Player4");
 		} else
 			notif(data.error, false);
 	} catch (err) {
@@ -150,7 +209,7 @@ async function login_2v2(event) {
 	document.getElementById("choose_your_opponent_1v1_form").reset();
 }
 
-async function login_tournament(event) {
+export async function login_tournament(event) {
 	event.preventDefault();
 	const username1 = localStorage.getItem("Player1");
 	const username2 = document.getElementById("tournament-username2").value;
@@ -171,18 +230,25 @@ async function login_tournament(event) {
 		const data = await fetchAPI('/request/user/login-2v2', 'POST', { username2, password2, username3, password3, username4, password4 }, true, false);
 		if (data.success) {
 			notif(data.message, true);
-			localStorage.setItem("Player2", data.player2.username);
-			localStorage.setItem("Player3", data.player3.username);
-			localStorage.setItem("Player4", data.player4.username);
+			setLocalStorage({"Player2": data.player2.username, "Player3": data.player3.username, "Player4": data.player4.username });
 			document.getElementById("Player1").innerHTML = localStorage.getItem("Player1");
 			document.getElementById("Player2").innerHTML = localStorage.getItem("Player2");
 			document.getElementById("Player3").innerHTML = localStorage.getItem("Player3");
 			document.getElementById("Player4").innerHTML = localStorage.getItem("Player4");
+<<<<<<< HEAD:Frontend/public/api/auth.js
 			localStorage.setItem("current_player1", localStorage.getItem("Player1"));
 			localStorage.setItem("current_player2", localStorage.getItem("Player2"));
 			localStorage.setItem('tournamentStarted', "true");
 			document.getElementById("container_name_player").classList.add('hidden');
 			document.getElementById("tournament_graphic_id").classList.add('active');
+=======
+			setLocalStorage({"current_player1": localStorage.getItem("Player1"), "current_player2": localStorage.getItem("Player2") });
+			const tournamentStarted = true;
+			localStorage.setItem('tournamentStarted', tournamentStarted.toString());
+			updateUI({ addClass: [{ id: "tournament_graphic_id", className: "active" }, { id: "container_name_player", className: "hidden"}] });
+			// document.getElementById("container_name_player").classList.add('hidden');
+			// document.getElementById("tournament_graphic_id").classList.add('active');
+>>>>>>> rgpd:Frontend/public/api/old_js_files/auth copy.js
 			document.getElementById("start_tournament").style.display = 'none';
 			document.getElementById("back_to_menu_view_tournament").style.display = 'none';
 		} else
@@ -193,7 +259,7 @@ async function login_tournament(event) {
 	}
 }
 
-async function login_platformer(event) {
+export async function login_platformer(event) {
 	event.preventDefault();
 	const username = document.getElementById("platformer-username2").value;
 	const password = document.getElementById("platformer-password2").value;
@@ -211,23 +277,9 @@ async function login_platformer(event) {
 			localStorage.setItem("Player2", data.player2.username);
 			localStorage.setItem("platformer_view", true);
 			document.getElementById("start-platformer").click();
-			// history.pushState({}, '', '/platformer');
-			// import('../static/js/views/platformer/PlatformView.js').then((module) => {
-			// 	console.log("Home module loaded");
-			// 	const PlatformerView = module.default;
-			// 	const platformerInstance = new PlatformerView();
-			// 	platformerInstance.getHtml().then((html) => {
-			// 		const appElement = document.getElementById('app');
-			// 		if (appElement) {
-			// 			appElement.innerHTML = html;
-			// 			if (platformerInstance.createAccount && typeof platformerInstance.createAccount === 'function') {
-			// 				platformerInstance.init_game_platformer();
-			// 			}
-			// 		}
-			// 	});
-			// });
 			// document.getElementById("platformer-oponent-username1").innerHTML = localStorage.getItem("Player1");
 			// document.getElementById("platformer-oponent-username2").innerHTML = localStorage.getItem("Player2");
+			// PlatformerView(); //TODO
 		} else
 			notif(data.error, false);
 	} catch (err) {
@@ -237,74 +289,80 @@ async function login_platformer(event) {
 	document.getElementById("choose_your_opponent_platformer_form").reset();
 }
 
-async function logout() {
+export async function logout() {
 	try {
-		const user = localStorage.getItem("Player1");
-		
-		// ✅ CORRECTION : Déconnecter le WebSocket AVANT l'appel API
-		disconnectWebSocket();
-		
-		// ✅ Attendre un peu pour que la déconnexion WebSocket soit effective
-		await new Promise(resolve => setTimeout(resolve, 100));
-		
+		disconnectWebSocket(); // await new Promise(resolve => setTimeout(resolve, 100));
 		await fetchAPI('/request/user/logout', 'POST', {}, false);
 		sessionStorage.clear();
 		localStorage.clear();
 		console.log("✅ Logged out successfully !");
-		history.pushState({}, '', '/');
-		import('../static/js/views/Home.js').then((module) => {
-			console.log("Home module loaded");
-			const Home = module.default;
-			const homeInstance = new Home();
-			homeInstance.getHtml().then((html) => {
-				const appElement = document.getElementById('app');
-				if (appElement) {
-					appElement.innerHTML = html;
-					if (homeInstance.createAccount && typeof homeInstance.createAccount === 'function') {
-						homeInstance.createAccount();
-					}
-				}
-			});
-		});
+		homeView();
 	} catch (err) {
 		console.error("Erreur lors de la déconnexion :", err);
 	}
 }
 
-async function register(event) {
+export async function register(event) {
 	event.preventDefault();
 
 	const username = document.getElementById("register-username").value;
 	const password = document.getElementById("register-password").value;
 	const confirmPassword = document.getElementById("register-confirm-password").value;
 
-	if (password !== confirmPassword) {
-		notif("Passwords are different", false);
-		return;
-	}
+	if (password !== confirmPassword)
+		return notif("Passwords are different", false);
 
 	try {
 		const data = await fetchAPI('/request/user/create-user', 'POST', { username, password });
 		
 		if (data.success) {
-			document.getElementById("registerForm").reset();
-			document.getElementById("create_account_id").classList.remove("active");
-			document.getElementById("loginform_id").classList.remove("active");
+			updateUI({removeClass: ["create_account_id", "loginform_id"], resetForm: "registerForm"});
+			// document.getElementById("registerForm").reset();
+			// document.getElementById("create_account_id").classList.remove("active");
+			// document.getElementById("loginform_id").classList.remove("active");
 		}
 	} catch (err) {
 		console.error("Erreur lors de l'inscription :", err);
 	}
 }
 
+// export async function refreshInfos() { //REVIEW - check utils
+// 	try {
+// 		const data = await fetchAPI('/request/user/refresh-infos', 'POST', {}, true, false);
 
+// 		if (!data.accessToken || data.deleted_account) {
+// 			sessionStorage.clear();
+// 			localStorage.clear();
+// 			homeView(); //TODO - bug de la page de chargement lors de la redirection vers '/' apres une suppression du user par exemple
+// 			notif("Session expired, please log in again", false);
+// 		} else if (sessionStorage.getItem("accessToken") && sessionStorage.getItem("accessToken") !== "undefined") {
+// 			localStorage.clear();
+// 			setLocalStorage({"Player1": data.user.username, "profile_picture": data.user.profile_picture});
+// 			// localStorage.setItem("Player1", data.user.username);
+// 			// localStorage.setItem("profile_picture", data.user.profile_picture);
+// 			gameMenuView();
+// 		}
 
+// 		if (data.success)
+// 			console.log("Infos refreshed successfully");
+// 		else
+// 			console.error("Error refreshing infos:", data.error);
+// 	} catch (err) {
+// 		console.error("Erreur lors du rafraîchissement des informations :", err);
+// 	}
+// }
 
-
+window.addEventListener('DOMContentLoaded', () => {
+	refreshInfos();
+	setTimeout(() => { //FIXME - 
+		initGoogleSignIn();
+	}, 1000);
+});
 
 //* ==== GOOGLE SIGN-IN ==== *//
-let tokenClient;
+export let tokenClient;
 
-async function initGoogleSignIn() {
+export async function initGoogleSignIn() {
 	console.log("URL actuelle:", window.location.origin);
 
 	if (typeof google !== 'undefined' && google.accounts?.oauth2) {
@@ -312,7 +370,7 @@ async function initGoogleSignIn() {
 			const config = await fetchAPI('/request/user/google-config', 'GET', null, false);
 			
 			if (!config.success || !config.client_id) {
-				console.error("❌ Impossible de récupérer la configuration Google");
+				console.error("Impossible de récupérer la configuration Google");
 				return;
 			}
 			tokenClient = google.accounts.oauth2.initTokenClient({
@@ -331,8 +389,20 @@ async function initGoogleSignIn() {
 	}
 }
 
+// Make functions available globally for HTML event handlers and TypeScript
+window.initGoogleSignIn = initGoogleSignIn;
+window.tokenClient = tokenClient;
+window.login = login;
+window.register = register;
+window.verify2FA = verify2FA;
+window.logout = logout;
+window.login_1v1 = login_1v1;
+window.login_2v2 = login_2v2;
+window.login_tournament = login_tournament;
+window.login_platformer = login_platformer;
+
 // Fonction de gestion de la réponse Google
-async function handleGoogleSignIn(response) {
+export async function handleGoogleSignIn(response) {
 	try {
 		const accessToken = response.access_token;
 		const data = await fetchAPI('/request/user/google-signin', 'POST', { access_token: accessToken });
@@ -343,36 +413,16 @@ async function handleGoogleSignIn(response) {
 			if (data.user.profile_picture)
 				localStorage.setItem("profile_picture", data.user.profile_picture);
 			notif("Connexion Google réussie !", true);
-
-			// Redirection vers le menu du jeu
-			history.pushState({}, '', '/Game_menu');
-			setTimeout(() => {
-				import('../static/js/views/Game_menu.js').then(module => {
-					const GameMenu = module.default;
-					const gameMenuInstance = new GameMenu();
-					gameMenuInstance.getHtml().then(html => {
-						document.getElementById('app').innerHTML = html;
-						gameMenuInstance.game_menu?.();
-					});
-				});
-			}, 2000);
-		} else {
+			gameMenuView(); //TODO il y avait un delai de -> 2000
+		} else
 			notif(data.error || "Erreur lors de la connexion Google", false);
-		}
 	} catch (err) {
 		console.error("Erreur Google Sign In:", err);
-		notif("Erreur de connexion Google", false);
+		notif("Connexion Google failed", false);
 	}
 }
-
-
-window.addEventListener('DOMContentLoaded', () => {
-	refreshInfos();
-	setTimeout(() => { //FIXME - 
-		initGoogleSignIn();
-	}, 1000);
-});
 
 window.addEventListener('beforeunload', () => {
 	disconnectWebSocket()
 });
+

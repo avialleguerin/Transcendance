@@ -1,6 +1,6 @@
+import { notif } from './utils.js';
 
-
-async function fetch_users() {
+export async function fetch_users() {
 	try {
 		const response = await fetch('/request/admin/get-all-users', {
 			method: 'GET',
@@ -38,7 +38,7 @@ async function fetch_users() {
 	}
 }
 
-async function fetch_deleted_users() {
+export async function fetch_deleted_users() {
 	try {
 		const response = await fetch('/request/admin/get-deleted-users', {
 			method: 'GET',
@@ -87,7 +87,7 @@ async function fetch_deleted_users() {
 //// 	}
 //// }
 
-async function fetch_games() {
+export async function fetch_games() {
 	try {
 		const response = await fetch('/request/admin/get-all-games', {
 			method: 'GET',
@@ -132,27 +132,27 @@ async function fetch_games() {
 	}
 }
 
-async function fetch_platformers() {
-	try {
-		const response = await fetch('/request/admin/get-all-platformers', {
-			method: 'GET',
-		});
-		const platformers = await response.json();
-		document.getElementById('platformers-table').innerHTML = platformers.map(platformer => /*html*/`
-			<tr class="border-collapse text-sm hover:shadow-lg hover:rounded-xl hover:-translate-y-1 transition-all duration-200 ease-in-out cursor-pointer">
-				<td class="bg-white px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${platformer.platformerId}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.username}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.chrono}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.created_at}</td>
-				<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0"><button class="bg-red-200 hover:bg-red-300 m-2 text-red-500 hover:text-red-600 px-4 py-1 rounded-full transition-colors duration-300 ease-in-out" onclick="delete_platformer(${platformer.platformerId})">Delete</button></td>
-			</tr>
-		`).join('');
-	} catch (err) {
-		console.error('Erreur lors de la récupération des Jeux :', err);
-	}
-}
+// export async function fetch_platformers() {
+// 	try {
+// 		const response = await fetch('/request/admin/get-all-platformers', {
+// 			method: 'GET',
+// 		});
+// 		const platformers = await response.json();
+// 		document.getElementById('platformers-table').innerHTML = platformers.map(platformer => /*html*/`
+// 			<tr class="border-collapse text-sm hover:shadow-lg hover:rounded-xl hover:-translate-y-1 transition-all duration-200 ease-in-out cursor-pointer">
+// 				<td class="bg-white px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${platformer.platformerId}</td>
+// 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.username}</td>
+// 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.chrono}</td>
+// 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.created_at}</td>
+// 				<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0"><button class="bg-red-200 hover:bg-red-300 m-2 text-red-500 hover:text-red-600 px-4 py-1 rounded-full transition-colors duration-300 ease-in-out" onclick="delete_platformer(${platformer.platformerId})">Delete</button></td>
+// 			</tr>
+// 		`).join('');
+// 	} catch (err) {
+// 		console.error('Erreur lors de la récupération des Jeux :', err);
+// 	}
+// }
 
-async function fetch_platformers() {
+export async function fetch_platformers() {
 	try {
 		const response = await fetch('/request/admin/get-all-platformers', {
 			method: 'GET',
@@ -173,7 +173,7 @@ async function fetch_platformers() {
 	}
 }
 
-async function fetch_friendships() {
+export async function fetch_friendships() {
 	try {
 		const response = await fetch('/request/admin/get-all-friendships', {
 			method: 'GET',
@@ -194,7 +194,7 @@ async function fetch_friendships() {
 	}
 }
 
-async function create_user(event) {
+export async function create_user(event) {
 	event.preventDefault();
 
 	const username = document.getElementById("addUser-username").value;
@@ -225,7 +225,7 @@ async function create_user(event) {
 	fetch_users();
 };
 
-async function create_game(event) {
+export async function create_game(event) {
 	event.preventDefault();
 
 	const user1 = document.getElementById("addGame-user1").value;
@@ -257,7 +257,7 @@ async function create_game(event) {
 	fetch_games();
 };
 
-async function create_platformer(event) {
+export async function create_platformer(event) {
 	event.preventDefault();
 
 	const username1 = document.getElementById("addPlatformer-username1").value;
@@ -289,7 +289,7 @@ async function create_platformer(event) {
 };
 
 
-async function create_friendship(event) {
+export async function create_friendship(event) {
 	event.preventDefault();
 
 	const user_username = document.getElementById("addFriendship-user").value;
@@ -318,7 +318,7 @@ async function create_friendship(event) {
 	fetch_friendships();
 };
 
-async function delete_user(userId) {
+export async function delete_user(userId) {
 	if (confirm('Do you really want to delete this account ?')) {
 		try {
 			console.log('Try to delete user with ID:', userId);
@@ -349,7 +349,7 @@ async function delete_user(userId) {
 	fetch_deleted_users();
 }
 
-async function force_delete_user(userId) {
+export async function force_delete_user(userId) {
 	if (confirm('⚠️ PERMANENT DELETION WARNING ⚠️\n\nThis will PERMANENTLY DELETE the user and BREAK all game references!\nThis action cannot be undone.\n\nAre you absolutely sure?')) {
 		try {
 			console.log('Try to force delete user with ID:', userId);
@@ -381,7 +381,7 @@ async function force_delete_user(userId) {
 	fetch_deleted_users();
 }
 
-async function delete_game(gameId) {
+export async function delete_game(gameId) {
 	if (confirm('Do you really want to delete this game ?')) {
 		try {
 			const response = await fetch('/request/admin/delete-game', { 
@@ -403,7 +403,7 @@ async function delete_game(gameId) {
 	fetch_games();
 }
 
-async function delete_platformer(platformerId) {
+export async function delete_platformer(platformerId) {
 	if (confirm('Do you really want to delete this platformer ?')) {
 		try {
 			const response = await fetch('/request/admin/delete-platformer', { 
@@ -425,7 +425,7 @@ async function delete_platformer(platformerId) {
 	fetch_platformers();
 }
 
-async function delete_friendship(friendshipId) {
+export async function delete_friendship(friendshipId) {
 	if (confirm('Do you really want to delete this friendship ?')) {
 		try {
 			const response = await fetch('/request/admin/delete-friendship', { 
@@ -451,46 +451,46 @@ async function delete_friendship(friendshipId) {
 }
 
 
-async function add_user_modal() {
+export async function add_user_modal() {
 	if (!document.getElementById("addGameModal").classList.contains("hidden"))
 		document.getElementById("addGameModal").classList.add("hidden")
 	document.getElementById("addUserModal").classList.remove("hidden");
 }
 
-async function add_game_modal() {
+export async function add_game_modal() {
 	if (!document.getElementById("addUserModal").classList.contains("hidden"))
 		document.getElementById("addUserModal").classList.add("hidden")
 	document.getElementById("addGameModal").classList.remove("hidden");
 }
 
-async function add_platformer_modal() {
+export async function add_platformer_modal() {
 	if (!document.getElementById("addPlatformerModal").classList.contains("hidden"))
 		document.getElementById("addPlatformerModal").classList.add("hidden")
 	document.getElementById("addPlatformerModal").classList.remove("hidden");
 }
 
-async function add_friendship_modal() {
+export async function add_friendship_modal() {
 	if (!document.getElementById("addFriendshipModal").classList.contains("hidden"))
 		document.getElementById("addFriendshipModal").classList.add("hidden")
 	document.getElementById("addFriendshipModal").classList.remove("hidden");
 }
 
-async function close_user_modal() {
+export async function close_user_modal() {
 	document.getElementById("addUserForm").reset();
 	document.getElementById("addUserModal").classList.add("hidden");
 }
 
-async function close_game_modal() {
+export async function close_game_modal() {
 	document.getElementById("addGameForm").reset();
 	document.getElementById("addGameModal").classList.add("hidden");
 }
 
-async function close_platformer_modal() {
+export async function close_platformer_modal() {
 	document.getElementById("addPlatformerForm").reset();
 	document.getElementById("addPlatformerModal").classList.add("hidden");
 }
 
-async function close_friendship_modal() {
+export async function close_friendship_modal() {
 	document.getElementById("addFriendshipForm").reset();
 	document.getElementById("addFriendshipModal").classList.add("hidden");
 }

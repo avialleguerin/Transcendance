@@ -59,7 +59,7 @@ git branch -m ancien-nom nouveau-nom
 # Exemple : git branch -m service/django main
 ```
 
-### 🗑️ Supprimer une branche
+### Supprimer une branche
 
 ```bash
 git branch -d nom-branche            # Supprimer en local (si fusionnée)
@@ -92,7 +92,7 @@ git reset --hard <commit-hash>
 git push --force
 ```
 
-### 🔄 Réinitialiser une branche par rapport à une autre
+### Réinitialiser une branche par rapport à une autre
 
 ```bash
 git checkout branche-a-reset
@@ -106,7 +106,7 @@ git push --force origin branche-a-reset
 git merge autre-branche --allow-unrelated-histories
 ```
 
-### 🔑 Résoudre les erreurs de push (authentification)
+### Résoudre les erreurs de push (authentification)
 
 #### Si erreur : "Missing or invalid credentials"
 

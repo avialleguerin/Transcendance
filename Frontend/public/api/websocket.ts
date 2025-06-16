@@ -1,4 +1,11 @@
-class WebSocketManager {
+// import { WebSocketManager } from "./types"
+import { notif } from './utils.js'
+import { fetch_user_friendships } from './friendships.js'
+
+export class WebSocketManager {
+	private socket: WebSocket | null;
+	private heartbeatInterval: NodeJS.Timeout | null;
+	
 	constructor() {
 		this.socket = null
 		this.heartbeatInterval = null
@@ -30,9 +37,9 @@ class WebSocketManager {
 			else if (data.type === 'friend_request')
 				this.handleFriendRequest(data.message)
 			else if (data.type === 'friend_deleted')
-				this.handleFriendRequest()
+				this.handleFriendRequest(null)
 			else if (data.type === 'friend_status_update')
-				this.handleFriendRequest()
+				this.handleFriendRequest(null)
 		}
 		
 		this.socket.onclose = () => {
@@ -70,11 +77,10 @@ class WebSocketManager {
 		this.stopHeartbeat()
 		if (this.socket && this.socket.readyState === WebSocket.OPEN) {
 			console.log('Closing WebSocket connection...')
-			// ✅ Forcer la fermeture immédiate
+			// Forcer la fermeture immédiate
 			this.socket.close(1000, 'User logout')
 		}
 		this.socket = null
-		console.log('✅ WebSocket disconnected and cleaned up')
 	}
 	
 	getUserIdFromToken() {
@@ -90,8 +96,9 @@ class WebSocketManager {
 		}
 	}
 
-	handleFriendRequest(message) {
+	handleFriendRequest(message: string | null) {
 		fetch_user_friendships()
+		console.warn('Friend request received:', message)
 		if (message)
 			notif(`${message}`, true)
 	}
@@ -101,16 +108,17 @@ class WebSocketManager {
 // Instance globale du WebSocket
 export const wsManager = new WebSocketManager()
 
-// Fonctions de compatibilité pour l'ancien code
+// Connexion automatique après login
 export function connectWebSocket() {
 	wsManager.connect()
 }
 
+// Déconnexion lors du logout
 export function disconnectWebSocket() {
 	wsManager.disconnect()
 }
 
-// ✅ AJOUT : Rendre les fonctions accessibles globalement pour les fichiers non-modules
+// AJOUT : Rendre les fonctions accessibles globalement pour les fichiers non-modules
 window.connectWebSocket = connectWebSocket;
 window.disconnectWebSocket = disconnectWebSocket;
 window.wsManager = wsManager;

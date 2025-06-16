@@ -80,7 +80,7 @@ async function refreshInfos() {
 			});
 			notif("Session expired, please log in again", false);
 		} else if (sessionStorage.getItem("accessToken") && sessionStorage.getItem("accessToken") !== "undefined") {
-			// ✅ Utiliser window.connectWebSocket au lieu de l'import
+			// Utiliser window.connectWebSocket au lieu de l'import
 			if (typeof window.connectWebSocket === 'function') {
 				window.connectWebSocket();
 			}
@@ -103,14 +103,14 @@ async function refreshInfos() {
 		if (data.success) {
 			console.log("Infos refreshed successfully");
 		} else {
-			console.error("❌ Error refreshing infos:", data.error);
+			console.error("Error refreshing infos:", data.error);
 		}
 	} catch (err) {
 		console.error("Erreur lors du rafraîchissement des informations :", err);
 	}
 }
 
-// ✅ CORRECTION : Rendre la fonction accessible globalement
+// CORRECTION : Rendre la fonction accessible globalement
 window.refreshInfos = refreshInfos;
 window.fetchAPI = fetchAPI;
 window.notif = notif;

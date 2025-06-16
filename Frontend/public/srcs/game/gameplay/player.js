@@ -49,7 +49,7 @@ export function init_players(scene, player_1, player_2) {
 	}, scene);
 	player_1.position = new BABYLON.Vector3(-7, 301, -120);
 	player_1.checkPaddleCollision = true;
-	player_1.metadata = { isPlayer_paddle_1v1: true };  // Tag ajouté pour identifier ce mesh comme joueur
+	player_1.metadata = { isPlayer_paddle_1v1: true };  
 	player_1.visibility = 0;
 	
 	player_2 = new BABYLON.MeshBuilder.CreateBox("player_2", {
@@ -59,7 +59,7 @@ export function init_players(scene, player_1, player_2) {
 	}, scene);
 	player_2.position = new BABYLON.Vector3(-7, 301, -24);
 	player_2.checkPaddleCollision = true;
-	player_2.metadata = { isPlayer_paddle_1v1: true };  // Tag ajouté pour identifier ce mesh comme joueur
+	player_2.metadata = { isPlayer_paddle_1v1: true };  
 	player_2.visibility = 0;
 
 	if (currentSkinPlayer1 === 0)
@@ -70,14 +70,14 @@ export function init_players(scene, player_1, player_2) {
 				rootMesh.position = player_1.position.clone();
 				rootMesh.scaling = new BABYLON.Vector3(6, 6, 6);
 				rootMesh.rotationQuaternion = BABYLON.Quaternion.FromEulerAngles(0, Math.PI, 0);
-				rootMesh.metadata = { isPlayer_1v1: true };  // Tag ajouté pour identifier ce mesh comme joueur
+				rootMesh.metadata = { isPlayer_1v1: true };  
 			}
 		
 			newMeshes.forEach(mesh => {
 				if (mesh instanceof BABYLON.Mesh) {
 					mesh.rotationQuaternion = null;
 					mesh.rotation = new BABYLON.Vector3(Math.PI, 0, 0);
-					mesh.metadata = { isPlayer_1v1: true };  // Tag ajouté pour identifier ce mesh comme joueur
+					mesh.metadata = { isPlayer_1v1: true };  
 				}
 			});
 		
@@ -118,9 +118,9 @@ export function init_players(scene, player_1, player_2) {
 			playerRepere.position = new BABYLON.Vector3(-7, 301, -24.5);
 			playerRepere.material = new BABYLON.StandardMaterial("playerRepereMat", scene);
 			playerRepere.material.emissiveColor = new BABYLON.Color3.Red();
-			playerRepere.metadata = { isPlayerRepere_1v1: true };  // Tag ajouté pour le repère du joueur 2
+			playerRepere.metadata = { isPlayerRepere_1v1: true }; 
 		
-			// Synchronisation continue de la position
+
 			scene.registerBeforeRender(() => {
 				playerModel.position.x = player_2.position.x;
 				playerModel.position.y = player_2.position.y;
@@ -144,7 +144,7 @@ export function init_players(scene, player_1, player_2) {
 				if (mesh instanceof BABYLON.Mesh) {
 					mesh.rotationQuaternion = null;
 					mesh.rotation = new BABYLON.Vector3(Math.PI, 0, 0);
-					mesh.metadata = { isPlayer_1v1: true };  // Tag ajouté pour identifier ce mesh comme joueur
+					mesh.metadata = { isPlayer_1v1: true };  
 				}
 			});
 		
@@ -156,9 +156,9 @@ export function init_players(scene, player_1, player_2) {
 			playerRepere.position = new BABYLON.Vector3(-7, 301, -120);
 			playerRepere.material = new BABYLON.StandardMaterial("playerRepereMat", scene);
 			playerRepere.material.emissiveColor = new BABYLON.Color3.Red();
-			playerRepere.metadata = { isPlayerRepere_1v1: true };  // Tag ajouté pour le repère du joueur 2
+			playerRepere.metadata = { isPlayerRepere_1v1: true }; 
 		
-			// Synchronisation continue de la position
+
 			scene.registerBeforeRender(() => {
 				playerModel.position.x = player_1.position.x;
 				playerModel.position.y = player_1.position.y;
@@ -186,9 +186,9 @@ export function init_players(scene, player_1, player_2) {
 			playerRepere.position = new BABYLON.Vector3(-7, 301, -24.5);
 			playerRepere.material = new BABYLON.StandardMaterial("playerRepereMat", scene);
 			playerRepere.material.emissiveColor = new BABYLON.Color3.Red();
-			playerRepere.metadata = { isPlayerRepere_1v1: true };  // Tag ajouté pour le repère du joueur 2
+			playerRepere.metadata = { isPlayerRepere_1v1: true }; 
 		
-			// Synchronisation continue de la position
+
 			scene.registerBeforeRender(() => {
 				playerModel.position.x = player_2.position.x;
 				playerModel.position.y = player_2.position.y;
@@ -212,7 +212,7 @@ export function init_players(scene, player_1, player_2) {
 				if (mesh instanceof BABYLON.Mesh) {
 					mesh.rotationQuaternion = null;
 					mesh.rotation = new BABYLON.Vector3(Math.PI, 0, 0);
-					mesh.metadata = { isPlayer_1v1: true };  // Tag ajouté pour identifier ce mesh comme joueur
+					mesh.metadata = { isPlayer_1v1: true };  
 				}
 			});
 		
@@ -224,9 +224,9 @@ export function init_players(scene, player_1, player_2) {
 			playerRepere.position = new BABYLON.Vector3(-7, 301, -120);
 			playerRepere.material = new BABYLON.StandardMaterial("playerRepereMat", scene);
 			playerRepere.material.emissiveColor = new BABYLON.Color3.Red();
-			playerRepere.metadata = { isPlayerRepere_1v1: true };  // Tag ajouté pour le repère du joueur 2
+			playerRepere.metadata = { isPlayerRepere_1v1: true }; 
 		
-			// Synchronisation continue de la position
+
 			scene.registerBeforeRender(() => {
 				playerModel.position.x = player_1.position.x;
 				playerModel.position.y = player_1.position.y;
@@ -254,9 +254,9 @@ export function init_players(scene, player_1, player_2) {
 			playerRepere.position = new BABYLON.Vector3(-7, 301, -24.5);
 			playerRepere.material = new BABYLON.StandardMaterial("playerRepereMat", scene);
 			playerRepere.material.emissiveColor = new BABYLON.Color3.Red();
-			playerRepere.metadata = { isPlayerRepere_1v1: true };  // Tag ajouté pour le repère du joueur 2
+			playerRepere.metadata = { isPlayerRepere_1v1: true }; 
 		
-			// Synchronisation continue de la position
+
 			scene.registerBeforeRender(() => {
 				playerModel.position.x = player_2.position.x;
 				playerModel.position.y = player_2.position.y;
@@ -280,7 +280,7 @@ export function init_players(scene, player_1, player_2) {
 				if (mesh instanceof BABYLON.Mesh) {
 					mesh.rotationQuaternion = null;
 					mesh.rotation = new BABYLON.Vector3(Math.PI, 0, 0);
-					mesh.metadata = { isPlayer_1v1: true };  // Tag ajouté pour identifier ce mesh comme joueur
+					mesh.metadata = { isPlayer_1v1: true };  
 				}
 			});
 		
@@ -292,9 +292,9 @@ export function init_players(scene, player_1, player_2) {
 			playerRepere.position = new BABYLON.Vector3(-7, 301, -120);
 			playerRepere.material = new BABYLON.StandardMaterial("playerRepereMat", scene);
 			playerRepere.material.emissiveColor = new BABYLON.Color3.Red();
-			playerRepere.metadata = { isPlayerRepere_1v1: true };  // Tag ajouté pour le repère du joueur 2
+			playerRepere.metadata = { isPlayerRepere_1v1: true }; 
 		
-			// Synchronisation continue de la position
+
 			scene.registerBeforeRender(() => {
 				playerModel.position.x = player_1.position.x;
 				playerModel.position.y = player_1.position.y;
@@ -322,9 +322,9 @@ export function init_players(scene, player_1, player_2) {
 			playerRepere.position = new BABYLON.Vector3(-7, 301, -24.5);
 			playerRepere.material = new BABYLON.StandardMaterial("playerRepereMat", scene);
 			playerRepere.material.emissiveColor = new BABYLON.Color3.Red();
-			playerRepere.metadata = { isPlayerRepere_1v1: true };  // Tag ajouté pour le repère du joueur 2
+			playerRepere.metadata = { isPlayerRepere_1v1: true }; 
 		
-			// Synchronisation continue de la position
+
 			scene.registerBeforeRender(() => {
 				playerModel.position.x = player_2.position.x;
 				playerModel.position.y = player_2.position.y;

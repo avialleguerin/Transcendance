@@ -108,7 +108,7 @@ function createOptimizedSkybox(scene) {
 	skyMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
 	
 	// Texture avec paramètres adaptés à la qualité
-	const skyTexture = new BABYLON.Texture("/srcs/game/assets/skybox/skybox.jpg", scene);
+	const skyTexture = new BABYLON.Texture("assets/skybox/skybox.jpg", scene);
 	skyTexture.coordinatesMode = BABYLON.Texture.SPHERICAL_MODE;
 	skyTexture.hasAlpha = false;
 	skyTexture.generateMipMaps = !simplifiedSkybox;
@@ -412,19 +412,19 @@ engine.runRenderLoop(() => {
 			lastFpsUpdate = now;
 			frameCount = 0;
 		}
-		
-		// Applique toujours les paramètres de qualité 'low'
-		qualityLevel = 'low';
-		const accessToken = sessionStorage.getItem('accessToken');
-		if ((accessToken && accessToken !== undefined) && accessToken !== "undefined" && !isConnected) {
-			isConnected = true;
-			handleViewTransitions("vue1", "default");
-		}
+		applyQualitySettings();
+		// const accessToken = sessionStorage.getItem('accessToken');
+		// if ((accessToken && accessToken !== undefined) && accessToken !== "undefined" && !isConnected) {
+		// 	isConnected = true;
+		// 	console.log("User is connectedddddddddddddddddddddddddddddd");
+		// 	// handleViewTransitions("vue1", "default");
+		// }
 
-		if (!(accessToken && accessToken !== undefined) && accessToken !== "undefined" && isConnected) {
-			isConnected = false;
-			handleViewTransitions("vue1", "vue2");
-		}
+		// if (!(accessToken && accessToken !== undefined) && accessToken !== "undefined" && isConnected) {
+		// 	isConnected = false;
+		// 	console.log("User is disconnectedddddddddddddddddddddddddddddd");
+		// 	// handleViewTransitions("vue1", "vue2");
+		// }
 
 		if (Solo_gameStart && !gameIsFinished) {
 			if (!initialized) {

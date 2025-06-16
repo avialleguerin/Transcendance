@@ -3,10 +3,10 @@ import argon2 from "argon2";
 export async function hashPassword(password) {
 	try {
 		const hashedPassword = await argon2.hash(password, {
-			type: argon2.argon2id,	// ✅ Le plus sécurisé
-			memoryCost: 65536,		// 64MB de mémoire
-			timeCost: 3,		 	// 3 itérations
-			parallelism: 4			// 4 threads
+			type: argon2.argon2id,
+			memoryCost: 65536,
+			timeCost: 3,
+			parallelism: 4
 		});
 		return hashedPassword;
 	} catch (err) {
