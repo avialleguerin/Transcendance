@@ -8,6 +8,8 @@ import { disable_skin_perso_player_first_and_seconde } from "../../../srcs/game/
 import { getPlayer_1_win, getPlayer_2_win } from "../../../srcs/game/gameplay/score.js";
 import { disable_skin_perso_player_first_and_seconde_default } from "../../../srcs/game/gameplay/solo/skin/init_skin_player_default.js";
 import { get_skin_is_init } from "../../../srcs/game/gameplay/solo/skin/init_skin_utils.js";
+// import { log } from '../../../utils/logger.js';
+import { homeView } from "../../../api/utils.js";
 
 let spacePressed = false;
 let bool = false;
@@ -19,26 +21,12 @@ export default class solo_game extends AbstractView {
 	cooldowns: { [key: string]: boolean };
 	cooldownTimes: { [key: string]: number };
 	boundKeyPressHandler: (event: KeyboardEvent) => void;
-	gameLoop: number | null;
+	gameLoop: ReturnType<typeof setInterval> | null;
 
 	constructor() {
 		const accessToken: string | null = sessionStorage.getItem('accessToken');
-		if (!accessToken || accessToken === undefined) {
-			history.pushState({}, '', '/');
-			import('./Home.js').then((module: any) => {
-				const Home = module.default;
-				const homeInstance = new Home();
-				homeInstance.getHtml().then((html: string) => {
-					const appElement = document.getElementById('app');
-					if (appElement) {
-						appElement.innerHTML = html;
-						if (homeInstance.createAccount && typeof homeInstance.createAccount === 'function') {
-							homeInstance.createAccount();
-						}
-					}
-				});
-			});
-		}
+		if (!accessToken || accessToken === undefined)
+			homeView();
 		super();
 		this.setTitle("solo_game");
 
@@ -139,8 +127,11 @@ export default class solo_game extends AbstractView {
 							<h1 id="looser_id"></h1>
 						</div>
 					</div>
-					<button class="leave_game_2" id="leave_game_2_id" onclick="create_1v1_game(event, '${localStorage.getItem('Player1')}', '${localStorage.getItem('Player2')}')">Quitter la partie</button>
+					<button class="leave_game_2" id="leave_game_2_id" onclick="window.create_1v1_game(event, '${localStorage.getItem('Player1')}', '${localStorage.getItem('Player2')}')">Quitter la partie</button>
 				</div>
+			</div>
+			<div id="notification-container" class="fixed top-0 left-0 right-0 flex justify-center z-50 mt-4">
+				<p id="resultMessage" class="py-2 px-4 rounded shadow-lg transition-all duration-300 transform translate-y-0 opacity-0"></p>
 			</div>
 		`;
 	}

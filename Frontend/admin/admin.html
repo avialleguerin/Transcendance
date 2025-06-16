@@ -86,7 +86,6 @@
 							</tr>
 						</thead>
 						<tbody class="bg-white " id="users-table">
-							 <!-- Data will be injected here by JavaScript -->
 						</tbody>
 					</table>
 				</div>
@@ -99,15 +98,15 @@
 				<h2 class="text-2xl font-semibold text-center mb-2">Add User</h2>
 				<div class="mb-2">
 					<label for="username" class="block text-gray-700 font-medium">Username :</label>
-					<input type="text" id="addUser-username" name="username" placeholder="Username" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
+					<input type="text" id="addUser-username" name="username" placeholder="Username" autocomplete="username" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
 				</div>
 				<div class="mb-2">
 					<label for="password" class="block text-gray-700 font-medium">Password :</label>
-					<input type="password" id="addUser-password" name="password" placeholder="Password" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
+					<input type="password" id="addUser-password" name="password" placeholder="Password" autocomplete="new-password" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
 				</div>
 				<div class="mb-2">
 					<label for="password" class="block text-gray-700 font-medium">Confirm password :</label>
-					<input type="password" id="addUser-confirm-password" name="password" placeholder="Password" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
+					<input type="password" id="addUser-confirm-password" name="password" placeholder="Password" autocomplete="new-password" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
 				</div>
 				<button type="submit" class="w-full bg-violet-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-violet-600 transition">Add</button>
 				<button type="button" class="mt-4 w-full border border-violet-500 text-violet-500 font-bold py-2 px-4 rounded-lg hover:bg-violet-500 hover:text-white transition" onclick="close_user_modal()">Cancel</button>
@@ -140,14 +139,14 @@
 
 		<div id="addFriendshipModal" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 hidden w-[400px]">
 			<form id="addFriendshipForm" class="mx-auto bg-white p-6 rounded-lg shadow-lg" onsubmit="create_friendship(event)">
-				<h2 class="text-2xl font-semibold text-center mb-2">Add User</h2>
+				<h2 class="text-2xl font-semibold text-center mb-2">Add Friendship</h2>
 				<div class="mb-2">
 					<label for="username" class="block text-gray-700 font-medium">User :</label>
-					<input type="text" id="addFriendship-user" name="username" placeholder="Username" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
+					<input type="text" id="addFriendship-user" name="username" placeholder="Username" autocomplete="username" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
 				</div>
 				<div class="mb-2">
 					<label for="username" class="block text-gray-700 font-medium">Friend username :</label>
-					<input type="text" id="addFriendship-friend" name="username" placeholder="Username" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
+					<input type="text" id="addFriendship-friend" name="friendname" placeholder="friendname" autocomplete="friendname" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
 				</div>
 				<button type="submit" class="w-full bg-violet-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-violet-600 transition">Add</button>
 				<button type="button" class="mt-4 w-full border border-violet-500 text-violet-500 font-bold py-2 px-4 rounded-lg hover:bg-violet-500 hover:text-white transition" onclick="close_friendship_modal()">Cancel</button>
@@ -456,7 +455,6 @@
 							</tr>
 						</thead>
 						<tbody id="deleted-users-table">
-							<!-- Data will be injected here by JavaScript -->
 						</tbody>
 					</table>
 				</div>
@@ -464,9 +462,7 @@
 		</div>
 
 	</main>
-
-	<script src="./api/admin.js"></script>
-	<script src="./api/utils.js"></script>
+	<script type="module" src="./api/admin.js"></script>
 	<script>
 		function showTab(tabId) {
 			const tabNames = {
@@ -478,7 +474,6 @@
 				'deleted-tab': 'Deleted Users'
 			};
 			
-			// Stock the active tab in localStorage
 			localStorage.setItem('transcendance_admin_active_tab', tabId);
 			
 			document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
@@ -496,7 +491,6 @@
 		}
 	
 		window.onload = () => {
-			// Get the last active tab or use 'users-tab' by default
 			const lastActiveTab = localStorage.getItem('transcendance_admin_active_tab') || 'users-tab';
 			showTab(lastActiveTab);
 		}

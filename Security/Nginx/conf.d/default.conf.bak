@@ -1,3 +1,5 @@
+
+
 # Redirection HTTP vers HTTPS pour le site principal
 server {
 	listen 8080;
@@ -6,18 +8,6 @@ server {
 }
 
 # Redirection HTTP vers HTTPS pour l'admin
-server {
-	listen 8081;
-	server_name 0.0.0.0;
-	return 301 https://$host:8143$request_uri;
-}
-
-server {
-	listen 8080;
-	server_name 0.0.0.0;
-	return 301 https://$host:8443$request_uri;
-}
-
 server {
 	listen 8081;
 	server_name 0.0.0.0;
@@ -51,6 +41,16 @@ server {
 			image/jpeg jpg jpeg;
 			image/png png;
 			image/gif gif;
+		}
+	}
+
+	location /assets/ {
+		alias /usr/share/nginx/dist/srcs/game/assets/;
+		types {
+			image/jpeg jpg jpeg;
+			image/png png;
+			image/gif gif;
+			image/svg+xml svg;
 		}
 	}
 
@@ -96,10 +96,16 @@ server {
 		try_files $uri $uri/ /admin.html;
 		auth_basic "Protected Area";
 		auth_basic_user_file /etc/nginx/passwd/.htpasswd;
+		
 	}
 
 	location /api/ {
-		alias /usr/share/nginx/html/api/;
+		alias /usr/share/nginx/dist/api/;
+		add_header Content-Type "application/javascript" always;
+		types {
+			application/javascript js;
+		}
+		try_files $uri =404;
 	}
 
 	location /image/ {
@@ -110,6 +116,14 @@ server {
 			image/gif gif;
 		}
 	}
+
+	# location /srcs/ {
+	# 	alias /usr/share/nginx/dist/srcs/;
+	# 	add_header Content-Type "application/javascript" always;
+	# 	types {
+	# 		application/javascript js;
+	# 	}
+	# }
 
 	location /request/ {
 		proxy_pass http://fastify:3000;

@@ -3239,16 +3239,16 @@ to {
 }
 
 /* Statuts différents */
-.status-online {
+.online {
 	background-color: #2ecc71; /* Vert vif mais pas trop agressif */
 	box-shadow: 0 0 6px rgba(46, 204, 113, 0.7); /* Effet lumineux */
 }
 
-.status-offline {
+.offline {
 	background-color: #95a5a6; /* Gris neutre */
 }
 
-.notify_friend_demand {
+#notify_friend_demand {
 	width: 10px;
 	height: 10px;
 	border-radius: 50%;
@@ -3259,6 +3259,7 @@ to {
 	box-shadow: 0 0 6px rgba(204, 46, 46, 0.7);
 	top: 6.8%;
 	left: 76%;
+	display: none;
 }
 
 
@@ -3345,7 +3346,7 @@ to {
 }
 
 .delete-btn img:hover {
-	background-color: rgb(146, 7, 7);
+	content: url("../../../srcs/game/assets/image/trash-red.svg");
 }
 
 .pending {

@@ -1,5 +1,11 @@
 import { getSoloGameStart, getMultiGameStart } from "./babylon.js";
 
+
+var view1Meshes = [];
+var view2Meshes = [];
+var view3Meshes = [];
+
+
 export function create_game(scene)
 {
 	const border_right = new BABYLON.MeshBuilder.CreateBox("border", {
@@ -60,14 +66,12 @@ export function init_game(scene)
 	});
 }
 
-let view1Meshes = [];
-let view2Meshes = [];
-let view3Meshes = [];
 
 // ========================= VIEW 1 =========================
 
-export function create_environment_view1(scene)
-{
+export function create_environment_view1(scene) {
+	view1Meshes = [];
+
 	const grassTexture = new BABYLON.Texture("/srcs/game/assets/image/perfect-green-grass.jpg", scene);
 	grassTexture.anisotropicFilteringLevel = 8;
 	grassTexture.uScale = 5;
@@ -131,8 +135,8 @@ export function create_environment_view1(scene)
 
 // ========================= VIEW 2 =========================
 
-export function create_environment_view2(scene)
-{
+export function create_environment_view2(scene) {
+	view2Meshes = [];
 
 	BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/3d_object/", "versionFinalV2.glb", scene, function (meshes) {
 		const container = new BABYLON.TransformNode("container", scene);

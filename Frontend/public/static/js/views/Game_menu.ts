@@ -11,43 +11,26 @@ import { getValue_leave_game, setLeaveGameVar } from "../index.js";
 import { enable_skin_perso_player_solo, disable_skin_perso_player_solo, disable_skin_perso_player_solo_and_save, switch_skin_perso_player1_left, switch_skin_perso_player1_right, switch_skin_perso_player2_left, switch_skin_perso_player2_right } from "../../../srcs/game/gameplay/solo/skin/init_skin_perso.js";
 import { enable_skin_multi, disable_skin_and_save_multi, disable_skin_multi, switch_skin_perso_player1_right_multi, switch_skin_perso_player1_left_multi, switch_skin_perso_player2_left_multi, switch_skin_perso_player2_right_multi, switch_skin_perso_player3_left_multi, switch_skin_perso_player3_right_multi, switch_skin_perso_player4_left_multi, switch_skin_perso_player4_right_multi } from "../../../srcs/game/gameplay/multiplayer/init_skin_perso_multi.js";
 import { get_skin_is_init } from "../../../srcs/game/gameplay/solo/skin/init_skin_utils.js";
-
+import { homeView } from "../../../api/utils.js";
 
 let powerUP_nb = 0;
 let powerUP_nb_multi = 0;
 
-if (localStorage.getItem('historyIsVisible') === null) {
+if (localStorage.getItem('historyIsVisible') === null)
 	localStorage.setItem('historyIsVisible', 'false');
-}
-
-console.log("historyIsVisible:", localStorage.getItem('historyIsVisible'));
 
 export default class Game_menu extends AbstractView {
 	constructor() {
 		super();
 		this.setTitle("game-menu");
 		const accessToken: string | null = sessionStorage.getItem('accessToken');
-		if (!accessToken || accessToken === undefined) {
-			history.pushState({}, '', '/');
-			import('./Home.js').then((module: any) => {
-				const Home = module.default;
-				const homeInstance = new Home();
-				homeInstance.getHtml().then((html: string) => {
-					const appElement = document.getElementById('app');
-					if (appElement) {
-						appElement.innerHTML = html;
-						if (homeInstance.createAccount && typeof homeInstance.createAccount === 'function') {
-							homeInstance.createAccount();
-						}
-					}
-				});
-			});
-		}
+		if (!accessToken || accessToken === undefined)
+			homeView();
 	}
 
 	async getHtml(): Promise<string> {
 		return /*html*/`
-		<link rel="stylesheet" href="./static/js/css/Game_menu.css">
+		<link rel="stylesheet" href="./static/js/css/game_menu.css">
 		<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 		<div class="navbar_menu">
 			<div class="profile_photo_circle_nav_bar" id="profile_photo_circle_nav_bar"><img src="./uploads/${localStorage.getItem('profile_picture')}" alt="profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;"></div>
@@ -219,7 +202,7 @@ export default class Game_menu extends AbstractView {
 				<div class="friend_tabs">
 					<button id="tab-accepted" class="tab-btn active">Friends</button>
 					<button id="tab-pending" class="tab-btn">On hold</button>
-					<div class="notify_friend_demand" title="Friend Request"></div>
+					<div id="notify_friend_demand" title="Friend Request"></div>
 				</div>
 
 				<!-- Sections d'amis -->
@@ -370,7 +353,7 @@ export default class Game_menu extends AbstractView {
 				<div class="parrametres_profile" id="parametres_profile">
 					<div class="parametres_profile_content">
 						<h1>PROFILE SETTINGS</h1>
-						<form id="modif_profil" class="modif_profile" onsubmit="accessProfileInfo(event)">
+						<form id="modif_profile" class="modif_profile" onsubmit="accessProfileInfo(event)">
 							<label for="mdp">Password</label>
 							<input type="password" id="password" name="password" placeholder="Password" required>
 							<button type="submit" class="btn_valider_mdp">Valider</button>
@@ -411,7 +394,7 @@ export default class Game_menu extends AbstractView {
 								<button id="deconnect_btn" class="btn_deconnect_btn" onclick="logout()">Deconnexion</button>
 							</div>
 							<div class="btn_delete">
-								<button id="delete_btn" class="btn_delete_btn" onclick="delete_account()">Delete account</button>
+								<button id="delete_btn" class="btn_delete_btn" onclick="delete_account()">Delete account</button> //STUB
 							</div>
 							<div class="export_btn">
 								<button id="export_btn" class="btn_export_btn" onclick="export_data()">Export data</button>
@@ -469,7 +452,7 @@ export default class Game_menu extends AbstractView {
 
 
 				<div class="choose_your_opponent_multi" id="choose_your_opponent_multi_id">
-					<form class="choose_your_opponent_multi_content" id="choose_your_opponent_multi_form" onclick="login_2v2(event)">
+					<form class="choose_your_opponent_multi_content" id="choose_your_opponent_multi_form" onsubmit="login_2v2(event)">
 						<h1>CONNECT YOUR OPPONENTS</h1>
 
 						<div class="player-section">
@@ -733,36 +716,36 @@ export default class Game_menu extends AbstractView {
 		</div>
 	`;}
 
-	// init_solo_game() {
-	// 	document.getElementById("solo_1v1_btn").addEventListener("click", () => {
-	// 		console.log("Solo 1v1 game started");
-	// 		startGame();
-	// 		handleViewTransitions("vue3", "vue2");
-	// 	});
-	// }
+	init_solo_game() {
+		document.getElementById("solo_1v1_btn").addEventListener("click", () => {
+			console.debug("Solo 1v1 game started");
+			startGame();
+			handleViewTransitions("vue3", "vue2");
+		});
+	}
 
-	// initEvents() {
-	// 	document.getElementById("multiplayer_btn").addEventListener("click", () => {
-	// 		// console.log("Multiplayer 2v2 game started");
-	// 		startMultiGame();
-	// 		handleViewTransitions("vue3", "vue2");
-	// 	});
-	// }
+	initEvents() {
+		document.getElementById("multiplayer_btn").addEventListener("click", () => {
+			console.debug("Multiplayer 2v2 game started");
+			startMultiGame();
+			handleViewTransitions("vue3", "vue2");
+		});
+	}
 
 
-	// tournament_view() {
-	// 	document.getElementById("tournament_view").addEventListener("click", () => {
-	// 		// console.log("Tournament view started");
-	// 		handleViewTransitions("tournament");
-	// 	});
-	// }
+	tournament_view() {
+		document.getElementById("tournament_view").addEventListener("click", () => {
+			console.debug("Tournament view started");
+			handleViewTransitions("tournament");
+		});
+	}
 
 	handleDeconnection() {
 		const deconnect_btn = document.getElementById("deconnect_btn");
 
 		deconnect_btn.addEventListener("click", () => {
+			console.debug("Back to home page");
 			handleViewTransitions("vue1", "vue2");
-			// console.log("Back to home page");
 			window.history.back();
 		});
 	}
@@ -800,7 +783,6 @@ export default class Game_menu extends AbstractView {
 		const back_to_select_mode_view7 = document.getElementById('back_to_select_mode_view7');
 		const back_to_select_mode_view8 = document.getElementById('back_to_select_mode_view8');
 		const choose_your_opponent_platformer_form = document.getElementById('choose_your_opponent_platformer_form');
-
 		// const back_to_menu_view_tournament = document.getElementById('back_to_menu_view_tournament');
 
 		//*==== CGU & Privacy Policy Modals ====*/
@@ -808,61 +790,47 @@ export default class Game_menu extends AbstractView {
 		const cguModal = document.getElementById("cgu-modal");
 		const cguBackButton = document.getElementById("cgu-back-button");
 		
-		// Modifier l'event listener d'ouverture des CGU
 		showCguLink?.addEventListener("click", (e) => {
 			e.preventDefault();
 			cguModal?.classList.add("active");
-			// Ajouter cette ligne pour empêcher le scroll du contenu derrière
 			document.body.style.overflow = "hidden";
 		});
 
-		// Modifier les listeners de fermeture aussi
 		cguBackButton?.addEventListener("click", () => {
 			cguModal?.classList.remove("active");
-			// Réactiver le scroll quand on ferme
 			document.body.style.overflow = "";
 		});
 
-		// Ajout : fermer le modal en cliquant à l'extérieur
 		cguModal?.addEventListener("click", (event) => {
 			if (event.target === cguModal) {
 				cguModal?.classList.remove("active");
-				// Réactiver le scroll quand on ferme
 				document.body.style.overflow = "";
 			}
 		});
 
-		// Gestion de la Politique de Confidentialité
         const showPrivacyPolicyLink = document.getElementById("show-privacy-policy");
         const privacyPolicyModal = document.getElementById("privacy-policy-modal");
         const privacyPolicyBackButton = document.getElementById("privacy-policy-back-button");
 
-        // Modifier l'event listener d'ouverture de la Politique de Confidentialité
         showPrivacyPolicyLink?.addEventListener("click", (e) => {
             e.preventDefault();
             privacyPolicyModal?.classList.add("active");
-            // Ajouter cette ligne pour empêcher le scroll du contenu derrière
             document.body.style.overflow = "hidden";
         });
 
-        // Modifier les listeners de fermeture aussi
         privacyPolicyBackButton?.addEventListener("click", () => {
             privacyPolicyModal?.classList.remove("active");
-            // Réactiver le scroll quand on ferme
             document.body.style.overflow = "";
         });
 
-        // Ajout : fermer le modal en cliquant à l'extérieur
         privacyPolicyModal?.addEventListener("click", (event) => {
             if (event.target === privacyPolicyModal) {
                 privacyPolicyModal?.classList.remove("active");
-                // Réactiver le scroll quand on ferme
                 document.body.style.overflow = "";
             }
         });
 
 		btn_jouer.addEventListener('click', () => {
-			console.log('JOUER button clicked');
 			view1.classList.add('active');
 			view2.classList.add('active');
 			btn_back_home.classList.add('active');
@@ -876,19 +844,17 @@ export default class Game_menu extends AbstractView {
 				view5.classList.remove('active');
 				view2.classList.add('active');
 			} 
-			else if (!view2.classList.contains('active')) {
+			else if (!view2.classList.contains('active'))
 				view2.classList.add('active');
-			}
 		});
 
 		let skin = get_skin_is_init();
 		const skin_id = document.getElementById('skin');
 		const skin_id_multi = document.getElementById('skin_multi');
 
-		console.log('skin_id', skin);
 
 		if (skin == false) {
-			console.log('skin_id');
+			console.debug('Skin is not initialized, hiding skin options and UI');
 			skin_id.classList.add('hidden');
 			skin_id_multi.classList.add('hidden');
 		}
@@ -934,7 +900,7 @@ export default class Game_menu extends AbstractView {
 		/***********************************************************************/
 
 		if (!view3.classList.contains('active')) {
-			console.log('view3 is active');
+			console.debug('Active view: view3 (Solo Game)');
 			back_to_menu_view3.addEventListener('click', () => {
 				view3.classList.remove('active');
 				view2.classList.add('active');
@@ -944,7 +910,7 @@ export default class Game_menu extends AbstractView {
 		}
 
 		if (!view4.classList.contains('active')) {
-			console.log('view4 is active');
+			console.log('Active view: view4 (Multiplayer Game)');
 			back_to_menu_view4.addEventListener('click', () => {
 				view4.classList.remove('active');
 				view2.classList.add('active');
@@ -972,12 +938,14 @@ export default class Game_menu extends AbstractView {
 
 		btn_back_home.addEventListener('click', () => {
 			if (view2.classList.contains('active')) {
+				console.debug('Back home button clicked, removing active class from view2');
 				view2.classList.remove('active');
 				view1.classList.remove('active');
 				btn_back_home.classList.remove('active');
 				btn_jouer.style.display = 'block';
 			}
 			if (view5.classList.contains('active')) {
+				console.debug('Back home button clicked, removing active class from view5');
 				view5.classList.remove('active');
 				view1.classList.remove('active');
 				btn_back_home.classList.remove('active');

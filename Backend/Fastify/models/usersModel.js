@@ -1,4 +1,3 @@
-//CRUD Model actually and MVC Structure
 import db from "../utils/db.js";
 import { getCurrentCGUVersion } from "../utils/cgu.js";
 
@@ -18,13 +17,11 @@ export const CREATE_USERS_TABLE = `
 		last_activity DATETIME DEFAULT CURRENT_TIMESTAMP,
 		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 		deleted_at DATETIME DEFAULT NULL,
-        google_id TEXT UNIQUE
+		google_id TEXT UNIQUE
 	);
 `;
 
 const usersModel = {
-	//** CRUD */
-	
 	//* Create
 	createUser: (username, password) => { const currentCGUVersion = "1.0"; db.prepare("INSERT INTO users (username, password, cgu_version) VALUES (?, ?, ?)").run(username, password, currentCGUVersion); return { username }; },
 
@@ -55,7 +52,7 @@ const usersModel = {
 	updateGamesWon: (userId) => { return db.prepare("UPDATE users SET games_won = games_won + 1 WHERE userId = ?").run(userId) },
 	updateGamesLost: (userId) => { return db.prepare("UPDATE users SET games_lost = games_lost + 1 WHERE userId = ?").run(userId) },
 	updateUserCGUVersion: (userId, version) => { return db.prepare("UPDATE users SET cgu_version = ?, cgu_accepted = CURRENT_TIMESTAMP WHERE userId = ?").run(version, userId) },
-	updateLastActivity: (userId) => { return db.prepare("UPDATE users SET last_activity = CURRENT_TIMESTAMP, online_status = 1 WHERE userId = ?").run(userId) },
+	updateLastActivity: (userId) => { return db.prepare("UPDATE users SET last_activity = CURRENT_TIMESTAMP WHERE userId = ?").run(userId) },
 	
 	//* Delete
 	delete: (userId) => { return db.prepare("DELETE FROM users WHERE userId = ?").run(userId) },
@@ -64,34 +61,14 @@ const usersModel = {
 		const anonymizedUsername = `del_${userId}`;
 		const anonymizedPassword = 'DELETED_ACCOUNT';
 		const defaultProfilePicture = 'default-profile-picture.png';
-		
-		return db.prepare(`
-			UPDATE users
-			SET username = ?,
-				password = ?,
-				profile_picture = ?,
-				doubleAuth_status = 0,
-				doubleAuth_secret = ?,
-				google_id = NULL,
-				deleted_at = CURRENT_TIMESTAMP
-			WHERE userId = ?
-		`).run(anonymizedUsername, anonymizedPassword, defaultProfilePicture, null, userId);
+		return db.prepare(`UPDATE users SET username = ?, password = ?, profile_picture = ?, doubleAuth_status = 0, doubleAuth_secret = ?, google_id = NULL, deleted_at = CURRENT_TIMESTAMP WHERE userId = ?`).run(anonymizedUsername, anonymizedPassword, defaultProfilePicture, null, userId);
 	},
 	forceDeleteUser: (userId) => {
-		// Utiliser une transaction pour supprimer toutes les références
 		const transaction = db.transaction(() => {
-			// Supprimer toutes les parties où l'utilisateur est impliqué
-			db.prepare("DELETE FROM games WHERE user1_id = ? OR user2_id = ? OR user3_id = ? OR user4_id = ?")
-				.run(userId, userId, userId, userId);
-			
-			// Supprimer toutes les amitiés de l'utilisateur
-			db.prepare("DELETE FROM friendships WHERE userId = ? OR friendId = ?")
-				.run(userId, userId);
-			
-			// Supprimer l'utilisateur
+			db.prepare("DELETE FROM games WHERE user1_id = ? OR user2_id = ? OR user3_id = ? OR user4_id = ?").run(userId, userId, userId, userId);
+			db.prepare("DELETE FROM friendships WHERE userId = ? OR friendId = ?").run(userId, userId);
 			return db.prepare("DELETE FROM users WHERE userId = ?").run(userId);
 		});
-		
 		return transaction();
 	},
 	

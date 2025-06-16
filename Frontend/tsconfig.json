@@ -13,6 +13,6 @@
     "allowJs": true,
     "strictNullChecks": false           // TODO: Set to true when all code is updated
   },
-  "include": ["public/static/js/**/*.ts"],
+  "include": ["public/static/js/**/*.ts", "public/api/**/*.ts"],
   "exclude": ["node_modules"]
 }

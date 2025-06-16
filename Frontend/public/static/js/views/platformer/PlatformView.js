@@ -13,10 +13,8 @@ export default class PlatformerView extends AbstractView {
         this.setTitle("platformer");
         
         if (check_verfication === true) {
-            console.log("je suis laaaaaaaaaaaaaaaaaaa");
-            if (window.location.pathname === "/PlatformView") {
+            if (window.location.pathname === "/PlatformView")
                 this.gameLoop = setInterval(() => { this.check_game_is_finish(); }, 1000);
-            }
         }
     }
     
