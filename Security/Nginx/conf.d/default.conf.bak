@@ -140,13 +140,18 @@ server {
 	}
 }
 
-#   location /api/ {
-#         modsecurity on;							# Active ModSecurity (pare-feu applicatif)
-#         # modsecurity_rules_file /etc/modsecurity/modsecurity.conf;  # Fichier de config ModSecurity
+server {
+	listen 3001 ssl;
+	server_name 0.0.0.0;
 
-#         proxy_pass http://fastify:3000;                 # Redirige les requêtes vers ton backend Fastify
-#         proxy_set_header Host $host;                    # Transmet l'en-tête Host
-#         proxy_set_header X-Real-IP $remote_addr;        # Transmet l'IP réelle du client
-#         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;  # IPs en cascade
-#         proxy_set_header X-Forwarded-Proto $scheme;     # Transmet le protocole (http ou https)
-#     }
+	ssl_certificate /etc/nginx/conf/server.crt;
+	ssl_certificate_key /etc/nginx/conf/server.key;
+
+	location / {
+		proxy_pass http://grafana:3001;
+		proxy_set_header Host $host;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Proto $scheme;
+	}
+}

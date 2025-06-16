@@ -5,8 +5,8 @@ import { getUserFriendships, addFriend, acceptFriend, deleteFriend } from '../co
 import { getAllUsers, getDeletedUsers, deleteUser, forceDeleteUser, getAllGames, createGame, deleteGame, getAllPlatformers, addPlatformer, deletePlatformer, getAllFriendships, addFriendship, deleteFriendship } from '../controllers/adminController.js';
 import { getSQLiteCreds } from '../utils/vault.js';
 import { refreshInfos } from '../controllers/utils.js';
-import { env } from 'process';
 import { envLogConfig } from '../utils/logger.js';
+import { getMetrics } from '../utils/metrics.js';
 
 export default async function routes (fastify) {
 
@@ -72,4 +72,5 @@ export default async function routes (fastify) {
 
 	fastify.get('/db-credentials', getSQLiteCreds);
 	fastify.get('/config/logger', envLogConfig)
+	fastify.get('/metrics', getMetrics);
 }

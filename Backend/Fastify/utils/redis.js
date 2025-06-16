@@ -1,5 +1,6 @@
 import redis from 'redis';
 
+
 export const redisClient = redis.createClient({ url: 'redis://redis:6379' });
 
 export function setupRedisLogging(fastifyInstance) {

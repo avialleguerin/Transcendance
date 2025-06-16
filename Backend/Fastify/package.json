@@ -17,7 +17,8 @@
     "pino-pretty": "^13.0.0",
     "qrcode": "^1.5.4",
     "redis": "^4.7.0",
-    "speakeasy": "^2.0.0"
+    "speakeasy": "^2.0.0",
+    "prom-client": "^15.1.0"
   },
   "devDependencies": {
     "connect-livereload": "^0.6.1",
