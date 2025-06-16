@@ -24,7 +24,7 @@ export default class MapMenu_c {
 			this.bgImageLoaded = true;
 		}
 
-		this.nb_game_started = 0;
+		// this.nb_game_started = 0;
 
 		// Ajouter les propriétés pour la gestion de la souris
 		this.hoveredOption = -1;  // -1 signifie qu'aucune option n'est survolée

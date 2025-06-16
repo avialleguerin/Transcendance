@@ -19,7 +19,6 @@ export default class Home extends AbstractView {
 					<h1> TRANSCENDENCE </h1>
 				</div>
 
-				<!-- Terms of Use Modal -->
 				<div id="cgu-modal" class="cgu-modal">
 					<div class="cgu-content">
 						<h1>Terms of Use</h1>
@@ -108,7 +107,6 @@ export default class Home extends AbstractView {
 					</div>
 				</div>
 
-				<!-- Politique de Confidentialité Modal -->
 				<div id="privacy-policy-modal" class="cgu-modal">
 					<div class="cgu-content">
 						<h1>Privacy Policy</h1>
@@ -210,9 +208,6 @@ export default class Home extends AbstractView {
 						</form>
 					</div>
 				</div>
-			</div>
-			<div id="notification-container" class="fixed top-0 left-0 right-0 flex justify-center z-50 mt-4">
-				<p id="resultMessage" class="py-2 px-4 rounded shadow-lg transition-all duration-300 transform translate-y-0 opacity-0"></p>
 			</div>
 `;}
 

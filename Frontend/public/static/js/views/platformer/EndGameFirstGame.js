@@ -9,12 +9,6 @@ export default class EndGameFirstGame {
 		this.GameIsFinished = false;
 		this.nb_player_play_game = 0;
 		this.first_game_finished = false;
-		// this.image = new Image();
-		// this.image.src = "/static/img/platformer/gameover.png";
-		// this.loaded = false;
-		// this.image.onload = () => {
-		// 	this.loaded = true;
-		// };
 		this.gameCanvas = gameCanvas;
 		this.player = player;
 		this.coins = coins;
@@ -52,7 +46,6 @@ export default class EndGameFirstGame {
 	handleKeyDown(event) {
 
 		const key = event.key;
-		// if (this.keyPressed[key]) return;
 		this.keyPressed[key] = true;
 
 		if (key === "Enter") {

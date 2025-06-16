@@ -3,7 +3,7 @@ import { getPlayer_1_win, getPlayer_2_win, isGameFinished } from "../../../srcs/
 import { leave_tournament_game } from "../../../srcs/game/gameplay/babylon.js";
 import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.js";
 import { homeView } from "../../../api/utils.js";
-// import { log } from '../../../utils/logger.js';
+
 export default class extends AbstractView {
 	private cooldowns:		Record<string, boolean>;
 	private cooldownTimes:	Record<string, number>;
@@ -43,9 +43,6 @@ export default class extends AbstractView {
 			</div>
 			<button class="leave_game_2" id="leave_game_2_id" onclick="create_1v1_game(event, '${localStorage.getItem('current_player1')}', '${localStorage.getItem('current_player2')}')">Quitter la partie</button>
 		</div>
-		<div id="notification-container" class="fixed top-0 left-0 right-0 flex justify-center z-50 mt-4">
-			<p id="resultMessage" class="py-2 px-4 rounded shadow-lg transition-all duration-300 transform translate-y-0 opacity-0"></p>
-		</div>
 	`;
 	}
 
@@ -53,7 +50,7 @@ export default class extends AbstractView {
 		const key = event.key;
 		if (!(key in this.cooldownTimes)) return;
 	
-		if (this.cooldowns[key]) return; // Ignore l'action si en cooldown
+		if (this.cooldowns[key]) return;
 
 		if (key === " ") {
 			const press_space = document.getElementById("press_space_id");
@@ -76,7 +73,7 @@ export default class extends AbstractView {
 			return;
 		if (isGameFinished()) {
 			winnerContainer.classList.add("active");
-			clearInterval(this.gameLoop); // Arrête la boucle quand la partie est finie
+			clearInterval(this.gameLoop);
 			if (player_1_win)
 				document.getElementById("winner_id").innerHTML = localStorage.getItem("current_player1") + " won !";
 			else if (player_2_win)
@@ -93,7 +90,7 @@ export default class extends AbstractView {
 
 		leave_game_2.addEventListener("click", () => {
 			window.history.back();
-			clearInterval(this.gameLoop); // Arrête la boucle quand la partie est finie
+			clearInterval(this.gameLoop);
 			handleViewTransitions('tournament', 'vue4');
 			console.log("Destruction de l'environnement et des objets du jeu");
 			setTimeout(() => {

@@ -2,8 +2,6 @@ import { notif, fetchAPI, $, $input, $form } from './utils.js';
 import { Friendship, GameScore } from './types.js';
 
 let historyIsActive = localStorage.getItem('historyIsVisible') === 'true';
-// let bool = false;
-// let bool = localStorage.getItem("bool", "true");
 
 
 if (typeof window !== 'undefined') {
