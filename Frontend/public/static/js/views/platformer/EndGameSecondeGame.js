@@ -1,5 +1,5 @@
 import { c, canvas } from "./constants.js";
-import { gameState, GameState } from "./constants.js";
+import { gameState, GameState, setIsFirstGame } from "./constants.js";
 
 export default class EndGameSecondeGame {
 	constructor({gameCanvas, player, coins, EndGame_FirstGame, historyGame, MapMenu}) {
@@ -145,6 +145,7 @@ export default class EndGameSecondeGame {
 			this.disableControls();
 			gameState.previous = gameState.current;
 			gameState.current = GameState.MapMenu;
+			setIsFirstGame(true);
 		}
 
 		if (selected === "Restart") {

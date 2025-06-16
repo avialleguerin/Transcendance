@@ -1,5 +1,5 @@
 import { c, canvas } from "./constants.js";
-import { gameState, GameState } from "./constants.js";
+import { gameState, GameState, setIsFirstGame, getIsFirstGame } from "./constants.js";
 
 export default class EndGameFirstGame {
 	constructor ({position, width, height, gameCanvas, player, coins}) {
@@ -50,6 +50,9 @@ export default class EndGameFirstGame {
 
 		if (key === "Enter") {
 			this.handleSelect();
+			console.log("e rentre la aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+			setIsFirstGame(false);
+			console.log("Game Finished, first_game_finished =", getIsFirstGame());
 		}
 	}
 
@@ -62,16 +65,13 @@ export default class EndGameFirstGame {
 		console.log("Game Finished");
 		this.first_game_finished = true;
 		
-		// 🔁 Reset le joueur
 		if (this.player && typeof this.player.reset_Game === "function") {
 			this.player.reset_Game();
 		}
 		
-		// 🔁 Reset la GameCanvas (à adapter selon ta classe GameCanvas)
 		if (this.gameCanvas) {
 			this.gameCanvas.nb_coin = 0;
 			this.gameCanvas.timer = 0;
-			// ajoute d'autres resets si t’en as (plateformes, objets, etc.)
 		}
 		
 		if (this.coins && Array.isArray(this.coins)) {
@@ -83,8 +83,7 @@ export default class EndGameFirstGame {
 				}
 			});
 		}
-		
-		// 🔁 Change l’état du jeu
+
 		gameState.previous = gameState.current;
 		gameState.current = GameState.Play;
 		this.disableControls();
@@ -146,28 +145,10 @@ export default class EndGameFirstGame {
 		const hitboxWidth = player.width - hitboxOffsetX * 2;
 		const hitboxHeight = player.height - hitboxOffsetY - hitboxOffsetBottom;
 	
-		// Vérifie l'intersection entre la hitbox du joueur et la boîte
 		const collision = hitboxX < this.position.x + this.width &&
 						hitboxX + hitboxWidth > this.position.x &&
 						hitboxY < this.position.y + this.height &&
 						hitboxY + hitboxHeight > this.position.y;
-		
-		// if (collision)
-		// {
-		// 	this.GameIsFinished = true;
-		// 	this.nb_player_play_game++;
-		// 	if (this.nb_player_play_game === 1)
-		// 	{
-		// 		this.draw();
-		// 		this.first_game_finished = true;
-		// 	}
-		// 	else if (this.nb_player_play_game === 2 && this.first_game_finished)
-		// 	{
-		// 		this.GameIsFinished = true;
-		// 		this.nb_player_play_game = 0;
-		// 	}
-		// }
-	
 		return collision;
 	}
 }

@@ -67,7 +67,6 @@ export default class PlatformerView extends AbstractView {
         if (window.location.pathname !== "/PlatformView")
             return;
         let game_is_finish = Getgame_started();
-        console.log("Game is finish: " + game_is_finish);
         if (game_is_finish === false)
         {
             console.log("Game is not started yet");

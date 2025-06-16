@@ -1,5 +1,6 @@
 import { c, canvas, gameState, GameState } from './constants.js';
 import Sprite from './Sprite.js';
+import { setIsFirstGame, getIsFirstGame} from './constants.js';
 
 export default class GameCanvas extends Sprite {
 	constructor({position,  Image_src_prefix, player}) {
@@ -123,24 +124,34 @@ export default class GameCanvas extends Sprite {
 		this.frames = (this.frames + 1) % 1000;
 	}
 
-
 	update()
 	{
 		const now = Date.now();
+		console.log("first game =", getIsFirstGame());
 		if (now - this.lastTime >= 1000 && this.timer < 300 && !this.GameIsPaused)
 		{
 			this.timer++;
 			this.lastTime = now;
-			console.log("Timer:", this.timer);
-
 			if (this.timer >= 290)
 				this.end_come = true;
 			else
 				this.end_come = false;
 
-			if (this.timer >= 300) {
+			if (this.timer > 300) {
 				console.log("Timer finished");
 				this.timer = 0;
+				if (getIsFirstGame()) {
+					console.log("First game finished");
+					// this.disableControls();
+					gameState.previous = gameState.current;
+					gameState.current = GameState.EndGameFirstGame;
+				}
+				else {
+					console.log("Second game finished");
+					// this.disableControls();
+					gameState.previous = gameState.current;
+					gameState.current = GameState.EndGameSecondGame;
+				}
 			}
 		}
 

@@ -1614,6 +1614,7 @@ export default class Game_menu extends AbstractView {
 		});
 
 		document.getElementById("start-platformer").addEventListener('click', () => {
+			console.log("Platformer game started");
 			handleViewTransitions("platformer", "vue2");
 		});
 	}

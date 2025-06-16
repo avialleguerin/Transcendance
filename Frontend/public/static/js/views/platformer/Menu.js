@@ -1,8 +1,9 @@
 import { c, canvas, gameState, GameState } from './constants.js';
 import { Getgame_started, Setgame_started } from './PlatformView.js';
+import { get_platformers } from "../../../../api/games.js";
 
 export default class Menu {
-	constructor(Game_History) {
+	constructor(config) {
 		this.title = "⏱️ Chrono Clash";
 		this.options = ["▶ Start", "⚙ Options", "☷ History", "✖ Quit" ];
 		this.selectedOption = 0;
@@ -16,7 +17,11 @@ export default class Menu {
 		this.bgImage.onload = () => {
 			this.bgImageLoaded = true;
 		}
-		this.Game_History = Game_History;
+		this.Game_History = config.Game_History;
+		// this.gameHistory = [];
+		// this.loadGameHistory();
+
+
 
 		// this.keyPressed = {};
 		// this.boundKeyDown = this.handleKeyDown.bind(this);
@@ -97,6 +102,17 @@ export default class Menu {
 			}
 		}
 	}
+
+	// async loadGameHistory() {
+	// 	try {
+	// 		const games = await get_platformers();
+	// 		this.gameHistory = games || [];
+	// 		console.log("GameHistory loaded, number of games:", this.gameHistory.length);
+	// 	} catch (error) {
+	// 		console.error("Error loading game history:", error);
+	// 		this.gameHistory = [];
+	// 	}
+	// }
 
 	draw() {
 		this.enableControls();
@@ -187,12 +203,14 @@ export default class Menu {
 		else if (selected === "☷ History") {
 			this.disableControls();
 			console.log("History selected");
-			console.log("this.Game_History = ", this.Game_History);
-			// if (typeof this.Game_History.Game_History.saveGameIfNeeded === "function")
-			// {
-			// 	console.log("this.Game_History.Game_History.saveGameIfNeeded()");
-			// 	this.Game_History.Game_History.saveGameIfNeeded();
-			// }
+			
+			if (this.Game_History && typeof this.Game_History.loadGameHistory === 'function') {
+				console.log("Loading game history...");
+				this.Game_History.loadGameHistory();
+			} else {
+				console.error("Game_History n'est pas correctement initialisé ou ne possède pas la méthode loadGameHistory", this.Game_History);
+			}
+			
 			gameState.previous = gameState.current;
 			gameState.current = GameState.GameHistory;
 		}
