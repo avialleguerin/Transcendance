@@ -69,14 +69,13 @@ export default class GameHistory {
 		c.fillStyle = "white";
 		c.font = "20px 'Press Start 2P', Black Ops One";
 		c.textAlign = "left";
-		c.fillText("Game History :", 200, 200);
-		
+
 		if (this.gameHistory.length > 0) {
 			this.gameHistory.forEach((game, index) => {
-				const yPosition = 240 + index * 40;
+				const yPosition = 200 + index * 40;
 				const winner = game.score_player1 > game.score_player2 ? game.player1 : game.player2;
 				const winnerScore = game.score_player1 > game.score_player2 ? game.score_player1 : game.score_player2;
-				c.fillText(`Game ${index + 1} : ${game.player1} (${game.score_player1}) vs ${game.player2} (${game.score_player2}) - Winner : ${winner} (${winnerScore})`, 200, yPosition);
+				c.fillText(`${game.player1} (${game.score_player1}) vs ${game.player2} (${game.score_player2}) - Winner : ${winner} (${winnerScore})`, 200, yPosition);
 			});
 		} else {
 			c.fillText("Loading game history...", 400, 240);
