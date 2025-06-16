@@ -3,6 +3,7 @@ import Player from './Player.js';
 import Sprite from './Sprite.js';
 import Menu from './Menu.js';
 import CollisionBox from './CollisionBox.js';
+import CollisionBoxDown from './checkCollisionDown.js';
 import Trap from './Trap.js';
 import { levelMap } from './levelMap.js';
 import { createLevelFromMap } from './level_map_utils.js';
@@ -87,26 +88,50 @@ export function initGame()
 	// Collision boxes
 	const collisionBoxes = [
 		new CollisionBox({
-			position: { x: 665, y: 420 },
+			position: { x: 665, y: 450 },
 			width: 120,
-			height: 110,
+			height: 80,
 		}),
 		new CollisionBox({
-			position: { x: 1450, y: 830 },
+			position: { x: 1450, y: 870 },
 			width: 120,
-			height: 100,
+			height: 80,
 		}),
 		new CollisionBox({
-			position: { x: 50, y: 1000 },
+			position: { x: 50, y: 1030 },
 			width: 50,
 			height: 50,
 		}),
 		new CollisionBox({
-			position: { x: 1650, y: 620 },
+			position: { x: 1650, y: 650 },
 			width: 150,
-			height: 100,
+			height: 80,
 		}),
 	];
+
+	const collisionBoxesDown = [
+		new CollisionBoxDown({
+			position: { x: 665, y: 420 },
+			width: 120,
+			height: 30,
+		}),
+		new CollisionBoxDown({
+			position: { x: 1450, y: 830 },
+			width: 120,
+			height: 30,
+		}),
+		new CollisionBoxDown({
+			position: { x: 50, y: 1000 },
+			width: 50,
+			height: 30,
+		}),
+		new CollisionBoxDown({
+			position: { x: 1650, y: 620 },
+			width: 150,
+			height: 30,
+		}),
+	];
+
 	// Traps
 	const traps = [
 		new Trap({
@@ -120,7 +145,7 @@ export function initGame()
 		new Trap({
 			position: {
 				x: 480,
-				y: 1870,
+				y: 1880,
 			},
 			width: 1600,
 			height: 50,
@@ -294,6 +319,15 @@ export function initGame()
 		}
 	}
 
+	function handleCollisionDown(player, box) {
+		const isColliding = box.checkCollisionDown(player);
+		if (isColliding) {
+			console.log("collision down");
+		}
+	}
+		
+
+
 	player.forceCameraToFollow({ canvas, camera });
 
 	function handlePlayerMovement(player, keyLeft, keyRight) {
@@ -358,7 +392,7 @@ export function initGame()
 				}
 				break;
 			case 'ArrowDown':
-				if (collisionBoxes.some(box => box.checkCollision(player))) {
+				if (collisionBoxesDown.some(box => box.checkCollisionDown(player))) {
 					player.cantraverseDown = true;
 					setTimeout(() => {
 						player.cantraverseDown = false;
@@ -410,11 +444,12 @@ export function initGame()
 		
 		platforms.forEach(platform => platform.draw());
 		
-		// collisionBoxes.forEach(box => box.draw());
+		collisionBoxes.forEach(box => box.draw());
+		collisionBoxesDown.forEach(box => box.draw());
 
 
 		// Draw coin
-		// traps.forEach(trap => trap.draw());
+		traps.forEach(trap => trap.draw());
 
 
 		// Update players
@@ -456,6 +491,11 @@ export function initGame()
 		collisionBoxes.forEach(box => {
 			handleCollision(player, box);
 		});
+
+		collisionBoxesDown.forEach(box => {
+			handleCollisionDown(player, box);
+		});
+
 		
 		// Handle trap collisions
 		handleTrapCollision(player, traps[0], { x: 1057, y: 821.16 });
