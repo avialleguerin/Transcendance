@@ -3,6 +3,7 @@ import usersModel from '../models/usersModel.js'
 import { hashPassword, verifyPassword } from '../utils/hashUtils.js'
 import { redisModel } from '../models/redisModel.js'
 import { getUserFromToken } from './utils.js'
+import { authAttempts, activeUsers } from '../utils/metrics.js';
 import friendshipsModel from '../models/friendshipsModel.js'
 import sendWelcomeEmail from '../utils/mailer.js'
 import gamesModel from '../models/gamesModel.js'
@@ -253,7 +254,7 @@ export async function login(request, reply) {
 		const user = usersModel.getUserByUsername(username)
 		
 		if (!user) {
-			fastify.log.warn(`Login failed: User not found - ${username}`)
+			fastify.log.warn(`Login failed: User not found - ${username}`);  authAttempts.labels('failed', 'password').inc();
 			return reply.code(401).send({ success: false, error: 'Invalid credentials' })
 		}
 		
@@ -263,7 +264,7 @@ export async function login(request, reply) {
 		}
 		
 		if (!await verifyPassword(user.password, password)) {
-			fastify.log.warn(`Login failed: Invalid password - ${username}`)
+			fastify.log.warn(`Login failed: Invalid password - ${username}`);  authAttempts.labels('failed', 'password').inc();
 			return reply.code(401).send({ success: false, error: 'Invalid credentials' })
 		}
 		
@@ -284,7 +285,7 @@ export async function login(request, reply) {
 		usersModel.updateLastActivity(user.userId)
 		usersModel.updateOnlineStatus(user.userId, 1)
 		
-		fastify.log.info(`Login successful: ${username}`)
+		fastify.log.info(`Login successful: ${username}`); authAttempts.labels('success', 'password').inc();
 		reply
 		.setCookie('refreshToken', refreshToken, {
 			path: '/',
