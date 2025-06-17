@@ -34,7 +34,7 @@ export default class Game_menu extends AbstractView {
 		<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 		<div class="navbar_menu">
 			<div class="profile_photo_circle_nav_bar" id="profile_photo_circle_nav_bar"><img src="./uploads/${localStorage.getItem('profile_picture')}" alt="profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;"></div>
-			<h1 class="player_name">${localStorage.getItem('Player1')}</h1>
+			<h1 id="player_name" class="player_name">${localStorage.getItem('Player1')}</h1>
 			<button class="option_navBar" id="option_btn_navBar" onclick="togglePanel(event)">
 				<img src="../../../srcs/game/assets/image/menu.svg" alt="menu">
 			</button>

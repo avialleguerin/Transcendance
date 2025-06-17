@@ -198,7 +198,7 @@ export default class GameHistory {
 
 	handleSelect() {
 		const selected = this.options[this.selectedOption];
-		if (selected === "Retour") {
+		if (selected === "Back") {
 			this.disableControls();
 			gameState.previous = gameState.current;
 			gameState.current = GameState.Menu;

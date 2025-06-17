@@ -62,7 +62,6 @@ export async function create_platformer(): Promise<void> {
 	const data = await fetchAPI('/request/platformer/create-platformer', 'POST', { player1, player2, score_player1, score_player2 }, false);
 	if (!data.success)
 		return notif(data.error, false);
-	localStorage.removeItem("Player2");
 	localStorage.removeItem("score_player1");
 	localStorage.removeItem("score_player2");
 };
