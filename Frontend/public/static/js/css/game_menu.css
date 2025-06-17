@@ -94,7 +94,7 @@
 }
 
 /* #btn_jouer:hover {
-	color: gray;
+	color: #e6e600;
 } */
 
 
@@ -156,8 +156,8 @@
 
 
 .view2-content h1 , .view3-content h1 , .view4-content h1 , .view5-content h1 , .view6-content h1 , .view7-content h1 , .view8-content h1 {
-	color: #ffffff;
-	text-shadow: 2px 2px 4px rgb(0, 0, 0);
+	color: #e6e600;
+	text-shadow: 2px 2px 4px rgb(165, 165, 165);
 	text-align: center;
 	font-size: 1.2vw;
 	position: relative;
@@ -258,8 +258,8 @@
 	align-items: center; /* Centre verticalement */
 }
 
-.view3-content #back_to_menu_view3:hover {
-	color: gray;
+.view3-content #back_to_menu_view3:hover, .view4-content #back_to_menu_view4:hover {
+	color: #e6e600;
 }
 
 
@@ -333,7 +333,7 @@
 
 
 .btn:hover {
-	color : gray;
+	color : #e6e600;
 }
 
 .nav-link {
@@ -510,7 +510,7 @@
 }
 
 .btn_back:hover {
-	color: gray;
+	color: #e6e600;
 }
 
 
@@ -934,7 +934,7 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
 	transform: translateX(-50%);
 	text-align: justify;
 	width: 21%;
-	background-color: gray;
+	background-color: #e6e600;
 	padding-left: 20px;
 	padding-right: 20px;
 	padding-top: 20px;
@@ -957,7 +957,7 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
 	padding-right: 30px;
 	padding-top: 20px;
 	padding-bottom: 20px;
-	background-color: gray;
+	background-color: #e6e600;
 	height: 22%;
 }
 
@@ -976,7 +976,7 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
 	padding-right: 30px;
 	padding-top: 20px;
 	padding-bottom: 20px;
-	background-color: gray; 
+	background-color: #e6e600; 
 	height: 22%;
 }
 
@@ -995,7 +995,7 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
 	padding-right: 20px;
 	padding-top: 20px;
 	padding-bottom: 20px;
-	background-color: gray;
+	background-color: #e6e600;
 	height: 22%;
 }
 
@@ -1014,7 +1014,7 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
 	padding-right: 20px;
 	padding-top: 20px;
 	padding-bottom: 20px;
-	background-color: gray;
+	background-color: #e6e600;
 	height: 22%;
 }
 
@@ -1336,7 +1336,7 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
 }
 
 .select_parametres .btn:hover {
-	color: gray;
+	color: #e6e600;
 }
 
 .option {
@@ -1484,8 +1484,8 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
 }
 
 .parametres_jeu_content h1 {
-	color: #ffffff;
-	text-shadow: 2px 2px 4px rgb(0, 0, 0);
+	color: #e6e600;
+	text-shadow: 2px 2px 4px rgb(165, 165, 165);
 	text-align: center;
 	font-size: 1.2vw;
 	position: relative;
@@ -1500,8 +1500,8 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
 
 
 .parametres_profile_content h1 {
-	color: #ffffff;
-	text-shadow: 2px 2px 4px rgb(0, 0, 0);
+	color: #e6e600;
+	text-shadow: 2px 2px 4px rgb(165, 165, 165);
 	text-align: center;
 	font-size: 1vw;
 	/* position: relative; */
@@ -1603,17 +1603,6 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
 }
 
 
-
-
-
-.parametres_jeu_content h1 {
-	color: #ffffff;
-	text-shadow: 2px 2px 4px rgb(0, 0, 0);
-	text-align: center;
-	font-size: 1.2vw;
-	position: relative;
-	font-family: 'Black Ops One', sans-serif;
-}
 
 .parametres_jeu_content h2 {
 	color: #ffffff;
@@ -1904,7 +1893,7 @@ input[type="file"] {
 }
 
 .btn_tournament:hover {
-	color: gray;
+	color: #e6e600;
 }
 
 .btn_tournament a {
@@ -1916,7 +1905,7 @@ input[type="file"] {
 }
 
 .btn_tournament a:hover {
-	color: gray;
+	color: #e6e600;
 
 }
 
@@ -1956,7 +1945,7 @@ input[type="file"] {
 }
 
 .btn_platformer a:hover {
-	color: gray;
+	color: #e6e600;
 
 }
 
@@ -2906,8 +2895,8 @@ to {
 }
 
 .choose_your_opponent_1v1 h1, .choose_your_opponent_platformer h1 {
-	color: #ffffff;
-	text-shadow: 2px 2px 4px rgb(0, 0, 0);
+	color: #e6e600;
+	text-shadow: 2px 2px 4px rgb(165, 165, 165);
 	text-align: center;
 	font-size: 1vw;
 	font-family: 'Black Ops One', sans-serif;
@@ -2964,8 +2953,8 @@ to {
 }
 
 .choose_your_opponent_multi h1 {
-  color: #ffffff;
-  text-shadow: 2px 2px 4px rgb(0, 0, 0);
+	color: #e6e600;
+	text-shadow: 2px 2px 4px rgb(165, 165, 165);
   text-align: center;
   font-size: 1vw;
   font-family: 'Black Ops One', sans-serif;

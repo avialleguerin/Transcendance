@@ -174,7 +174,7 @@ export default class Home extends AbstractView {
 					</div>
 				</div>
 				<div class="register-form" id="create_account_id">
-					<h1>SIGN IN</h1>
+					<h1>SIGN UP</h1>
 					<div class="form-group">
 						<form id="registerForm" onsubmit="register(event)">
 							<div class="input-container">

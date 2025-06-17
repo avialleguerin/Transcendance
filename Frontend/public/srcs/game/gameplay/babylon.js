@@ -393,15 +393,13 @@ let isConnected = false;
 engine.runRenderLoop(() => {
 	try
 	{
-		// Toujours utiliser l'échelle 1.0 puisque qualityLevel est toujours 'low'
 		const scale = 1.0;
 		if (canvas.width !== canvas.clientWidth * scale || canvas.height !== canvas.clientHeight * scale) {
 			canvas.width = canvas.clientWidth * scale;
 			canvas.height = canvas.clientHeight * scale;
 			engine.resize(true);
 		}
-		
-		// Mise à jour du compteur FPS
+
 		frameCount++;
 		const now = performance.now();
 		const delta = now - lastFpsUpdate;
@@ -412,77 +410,75 @@ engine.runRenderLoop(() => {
 			frameCount = 0;
 		}
 		applyQualitySettings();
-		// const accessToken = sessionStorage.getItem('accessToken');
-		// if ((accessToken && accessToken !== undefined) && accessToken !== "undefined" && !isConnected) {
-		// 	isConnected = true;
-		// 	console.log("User is connectedddddddddddddddddddddddddddddd");
-		// 	// handleViewTransitions("vue1", "default");
-		// }
-
-		// if (!(accessToken && accessToken !== undefined) && accessToken !== "undefined" && isConnected) {
-		// 	isConnected = false;
-		// 	console.log("User is disconnectedddddddddddddddddddddddddddddd");
-		// 	// handleViewTransitions("vue1", "vue2");
-		// }
 
 		if (Solo_gameStart && !gameIsFinished) {
 			if (!initialized) {
 				initializeGame_solo_game();
 				initialized = true;
 			}
-			if (initialized) {
-				// Bloquer l'appui sur Espace si canPressSpace est false
-				if (scene.inputStates.space && !play) {
-					if (!canPressSpace) {
+			if (initialized)
+			{
+				if (scene.inputStates.space && !play)
+				{
+					if (!canPressSpace)
+					{
 						console.log("Espace désactivé, veuillez attendre...");
 						return;
 					}
 					play = true;
 				}
-				if (play) {
+				if (play)
+				{
 					const bonusPlayer = UpdatePlayerPose(player_1, player_2);
 					MoveBall(player_1, player_2, ball, bonusPlayer.player_1_bonus, bonusPlayer.player_2_bonus);
 				}
 			}
 		}
 
-		if (Multi_gameStart && !gameIsFinished) {
-			if (!initialized) {
+		if (Multi_gameStart && !gameIsFinished)
+		{
+			if (!initialized)
+			{
 				initialize_Multiplayer_game();
-				initialized = true;PROFILE
+				initialized = true;
 			}
-			if (initialized) {
+			if (initialized)
+			{
 				if (scene.inputStates.space && !play)
 					play = true;
-				if (play) {
+				if (play)
+				{
 					UpdatePLayerPoseMulti(player_1, player_2, player_3, player_4);
 					MoveBall2v2(player_1, player_2, player_3, player_4, ball);
 				}
 			}
 		}
 
-		if (tournament_game && !gameIsFinished) {
-			if (!initialized) {
+		if (tournament_game && !gameIsFinished)
+		{
+			if (!initialized)
+			{
 				initializeGame_tournament();
 				initialized = true;
 			}
-			if (initialized) {
+			if (initialized)
+			{
 				if (scene.inputStates.space && !play)
 					play = true;
-				if (play) {
+				if (play)
+				{
 					move_player_tournament(player_1_tournament, player_2_tournament);
 					MoveBall(player_1_tournament, player_2_tournament, ball);
 				}
 			}
 		}
 
-		if (DEBUG_MODE && now - lastDebugOutput > 5000) {
+		if (DEBUG_MODE && now - lastDebugOutput > 5000)
+		{
 			const debugFps = engine.getFps().toFixed(1);
 			console.log(`FPS: ${debugFps} | Quality: ${qualityLevel} | Active Meshes: ${scene.getActiveMeshes().length}`);
 			lastDebugOutput = now;
 		}
-		// console.log(camera.position, camera.rotation);
-
 		scene.render();
 
 	} catch (error) {

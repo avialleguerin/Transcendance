@@ -55,8 +55,11 @@ export async function fetch_user_friendships(): Promise<void> {
 
 		const hasReceivedRequests = pending.some(friend => user.userId === friend.friendId);
 
+
 		if (pending.length > 0 && hasReceivedRequests)
+		{
 			document.getElementById("notify_friend_demand").style.display = "block";
+		}
 		else
 			document.getElementById("notify_friend_demand").style.display = "none";
 
@@ -277,8 +280,7 @@ export async function fetch_user_games_big(username: string): Promise<void> {
 		const user = data.user;
 		const userId = user.userId;
 		const games = data.games;
-		document.getElementById("profile_photo_circle_Game_History").innerHTML = `<img src="/uploads/${data.user.profile_picture}" alt="${data.username} profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
-		document.getElementById("profile_photo_circle_Game_History").classList.add(`${data.user.online_status ? 'online' : 'offline'}`);
+		document.getElementById("profile_photo_circle_Game_History").innerHTML = `<img src="/uploads/${data.user.profile_picture}" alt="${data.username} profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;	
 		document.getElementById("game_history_username").innerHTML = `${data.user.username}`;
 		document.getElementById("games_won_history").innerHTML = `${user.games_won}`;
 		document.getElementById("games_lost_history").innerHTML = `${user.games_lost}`;
