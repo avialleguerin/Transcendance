@@ -20,7 +20,7 @@ services:
       - .env
     environment:
       - REDIS_URL="redis://redis:6379"
-      - VAULT_DEV_ROOT_TOKEN_ID=root
+      # - VAULT_DEV_ROOT_TOKEN_ID=root
       - VAULT_ADDR=http://vault:8200
     depends_on:
       - redis
@@ -83,7 +83,7 @@ services:
   vault:
     image: custom-vault
     container_name: vault
-    restart: always
+    restart: unless-stopped # or always
     build:
       context: ./Security/Vault
       dockerfile: Dockerfile
@@ -91,10 +91,10 @@ services:
       - "8200:8200"
     environment:
       - VAULT_ADDR=http://127.0.0.1:8200
-      - VAULT_DEV_ROOT_TOKEN_ID=root
+      # - VAULT_DEV_ROOT_TOKEN_ID=root
     volumes:
       - ./Data/vault_data:/vault/data
-      - ./Security/Vault/scripts:/vault/scripts
+      - ./Security/Vault/scripts:/vault/scripts #maybe add policies
       - ./Security/Nginx/passwd:/nginx/passwd
       # - ./Security/Vault/vault_data:/vault/data
     cap_add:

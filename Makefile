@@ -1,6 +1,8 @@
 .DEFAULT_GOAL := all
 
-# Colors and Styles
+#######*########
+###* COLORS *###
+#######*########
 RESET		:=	\e[0m
 BOLD		:=	\e[1m
 DIM			:=	\e[2m
@@ -14,7 +16,9 @@ YELLOW		:=	\e[33m
 MAGENTA		:=	\e[35m
 CYAN		:=	\e[36m
 
-# Messages
+########*########
+#####* MSG *#####
+########*########
 MSG_DOWN_SUCCESS	:= ${GREEN}✓ Containers stopped and cleaned.${RESET}
 MSG_FIXER			:= \n${BLUE}Reinstalling node packages...${RESET}
 MSG_FIXER_SUCCESS	:= \n${GREEN}✓ Fixer completed successfully.${RESET}
@@ -30,17 +34,13 @@ MSG_LOG_SUCCESS		:= ${GREEN}✓ Logs activated (LOG_ACTIVE=true).${RESET}
 MSG_LOG_DISABLE		:= \n${BLUE}Starting containers without logs...${RESET}
 MSG_NLOG_SUCCESS	:= ${GREEN}✓ Logs deactivated (LOG_ACTIVE=false).${RESET}
 
-
-# Docker Compose
-NO_LOGS 	:= --no-attach vault --no-attach redis --no-attach tsengine #--no-attach nginx ##--no-attach fastify
-
-# Variables BABYLON
+NO_LOGS 	:= --no-attach redis --no-attach tsengine --no-attach nginx #--no-attach fastify  --no-attach vault
 BABYLON_FILE = ./Frontend/public/srcs/game/gameplay/babylon.js
-
-# Security Script
 SCRIPT_SECURITY = ./Security/requests-test.sh
 
-
+########*########
+####* BASIC *####
+########*########
 all:
 	@make build
 	@make -j4 up
@@ -63,15 +63,20 @@ down:
 
 re:
 	@make down
+	@clear
 	@make all
 
-#FIXER
+########*########
+####* FIXER *####
+########*########
 fixer:
 	@echo "$(MSG_FIXER)"
 	@docker exec -it fastify npm install
 	@echo "$(MSG_FIXER_SUCCESS)"
 
-#IP
+#######*#######
+####* IP *#####
+#######*#######
 ip:
 	@echo "$(MSG_NETWORK_INFO)"
 	$(eval LOCAL_IP := $(shell ip route get 1.1.1.1 | awk '{print $$7}' | head -1))
@@ -79,9 +84,10 @@ ip:
 	@echo "${GREEN}Game URL:${RESET} http://$(LOCAL_IP):8080 → https://$(LOCAL_IP):8443"
 	@echo "${GREEN}Admin URL:${RESET} http://$(LOCAL_IP):8081 → https://$(LOCAL_IP):8143"
 
-
-#NGINX
-reload-nginx:
+########*########
+####* NGINX *####
+########*########
+nreload:
 	@echo "$(MSG_NGINX_RELOAD)"
 	@docker exec nginx nginx -t && docker exec nginx nginx -s reload
 	@echo "$(MSG_NGINX_SUCCESS)"
@@ -93,19 +99,23 @@ sectest:
 	@chmod +x $(SCRIPT_SECURITY)
 	@$(SCRIPT_SECURITY) all
 
-
-#OPTIONS
+########*########
+####* SKINS *####
+########*########
 normal:
 	@echo "$(MSG_NORMAL_BUILD)"
 	@sed -i 's/^init_all_skin(scene);/\/\/ init_all_skin(scene);/' $(BABYLON_FILE)
 	@sed -i 's/^LOG_ACTIVE=.*/LOG_ACTIVE=false/' .env || echo "LOG_ACTIVE=false" >> .env
 	@echo "$(MSG_NORMAL_SUCCESS)"
 
-with_skin:
+skin:
 	@echo "$(MSG_SKIN_BUILD)"
 	@sed -i 's/^\/\/ init_all_skin(scene);/init_all_skin(scene);/' $(BABYLON_FILE)
 	@echo "$(MSG_SKIN_SUCCESS)"
 
+########*########
+#####* LOGS *####
+########*########
 log:
 	@echo "$(MSG_LOG_ENABLE)"
 	@sed -i 's/^LOG_ACTIVE=.*/LOG_ACTIVE=true/' .env || echo "LOG_ACTIVE=true" >> .env
@@ -117,4 +127,31 @@ nlog:
 	@sed -i 's/^LOG_ACTIVE=.*/LOG_ACTIVE=false/' .env || echo "LOG_ACTIVE=false" >> .env
 	@echo "$(MSG_NLOG_SUCCESS)"
 
-.PHONY: all up build down re fixer ip reload-nginx debug-files sectest normal with_skin log nlog
+########*########
+####* VAULT *####
+########*########
+vault:
+	@echo "${BLUE}=== VAULT INFO ===${RESET}"
+	@echo "${GREEN}UI: http://localhost:8200${RESET}"
+	@echo "${YELLOW}Token: $$(docker exec vault cat /vault/data/root_token.txt 2>/dev/null || echo 'Not found')${RESET}"
+	@echo "${BLUE}Status:${RESET}"
+	@docker exec vault vault status 2>/dev/null || echo "${RED}Vault unavailable${RESET}"
+
+vsecrets:
+	@echo "${BLUE}=== VAULT SECRETS ===${RESET}"
+	@docker exec vault sh -c 'export VAULT_TOKEN=$$(cat /vault/data/root_token.txt 2>/dev/null) && vault kv get secret/sqlite' 2>/dev/null || echo "${RED}No secrets found.${RESET}"
+
+vreset:
+	@echo "${RED}⚠️  Resetting Vault...${RESET}"
+	@docker exec vault rm -f /vault/data/.setup_completed 2>/dev/null || true
+	@docker compose restart vault
+
+vdebug:
+	@echo "${BLUE}=== VAULT DEBUG ===${RESET}"
+	@docker logs vault --tail 15
+	@echo "${YELLOW}Connection test:${RESET}"
+	@docker exec fastify node -e "import('./utils/vault.js').then(vault => { vault.getSQLiteCreds().then(creds => { console.log('✅ Connected'); }).catch(err => { console.error('❌ Failed:', err.message); }); });" 2>/dev/null || echo "${RED}Test failed${RESET}"
+
+
+.PHONY: all up build down re fixer ip nreload debug-files sectest normal skin log nlog vault-token vault-status vault-secrets vault-reset-setup vault-restart vault-logs vault-init-manual vault-ui vault-test-connection vault-show-secrets
+

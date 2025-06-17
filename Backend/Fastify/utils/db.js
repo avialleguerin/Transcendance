@@ -4,35 +4,65 @@ import { CREATE_USERS_TABLE } from '../models/usersModel.js';
 import { CREATE_GAMES_TABLE } from '../models/gamesModel.js';
 import { CREATE_FRIENDSHIPS_TABLE } from '../models/friendshipsModel.js';
 import { CREATE_PLATFORMERS_TABLE } from '../models/platformersModel.js';
-import { fastify } from '../server.js';
 
 const dbFile = "Data/db/database.sqlite";
 
 async function setupDatabase() {
-	try {
-		const { user, pass } = await getSQLiteCreds()
-		const db = new Database(dbFile, {
-			verbose: null,
-			fileMustExist: false
-		})
+    try {
+        console.log("🔄 Setting up database connection...");
+        const { user, pass } = await getSQLiteCreds();
 
-		db.pragma(`user_key = '${user}'`)
-		db.pragma(`key = '${pass}'`)
-		return db
-	} catch (err) {
-		fastify.log.error("Error config of SQLite:", err)
-		throw err
-	}
+        console.log("🔑 Database credentials retrieved from Vault");
+        console.log(`📝 Username: ${user}`);
+        console.log(`🔐 Password: [PROTECTED]`);
+        
+        const db = new Database(dbFile, {
+            verbose: null,
+            fileMustExist: false
+        });
+
+        // Configuration du chiffrement SQLite
+        db.pragma(`cipher_compatibility = 4`);
+        db.pragma(`key = '${pass}'`);
+
+        // Tester la connexion
+        db.pragma('cipher_integrity_check');
+        
+        console.log("✅ Database connection established successfully");
+        return db;
+    } catch (err) {
+        console.error("❌ Error configuring SQLite:", err);
+        throw err;
+    }
 }
 
-export function initDb() {
-	db.prepare(CREATE_USERS_TABLE).run();
-	db.prepare(CREATE_GAMES_TABLE).run();
-	db.prepare(CREATE_FRIENDSHIPS_TABLE).run();
-	db.prepare(CREATE_PLATFORMERS_TABLE).run();
-	fastify.log.info("Database initialized successfully");
-	
+export async function initDb() {
+    try {
+        const database = await setupDatabase();
+        
+        database.prepare(CREATE_USERS_TABLE).run();
+        database.prepare(CREATE_GAMES_TABLE).run();
+        database.prepare(CREATE_FRIENDSHIPS_TABLE).run();
+        database.prepare(CREATE_PLATFORMERS_TABLE).run();
+        
+        console.log("✅ Database tables initialized successfully");
+        
+        return database;
+    } catch (err) {
+        console.error("❌ Error initializing database:", err);
+        throw err;
+    }
 }
 
-const db = await setupDatabase();
-export default db;
+// Ne pas exporter de db par défaut qui s'exécute immédiatement
+// export default db;
+
+// À la place, exporter une fonction pour obtenir la DB quand nécessaire
+let dbInstance = null;
+
+export async function getDb() {
+    if (!dbInstance) {
+        dbInstance = await setupDatabase();
+    }
+    return dbInstance;
+}
