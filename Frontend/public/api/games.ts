@@ -20,6 +20,8 @@ export async function create_1v1_game(event: Event, player1: string, player2: st
 		localStorage.removeItem("Player2");
 	else
 		localStorage.setItem("tournamentCount", (parseInt(localStorage.getItem("tournamentCount")) + 1).toString());
+	localStorage.removeItem("score_left");
+	localStorage.removeItem("score_right");
 };
 
 export async function create_2v2_game(event: Event): Promise<void> {
@@ -43,10 +45,12 @@ export async function create_2v2_game(event: Event): Promise<void> {
 	localStorage.removeItem("Player2");
 	localStorage.removeItem("Player3");
 	localStorage.removeItem("Player4");
+	localStorage.removeItem("score_left");
+	localStorage.removeItem("score_right");
 };
 
 export async function create_platformer(): Promise<void> {
-	localStorage.setItem("platformer_game_created", "true");
+	// localStorage.setItem("platformer_game_created", "true");
 	const player1 = localStorage.getItem("Player1");
 	const player2 = localStorage.getItem("Player2");
 	const score_player1 = localStorage.getItem("score_player1");
@@ -65,7 +69,7 @@ export async function create_platformer(): Promise<void> {
 
 export async function get_platformers(): Promise<any>
 {
-	const data = await fetchAPI('/request/platformer/get-user-platformers', 'GET', null, true);
+	const data = await fetchAPI('/request/platformer/get-user-platformers', 'GET', null, false);
 	console.log("Platformers:", data.platformers);
 	if (!data.success) {
 		notif(data.error, false);

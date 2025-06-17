@@ -107,7 +107,8 @@ export default class EndGameSecondeGame {
 		if (selected === "Menu")
 		{
 			this.EndGame_FirstGame.first_game_finished = false;
-
+			console.log("this.Score =", this.Score);
+			console.log("this.EndGame_FirstGame.Score =", this.EndGame_FirstGame.Score);
 			if (this.Score > this.EndGame_FirstGame.Score)
 			{
 				this.WinnerScore = this.Score;
@@ -122,8 +123,7 @@ export default class EndGameSecondeGame {
 				localStorage.setItem("score_player2", this.Score);
 			}
 			// this.MapMenu.nb_game_started++;
-			if (!localStorage.getItem('platformer_game_created'))
-				window.create_platformer();
+			window.create_platformer();
 			// this.historyGame.saveGameIfNeeded(this.MapMenu.nb_game_started, this.winner, this.WinnerScore, this.gameCanvas.timer);
 			if (this.player && typeof this.player.reset_Game === "function")
 				this.player.reset_Game();
@@ -148,7 +148,7 @@ export default class EndGameSecondeGame {
 		}
 
 		if (selected === "Restart") {
-			localStorage.removeItem('platformer_game_created');
+			// localStorage.removeItem('platformer_game_created');
 			this.EndGame_FirstGame.first_game_finished = false;
 			if (this.player && typeof this.player.reset_Game === "function") {
 				this.player.reset_Game();

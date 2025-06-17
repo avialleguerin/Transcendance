@@ -40,15 +40,12 @@
 	position: absolute;
 	top: 36.5%;
 	left: 39.8%;
-	/* transform: translateX(-50%); */
 	height: 24.8%;
 	width: 20%;
 	background: transparent;
-	/* background-color: red; */
 	padding: 2rem;
-	/* border-radius: 12px; */
 	text-align: center;
-	z-index: 1000; /* Très élevé pour être au-dessus du canvas */
+	z-index: 1000;
 
 	clip-path: polygon(-5% 0%, 100% 0%, 97% 100%, 2% 100%);
 }
@@ -65,7 +62,6 @@
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
-	/* padding: 20px 30px; */
 	font-weight: bold;
 	background-color: transparent;
 	color: rgb(255, 255, 255);
@@ -77,13 +73,12 @@
 	background-size: 100% auto;
 	background-position: center;
 	background-repeat: no-repeat;
-	/* line-height: 3vh; */
 
-	width: 170px;  /* Largeur fixe */
-	height: 112px;  /* Hauteur fixe */
-	display: flex; /* Pour aider au centrage du texte */
-	justify-content: center; /* Centre horizontalement */
-	align-items: center; /* Centre verticalement */
+	width: 170px;
+	height: 112px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 #btn_jouer h1 {
@@ -92,10 +87,6 @@
 	font-size: 2vw;
 	text-align: center;
 }
-
-/* #btn_jouer:hover {
-	color: gray;
-} */
 
 
 .view1 {
@@ -137,7 +128,6 @@
 	align-items: center;
 	gap: 20px;
 	padding: 40px;
-	/* background: rgba(0, 0, 0, 0); */
 	border-radius: 15px;
 	box-shadow: 0 10px 25px rgba(0, 0, 0, 0);
 	width: 10%;
@@ -150,8 +140,8 @@
 	align-items: center;
 	width: 100%;
 	height: 100%;
-	justify-content: flex-start; /* Changé de center à flex-start pour commencer depuis le haut */
-	padding-top: 100px; /* Ajouter un padding en haut pour décaler le contenu */
+	justify-content: flex-start;
+	padding-top: 100px;
 }
 
 
@@ -161,7 +151,7 @@
 	text-align: center;
 	font-size: 1.2vw;
 	position: relative;
-	top: -15%; /* Assurez-vous qu'il soit en haut */
+	top: -15%;
 	font-family: 'Black Ops One', sans-serif;
 }
 
@@ -197,11 +187,11 @@
 	background-repeat: no-repeat;
 	line-height: 3vh;
 	
-	width: 130px;  /* Largeur fixe */
-	height: 100px;  /* Hauteur fixe */
-	display: flex; /* Pour aider au centrage du texte */
-	justify-content: center; /* Centre horizontalement */
-	align-items: center; /* Centre verticalement */
+	width: 130px;
+	height: 100px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	text-decoration: none;
 }
 
@@ -222,12 +212,11 @@
 	background-repeat: no-repeat;
 	line-height: 4vh;
 	
-	/* Ajout de dimensions fixes */
-	width: 120px;  /* Largeur fixe */
-	height: 70px;  /* Hauteur fixe */
-	display: flex; /* Pour aider au centrage du texte */
-	justify-content: center; /* Centre horizontalement */
-	align-items: center; /* Centre verticalement */
+	width: 120px;
+	height: 70px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 
@@ -251,11 +240,11 @@
 	background-repeat: no-repeat;
 	line-height: 3vh;
 
-	width: 92px;  /* Largeur fixe */
-	height: 70px;  /* Hauteur fixe */
-	display: flex; /* Pour aider au centrage du texte */
-	justify-content: center; /* Centre horizontalement */
-	align-items: center; /* Centre verticalement */
+	width: 92px;
+	height: 70px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .view3-content #back_to_menu_view3:hover {
@@ -274,7 +263,6 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	/* backdrop-filter: blur(5px); */
 	transition: opacity 0.5s ease;
 }
 
@@ -295,12 +283,11 @@
 	background-repeat: no-repeat;
 	line-height: 4vh;
 	
-	/* Ajout de dimensions fixes */
-	width: 120px;  /* Largeur fixe */
-	height: 70px;  /* Hauteur fixe */
-	display: flex; /* Pour aider au centrage du texte */
-	justify-content: center; /* Centre horizontalement */
-	align-items: center; /* Centre verticalement */
+	width: 120px;
+	height: 70px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .view6-content .btn , .view7-content .btn , .view8-content .btn {
@@ -320,12 +307,11 @@
 	background-repeat: no-repeat;
 	line-height: 4vh;
 	
-	/* Ajout de dimensions fixes */
-	width: 120px;  /* Largeur fixe */
-	height: 70px;  /* Hauteur fixe */
-	display: flex; /* Pour aider au centrage du texte */
-	justify-content: center; /* Centre horizontalement */
-	align-items: center; /* Centre verticalement */
+	width: 120px;
+	height: 70px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 
 	transform: translateY(-80%);
 	text-decoration: none;
@@ -378,7 +364,7 @@
 .power_selector {
 	display: flex;
 	align-items: center;
-	gap: 5px; /* Espace entre les groupes chiffre + case */
+	gap: 5px;
 }
 
 .powerUP_number {
@@ -481,7 +467,6 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	/* backdrop-filter: blur(5px); */
 	transition: opacity 0.5s ease;
 }
 
@@ -501,12 +486,11 @@
 	background-repeat: no-repeat;
 	line-height: 4vh;
 	
-	/* Ajout de dimensions fixes */
-	width: 120px;  /* Largeur fixe */
-	height: 70px;  /* Hauteur fixe */
-	display: flex; /* Pour aider au centrage du texte */
-	justify-content: center; /* Centre horizontalement */
-	align-items: center; /* Centre verticalement */
+	width: 120px;
+	height: 70px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .btn_back:hover {
@@ -515,7 +499,7 @@
 
 
 /****************************************************************/
-/*************CHOISI TON SKIN GAME SOLO**************************/
+/****************** CHOOSE YOUR SKIN SOLO GAME ******************/
 /****************************************************************/
 
 .choose_your_skin {
@@ -586,12 +570,11 @@
 	background-repeat: no-repeat;
 	line-height: 4vh;
 	
-	/* Ajout de dimensions fixes */
-	width: 120px;  /* Largeur fixe */
-	height: 70px;  /* Hauteur fixe */
-	display: flex; /* Pour aider au centrage du texte */
-	justify-content: center; /* Centre horizontalement */
-	align-items: center; /* Centre verticalement */
+	width: 120px;
+	height: 70px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 
 	position: absolute;
 	bottom: 0%;
@@ -644,7 +627,6 @@
 	transition: transform 0.1s ease, filter 0.1s ease;
 }
 
-/* Effet au survol */
 .player1 .switch_skin_left:hover, 
 .player2 .switch_skin_left:hover,
 .player1 .switch_skin_right:hover, 
@@ -652,7 +634,6 @@
 	filter: brightness(1.2);
 }
 
-/* Effet lors du clic */
 .player1 .switch_skin_left:active, 
 .player2 .switch_skin_left:active,
 .player1 .switch_skin_right:active, 
@@ -663,7 +644,7 @@
 
 
 /****************************************************************/
-/*************CHOISI TON SKIN GAME MULTI**************************/
+/***************** CHOOSE YOUR SKIN MULTI GAME ******************/
 /****************************************************************/
 
 .choose_your_skin_game_multi {
@@ -700,7 +681,6 @@
 	bottom: 26%;
 	width: 16%;
 	height: 30%;
-	/* background-color: red; */
 }
 
 .player2_game_multi {
@@ -709,7 +689,6 @@
 	bottom: 26%;
 	width: 16%;
 	height: 30%;
-	/* background-color: red; */
 }
 
 .player3_game_multi {
@@ -718,8 +697,6 @@
 	top: 69%;
 	width: 16%;
 	height: 30%;
-	/* background-color: red; */
-
 }
 
 .player4_game_multi {
@@ -728,7 +705,6 @@
 	top: 69%;
 	width: 16%;
 	height: 30%;
-	/* background-color: red; */
 }
 
 .player1_game_multi p, .player2_game_multi p, .player3_game_multi p, .player4_game_multi p {
@@ -757,12 +733,11 @@
 	background-repeat: no-repeat;
 	line-height: 4vh;
 	
-	/* Ajout de dimensions fixes */
-	width: 120px;  /* Largeur fixe */
-	height: 70px;  /* Hauteur fixe */
-	display: flex; /* Pour aider au centrage du texte */
-	justify-content: center; /* Centre horizontalement */
-	align-items: center; /* Centre verticalement */
+	width: 120px;
+	height: 70px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 
 	position: absolute;
 	bottom: 0%;
@@ -809,7 +784,6 @@
 }
 
 
-/* Effet au survol */
 .player1_game_multi .switch_skin_left:hover,
 .player2_game_multi .switch_skin_left:hover,
 .player3_game_multi .switch_skin_left:hover,
@@ -821,7 +795,6 @@
 	filter: brightness(1.2);
 }
 
-/* Effet lors du clic */
 .player1_game_multi .switch_skin_left:active,
 .player2_game_multi .switch_skin_left:active,
 .player3_game_multi .switch_skin_left:active,
@@ -835,19 +808,11 @@
 }
 
 
-
-
-
-
-
-
-/* Initialement cacher les vues */
 .view1, .view2 , .view3, .view4, .view5 , .back-home, .view6, .view7, .view8, .power_selector, .back, .tournament_view, .parametres_jeu, .parrametres_profile {
 	opacity: 0;
 	pointer-events: none;
 }
 
-/* Pour afficher une vue quand nécessaire, ajouter la classe .active */
 .view1.active, .view2.active , .view3.active, .view4.active, .view5.active , .back-home.active, .view6.active, .view7.active, .view8.active, .power_selector.active, .back.active, .tournament_view.active {
 	opacity: 1;
 	pointer-events: auto;
@@ -856,11 +821,9 @@
 
 
 /****************************************************************/
-/****************POWER_UP_INFO**********************************/
+/************************ POWER_UP_INFO *************************/
 /****************************************************************/
 
-/* 
-background: rgba(161, 161, 161, 0.9); /* Légère transparence */
 
 
 .container_info_power_up {
@@ -871,10 +834,10 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
 	width: 60%;
 	height: 70%;
 	display: none;
-	background: rgba(0, 0, 0, 0.9); /* Légère transparence */
+	background: rgba(0, 0, 0, 0.9);
 	border: 4px solid rgba(255, 255, 255, 0.8);
-	border-radius: 10px; /* Plus arrondi */
-	box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3); /* Ombre plus douce */
+	border-radius: 10px;
+	box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3);
 	z-index: 15;
 }
 
@@ -1041,13 +1004,13 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
 	object-fit: contain;
 	border: 2px solid #ffffff;
 	border-radius: 50%;
-	box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.6); /* Lueur extérieure */
+	box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.6);
 	transition: transform 0.3s ease, box-shadow 0.3s ease;
-	background: rgba(161, 161, 161, 0.9); /* Légère transparence */
+	background: rgba(161, 161, 161, 0.9);
 }
 
 .container_image_powerUP img:hover {
-	transform: scale(1.1); /* Effet zoom au survol */
+	transform: scale(1.1);
 	box-shadow: 0px 0px 20px rgba(255, 255, 255, 1);
 }
 
@@ -1081,7 +1044,7 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
 }
 
 .container_image_powerUP_multi img:hover {
-	transform: scale(1.1); /* Effet zoom au survol */
+	transform: scale(1.1);
 	box-shadow: 0px 0px 20px rgba(255, 255, 255, 1);
 }
 
@@ -1417,11 +1380,11 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
 	line-height: 4vh;
 
 	/* Ajout de dimensions fixes */
-	width: 120px;  /* Largeur fixe */
-	height: 70px;  /* Hauteur fixe */
-	display: flex; /* Pour aider au centrage du texte */
-	justify-content: center; /* Centre horizontalement */
-	align-items: center; /* Centre verticalement */
+	width: 120px;
+	height: 70px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 
 	position: absolute;
 	top : 65%;
@@ -1765,11 +1728,11 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
 	line-height: 4vh;
 	
 	/* Ajout de dimensions fixes */
-	width: 100px;  /* Largeur fixe */
-	height: 60px;  /* Hauteur fixe */
-	display: flex; /* Pour aider au centrage du texte */
-	justify-content: center; /* Centre horizontalement */
-	align-items: center; /* Centre verticalement */
+	width: 100px;
+	height: 60px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 
@@ -3391,7 +3354,7 @@ to {
 	display: flex;
 	flex-direction: column;
 	align-items: center;  /* Centre les éléments horizontalement */
-	justify-content: center; /* Centre verticalement */
+	justify-content: center;
 	margin: 25px 0;
 	width: 100%;
 	text-align: center;

@@ -80,9 +80,9 @@ export default class extends AbstractView {
 					<button id="leave_tournament" class="btn_leave_tournament">X</button>
 				</div>
 				<div class="message" id="message_id">
-					<p>ATTENTION : Si vous quittez le tournoi, vous ne pourrez pas revenir en arrière.</p>
+					<p>WARNING: If you leave the tournament, you cannot go back.</p>
 					<button class="close_message" id="close_message_id">X</button>
-					<button class="comfirm_leave_tournament" id="confirm_leave_tournament">Quitter le tournoi</button>
+					<button class="comfirm_leave_tournament" id="confirm_leave_tournament">Leave Tournament</button>
 				</div>
 				<div class="container_endTournament" id="container_endTournament">
 					<h1>TOURNAMENT FINISHED</h1>

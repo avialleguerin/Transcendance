@@ -14,7 +14,7 @@ export default class GameHistory {
 		this.gameHistory = [];
 		this.loadGameHistory();
 
-		this.options = ["Retour"];
+		this.options = ["Back"];
 		this.selectedOption = 0;
 		this.optionSpacing = 60;
 		this.optionFont = "20px 'Press Start 2P', Black Ops One";
@@ -23,9 +23,9 @@ export default class GameHistory {
 		this.boundMouseMove = this.handleMouseMove.bind(this);
 		this.boundMouseClick = this.handleMouseClick.bind(this);
 		this.buttonAreas = [
-			{ option: "Retour", x: 900, y: 530, width: 100, height: 40 }
+			{ option: "Back", x: 900, y: 530, width: 100, height: 40 }
 		];
-		console.log("GameHistory initialisé, nombre d'entrées:", this.gameHistory.length);
+		console.log("GameHistory initialized, number of entries:", this.gameHistory.length);
 	}
 
 	// Nouvelle méthode pour charger l'historique de façon asynchrone
@@ -84,7 +84,7 @@ export default class GameHistory {
 		const optionPositions = [{ x: 900, y: 550 }];
 
 		this.buttonAreas[0] = { 
-			option: "Retour", 
+			option: "Back", 
 			x: optionPositions[0].x - 20, 
 			y: optionPositions[0].y - 30, 
 			width: 100, 

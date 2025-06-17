@@ -22,7 +22,6 @@ export default class Trap {
 		const hitboxWidth = player.width - hitboxOffsetX * 2;
 		const hitboxHeight = player.height - hitboxOffsetY - hitboxOffsetBottom;
 	
-		// Vérifie l'intersection entre la hitbox du joueur et la boîte
 		const collision = hitboxX < this.position.x + this.width &&
 						hitboxX + hitboxWidth > this.position.x &&
 						hitboxY < this.position.y + this.height &&

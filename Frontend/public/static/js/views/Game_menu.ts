@@ -36,157 +36,157 @@ export default class Game_menu extends AbstractView {
 			<div class="profile_photo_circle_nav_bar" id="profile_photo_circle_nav_bar"><img src="./uploads/${localStorage.getItem('profile_picture')}" alt="profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;"></div>
 			<h1 class="player_name">${localStorage.getItem('Player1')}</h1>
 			<button class="option_navBar" id="option_btn_navBar" onclick="togglePanel(event)">
-				<img src="../../../srcs/game/assets/image/menu.svg" alt="leave">
+				<img src="../../../srcs/game/assets/image/menu.svg" alt="menu">
 			</button>
 			
 		</div>
 
 		<div id="cgu-modal" class="cgu-modal">
 			<div class="cgu-content">
-				<h1>Conditions Générales d'Utilisation</h1>
+				<h1>Terms of Service</h1>
 				<div class="cgu-text">
 					<h2>1. Introduction</h2>
-					<p>Bienvenue sur Transcendance. En utilisant notre application, vous acceptez les présentes conditions générales d'utilisation.</p>
-					<p>Responsable du traitement: Équipe projet Transcendance - École 42<br>
+					<p>Welcome to Transcendance. By using our application, you accept these terms of service.</p>
+					<p>Data Controller: Transcendance Project Team - École 42<br>
 					Contact: ozasahin@student.42lyon.fr<br>
-					Délégué à la Protection des Données (DPO): M. SAHIN O.</p>
+					Data Protection Officer (DPO): Mr. SAHIN O.</p>
 					
-					<h2>2. Description du Service</h2>
-					<p>Transcendance est une plateforme de jeu en ligne permettant aux utilisateurs de jouer à Pong et d'autres jeux, de communiquer et d'interagir avec d'autres utilisateurs.</p>
+					<h2>2. Service Description</h2>
+					<p>Transcendance is an online gaming platform that allows users to play Pong and other games, communicate and interact with other users.</p>
 					
-					<h2>3. Inscription et Compte</h2>
-					<p>Pour utiliser notre service, vous devez créer un compte avec des informations exactes et à jour. Nous collectons uniquement les données nécessaires à la fourniture de nos services.</p>
+					<h2>3. Registration and Account</h2>
+					<p>To use our service, you must create an account with accurate and up-to-date information. We only collect data necessary for providing our services.</p>
 					
-					<h2>4. Comportement des Utilisateurs</h2>
-					<p>Les utilisateurs s'engagent à respecter les autres membres et à ne pas publier de contenu offensant ou illégal.</p>
+					<h2>4. User Behavior</h2>
+					<p>Users commit to respecting other members and not posting offensive or illegal content.</p>
 					
-					<h2>5. Propriété Intellectuelle</h2>
-					<p>Tous les droits de propriété intellectuelle liés à Transcendance appartiennent à leurs propriétaires respectifs.</p>
+					<h2>5. Intellectual Property</h2>
+					<p>All intellectual property rights related to Transcendance belong to their respective owners.</p>
 					
-					<h2>6. Protection des Données</h2>
-					<p>Nous nous engageons à protéger vos données personnelles conformément au Règlement Général sur la Protection des Données (RGPD).</p>
-					<h3>6.1 Données collectées</h3>
-					<p>Nous collectons les catégories de données suivantes:
+					<h2>6. Data Protection</h2>
+					<p>We are committed to protecting your personal data in accordance with the General Data Protection Regulation (GDPR).</p>
+					<h3>6.1 Data Collected</h3>
+					<p>We collect the following categories of data:
 					<ul>
-						<li>Données d'identification (ID interne, username, avatar)</li>
-						<li>Données d'authentification (via Google Sign-In)</li>
-						<li>Données de profil (statut, préférences)</li>
-						<li>Données d'utilisation (historique des parties, scores, classement)</li>
+						<li>Identification data (internal ID, username, avatar)</li>
+						<li>Authentication data (via Google Sign-In)</li>
+						<li>Profile data (status, preferences)</li>
+						<li>Usage data (game history, scores, rankings)</li>
 					</ul>
 					</p>
-					<h3>6.2 Finalités du traitement</h3>
-					<p>Vos données sont traitées pour les finalités suivantes:
+					<h3>6.2 Processing Purposes</h3>
+					<p>Your data is processed for the following purposes:
 					<ul>
-						<li>Fourniture du service de jeu en ligne Transcendance</li>
-						<li>Administration des comptes utilisateurs</li>
-						<li>Fonctionnalités sociales (amis)</li>
-						<li>Enregistrement des statistiques de jeu et classements</li>
+						<li>Providing the Transcendance online gaming service</li>
+						<li>User account administration</li>
+						<li>Social features (friends)</li>
+						<li>Recording game statistics and rankings</li>
 					</ul>
 					</p>
-					<h3>6.3 Durée de conservation</h3>
-					<p>Vos données sont conservées pendant la durée du projet et jusqu'à 1 mois après l'évaluation finale.</p>
-					<h3>6.4 Destinataires des données</h3>
-					<p>Vos données peuvent être accessibles aux:
+					<h3>6.3 Retention Period</h3>
+					<p>Your data is retained for the duration of the project and up to 1 month after the final evaluation.</p>
+					<h3>6.4 Data Recipients</h3>
+					<p>Your data may be accessible to:
 					<ul>
-						<li>Membres de l'équipe projet</li>
-						<li>Corps enseignant et évaluateurs de l'école 42</li>
-						<li>Autres utilisateurs (uniquement pour les données publiques de profil)</li>
+						<li>Project team members</li>
+						<li>Teaching staff and evaluators from École 42</li>
+						<li>Other users (only for public profile data)</li>
 					</ul>
 					</p>
-					<h3>6.5 Vos droits</h3>
-					<p>Conformément au RGPD, vous disposez des droits suivants:
+					<h3>6.5 Your Rights</h3>
+					<p>In accordance with GDPR, you have the following rights:
 					<ul>
-						<li>Droit d'accès à vos données</li>
-						<li>Droit de rectification</li>
-						<li>Droit à l'effacement ("droit à l'oubli")</li>
-						<li>Droit à la limitation du traitement</li>
-						<li>Droit à la portabilité des données</li>
-						<li>Droit d'opposition</li>
+						<li>Right of access to your data</li>
+						<li>Right of rectification</li>
+						<li>Right to erasure ("right to be forgotten")</li>
+						<li>Right to restriction of processing</li>
+						<li>Right to data portability</li>
+						<li>Right to object</li>
 					</ul>
-					Pour exercer ces droits, contactez-nous à: ozasahin@student.42lyon.fr
+					To exercise these rights, contact us at: ozasahin@student.42lyon.fr
 					</p>
-					<h3>6.6 Mesures de sécurité</h3>
-					<p>Nous mettons en œuvre les mesures techniques et organisationnelles suivantes:
+					<h3>6.6 Security Measures</h3>
+					<p>We implement the following technical and organizational measures:
 					<ul>
-						<li>Chiffrement des mots de passe et données sensibles</li>
-						<li>Authentification sécurisée (Google Sign-In)</li>
-						<li>Double authentification (2FA)</li>
-						<li>Sessions sécurisées avec expiration (JWT)</li>
-						<li>Protection contre les vulnérabilités web courantes</li>
+						<li>Encryption of passwords and sensitive data</li>
+						<li>Secure authentication (Google Sign-In)</li>
+						<li>Two-factor authentication (2FA)</li>
+						<li>Secure sessions with expiration (JWT)</li>
+						<li>Protection against common web vulnerabilities</li>
 					</ul>
 					</p>
 					
-					<h2>7. Modification des CGU</h2>
-					<p>Nous nous réservons le droit de modifier ces conditions à tout moment. Les utilisateurs seront notifiés des changements importants.</p>
+					<h2>7. Terms Modification</h2>
+					<p>We reserve the right to modify these terms at any time. Users will be notified of important changes.</p>
 					
-					<h2>8. Durée et Résiliation</h2>
-					<p>L'accès à notre service peut être suspendu ou résilié en cas de non-respect des présentes conditions.</p>
+					<h2>8. Duration and Termination</h2>
+					<p>Access to our service may be suspended or terminated in case of non-compliance with these terms.</p>
 					
-					<h2>9. Transferts de données</h2>
-					<p>Aucun transfert de données personnelles n'est effectué en dehors de l'Union Européenne. Toutes les données sont hébergées sur des serveurs situés dans l'UE.</p>
+					<h2>9. Data Transfers</h2>
+					<p>No personal data transfers are made outside the European Union. All data is hosted on servers located in the EU.</p>
 				</div>
-				<button id="cgu-back-button" class="cgu-back-button">Retour</button>
+				<button id="cgu-back-button" class="cgu-back-button">Back</button>
 			</div>
 		</div>
 
 		<div id="privacy-policy-modal" class="cgu-modal">
 			<div class="cgu-content">
-				<h1>Politique de Confidentialité</h1>
+				<h1>Privacy Policy</h1>
 				<div class="cgu-text">
 					<h2>1. Introduction</h2>
-					<p>Bienvenue dans notre Politique de Confidentialité. Elle décrit comment nous collectons, utilisons et protégeons vos données personnelles.</p>
-					<p>Responsable du traitement: Équipe projet Transcendance - École 42<br>
+					<p>Welcome to our Privacy Policy. It describes how we collect, use and protect your personal data.</p>
+					<p>Data Controller: Transcendance Project Team - École 42<br>
 					Contact: ozasahin@student.42lyon.fr<br>
-					Délégué à la Protection des Données (DPO): M. SAHIN O.</p>
+					Data Protection Officer (DPO): Mr. SAHIN O.</p>
 					
-					<h2>2. Données collectées</h2>
-					<p>Nous collectons des données vous concernant lorsque vous utilisez notre service, notamment:</p>
+					<h2>2. Data Collected</h2>
+					<p>We collect data about you when you use our service, including:</p>
 					<ul>
-						<li>Données d'identification (ID interne, username, avatar)</li>
-						<li>Données d'authentification (via Google Sign-In)</li>
-						<li>Données de profil (statut, préférences)</li>
-						<li>Données d'utilisation (historique des parties, scores, classement)</li>
+						<li>Identification data (internal ID, username, avatar)</li>
+						<li>Authentication data (via Google Sign-In)</li>
+						<li>Profile data (status, preferences)</li>
+						<li>Usage data (game history, scores, rankings)</li>
 					</ul>
 					
-					<h2>3. Utilisation des données</h2>
-					<p>Nous utilisons vos données pour:</p>
+					<h2>3. Data Usage</h2>
+					<p>We use your data to:</p>
 					<ul>
-						<li>Fournir et améliorer notre service</li>
-						<li>Administrer votre compte</li>
-						<li>Vous proposer des fonctionnalités sociales (amis)</li>
-						<li>Enregistrer vos statistiques de jeu et classements</li>
+						<li>Provide and improve our service</li>
+						<li>Administer your account</li>
+						<li>Offer you social features (friends)</li>
+						<li>Record your game statistics and rankings</li>
 					</ul>
 					
-					<h2>4. Partage des données</h2>
-					<p>Nous ne vendons pas vos données personnelles. Nous pouvons être amenés à partager vos données avec:</p>
+					<h2>4. Data Sharing</h2>
+					<p>We do not sell your personal data. We may share your data with:</p>
 					<ul>
-						<li>Membres de l'équipe projet</li>
-						<li>Corps enseignant et évaluateurs de l'école 42</li>
-						<li>Autres utilisateurs (uniquement pour les données publiques de profil)</li>
+						<li>Project team members</li>
+						<li>Teaching staff and evaluators from École 42</li>
+						<li>Other users (only for public profile data)</li>
 					</ul>
 					
-					<h2>5. Sécurité des données</h2>
-					<p>Nous mettons en œuvre des mesures de sécurité pour protéger vos données contre tout accès non autorisé, divulgation, altération ou destruction.</p>
+					<h2>5. Data Security</h2>
+					<p>We implement security measures to protect your data against unauthorized access, disclosure, alteration or destruction.</p>
 					
-					<h2>6. Vos droits</h2>
-					<p>Conformément au RGPD, vous disposez des droits suivants concernant vos données personnelles:</p>
+					<h2>6. Your Rights</h2>
+					<p>In accordance with GDPR, you have the following rights regarding your personal data:</p>
 					<ul>
-						<li>Droit d'accès</li>
-						<li>Droit de rectification</li>
-						<li>Droit à l'effacement</li>
-						<li>Droit à la limitation du traitement</li>
-						<li>Droit à la portabilité des données</li>
-						<li>Droit d'opposition</li>
+						<li>Right of access</li>
+						<li>Right of rectification</li>
+						<li>Right to erasure</li>
+						<li>Right to restriction of processing</li>
+						<li>Right to data portability</li>
+						<li>Right to object</li>
 					</ul>
-					<p>Pour exercer ces droits, contactez-nous à: ozasahin@student.42lyon.fr</p>
+					<p>To exercise these rights, contact us at: ozasahin@student.42lyon.fr</p>
 					
-					<h2>7. Modifications de la Politique de Confidentialité</h2>
-					<p>Nous nous réservons le droit de modifier cette politique à tout moment. Les utilisateurs seront notifiés des changements importants.</p>
+					<h2>7. Privacy Policy Changes</h2>
+					<p>We reserve the right to modify this policy at any time. Users will be notified of important changes.</p>
 					
 					<h2>8. Contact</h2>
-					<p>Pour toute question concernant cette Politique de Confidentialité, veuillez nous contacter à: ozasahin@student.42lyon.fr</p>
+					<p>For any questions regarding this Privacy Policy, please contact us at: ozasahin@student.42lyon.fr</p>
 				</div>
-				<button id="privacy-policy-back-button" class="cgu-back-button">Retour</button>
+				<button id="privacy-policy-back-button" class="cgu-back-button">Back</button>
 			</div>
 		</div>
 
@@ -197,14 +197,12 @@ export default class Game_menu extends AbstractView {
 			<div class="friend_list_container">
 				<h1>FRIENDS LIST</h1>
 
-				<!-- Boutons de navigation -->
 				<div class="friend_tabs">
 					<button id="tab-accepted" class="tab-btn active">Friends</button>
 					<button id="tab-pending" class="tab-btn">On hold</button>
 					<div id="notify_friend_demand" title="Friend Request"></div>
 				</div>
 
-				<!-- Sections d'amis -->
 				<div class="friend_sections">
 					<div id="section-accepted" class="friend_section">
 						<div id="friends-accepted" class="friend_list_scrollable"></div>
@@ -214,7 +212,6 @@ export default class Game_menu extends AbstractView {
 					</div>
 				</div>
 
-				<!-- Ajouter un ami -->
 				<form class="add_friend_section" onsubmit="addFriend(event)">
 					<input type="text" id="friend_name_input" placeholder="Username..." />
 					<button type="submit" id="add_friend_btn">Add</button>
@@ -226,7 +223,6 @@ export default class Game_menu extends AbstractView {
 					<h1>GAME HISTORY</h1>
 
 					<table class="game_history_scrollable_navBar">
-						<!-- Game 1 -->
 						<tbody id="games-table"></tbody>
 					</table>
 				</div>
@@ -355,7 +351,7 @@ export default class Game_menu extends AbstractView {
 						<form id="modif_profile" class="modif_profile" onsubmit="accessProfileInfo(event)">
 							<label for="mdp">Password</label>
 							<input type="password" id="password" name="password" placeholder="Password" required>
-							<button type="submit" class="btn_valider_mdp">Valider</button>
+							<button type="submit" class="btn_valider_mdp">Validate</button>
 						</form>
 						<div class="profile_param_unlocked" id="profile_param_unlocked_id">
 							<div class="photo_profile">
@@ -390,7 +386,7 @@ export default class Game_menu extends AbstractView {
 								<button type="submit" id="valid_profile_info" class="valid_profile_info_btn">Valider</button>
 							</form>
 							<div class="btn_deconnect">
-								<button id="deconnect_btn" class="btn_deconnect_btn" onclick="logout()">Deconnexion</button>
+								<button id="deconnect_btn" class="btn_deconnect_btn" onclick="logout()">Disconnect</button>
 							</div>
 							<div class="btn_delete">
 								<button id="delete_btn" class="btn_delete_btn" onclick="delete_account()">Delete account</button>
@@ -399,13 +395,13 @@ export default class Game_menu extends AbstractView {
 								<button id="export_btn" class="btn_export_btn" onclick="export_data()">Export data</button>
 							</div>
 							<div class="anonymize_btn">
-								<button id="anonymize_btn" class="btn_anonymize_btn" onclick="anonymize_user()">Anonymize me</button>
+								<button id="anonymize_btn" class="btn_anonymize_btn" onclick="anonymize_user()">Anonymize Account</button>
 							</div>
 							<div class="cgu-container">
-								<label for="accept-cgu"><a href="#" id="show-cgu" class="cgu-link">Conditions Générales d'Utilisation</a></label>
+								<label for="accept-cgu"><a href="#" id="show-cgu" class="cgu-link">Terms of Service</a></label>
 							</div>
 							<div class="privacy-policy-container">
-								<label for="accept-privacy-policy"><a href="#" id="show-privacy-policy" class="cgu-link">Politique de Confidentialité</a></label>
+								<label for="accept-privacy-policy"><a href="#" id="show-privacy-policy" class="cgu-link">Privacy Policy</a></label>
 							</div>
 							
 						</div>
@@ -490,7 +486,7 @@ export default class Game_menu extends AbstractView {
 						</div>
 						</div>
 
-						<button type="submit" class="valider_opponent_btn" id="validate_multi_opponent">Valider</button>
+						<button type="submit" class="valider_opponent_btn" id="validate_multi_opponent">Validate</button>
 					</form>
 				</div>
 
@@ -834,7 +830,7 @@ export default class Game_menu extends AbstractView {
 		});
 
 		view1_btn.addEventListener('click', () => {
-			console.log('Mode de jeux button clicked');
+			console.log('Game mode button clicked');
 			
 			if (view5.classList.contains('active')) {
 				view5.classList.remove('active');
@@ -1236,7 +1232,7 @@ export default class Game_menu extends AbstractView {
 				enable_skin_perso_player_solo();
 
 				valide_ton_skin.addEventListener('click', () => {
-					console.log('Valide ton skin button clicked');
+					console.log('Validate skin button clicked');
 					choose_your_skin.classList.remove('active');
 					solo_1v1_btn.style.display = 'block';
 					custom_ta_game.style.visibility = 'visible';
@@ -1303,7 +1299,7 @@ export default class Game_menu extends AbstractView {
 				enable_skin_multi();
 
 				valide_ton_skin_game_multi.addEventListener('click', () => {
-					console.log('Valide ton skin button clicked');
+					console.log('Validate skin button clicked');
 					choose_your_skin_game_multi.classList.remove('active');
 					multiplayer_btn.style.display = 'block';
 					custom_ta_game_multi.style.visibility = 'visible';
@@ -1416,7 +1412,7 @@ export default class Game_menu extends AbstractView {
 		const container_menu = document.getElementById('container');
 
 		parametre_jeu.addEventListener('click', () => {
-			console.log('Parrametre jeu clicked');
+			console.log('Game settings clicked');
 			parametre_jeu_view.classList.add('active');
 			view5.classList.remove('active');
 			btn_back_home.classList.remove('active');
@@ -1428,7 +1424,7 @@ export default class Game_menu extends AbstractView {
 		});
 		
 		parametre_profile.addEventListener('click', () => {
-			console.log('Parrametre profile clicked');
+			console.log('Profile settings clicked');
 			parametre_profile_view.classList.add('active');
 			view5.classList.remove('active');
 			btn_back_home.classList.remove('active');
@@ -1475,19 +1471,19 @@ export default class Game_menu extends AbstractView {
 
 		active_fa.addEventListener('change', () => {
 			if (active_fa.checked) {
-				console.log('FA is active');
+				console.log('2FA is active');
 				code_validation_id.classList.add('active');
 				fa_selector.classList.remove('hidden');
 			}
 			else {
-				console.log('FA is inactive');
+				console.log('2FA is inactive');
 				fa_selector.classList.add('hidden');
 
 			}
 		});
 
 		cancel_fa.addEventListener('click', () => {
-			console.log('Cancel FA clicked');
+			console.log('Cancel 2FA clicked');
 			code_validation_id.classList.remove('active');
 			fa_selector.classList.add('hidden');
 			active_fa.checked = false;

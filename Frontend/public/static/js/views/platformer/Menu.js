@@ -18,9 +18,6 @@ export default class Menu {
 		}
 		this.Game_History = Game_History;
 
-		// this.keyPressed = {};
-		// this.boundKeyDown = this.handleKeyDown.bind(this);
-		// this.boundKeyUp = this.handleKeyUp.bind(this);
 		this.optionStart = 0;
 		this.optionOptions = 1;
 		this.optionHistory = 2;
@@ -28,7 +25,6 @@ export default class Menu {
 
 		this.boundMouseClick = this.handleMouseClick.bind(this);
 		
-		// Définir les zones de clic pour chaque option
 		this.buttonAreas = [
 			{ option: "▶ Start", x: canvas.width / 2 - 100, y: canvas.height / 2 - 20, width: 200, height: 40 },
 			{ option: "⚙ Options", x: canvas.width / 2 - 100, y: canvas.height / 2 + 40, width: 200, height: 40 },
@@ -36,10 +32,8 @@ export default class Menu {
 			{ option: "✖ Quit", x: canvas.width / 2 - 100, y: canvas.height / 2 + 160, width: 200, height: 40 }
 		];
 		
-		// Pour suivre quelle option est survolée
-		this.hoveredOption = -1;  // -1 signifie qu'aucune option n'est survolée
+		this.hoveredOption = -1;
 		
-		// Ajouter le gestionnaire d'événements pour le mouvement de la souris
 		this.boundMouseMove = this.handleMouseMove.bind(this);
 	}
 
@@ -72,26 +66,21 @@ export default class Menu {
 			}
 		}
 		
-		// Si aucun bouton n'est survolé, remettre le curseur par défaut
 		if (this.hoveredOption === -1) {
 			canvas.style.cursor = 'default';
 		}
 	}
 
 	handleMouseClick(event) {
-		// Obtenir la position du clic relative au canvas
 		const rect = canvas.getBoundingClientRect();
 		const x = event.clientX - rect.left;
 		const y = event.clientY - rect.top;
 		
-		// Vérifier si le clic est sur un bouton
 		for (let i = 0; i < this.buttonAreas.length; i++) {
 			const button = this.buttonAreas[i];
 			if (x >= button.x && x <= button.x + button.width &&
 				y >= button.y && y <= button.y + button.height) {
-				// Définir l'option sélectionnée sur celle qui a été cliquée
 				this.selectedOption = i;
-				// Exécuter l'action associée à cette option
 				this.handleSelect();
 				break;
 			}
@@ -118,7 +107,6 @@ export default class Menu {
 
 		c.font = this.optionFont;
 		this.options.forEach((option, index) => {
-			// Déterminer le style en fonction de la sélection ET du hover
 			if (option === "✖ Quit" && (index === this.hoveredOption))
 				c.fillStyle = "red";
 			else if (index === this.hoveredOption)

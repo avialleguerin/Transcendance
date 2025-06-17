@@ -214,7 +214,7 @@ function optimizeGameObjects(objects) {
     });
 }
 function handleGameInitError() {
-    console.error("Game initialization failed. Resetting to menu...");
+    console.error("Game initialization failed. Back to menu...");
     initialized = false;
     play = false;
     Solo_gameStart = false;
@@ -231,7 +231,7 @@ function handleGameInitError() {
     errorMessage.style.padding = '20px';
     errorMessage.style.borderRadius = '5px';
     errorMessage.style.zIndex = '1000';
-    errorMessage.textContent = 'Erreur lors du chargement du jeu. Retour au menu...';
+    errorMessage.textContent = 'Error when loading. Back to...';
     document.body.appendChild(errorMessage);
     setTimeout(() => {
         document.body.removeChild(errorMessage);

@@ -170,7 +170,7 @@ export async function fetch_games(): Promise<void> {
 			`;
 		}).join('');
 	} catch (err) {
-		console.error('Erreur lors de la récupération des Jeux :', err);
+		console.error('Error retrieving Games:', err);
 	}
 }
 

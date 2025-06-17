@@ -351,7 +351,7 @@ export function initGame()
 
 	function handleTrapCollision(player, trap, respawnPoint) {
 		if (trap.checkCollision(player)) {
-			console.log("collision avec le piège");
+			console.log("collision with trap");
 			player.position.x = respawnPoint.x;
 			player.position.y = respawnPoint.y;
 			player.velocity.x = 0;
@@ -511,15 +511,15 @@ export function initGame()
 
 		Coins.forEach(coin => {
 			if (coin.checkCollision(player)) {
-				console.log("collision avec la pièce");
+				console.log("collision with coin");
 				coin.destroy();
 				game_canvas.nb_coin++;
-				// Gérer la collecte de la pièce ici
+				// Handle coin collection here
 			}
 		});
 
 		if (end_game.checkCollision(player)) {
-			console.log("collision avec la fin du jeu");
+			console.log("collision with end game");
 			if (end_game.first_game_finished === false)
 			{
 				console.log("first game finished");
