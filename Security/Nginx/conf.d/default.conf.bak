@@ -55,8 +55,8 @@ server {
 	}
 
 	location /request/ {
-		modsecurity on;
-		modsecurity_rules_file /etc/modsecurity/modsecurity.conf;
+		# modsecurity on;
+		# modsecurity_rules_file /etc/modsecurity/modsecurity.conf;
 
 		proxy_pass http://fastify:3000;
 		proxy_set_header Host $host;

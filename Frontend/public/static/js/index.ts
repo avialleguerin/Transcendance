@@ -1,5 +1,5 @@
 import home from "./views/Home.js";
-import Game_menu from "./views/Game_menu.js";
+import Game_menu from "./views/game-menu.js";
 import solo_game_1v1 from "./views/solo_game_1v1.js";
 import multi_player_game from "./views/multi_player_game.js";
 import tournament from "./views/tournament.js";
@@ -19,7 +19,7 @@ const navigateTo = (url: string): void => {
 const router = async (): Promise<void> => {
 	const routes: Route[] = [
 		{ path: "/", view: home },
-		{ path: "/Game_menu", view: Game_menu },
+		{ path: "/game-menu", view: Game_menu },
 		{ path: "/solo_game_1v1", view: solo_game_1v1 },
 		{ path: "/multi_player_game", view: multi_player_game },
 		{ path: "/tournament", view: tournament },

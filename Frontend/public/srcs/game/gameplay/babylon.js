@@ -276,7 +276,7 @@ function handleGameInitError() {
 	document.body.appendChild(errorMessage);
 	setTimeout(() => {
 		document.body.removeChild(errorMessage);
-		window.location.href = '/Game_menu';
+		window.location.href = '/game-menu';
 	}, 3000);
 }
 

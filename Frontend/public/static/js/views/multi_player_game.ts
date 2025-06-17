@@ -1,5 +1,5 @@
 import AbstractView from "./AbstractView.js";
-import { getPowerUP_value_multi } from "./Game_menu.js";
+import { getPowerUP_value_multi } from "./game-menu.js";
 import { leave_Multiplayer_Game } from "../../../srcs/game/gameplay/babylon.js";
 import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.js";
 import { setLeaveGameVar } from "../index.js";

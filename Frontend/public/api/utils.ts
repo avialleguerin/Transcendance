@@ -70,61 +70,6 @@ export async function fetchAPI(url: string, method: string, body: any = null, sh
 	}
 }
 
-
-// async function refreshInfos() {
-// 	try {
-// 		const data = await fetchAPI('/request/user/refresh-infos', 'POST', {}, true, false);
-
-// 		if (!data.accessToken || data.deleted_account) {
-// 			sessionStorage.clear();
-// 			localStorage.clear();
-// 			history.pushState({}, '', '/');
-// 			import('../static/js/views/Home.js').then((module) => {
-// 				console.log("Home module loaded");
-// 				const Home = module.default;
-// 				const homeInstance = new Home();
-// 				homeInstance.getHtml().then((html) => {
-// 					const appElement = document.getElementById('app');
-// 					if (appElement) {
-// 						appElement.innerHTML = html;
-// 						if (homeInstance.createAccount && typeof homeInstance.createAccount === 'function') {
-// 							homeInstance.createAccount();
-// 						}
-// 					}
-// 				});
-// 			});
-// 			notif("Session expired, please log in again", false);
-// 		} else if (sessionStorage.getItem("accessToken") && sessionStorage.getItem("accessToken") !== "undefined") {
-// 			// Utiliser window.connectWebSocket au lieu de l'import
-// 			if (typeof window.connectWebSocket === 'function') {
-// 				window.connectWebSocket();
-// 			}
-// 			localStorage.clear();
-// 			localStorage.setItem("Player1", data.user.username);
-// 			localStorage.setItem("profile_picture", data.user.profile_picture);
-// 			history.pushState({}, '', '/Game_menu');
-// 			import('../static/js/views/Game_menu.js').then(module => {
-// 				const GameMenu = module.default;
-// 				const gameMenuInstance = new GameMenu();
-// 				gameMenuInstance.getHtml().then(html => {
-// 					document.getElementById('app').innerHTML = html;
-// 					if (gameMenuInstance.game_menu) {
-// 						gameMenuInstance.game_menu();
-// 					}
-// 				});
-// 			});
-// 		}
-
-// 		if (data.success) {
-// 			console.log("Infos refreshed successfully");
-// 		} else {
-// 			console.error("Error refreshing infos:", data.error);
-// 		}
-// 	} catch (err) {
-// 		console.error("Erreur lors du rafraîchissement des informations :", err);
-// 	}
-// }
-
 export function homeView(): void {
 	handleViewTransitions("vue1", "vue2");
 	history.pushState({}, '', '/');
@@ -145,9 +90,9 @@ export function homeView(): void {
 
 export function gameMenuView(): void {
 	handleViewTransitions("vue1", "default");
-	history.pushState({}, '', '/Game_menu');
+	history.pushState({}, '', '/game-menu');
 	setTimeout(() => {
-		import('../static/js/views/Game_menu.js').then(module => {
+		import('../static/js/views/game-menu.js').then(module => {
 			const GameMenu = module.default;
 			const gameMenuInstance = new GameMenu();
 			gameMenuInstance.getHtml().then(html => {
