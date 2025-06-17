@@ -55,10 +55,9 @@ export async function fetch_user_friendships(): Promise<void> {
 
 		const hasReceivedRequests = pending.some(friend => user.userId === friend.friendId);
 
-		if (pending.length > 0 && hasReceivedRequests)
-			document.getElementById("notify_friend_demand").style.display = "block";
-		else
-			document.getElementById("notify_friend_demand").style.display = "none";
+
+		$("notify_friend_demand").style.display = `${pending.length > 0 && hasReceivedRequests ? "block" : "none"}`;
+
 
 
 		const renderFriend = (friendship: Friendship, showActions: boolean): string => {

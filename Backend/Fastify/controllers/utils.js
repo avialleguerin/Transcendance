@@ -60,11 +60,11 @@ export async function getUserFromToken(request) {
 export async function refreshInfos(request, reply) {
 	try {
 		const infos = await getUserFromToken(request)
-		if (!infos) return reply.code(401).clearCookie("refreshToken").send({ success: false, error: `infos: ${infos}`, message: 'User is not logged', function: 'refreshInfos' })
+		if (!infos) return reply.clearCookie("refreshToken").send({ success: false, error: `infos: ${infos}`, message: 'User is not logged', function: 'refreshInfos' })
 		
 		const user = infos.user
 		const accessToken = infos.accessToken
-		if (!user) return reply.code(401).send({ success: false, error: 'User not found' })
+		if (!user) return reply.send({ success: false, error: 'User not found' })
 		
 		if (!user.doubleAuth_status && user.doubleAuth_secret) {
 			usersModel.updateDoubleAuth_secret(user.userId, null)

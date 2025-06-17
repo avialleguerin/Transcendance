@@ -4,6 +4,14 @@ import { fastify, log } from '../server.js';
 
 const activeConnections = new Map();
 
+export function getUserConnection(UID) {
+	console.log(`Getting connection for user ${UID}`);
+	if (activeConnections.has(UID) || activeConnections.has(UID.toString())) {
+		return true;
+	}
+	return false;
+}
+
 export function notifyFriend(fromUserId, toUserId, type, message = null) {
 	try {
 		const fromUser = usersModel.getUserById(fromUserId);
@@ -16,18 +24,21 @@ export function notifyFriend(fromUserId, toUserId, type, message = null) {
 	}
 }
 
-function notifyFriendsStatus(userId, status) {
+function notifyFriendsStatus(UID, status) {
 	try {
-		const friends = friendshipsModel.getUserAcceptedFriendships(userId);
-		const user = usersModel.getUserById(userId);
+		const friendships = friendshipsModel.getUserAcceptedFriendships(UID);
+		// console.log("friendships", friendships);
+		const user = usersModel.getUserById(UID);
 		
-		usersModel.updateOnlineStatus(userId, status)
-		usersModel.updateLastActivity(userId)
-		log.debug(`Notifying friends of user ${userId} about status change to ${status}`);
-		if (friends && friends.length > 0 && user) {
-			friends.forEach(friend => {
-				const friendUserId = friend.userId === userId ? friend.friendUserId : friend.userId;
-				notifyFriend(userId, friendUserId, 'friend_status_update')
+		usersModel.updateOnlineStatus(UID, status)
+		usersModel.updateLastActivity(UID)
+		if (friendships && friendships.length > 0 && user) {
+			friendships.forEach(friendship => {
+				const friendUserId = ((friendship.userId).toString() === UID ? friendship.friendId : friendship.userId);
+				log.debug(`Notifying friends of user ${UID} about status change to ${friendUserId}`);
+				if (UID !== friendUserId)
+					notifyFriend(UID, friendUserId, 'friend_status_update')
+				console.log
 			});
 		}
 	} catch (error) {

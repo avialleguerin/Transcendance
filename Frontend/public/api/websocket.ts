@@ -37,9 +37,9 @@ export class WebSocketManager {
 			else if (data.type === 'friend_request')
 				this.handleFriendRequest(data.message)
 			else if (data.type === 'friend_deleted')
-				this.handleFriendRequest(null)
+				this.handleFriendRequest("null")
 			else if (data.type === 'friend_status_update')
-				this.handleFriendRequest(null)
+				this.handleFriendRequest("null")
 		}
 		
 		this.socket.onclose = () => {
@@ -99,7 +99,7 @@ export class WebSocketManager {
 	handleFriendRequest(message: string | null) {
 		fetch_user_friendships()
 		console.warn('Friend request received:', message)
-		if (message)
+		if (message !== "null")
 			notif(`${message}`, true)
 	}
 

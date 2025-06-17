@@ -10,6 +10,7 @@ import speakeasy from 'speakeasy'
 import qrcode from 'qrcode'
 import fs from 'fs/promises'
 import path from 'path'
+import { getUserConnection } from '../utils/websocket.js'
 
 const uploadDir = '/usr/share/nginx/uploads'
 const SECRET_LENGHT = 30
@@ -256,7 +257,11 @@ export async function login(request, reply) {
 			fastify.log.warn(`Login failed: User not found - ${username}`)
 			return reply.code(401).send({ success: false, error: 'Invalid credentials' })
 		}
-		
+		if (getUserConnection(user.userId))
+		{
+			fastify.log.warn(`Login attempt on already connected user: ${username}`)
+			return reply.code(401).send({ success: false, error: 'You are already connected in another session' })
+		}
 		if (user.anonymized_at) {
 			fastify.log.warn(`Login attempt on anonymized account: ${username}`)
 			return reply.code(401).send({ success: false, error: 'This account has been deleted' })
