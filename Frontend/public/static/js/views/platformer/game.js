@@ -169,7 +169,7 @@ export function initGame()
 		new Trap({
 			position: {
 				x: 1760,
-				y: 1650,
+				y: 1690,
 			},
 			width: 63,
 			height: 40,
@@ -307,10 +307,8 @@ export function initGame()
 	const menu = new Menu({
 		Game_History : gameHistory,
 	});
-	
 
 
-	// === Helper Functions ===
 	function handleCollision(player, box) {
 		const isColliding = box.checkCollision(player);
 	
@@ -531,8 +529,6 @@ export function initGame()
 				gameState.current = GameState.EndGameSecondGame;
 			}
 		}
-
-		console.log(player.position.x, player.position.y);
 	}
 	
 	const options = new Option();

@@ -63,3 +63,13 @@ export function fadeOutCanvas(callback) {
         }
     }, 1500);
 }
+
+let IsFirstGame = true;
+
+export function setIsFirstGame(value) {
+    IsFirstGame = value;
+}
+
+export function getIsFirstGame() {
+    return IsFirstGame;
+}
