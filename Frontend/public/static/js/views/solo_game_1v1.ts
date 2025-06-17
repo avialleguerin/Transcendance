@@ -44,7 +44,7 @@ export default class solo_game extends AbstractView {
 		};
 
 		this.boundKeyPressHandler = this.handleKeyPress.bind(this);
-    
+	
 		
 		if (bool == false) {
 			if (window.location.pathname === "/solo_game_1v1") {
@@ -127,11 +127,8 @@ export default class solo_game extends AbstractView {
 							<h1 id="looser_id"></h1>
 						</div>
 					</div>
-					<button class="leave_game_2" id="leave_game_2_id" onclick="window.create_1v1_game(event, '${localStorage.getItem('Player1')}', '${localStorage.getItem('Player2')}')">Quitter la partie</button>
+					<button class="leave_game_2" id="leave_game_2_id" onclick="window.create_1v1_game(event, '${localStorage.getItem('Player1')}', '${localStorage.getItem('Player2')}')">Leave Game</button>
 				</div>
-			</div>
-			<div id="notification-container" class="fixed top-0 left-0 right-0 flex justify-center z-50 mt-4">
-				<p id="resultMessage" class="py-2 px-4 rounded shadow-lg transition-all duration-300 transform translate-y-0 opacity-0"></p>
 			</div>
 		`;
 	}
@@ -166,12 +163,12 @@ export default class solo_game extends AbstractView {
 
 		const container_player1 = document.getElementById("container-player1_id");
 		const container_player2 = document.getElementById("container-player2_id");
-        if (getPowerUP_value() !== 0) {
+		if (getPowerUP_value() !== 0) {
 			console.log("powerUP valueje reeeeedjkhkjefwhjkewhfkjwe == ", getPowerUP_value());
 			container_player1.classList.add("active");
 			container_player2.classList.add("active");
 		}
-        else {
+		else {
 			console.log(" else    powerUP valueje reeeeedjkhkjefwhjkewhfkjwe == ", getPowerUP_value());
 			if (container_player1.classList.contains("active"))
 				container_player1.classList.remove("active");
@@ -209,21 +206,17 @@ export default class solo_game extends AbstractView {
 		
 		
 		
-		// Vérifier si la touche a un cooldown défini
 		if (!(key in this.cooldownTimes)) return;
 		
-		if (this.cooldowns[key]) {
-			return;
-		} // Ignore l'action si en cooldown
-		// Vérifier si la touche est en cooldown
+		if (this.cooldowns[key]) return;
 
 		if (key === " ") {
 			const press_space = document.getElementById("press_space_id");
 			if (press_space) {
 				press_space.style.visibility = "hidden";
 				press_space.style.animation = "none";
-            }
-            else {
+			}
+			else {
 				console.error("press_space_id introuvable !");
 			}
 			spacePressed = true;
@@ -261,7 +254,6 @@ export default class solo_game extends AbstractView {
 					
 					this.cooldowns[key] = true;
 					
-					// Ajouter la classe d'animation pour démarrer l'overlay reloading
 					let itemCircle = null;
 					let overlayReloading = null;
 					let overlayReloading_teammate = null;
@@ -300,36 +292,23 @@ export default class solo_game extends AbstractView {
 						return;
 					}
 
-					if (overlayReloading && currentValue - 1 !== 0) {
-						// Lancer l'animation en ajoutant une classe CSS pour démarrer
-						overlayReloading.classList.add("active"); // Assurez-vous que .item-loading est défini dans votre CSS
-					}
-					if (itemCircle) {
+					if (overlayReloading && currentValue - 1 !== 0)
+						overlayReloading.classList.add("active");
+					if (itemCircle)
 						itemCircle.classList.add("active");
-					}
 
-					if (overlayReloading_teammate && currentValue - 1 !== 0) {
-						// Lancer l'animation en ajoutant une classe CSS pour démarrer
-						overlayReloading_teammate.classList.add("active"); // Assurez-vous que .item-loading est défini dans votre CSS
-					}
+					if (overlayReloading_teammate && currentValue - 1 !== 0)
+						overlayReloading_teammate.classList.add("active");
 		
-					// Retirer le cooldown après le délai défini pour cette touche
 					setTimeout(() => {
-						//  vérifiez que this.cooldowns est bien accessible
-
-						// Terminer le cooldown et arrêter l'animation
 						delete this.cooldowns[key];
 		
-						// Retirer la classe d'animation après le cooldown
-						if (overlayReloading && currentValue - 1 !== 0) {
+						if (overlayReloading && currentValue - 1 !== 0)
 							overlayReloading.classList.remove("active");
-						}
-						if (overlayReloading_teammate && currentValue - 1 !== 0) {
+						if (overlayReloading_teammate && currentValue - 1 !== 0)
 							overlayReloading_teammate.classList.remove("active");
-						}
-						if (itemCircle && currentValue - 1 !== 0) {
+						if (itemCircle && currentValue - 1 !== 0)
 							itemCircle.classList.remove("active");
-						}
 
 					}, this.cooldownTimes[key]);
 				}
@@ -350,7 +329,7 @@ export default class solo_game extends AbstractView {
 			return;
 		if (isGameFinished()) {
 			winnerContainer.classList.add("active");
-			clearInterval(this.gameLoop); // Arrête la boucle quand la partie est finie
+			clearInterval(this.gameLoop);
 			if (player_1_win)
 			{
 				document.getElementById("winner_id").innerHTML = `${localStorage.getItem("Player1")}`;

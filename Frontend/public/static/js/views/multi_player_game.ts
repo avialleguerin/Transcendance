@@ -8,7 +8,7 @@ import { isGameFinished } from "../../../srcs/game/gameplay/score.js";
 import { getIsTeam1Win, getIsTeam2Win } from "../../../srcs/game/gameplay/score.js";
 import { disable_skin_multi_podium_default } from "../../../srcs/game/gameplay/multiplayer/init_teamPlayer_podium_default.js";
 import { get_skin_is_init } from "../../../srcs/game/gameplay/solo/skin/init_skin_utils.js";
-// import { log } from '../../../api/utils.js';
+import { homeView } from "../../../api/utils.js";
 
 let space_pressed = false;
 let bool = false;
@@ -45,23 +45,9 @@ export default class extends AbstractView {
 			}
 			bool = true;
 		}
-		// const accessToken: string | null = sessionStorage.getItem('accessToken');
-		// if (!accessToken || accessToken === undefined) {
-		// 	history.pushState({}, '', '/');
-		// 	import('./Home.js').then((module: any) => {
-		// 		const Home = module.default;
-		// 		const homeInstance = new Home();
-		// 		homeInstance.getHtml().then((html: string) => {
-		// 			const appElement = document.getElementById('app');
-		// 			if (appElement) {
-		// 				appElement.innerHTML = html;
-		// 				if (homeInstance.createAccount && typeof homeInstance.createAccount === 'function') {
-		// 					homeInstance.createAccount();
-		// 				}
-		// 			}
-		// 		});
-		// 	});
-		// }
+		const accessToken: string | null = sessionStorage.getItem('accessToken');
+		if (!accessToken || accessToken === undefined)
+			homeView();
 		
 	}
 
@@ -120,9 +106,6 @@ export default class extends AbstractView {
 					</div>
 					<button class="leave_game_2" id="leave_game_2_id" onclick="create_2v2_game(event)">Quitter la partie</button>
 				</div>
-			</div>
-			<div id="notification-container" class="fixed top-0 left-0 right-0 flex justify-center z-50 mt-4">
-				<p id="resultMessage" class="py-2 px-4 rounded shadow-lg transition-all duration-300 transform translate-y-0 opacity-0"></p>
 			</div>
 		`;
 	}

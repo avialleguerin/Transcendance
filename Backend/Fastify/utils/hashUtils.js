@@ -10,8 +10,8 @@ export async function hashPassword(password) {
 		});
 		return hashedPassword;
 	} catch (err) {
-		fastify.log.error("Erreur lors du hashage du mot de passe :", err);
-		throw new Error("Hashage du mot de passe échoué");
+		fastify.log.error("Error during password hashing:", err);
+		throw new Error("Password hashing failed");
 	}
 }
 
@@ -19,7 +19,7 @@ export async function verifyPassword(hashedPassword, password) {
 	try {
 		return await argon2.verify(hashedPassword, password);
 	} catch (error) {
-		fastify.log.error("Erreur lors de la vérification du mot de passe :", error);
+		fastify.log.error("Error during password verification:", error);
 		return false;
 	}
 }

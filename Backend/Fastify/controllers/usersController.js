@@ -437,39 +437,38 @@ export async function logout(request, reply) {
 	reply.code(200).send({ success: true, message: 'Logged out' })
 }
 
-export async function updateDoubleAuth(request, reply) {
+export async function enableDoubleAuth(request, reply) {
 	try {
 		const infos = await getUserFromToken(request)
-		if (!infos) {
-			fastify.log.warn('Double auth update denied: Unauthorized request')
-			return reply.code(401).send({ success: false, error: 'Unauthorized' })
-		}
+		if (!infos) return reply.code(401).send({ success: false, error: 'Unauthorized' })
 
 		const user = infos.user
-		if (!user) {
-			fastify.log.warn('Double auth update failed: User not found in token')
-			return reply.code(404).send({ success: false, error: 'User not found' })
-		}
-
-		if (user.doubleAuth_status || user.doubleAuth_secret !== null) {
-			fastify.log.info(`Disabling 2FA for user: ${user.username}`)
-			usersModel.updateDoubleAuth_status(user.userId, 0)
-			usersModel.updateDoubleAuth_secret(user.userId, null)
-			return reply.code(200).send({success: true, message: "2FA disabled successfully!", doubleAuth_secret: false})
-		}
+		if (!user) return reply.code(404).send({ success: false, error: 'User not found' })
 
 		fastify.log.info(`Enabling 2FA for user: ${user.username}`)
 		const doubleAuthData = await generateDoubleAuth(user.userId)
 
-		return reply.code(200).send({
-			success: true,
-			doubleAuth_status: true,
-			message: 'Double authentication waiting for activation',
-			secret: doubleAuthData.secret,
-			qrCode: doubleAuthData.qrCode
-		})
+		return reply.code(200).send({ success: true, doubleAuth_status: true, message: 'Double authentication waiting for activation', secret: doubleAuthData.secret, qrCode: doubleAuthData.qrCode })
 	} catch (err) {
 		fastify.log.error(`Critical error updating double auth: ${err.message}`)
+		return reply.code(500).send({ error: err.message })
+	}
+}
+
+export async function disableDoubleAuth(request, reply) {
+	try {
+		const infos = await getUserFromToken(request)
+		if (!infos) return reply.code(401).send({ success: false, error: 'Unauthorized' })
+
+		const user = infos.user
+		if (!user) return reply.code(404).send({ success: false, error: 'User not found' })
+
+		usersModel.updateDoubleAuth_status(user.userId, 0)
+		usersModel.updateDoubleAuth_secret(user.userId, null)
+
+		return reply.code(200).send({ success: true, message: '2FA disabled successfully' })
+	} catch (err) {
+		fastify.log.error(`Critical error disabling double auth: ${err.message}`)
 		return reply.code(500).send({ error: err.message })
 	}
 }

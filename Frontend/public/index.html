@@ -6,6 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Test</title>
 	<link rel="icon" href="favicon.ico" type="image/x-icon">
+	<link rel="stylesheet" href="./static/js/css/index.css">
 	<script src="https://accounts.google.com/gsi/client" async defer></script>
 	<!-- <script>console.log = function () {};</script> -->
 	<style>
@@ -66,100 +67,15 @@
 			opacity: 1;
 		}
 
-		 /* Cookie Popup */
-		 .persistent-popup {
-			position: fixed;
-			bottom: 20px;
-			right: 20px;
-			width: 350px;
-			max-width: 90vw;
-			background: white;
-			border-radius: 12px;
-			padding: 20px;
-			box-shadow: 
-				0 4px 30px rgba(0, 0, 0, 0.3),
-				0 0 20px rgba(255, 255, 255, 0.1);
-			z-index: 10000;
-			border: 2px solid #ddd;
-			display: none;
-		}
-
-		.persistent-popup.active {
-			display: block;
-		}
-
-		.popup-content {
-			position: relative;
-		}
-
-		.popup-title {
-			font-size: 18px;
-			font-weight: bold;
-			margin-bottom: 10px;
-			color: #333;
-		}
-
-		.popup-text {
-			font-size: 14px;
-			color: #666;
-			margin-bottom: 15px;
-			line-height: 1.4;
-		}
-
-		.popup-buttons {
-			display: flex;
-			gap: 10px;
-			justify-content: flex-end;
-		}
-
-		.popup-btn {
-			padding: 8px 16px;
-			border: none;
-			border-radius: 6px;
-			font-size: 14px;
-			cursor: pointer;
-			transition: background-color 0.3s;
-		}
-
-		.popup-btn.necessary {
-			background-color: #f0f0f0;
-			color: #333;
-			border: 1px solid #ddd;
-		}
-
-		.popup-btn.necessary:hover {
-			background-color: #e0e0e0;
-		}
-
-		.popup-btn.allow-all {
-			background-color: #180247;
-			color: white;
-		}
-
-		.popup-btn.allow-all:hover {
-			background-color: #6f45a0;
-		}
-
-		/* Responsive */
-		@media (max-width: 480px) {
-			.persistent-popup {
-				bottom: 10px;
-				right: 10px;
-				left: 10px;
-				width: auto;
-			}
-			
-			.popup-buttons {
-				flex-direction: column;
-			}
-		}
+		 
 	</style>
 </head>
 
 <body>
-
+	<div id="notification-container" style="display: none;">
+		<p id="resultMessage"></p>
+	</div>
 	<canvas id="renderCanvas" style="width: 100%; height: 100vh;"></canvas>
-
 	<!-- Cookie Popup -->
 	<div id="persistent-popup" class="persistent-popup">
 		<div class="popup-content">

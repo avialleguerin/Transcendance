@@ -2,25 +2,11 @@ import Vault from 'node-vault';
 
 const vault = Vault({
 	endopint: 'http://vault:8200',
-	token: 'root' // TODO Remplacer avec AppRole en production
+	token: 'root' // TODO Replace with AppRole in production
 });
 
-// const role_id = "8a5c7e1b-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
-// const secret_id = "57d4c1a2-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
-
-// export async function authenticate() {
-// 	try {
-// 		const response = await vault.approleLogin({
-// 		role_id,
-// 		secret_id,
-// 		});
-
-// 		vault.token = response.auth.client_token;
-// 		fastify.log.info("Authenticated with Vault, token acquired.");
-// 	} catch (error) {
-// 		fastify.log.error("Vault authentication failed:", error);
-// 	}
-// }
+// Export vault instance
+export { vault };
 
 export async function getSQLiteCreds() {
 	try {

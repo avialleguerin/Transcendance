@@ -2,8 +2,6 @@ import { notif, fetchAPI, $, $input, $form } from './utils.js';
 import { Friendship, GameScore } from './types.js';
 
 let historyIsActive = localStorage.getItem('historyIsVisible') === 'true';
-// let bool = false;
-// let bool = localStorage.getItem("bool", "true");
 
 
 if (typeof window !== 'undefined') {
@@ -158,7 +156,7 @@ export async function fetch_user_friendships(): Promise<void> {
 			}).join('') || `<div class="text-center">No Requests found</div>`;
 
 	} catch (err) {
-		console.error('Erreur lors de la récupération des amis :', err);
+		console.error('Error retrieving friendships:', err);
 	}
 }
 
@@ -264,7 +262,7 @@ export async function fetch_user_games(): Promise<void> {
 			`;
 		}
 	} catch (err) {
-		console.error('Erreur lors de la récupération des Jeux :', err);
+		console.error('Error retrieving games:', err);
 	}
 }
 
@@ -378,7 +376,7 @@ export async function fetch_user_games_big(username: string): Promise<void> {
 			`;
 		}
 	} catch (err) {
-		console.error('Erreur lors de la récupération des Jeux :', err);
+		console.error('Error retrieving games:', err);
 	}
 }
 

@@ -2,8 +2,8 @@ import { c, canvas, gameState, GameState } from './constants.js';
 
 export default class MapMenu_c {
 	constructor() {
-		this.title = "Choisis ta carte 🌏";
-		this.options = ["Carte 1", "Carte 2", "Retour"];
+		this.title = "Choose your map";
+		this.options = ["Map 1", "Map 2", "Back"];
 		this.selectedOption = 0;
 		this.optionSpacing = 60;
 		this.titleFont = "bold 60px 'Press Start 2P', Black Ops One";
@@ -24,18 +24,15 @@ export default class MapMenu_c {
 			this.bgImageLoaded = true;
 		}
 
-		this.nb_game_started = 0;
 
-		// Ajouter les propriétés pour la gestion de la souris
-		this.hoveredOption = -1;  // -1 signifie qu'aucune option n'est survolée
+		this.hoveredOption = -1;
 		this.boundMouseMove = this.handleMouseMove.bind(this);
 		this.boundMouseClick = this.handleMouseClick.bind(this);
 
-		// Définir les zones de clic pour chaque option (basées sur optionPositions)
 		this.buttonAreas = [
-			{ option: "Carte 1", x: 250, y: 330, width: 200, height: 40 },
-			{ option: "Carte 2", x: 600, y: 330, width: 200, height: 40 },
-			{ option: "Retour", x: 850, y: 530, width: 200, height: 40 }
+			{ option: "Map 1", x: 250, y: 330, width: 200, height: 40 },
+			{ option: "Map 2", x: 600, y: 330, width: 200, height: 40 },
+			{ option: "Back", x: 850, y: 530, width: 200, height: 40 }
 		];
 	}
 
@@ -51,48 +48,38 @@ export default class MapMenu_c {
 		window.removeEventListener("click", this.boundMouseClick);
 	}
 
-	// Nouvelle méthode pour gérer le mouvement de la souris
 	handleMouseMove(event) {
-		// Obtenir la position de la souris relative au canvas
 		const rect = canvas.getBoundingClientRect();
 		const x = event.clientX - rect.left;
 		const y = event.clientY - rect.top;
 		
-		// Réinitialiser la valeur de hoveredOption
 		this.hoveredOption = -1;
 		
-		// Vérifier si la souris est sur un bouton
 		for (let i = 0; i < this.buttonAreas.length; i++) {
 			const button = this.buttonAreas[i];
 			if (x >= button.x && x <= button.x + button.width &&
 				y >= button.y && y <= button.y + button.height) {
 				this.hoveredOption = i;
-				canvas.style.cursor = 'pointer';  // Changer le curseur en main
+				canvas.style.cursor = 'pointer';
 				break;
 			}
 		}
 		
-		// Si aucun bouton n'est survolé, remettre le curseur par défaut
 		if (this.hoveredOption === -1) {
 			canvas.style.cursor = 'default';
 		}
 	}
 
-	// Nouvelle méthode pour gérer les clics de souris
 	handleMouseClick(event) {
-		// Obtenir la position du clic relative au canvas
 		const rect = canvas.getBoundingClientRect();
 		const x = event.clientX - rect.left;
 		const y = event.clientY - rect.top;
 		
-		// Vérifier si le clic est sur un bouton
 		for (let i = 0; i < this.buttonAreas.length; i++) {
 			const button = this.buttonAreas[i];
 			if (x >= button.x && x <= button.x + button.width &&
 				y >= button.y && y <= button.y + button.height) {
-				// Définir l'option sélectionnée sur celle qui a été cliquée
 				this.selectedOption = i;
-				// Exécuter l'action associée à cette option
 				this.handleSelect();
 				break;
 			}
@@ -113,7 +100,7 @@ export default class MapMenu_c {
 		c.shadowColor = "#000";
 		c.shadowBlur = 10;
 		c.fillText(this.title, canvas.width / 2, canvas.height / 4);
-		c.shadowBlur = 0; // reset
+		c.shadowBlur = 0;
 		if (this.mapPreviewLoaded) {
 			const imgWidth = 200;
 			const imgHeight = 100;
@@ -136,16 +123,16 @@ export default class MapMenu_c {
 		];
 
 
-		this.buttonAreas[0] = { option: "Carte 1", x: optionPositions[0].x - 100, y: optionPositions[0].y - 30, width: 200, height: 40 };
-		this.buttonAreas[1] = { option: "Carte 2", x: optionPositions[1].x - 100, y: optionPositions[1].y - 30, width: 200, height: 40 };
-		this.buttonAreas[2] = { option: "Retour", x: optionPositions[2].x - 100, y: optionPositions[2].y - 30, width: 200, height: 40 };
+		this.buttonAreas[0] = { option: "Map 1", x: optionPositions[0].x - 100, y: optionPositions[0].y - 30, width: 200, height: 40 };
+		this.buttonAreas[1] = { option: "Map 2", x: optionPositions[1].x - 100, y: optionPositions[1].y - 30, width: 200, height: 40 };
+		this.buttonAreas[2] = { option: "Back", x: optionPositions[2].x - 100, y: optionPositions[2].y - 30, width: 200, height: 40 };
 	
 		c.font = this.optionFont;
 
 		this.options.forEach((option, index) => {
 			const pos = optionPositions[index];
 
-			if (option === "Retour" && (index === this.hoveredOption))
+			if (option === "Back" && (index === this.hoveredOption))
 				c.fillStyle = "red";
 			else if (index === this.hoveredOption)
 				c.fillStyle = "#88CCFF";
@@ -179,13 +166,13 @@ export default class MapMenu_c {
 	handleSelect()
 	{
 		const selected = this.options[this.selectedOption];
-		if (selected === "Carte 1")
+		if (selected === "Map 1")
 		{
 			this.disableControls();
 			gameState.previous = gameState.current;
 			gameState.current = GameState.Play;
 		}
-		else if (selected === "Retour")
+		else if (selected === "Back")
 		{
 			this.disableControls();
 			gameState.previous = gameState.current;

@@ -13,16 +13,15 @@ let secondeChance = false;
 
 export default class extends AbstractView {
 	private gameLoop: ReturnType<typeof setInterval> | null;
-    constructor() {
-        super();
-        this.setTitle("Tournament");
+	constructor() {
+		super();
+		this.setTitle("Tournament");
 		if (window.location.pathname === "/tournament")
 			this.gameLoop = setInterval(() => this.checktournamentstart(), 1000);
 		const accessToken: string | null = sessionStorage.getItem('accessToken');
 		if (!accessToken || accessToken === undefined)
 			homeView();
-		// tournamentStarted = localStorage.getItem('tournamentStarted') === 'true';
-    }
+	}
 
 	async getHtml() {
 		return /*html*/`
@@ -81,9 +80,9 @@ export default class extends AbstractView {
 					<button id="leave_tournament" class="btn_leave_tournament">X</button>
 				</div>
 				<div class="message" id="message_id">
-					<p>ATTENTION : Si vous quittez le tournoi, vous ne pourrez pas revenir en arrière.</p>
+					<p>WARNING: If you leave the tournament, you cannot go back.</p>
 					<button class="close_message" id="close_message_id">X</button>
-					<button class="comfirm_leave_tournament" id="confirm_leave_tournament">Quitter le tournoi</button>
+					<button class="comfirm_leave_tournament" id="confirm_leave_tournament">Leave Tournament</button>
 				</div>
 				<div class="container_endTournament" id="container_endTournament">
 					<h1>TOURNAMENT FINISHED</h1>
@@ -103,9 +102,6 @@ export default class extends AbstractView {
 				</div>
 			</div>	
 		</div>
-		<div id="notification-container" class="fixed top-0 left-0 right-0 flex justify-center z-50 mt-4">
-			<p id="resultMessage" class="py-2 px-4 rounded shadow-lg transition-all duration-300 transform translate-y-0 opacity-0"></p>
-		</div>
 	`;
 	}
 
@@ -122,7 +118,6 @@ export default class extends AbstractView {
 			handleViewTransitions('tournament_game_start', 'tournament');
 			startTournamentGame();
 			count = parseInt(localStorage.getItem('tournamentCount')) || 0;
-			// count++;
 			localStorage.setItem('tournamentCount', count.toString());
 
 			console.log(`Match ${count} terminé.`);
@@ -176,30 +171,12 @@ export default class extends AbstractView {
 	}
 
 
-    tournament_event() {
-        const start_tournament = document.getElementById('start_tournament');
-        const container_name_player = document.getElementById('container_name_player');
-        const tournament_graphic_id = document.getElementById('tournament_graphic_id');
+	tournament_event() {
+		const start_tournament = document.getElementById('start_tournament');
+		const container_name_player = document.getElementById('container_name_player');
+		const tournament_graphic_id = document.getElementById('tournament_graphic_id');
 		const back_to_menu_view_tournament = document.getElementById('back_to_menu_view_tournament');
 		const finish_tournament = document.getElementById('finiched_game');
-
-		// start_tournament.addEventListener('click', () => {
-			// tournamentStarted = true;
-			// localStorage.setItem('tournamentStarted', tournamentStarted.toString());
-			// container_name_player.classList.add('hidden');
-			// tournament_graphic_id.classList.add('active');
-			// start_tournament.style.display = 'none';
-			// back_to_menu_view_tournament.style.display = 'none';
-
-			// Mettre en surbrillance les joueurs initiaux
-			// if (localStorage.getItem("tournamentStarted") === 'true') {
-			// 	highlightNextPlayers(Player1, Player2);
-			// 	localStorage.setItem("current_player1", localStorage.getItem('Player1'));
-			// 	localStorage.setItem("current_player2", localStorage.getItem('Player2'));
-			// }
-			// localStorage.setItem("current_player1", localStorage.getItem('Player1'));
-			// localStorage.setItem("current_player2", localStorage.getItem('Player2'));
-		// });
 
 		const leave_tournament = document.getElementById('leave_tournament');
 		const message_id = document.getElementById('message_id');
@@ -219,8 +196,6 @@ export default class extends AbstractView {
 		});
 
 		const confirm_leave_tournament = document.getElementById('confirm_leave_tournament');
-
-		// Get the player elements
 		const Player1 = document.getElementById('Player1');
 		const Player2 = document.getElementById('Player2');
 		const Player3 = document.getElementById('Player3');
@@ -234,7 +209,6 @@ export default class extends AbstractView {
 			container_name_player.classList.remove('hidden');
 			tournamentStarted = false;
 			localStorage.setItem('tournamentStarted', tournamentStarted.toString());
-			// Réinitialiser les styles des joueurs
 			resetHighlight([Player1, Player2, Player3, Player4]);
 
 			resetTournamentState(Player1, Player2, Player3, Player4);
@@ -259,7 +233,6 @@ export default class extends AbstractView {
 			tournament_leave = true;
 			localStorage.setItem('tournamentStarted', tournamentStarted.toString());
 
-			// Réinitialiser les styles des joueurs
 			resetHighlight([Player1, Player2, Player3, Player4]);
 
 			resetTournamentState(Player1, Player2, Player3, Player4);
@@ -267,21 +240,19 @@ export default class extends AbstractView {
 			start_tournament.style.display = 'block';
 			count = 0;
 		});
-    }
+	}
 
 	checktournamentstart() {
 		if (window.location.pathname === "/tournament")
 		{
-			// Récupérer tous les éléments nécessaires
 			const container_name_player = document.getElementById('container_name_player');
 			const tournament_graphic_id = document.getElementById('tournament_graphic_id');
 			const start_tournament = document.getElementById('start_tournament');
 			const back_to_menu_view_tournament = document.getElementById('back_to_menu_view_tournament');
 			const container_endTournament = document.getElementById('container_endTournament');
-			
-			// Vérifier que tous les éléments existent avant de les manipuler
+
 			if (!container_name_player || !tournament_graphic_id || !start_tournament || !back_to_menu_view_tournament) {
-				return; // Sortir de la fonction si un élément est manquant
+				return;
 			}
 			
 			if (localStorage.getItem("tournamentStarted") == 'true' && tournament_finished == false) {
@@ -355,30 +326,26 @@ interface TournamentPlayerState {
 }
 
 function resetTournamentState(Player1: PlayerElement, Player2: PlayerElement, Player3: PlayerElement, Player4: PlayerElement): void {    
-    const joueurs: PlayerElement[] = [Player1, Player2, Player3, Player4];
+	const joueurs: PlayerElement[] = [Player1, Player2, Player3, Player4];
 
-    // Effacer tous les résultats des matchs dans localStorage
-    localStorage.removeItem("match1_result");
-    localStorage.removeItem("match2_result");
-    localStorage.removeItem("match3_result");
-    localStorage.removeItem("match4_result");
-    localStorage.removeItem("match5_result");
-    localStorage.removeItem("match6_result");
-    
-    // Réinitialiser le compteur de matchs
-    localStorage.removeItem("tournamentCount");
-    
-    // Réinitialiser l'état du tournoi
-    localStorage.removeItem("tournamentStarted");
-    localStorage.removeItem("tournament_finished");
+	localStorage.removeItem("match1_result");
+	localStorage.removeItem("match2_result");
+	localStorage.removeItem("match3_result");
+	localStorage.removeItem("match4_result");
+	localStorage.removeItem("match5_result");
+	localStorage.removeItem("match6_result");
+
+	localStorage.removeItem("tournamentCount");
+
+	localStorage.removeItem("tournamentStarted");
+	localStorage.removeItem("tournament_finished");
 	localStorage.removeItem("secondChance");
-    
-    // Réinitialiser les positions des joueurs
-    joueurs.forEach(joueur => {
-        joueur.style.top = '';
-        joueur.style.left = '';
-        joueur.style.color = 'white';
-    });
+
+	joueurs.forEach(joueur => {
+		joueur.style.top = '';
+		joueur.style.left = '';
+		joueur.style.color = 'white';
+	});
 }
 
 interface PlayerElement extends HTMLElement {
@@ -632,11 +599,9 @@ function updateTournamentState(
 		}
 	}
 
-	// Match 7 - Grande finale (bracket reset)
 	if (count >= 7 && secondeChance && match4_winner && match5_winner) {
 		console.log("Match 7 - Grande finale avec bracket reset");
 		
-		// Récupérer les joueurs depuis les résultats précédents
 		const match4_result = localStorage.getItem("match4_result");
 		const match5_result = localStorage.getItem("match5_result");
 		
@@ -691,9 +656,9 @@ function updateTournamentState(
  * Détermine le gagnant et le perdant d'un match.
  */
 function determineMatchResult(player1Wins: boolean, player1: PlayerElement, player2: PlayerElement): MatchResult {
-    return player1Wins
-        ? { winner: player1, loser: player2 }
-        : { winner: player2, loser: player1 };
+	return player1Wins
+		? { winner: player1, loser: player2 }
+		: { winner: player2, loser: player1 };
 }
 
 interface PlayerElement extends HTMLElement {

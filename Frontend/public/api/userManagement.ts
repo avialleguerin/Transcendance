@@ -5,7 +5,8 @@ if (typeof window !== 'undefined') {
 	window.accessProfileInfo = accessProfileInfo;
 	window.changeProfilePicture = changeProfilePicture;
 	window.activate2FA = activate2FA;
-	window.update_doubleAuth = update_doubleAuth;
+	window.enable_doubleAuth = enable_doubleAuth;
+	window.disable_doubleAuth = disable_doubleAuth;
 	window.export_data = export_data;
 	window.anonymize_user = anonymize_user;
 	window.delete_account = delete_account;
@@ -25,6 +26,7 @@ export async function changeProfilePicture(event: Event): Promise<void> {
 		if (data.success) {
 			$form("uploadForm").reset();
 			fetchProfile();
+			localStorage.setItem("profile_picture", data.profile_picture);
 			document.getElementById("profile_photo_circle_nav_bar").innerHTML = `
 			<img src="./${data.profile_picture}" alt="Profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
 			`;
@@ -38,8 +40,9 @@ export async function accessProfileInfo(event: Event): Promise<void> {
 
 	try {
 		const data = await fetchAPI('/request/user/access-profile-infos', 'PUT', { password }, false);
-
-		if (data.success) {
+		if (!data.success)
+			return notif(data.error, false);
+		else {
 			$("modif_profile").classList.add('hidden'); //todo: use updateUI
 			$("btn_back_home").classList.remove('active');
 			$("profile_param_unlocked_id").classList.add('active');
@@ -63,13 +66,19 @@ export async function activate2FA(event: Event): Promise<void> {
 	}
 }
 
-export async function update_doubleAuth(): Promise<void> {
+export async function enable_doubleAuth(): Promise<void> {
 	try {
-		const data = await fetchAPI('/request/user/update-2fa', 'PUT');
+		const data = await fetchAPI('/request/user/enable-2fa', 'PUT');
 
-		if (data.success && data.doubleAuth_status)
+		if (data.success)
 			$input('qrCode').src = data.qrCode;
-	} catch (err) { console.error(`update_doubleAuth: ${err}`); }
+	} catch (err) { console.error(`enable_doubleAuth: ${err}`); }
+}
+
+export async function disable_doubleAuth(): Promise<void> {
+	try {
+		await fetchAPI('/request/user/disable-2fa', 'PUT');
+	} catch (err) { console.error(`disable_doubleAuth: ${err}`); }
 }
 
 export async function export_data(): Promise<void> {
@@ -129,6 +138,8 @@ export async function fetchProfile(): Promise<void> {
 		if (data.user) {
 			const user = data.user;
 			document.getElementById("profile_photo_circle").innerHTML = `<img src="./${data.profile_picture}" alt="${user.username} profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+			$("player_name").textContent = user.username;
+			localStorage.setItem("Player1", user.username);
 			const username = $input("change_username");
 			username.placeholder = user.username;
 			const doubleAuth = $input("active_fa");
@@ -153,7 +164,6 @@ export async function updateProfileInfo(event: Event): Promise<void> {
 
 	try {
 		await fetchAPI('/request/user/update-profile', 'PUT', { newUsername, newPassword });
-	
 		$form("updateProfileForm").reset();
 		fetchProfile();
 	} catch (err) { console.error(`updateProfileInfo: ${err}`); }

@@ -1,8 +1,8 @@
-import { getUserProfilePicture, createUser , deleteAccount, login, login1v1, login2v2, logout, updateDoubleAuth, accessProfileInfo, changeProfilePicture, changeProfile, getUserProfile, verifyDoubleAuth, activateDoubleAuth, exportUserData, anonymizeUser, googleSignIn, googleConfig } from '../controllers/usersController.js';
+import { getUserProfilePicture, createUser , deleteAccount, login, login1v1, login2v2, logout, enableDoubleAuth, disableDoubleAuth, accessProfileInfo, changeProfilePicture, changeProfile, getUserProfile, verifyDoubleAuth, activateDoubleAuth, exportUserData, anonymizeUser, googleSignIn, googleConfig } from '../controllers/usersController.js';
 import { getUserGames, create1v1Game, create2v2Game } from '../controllers/gamesController.js';
 import { getUserPlatformer, createPlatformer } from '../controllers/platformerController.js';
 import { getUserFriendships, addFriend, acceptFriend, deleteFriend } from '../controllers/friendshipsController.js';
-import { getAllUsers, getDeletedUsers, deleteUser, forceDeleteUser, getAllGames, createGame, deleteGame, getAllPlatformers, addPlatformer, deletePlatformer, getAllFriendships, addFriendship, deleteFriendship } from '../controllers/adminController.js';
+import { getAllUsers, getDeletedUsers, deleteUser, forceDeleteUser, getAllGames, addGame, deleteGame, getAllPlatformers, addPlatformer, deletePlatformer, getAllFriendships, addFriendship, deleteFriendship } from '../controllers/adminController.js';
 import { getSQLiteCreds } from '../utils/vault.js';
 import { refreshInfos } from '../controllers/utils.js';
 import { env } from 'process';
@@ -28,7 +28,7 @@ export default async function routes (fastify) {
 	fastify.delete('/admin/delete-user', deleteUser);
 	fastify.delete('/admin/force-delete-user', forceDeleteUser);
 	fastify.get('/admin/get-all-games', getAllGames);
-	fastify.post('/admin/create-game', createGame);
+	fastify.post('/admin/create-game', addGame);
 	fastify.delete('/admin/delete-game', deleteGame);
 	fastify.get('/admin/get-all-platformers', getAllPlatformers);
 	fastify.post('/admin/create-platformer', addPlatformer);
@@ -45,7 +45,8 @@ export default async function routes (fastify) {
 	fastify.post('/user/login-2v2', login2v2);
 	fastify.post('/user/logout', logout);
 	fastify.put('/user/access-profile-infos', accessProfileInfo);
-	fastify.put('/user/update-2fa', updateDoubleAuth);
+	fastify.put('/user/enable-2fa', enableDoubleAuth);
+	fastify.put('/user/disable-2fa', disableDoubleAuth);
 	fastify.post('/user/verify-2fa', verifyDoubleAuth);
 	fastify.post('/user/activate-2fa', activateDoubleAuth);
 	fastify.post('/user/update-profile-picture', changeProfilePicture);
@@ -67,7 +68,7 @@ export default async function routes (fastify) {
 	fastify.post('/game/create-1v1-game', create1v1Game);
 	fastify.post('/game/create-2v2-game', create2v2Game);
 
-	fastify.get('/platformer/get-user-platformer', getUserPlatformer);
+	fastify.get('/platformer/get-user-platformers', getUserPlatformer);
 	fastify.post('/platformer/create-platformer', createPlatformer);
 
 	fastify.get('/db-credentials', getSQLiteCreds);

@@ -1,8 +1,9 @@
 import { c, canvas, gameState, GameState } from './constants.js';
 import { Getgame_started, Setgame_started } from './PlatformView.js';
+import { get_platformers } from "../../../../api/games.js";
 
 export default class Menu {
-	constructor(Game_History) {
+	constructor(config) {
 		this.title = "⏱️ Chrono Clash";
 		this.options = ["▶ Start", "⚙ Options", "☷ History", "✖ Quit" ];
 		this.selectedOption = 0;
@@ -16,11 +17,12 @@ export default class Menu {
 		this.bgImage.onload = () => {
 			this.bgImageLoaded = true;
 		}
-		this.Game_History = Game_History;
+		this.Game_History = config.Game_History;
+		// this.gameHistory = [];
+		// this.loadGameHistory();
 
-		// this.keyPressed = {};
-		// this.boundKeyDown = this.handleKeyDown.bind(this);
-		// this.boundKeyUp = this.handleKeyUp.bind(this);
+
+
 		this.optionStart = 0;
 		this.optionOptions = 1;
 		this.optionHistory = 2;
@@ -28,7 +30,6 @@ export default class Menu {
 
 		this.boundMouseClick = this.handleMouseClick.bind(this);
 		
-		// Définir les zones de clic pour chaque option
 		this.buttonAreas = [
 			{ option: "▶ Start", x: canvas.width / 2 - 100, y: canvas.height / 2 - 20, width: 200, height: 40 },
 			{ option: "⚙ Options", x: canvas.width / 2 - 100, y: canvas.height / 2 + 40, width: 200, height: 40 },
@@ -36,10 +37,8 @@ export default class Menu {
 			{ option: "✖ Quit", x: canvas.width / 2 - 100, y: canvas.height / 2 + 160, width: 200, height: 40 }
 		];
 		
-		// Pour suivre quelle option est survolée
-		this.hoveredOption = -1;  // -1 signifie qu'aucune option n'est survolée
+		this.hoveredOption = -1;
 		
-		// Ajouter le gestionnaire d'événements pour le mouvement de la souris
 		this.boundMouseMove = this.handleMouseMove.bind(this);
 	}
 
@@ -72,31 +71,37 @@ export default class Menu {
 			}
 		}
 		
-		// Si aucun bouton n'est survolé, remettre le curseur par défaut
 		if (this.hoveredOption === -1) {
 			canvas.style.cursor = 'default';
 		}
 	}
 
 	handleMouseClick(event) {
-		// Obtenir la position du clic relative au canvas
 		const rect = canvas.getBoundingClientRect();
 		const x = event.clientX - rect.left;
 		const y = event.clientY - rect.top;
 		
-		// Vérifier si le clic est sur un bouton
 		for (let i = 0; i < this.buttonAreas.length; i++) {
 			const button = this.buttonAreas[i];
 			if (x >= button.x && x <= button.x + button.width &&
 				y >= button.y && y <= button.y + button.height) {
-				// Définir l'option sélectionnée sur celle qui a été cliquée
 				this.selectedOption = i;
-				// Exécuter l'action associée à cette option
 				this.handleSelect();
 				break;
 			}
 		}
 	}
+
+	// async loadGameHistory() {
+	// 	try {
+	// 		const games = await get_platformers();
+	// 		this.gameHistory = games || [];
+	// 		console.log("GameHistory loaded, number of games:", this.gameHistory.length);
+	// 	} catch (error) {
+	// 		console.error("Error loading game history:", error);
+	// 		this.gameHistory = [];
+	// 	}
+	// }
 
 	draw() {
 		this.enableControls();
@@ -118,7 +123,6 @@ export default class Menu {
 
 		c.font = this.optionFont;
 		this.options.forEach((option, index) => {
-			// Déterminer le style en fonction de la sélection ET du hover
 			if (option === "✖ Quit" && (index === this.hoveredOption))
 				c.fillStyle = "red";
 			else if (index === this.hoveredOption)
@@ -187,12 +191,14 @@ export default class Menu {
 		else if (selected === "☷ History") {
 			this.disableControls();
 			console.log("History selected");
-			console.log("this.Game_History = ", this.Game_History);
-			if (typeof this.Game_History.Game_History.saveGameIfNeeded === "function")
-			{
-				console.log("this.Game_History.Game_History.saveGameIfNeeded()");
-				this.Game_History.Game_History.saveGameIfNeeded();
+			
+			if (this.Game_History && typeof this.Game_History.loadGameHistory === 'function') {
+				console.log("Loading game history...");
+				this.Game_History.loadGameHistory();
+			} else {
+				console.error("Game_History n'est pas correctement initialisé ou ne possède pas la méthode loadGameHistory", this.Game_History);
 			}
+			
 			gameState.previous = gameState.current;
 			gameState.current = GameState.GameHistory;
 		}

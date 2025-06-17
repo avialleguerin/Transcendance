@@ -58,21 +58,19 @@ export default class PlatformerView extends AbstractView {
 				this.scaleY = scaleY
 				this.image = new Image()
 				this.loaded = false
-				this.width = 0  // Initialisation
-				this.height = 0 // Initialisation
+				this.width = 0
+				this.height = 0
 				
-				// Attendre que l'image soit chargée avant de dessiner
 				this.image.onload = () => {
 					this.loaded = true
-					this.width = this.image.width * this.scaleX  // Calcul de la largeur
-					this.height = this.image.height * this.scaleY // Calcul de la hauteur
+					this.width = this.image.width * this.scaleX
+					this.height = this.image.height * this.scaleY
 				}
 				
 				this.image.onerror = () => {
 					console.error("Failed to load image:", Image_src)
 				}
 				
-				// Définir la source après avoir configuré les gestionnaires d'événements
 				this.image.src = Image_src
 			}
 
@@ -83,7 +81,6 @@ export default class PlatformerView extends AbstractView {
 				
 			
 				if (this.scaleX < 0) {
-					// On inverse horizontalement
 					c.translate(this.position.x + this.width, this.position.y);
 					c.scale(-1, 1);
 				} else {
@@ -91,7 +88,6 @@ export default class PlatformerView extends AbstractView {
 					c.scale(1, 1);
 				}
 			
-				// On dessine à (0, 0) car on a déjà déplacé le contexte
 				c.drawImage(
 					this.image,
 					0,
@@ -126,7 +122,6 @@ export default class PlatformerView extends AbstractView {
 			
 			draw() {
 				if (this.image && this.image.loaded) {
-				// Utiliser directement l'image de Sprite
 				c.drawImage(
 					this.image.image,
 					this.position.x,
@@ -135,7 +130,6 @@ export default class PlatformerView extends AbstractView {
 					this.height
 				);
 				} else {
-				// Dessiner un rectangle si pas d'image ou si l'image n'est pas chargée
 				c.fillStyle = "black";
 				c.fillRect(this.position.x, this.position.y, this.width, this.height);
 				}
@@ -145,7 +139,6 @@ export default class PlatformerView extends AbstractView {
 		
 		class Player extends Sprite {
 			constructor({position, Image_src_prefix}) {
-				// Commencer avec la première image
 				super({position, Image_src: Image_src_prefix + "idle_0.png", scaleX: 0.08, scaleY: 0.08});
 				
 				this.position = position;
@@ -154,7 +147,6 @@ export default class PlatformerView extends AbstractView {
 					y: 1,
 				};
 				
-				// Animation properties
 				console.log("je rentre ici mtn ");
 				this.frames = 0;
 				this.frameSpeed = 10;
@@ -241,12 +233,10 @@ export default class PlatformerView extends AbstractView {
 			}
 
 			rotate_sprite() {
-				if (this.velocity.x > 0) {
-					this.scaleX = Math.abs(this.scaleX); // vers la droite (normal)
-				} else if (this.velocity.x < 0) {
-					this.scaleX = -Math.abs(this.scaleX); // vers la gauche (miroir)
-					// console.log("je regarde à gauche");
-				}
+				if (this.velocity.x > 0)
+					this.scaleX = Math.abs(this.scaleX);
+				else if (this.velocity.x < 0)
+					this.scaleX = -Math.abs(this.scaleX);
 			}
 
 			drawCameraBox() {
@@ -280,13 +270,11 @@ export default class PlatformerView extends AbstractView {
 			}
 
 			shouldPanCameraToLeft({canvas, camera}) {
-				if (this.cameraBox.position.x <= 0) {
+				if (this.cameraBox.position.x <= 0)
 					return;
-				}
 			
-				if (this.cameraBox.position.x <= Math.abs(camera.position.x)) {
+				if (this.cameraBox.position.x <= Math.abs(camera.position.x))
 					camera.position.x += this.velocity.x
-				}
 			}
 
 			forceCameraToFollow({ canvas, camera }) {
@@ -314,7 +302,6 @@ export default class PlatformerView extends AbstractView {
 			}
 
 			shouldPanCameraToUP({canvas, camera}) {
-				// Vérifier si on atteint le bas de l'écran
 				if (this.cameraBox.position.y + this.cameraBox.height >= canvas.height + Math.abs(camera.position.y)) {
 					camera.position.y += this.velocity.y;
 				}
@@ -335,10 +322,8 @@ export default class PlatformerView extends AbstractView {
 
 				if (this.isGrounded)
 				{
-					// console.log("je suis au sol");
 					this.velocity.y = 0;
 					this.doubleJump = false;
-					// this.isGrounded = true;
 					this.jumps = 0;
 					if (this.state === "fall" || this.state === "jumpStart" || this.state === "roll")
 					{
@@ -358,7 +343,6 @@ export default class PlatformerView extends AbstractView {
 				else
 				{
 					this.velocity.y += gravity;
-					// this.isGrounded = false;
 					if (this.velocity.y > 1 && this.state !== "fall")
 					{
 						this.changeState("fall");
@@ -368,9 +352,7 @@ export default class PlatformerView extends AbstractView {
 				this.changeSprite();
 				this.rotate_sprite();
 				this.draw();
-				// this.drawHitbox();
 				this.updateCameraBox();
-				// this.drawCameraBox();
 			}
 			
 			handleJump() {
@@ -379,13 +361,13 @@ export default class PlatformerView extends AbstractView {
 						this.velocity.y = -10;
 						this.changeState("jumpStart");
 						this.jumps = 1;
-						this.isGrounded = false; // Add this line
+						this.isGrounded = false;
 					}
 					else if (this.jumps === 1 && !this.doubleJump) {
 						this.velocity.y = -10;
 						this.changeState("roll");
 						this.doubleJump = true;
-						this.isGrounded = false; // Add this line
+						this.isGrounded = false;
 					}
 				}
 			}
@@ -400,7 +382,7 @@ export default class PlatformerView extends AbstractView {
 				const hitboxWidth = this.width - hitboxOffsetX * 2;
 				const hitboxHeight = this.height - hitboxOffsetY - hitboxOffsetBottom;
 
-				let onPlatform = false; // Variable pour savoir si on est sur une plateforme cette frame
+				let onPlatform = false;
 			
 				for (let platform of platforms) {
 					const px = platform.position.x;
@@ -408,7 +390,6 @@ export default class PlatformerView extends AbstractView {
 					const pw = platform.width;
 					const ph = platform.height;
 			
-					// AABB collision check
 					const collision = hitboxX < px + pw &&
 									hitboxX + hitboxWidth > px &&
 									hitboxY < py + ph &&
@@ -420,7 +401,6 @@ export default class PlatformerView extends AbstractView {
 						const prevRight = hitboxX + hitboxWidth - this.velocity.x;
 						const prevLeft = hitboxX - this.velocity.x;
 			
-						// Collision from top (falling on platform)
 						if (prevBottom <= py && this.velocity.y >= 0)
 						{
 							if (!this.cantraverseDown)
@@ -430,26 +410,24 @@ export default class PlatformerView extends AbstractView {
 								this.doubleJump = false;
 								this.position.y = py - this.height + hitboxOffsetBottom;
 								this.isGrounded = true;
-								onPlatform = true; // Marquer qu'on est sur une plateforme cette frame
+								onPlatform = true;
 							}
 						}
-						// Collision from bottom (head hitting platform)
 						else if (prevTop >= py + ph && this.velocity.y < 0) {
 							if (!this.cantraverse) {
 								this.velocity.y = 0;
 							}
 						}
-						// Collision from left
 						else if (prevLeft >= px + pw && this.velocity.x < 0) {
 							this.velocity.x = 0;
-							this.position.x = px + pw - hitboxOffsetX; // <- bon placement
+							this.position.x = px + pw - hitboxOffsetX;
 						}
 					}
 
 				}
 				if (!onPlatform && this.isGrounded && this.velocity.y === 0) {
 					this.isGrounded = false;
-					this.velocity.y = 0.1; // Une petite vélocité pour commencer la chute
+					this.velocity.y = 0.1;
 				}
 			}
 			
@@ -458,7 +436,7 @@ export default class PlatformerView extends AbstractView {
 				const hitboxOffsetY = 90;
 				const hitboxOffsetBottom = 25;
 				
-				c.fillStyle = 'rgba(255, 0, 0, 0.5)'; // Couleur de la hitbox
+				c.fillStyle = 'rgba(255, 0, 0, 0.5)';
 				c.fillRect(
 				this.position.x + hitboxOffsetX, 
 				this.position.y + hitboxOffsetY,
@@ -490,7 +468,6 @@ export default class PlatformerView extends AbstractView {
 				const hitboxWidth = player.width - hitboxOffsetX * 2;
 				const hitboxHeight = player.height - hitboxOffsetY - hitboxOffsetBottom;
 			
-				// Vérifie l'intersection entre la hitbox du joueur et la boîte
 				const collision = hitboxX < this.position.x + this.width &&
 								hitboxX + hitboxWidth > this.position.x &&
 								hitboxY < this.position.y + this.height &&
@@ -522,7 +499,6 @@ export default class PlatformerView extends AbstractView {
 				const hitboxWidth = player.width - hitboxOffsetX * 2;
 				const hitboxHeight = player.height - hitboxOffsetY - hitboxOffsetBottom;
 			
-				// Vérifie l'intersection entre la hitbox du joueur et la boîte
 				const collision = hitboxX < this.position.x + this.width &&
 								hitboxX + hitboxWidth > this.position.x &&
 								hitboxY < this.position.y + this.height &&
@@ -871,24 +847,21 @@ const levelMap = `
 			}
 		
 			draw() {
-				// Fond semi-transparent
 				c.fillStyle = "rgba(0, 0, 0, 0.75)";
 				c.fillRect(0, 0, canvas.width, canvas.height);
 		
-				// Titre avec ombre
 				c.font = this.titleFont;
 				c.textAlign = "center";
-				c.fillStyle = "#FFD700"; // doré
+				c.fillStyle = "#FFD700";
 				c.shadowColor = "#000";
 				c.shadowBlur = 10;
 				c.fillText(this.title, canvas.width / 2, canvas.height / 4);
-				c.shadowBlur = 0; // reset
+				c.shadowBlur = 0;
 		
-				// Options
 				c.font = this.optionFont;
 				this.options.forEach((option, index) => {
 					if (index === this.selectedOption) {
-						c.fillStyle = "#00FFFF"; // cyan lumineux
+						c.fillStyle = "#00FFFF";
 					} else {
 						c.fillStyle = "white";
 					}
@@ -909,13 +882,12 @@ const levelMap = `
 					case "Enter":
 						if (this.options[this.selectedOption] === "▶ Start") {
 							console.log("Start game");
-							// GameState.current = GameState.Play;
 							gameState.previous = gameState.current;
 							gameState.current = GameState.Play;
 						} else if (this.options[this.selectedOption] === "⚙ Options") {
 							// TODO: options menu
 						} else if (this.options[this.selectedOption] === "✖ Quit") {
-							window.close(); // ou un retour à l'accueil
+							window.close();
 						}
 						break;
 				}
@@ -939,7 +911,7 @@ const levelMap = `
 			window.requestAnimationFrame(animate);
 		
 			// === Clear Canvas ===
-			c.fillStyle = 'rgba(rgb(12, 17, 33))'; // Couleur de fond
+			c.fillStyle = 'rgba(rgb(12, 17, 33))';
 			c.fillRect(0, 0, canvas.width, canvas.height);
 		
 			
@@ -950,7 +922,7 @@ const levelMap = `
 				case GameState.Menu:
 				{
 					console.log("je suis dans le jeu");
-					c.fillStyle = 'rgba(rgb(12, 17, 33))'; // Couleur de fond
+					c.fillStyle = 'rgba(rgb(12, 17, 33))';
 					c.fillRect(0, 0, canvas.width, canvas.height);
 					c.save();
 					c.scale(1, 1);
@@ -969,11 +941,6 @@ const levelMap = `
 					collisionBox.draw();
 					collisionBox2.draw();
 					collisionBox3.draw();
-					// trap1.draw();
-					// trap2.draw();
-					// trap3.draw();
-					// trap4.draw();
-					// trap5.draw();
 					
 					// === Update Players ===
 					player.update();
@@ -984,15 +951,9 @@ const levelMap = `
 
 					// === Movement Logic ===
 					if (keysPlayer1.d.pressed)
-					{
-						// console.log("je suis à droite");
 						player.shouldPanCameraToRight({canvas, camera});
-					}
 					else if (keysPlayer1.a.pressed)
-					{
-						// console.log("je suis à gauche");
 						player.shouldPanCameraToLeft({canvas, camera});
-					}
 					else if (keysPlayer1.w.pressed)
 					{
 						console.log("je suis en bas");
@@ -1005,20 +966,15 @@ const levelMap = `
 					player.checkCollision(platformss);
 					player2.checkCollision(platformss);
 
-					if (player.velocity.y < 0) { // Quand le joueur saute
+					if (player.velocity.y < 0)
 						player.shouldPanCameraToDown({canvas, camera});
-					} else if (player.velocity.y > 0) { // Quand le joueur tombe
+					else if (player.velocity.y > 0)
 						player.shouldPanCameraToUP({canvas, camera});
-					}
 					
 					if (player.velocity.y > 1)
-					{
 						player.isGrounded = false;
-					}
 					if (player2.velocity.y > 1)
-					{
 						player2.isGrounded = false;
-					}
 					
 					handleCollision(player, collisionBox);
 					handleCollision(player2, collisionBox);
@@ -1029,55 +985,54 @@ const levelMap = `
 
 					if (trap1.checkCollision(player))
 					{
-						console.log("collision avec le piège");
+						console.log("collision with trap");
 						player.position.x = 1057;
 						player.position.y = 821.16;
 						player.velocity.x = 0;
 						player.velocity.y = 0;
-						player.forceCameraToFollow({ canvas, camera }); // <- nouvelle ligne
+						player.forceCameraToFollow({ canvas, camera });
 						
 					}
 					// === Debugging ===
 					
 					if (trap2.checkCollision(player))
 					{
-						console.log("collision avec le piège");
+						console.log("collision with trap");
 						player.position.x = 463;
 						player.position.y = 1653.16;
 						player.velocity.x = 0;
 						player.velocity.y = 0;
-						player.forceCameraToFollow({ canvas, camera }); // <- nouvelle ligne
-						
+						player.forceCameraToFollow({ canvas, camera });
 					}
 
 					if (trap3.checkCollision(player))
 					{
-						console.log("collision avec le piège");
+						console.log("collision with trap");
 						player.position.x = 1057;
 						player.position.y = 821.16;
 						player.velocity.x = 0;
 						player.velocity.y = 0;
-						player.forceCameraToFollow({ canvas, camera }); // <- nouvelle ligne
+						player.forceCameraToFollow({ canvas, camera });
 					}
 
 					if (trap4.checkCollision(player))
 					{
-						console.log("collision avec le piège");
+						console.log("collision with trap");
 						player.position.x = 463;
 						player.position.y = 1653.16;
 						player.velocity.x = 0;
 						player.velocity.y = 0;
-						player.forceCameraToFollow({ canvas, camera }); // <- nouvelle ligne
+						player.forceCameraToFollow({ canvas, camera });
 					}
 
 					if (trap5.checkCollision(player))
 					{
-						console.log("collision avec le piège");
+						console.log("collision with trap");
 						player.position.x = 463;
 						player.position.y = 1653.16;
 						player.velocity.x = 0;
 						player.velocity.y = 0;
-						player.forceCameraToFollow({ canvas, camera }); // <- nouvelle ligne
+						player.forceCameraToFollow({ canvas, camera });
 					}
 				}
 				break;

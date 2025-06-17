@@ -50,7 +50,7 @@ engine.getRenderingCanvas().addEventListener("webglcontextlost", (e) => {
 			engine.resize(true);
 		} catch (err) {
 			console.error("Failed to recover WebGL context:", err);
-			showErrorMessage("Erreur graphique détectée. Veuillez rafraîchir la page.");
+			showErrorMessage("Graphics error detected. Please refresh the page.");
 		}
 	}, 1000);
 });
@@ -91,7 +91,6 @@ window.camera = new BABYLON.FreeCamera("camera", new BABYLON.Vector3(-46.5848927
 camera.rotation = new BABYLON.Vector3(-0.06270675424618415, -2.546876145234487, 0);
 camera.minZ = 0.1;
 camera.maxZ = 5000;
-camera.attachControl(canvas, true);
 camera.speed = 5;
 
 const pipeline = new BABYLON.DefaultRenderingPipeline("defaultPipeline", true, scene, [camera]);
@@ -253,7 +252,7 @@ function optimizeGameObjects(objects) {
 }
 
 function handleGameInitError() {
-	console.error("Game initialization failed. Resetting to menu...");
+	console.error("Game initialization failed. Back to menu...");
 	initialized = false;
 	play = false;
 	
@@ -272,7 +271,7 @@ function handleGameInitError() {
 	errorMessage.style.padding = '20px';
 	errorMessage.style.borderRadius = '5px';
 	errorMessage.style.zIndex = '1000';
-	errorMessage.textContent = 'Erreur lors du chargement du jeu. Retour au menu...';
+	errorMessage.textContent = 'Error loading game. Back to menu...';
 	
 	document.body.appendChild(errorMessage);
 	setTimeout(() => {
@@ -450,7 +449,7 @@ engine.runRenderLoop(() => {
 		if (Multi_gameStart && !gameIsFinished) {
 			if (!initialized) {
 				initialize_Multiplayer_game();
-				initialized = true;
+				initialized = true;PROFILE
 			}
 			if (initialized) {
 				if (scene.inputStates.space && !play)

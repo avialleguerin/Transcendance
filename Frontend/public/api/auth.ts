@@ -35,8 +35,8 @@ export async function login(event: Event): Promise<void> {
 		
 		if (!data.accessToken && !data.success)
 			console.debug(`${data.function}: ${data.error} - ${data.message}`);
-		else if (data.success && data.connection_status === "partially_connected" && data.user.doubleAuth_status) {
-			sessionStorage.setItem("userId", data.user.userId); // todo change userid to id
+		else if (data.success && data.connection_status === "partially_connected" && data.doubleAuth_status) {
+			sessionStorage.setItem("authTicket", data.ticket); // todo change userid to id
 			updateUI({ removeClass: [{ id:"doubleAuthForm", className: "hidden" }], addClass: ["loginForm", "doubleAuthForm"] });
 			$input("login-title").textContent = "Double Authentication";
 		} else if (data.success && data.connection_status === "connected") {
@@ -195,12 +195,12 @@ export async function logout() {
 export async function verify2FA(event: Event) {
 	try {
 		event.preventDefault();
-		const userId = sessionStorage.getItem("userId");
+		const ticket = sessionStorage.getItem("authTicket");
 		const code = $input("verify-2fa-code").value;
-		const data = await fetchAPI('/request/user/verify-2fa', 'POST', { userId, code });
+		const data = await fetchAPI('/request/user/verify-2fa', 'POST', { ticket, code });
 
 		if (data.success) {
-			sessionStorage.removeItem("userId")
+			sessionStorage.removeItem("authTicket")
 			setLocalStorage({"Player1": data.username, "profile_picture": data.profile_picture});
 			connectWebSocket()
 			console.info("2FA code valid!");

@@ -4,16 +4,15 @@ body {
 	font-family: Arial, sans-serif;
 }
 
-/* Les boutons en haut qui ne bougent jamais */
 .navbar {
-	position: fixed; /* Rendre la barre de navigation fixe */
+	position: fixed;
 	top: 0;
 	left: 0;
 	width: 100%;
 	background-color: #333;
 	padding: 10px 0;
 	display: flex;
-	justify-content: center; /* Centrer les boutons */
+	justify-content: center;
 	z-index: 1000;
 }
 
@@ -33,8 +32,133 @@ body {
 	background-color: #45a049;
 }
 
-/* Le contenu principal en dessous des boutons */
+
 #threejs-container {
-	margin-top: 60px; /* Créer un espace sous les boutons pour ne pas les cacher */
-	height: calc(100vh - 60px); /* Remplir le reste de la page */
+	margin-top: 60px;
+	height: calc(100vh - 60px);
+}
+
+#notification-container {
+	position: fixed;
+	top: 5%;
+	left: 0;
+	right: 0;
+	display: flex;
+	justify-content: center;
+	z-index: 50;
+	margin-top: 1rem;
+	display: none;
+}
+
+#resultMessage {
+	padding: 0.5rem 1rem;
+	border-radius: 0.25rem;
+	transition: all 0.3s ease;
+	transform: translateY(0);
+	opacity: 0;
+}
+
+.failure_notif {
+	background-color: #ef4444;
+	color: white;
+	padding: 0.5rem 1rem;
+	border-radius: 0.25rem;
+	box-shadow: 0 10px 15px -3px rgb(255, 0, 0), 0 4px 6px -2px rgb(255, 0, 0);
+	font-family: 'Black Ops One', sans-serif;
+}
+
+.success_notif {
+	background-color: #10b981;
+	color: white;
+	padding: 0.5rem 1rem;
+	border-radius: 0.25rem;
+	box-shadow: 0 10px 15px -3px rgb(4, 255, 0), 0 4px 6px -2px rgb(55, 255, 0);
+	font-family: 'Black Ops One', sans-serif;
+}
+
+.persistent-popup {
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+	width: 350px;
+	max-width: 90vw;
+	background: white;
+	border-radius: 12px;
+	padding: 20px;
+	box-shadow: 
+		0 4px 30px rgba(0, 0, 0, 0.3),
+		0 0 20px rgba(255, 255, 255, 0.1);
+	z-index: 10000;
+	border: 2px solid #ddd;
+	display: none;
+}
+
+.persistent-popup.active {
+	display: block;
+}
+
+.popup-content {
+	position: relative;
+}
+
+.popup-title {
+	font-size: 18px;
+	font-weight: bold;
+	margin-bottom: 10px;
+	color: #333;
+}
+
+.popup-text {
+	font-size: 14px;
+	color: #666;
+	margin-bottom: 15px;
+	line-height: 1.4;
+}
+
+.popup-buttons {
+	display: flex;
+	gap: 10px;
+	justify-content: flex-end;
+}
+
+.popup-btn {
+	padding: 8px 16px;
+	border: none;
+	border-radius: 6px;
+	font-size: 14px;
+	cursor: pointer;
+	transition: background-color 0.3s;
+	font-family: 'Black Ops One', sans-serif;
+}
+
+.popup-btn.necessary {
+	background-color: #f0f0f0;
+	color: #333;
+	border: 1px solid #ddd;
+}
+
+.popup-btn.necessary:hover {
+	background-color: #e0e0e0;
+}
+
+.popup-btn.allow-all {
+	background-color: #180247;
+	color: white;
+}
+
+.popup-btn.allow-all:hover {
+	background-color: #6f45a0;
+}
+
+@media (max-width: 480px) {
+	.persistent-popup {
+		bottom: 10px;
+		right: 10px;
+		left: 10px;
+		width: auto;
+	}
+	
+	.popup-buttons {
+		flex-direction: column;
+	}
 }

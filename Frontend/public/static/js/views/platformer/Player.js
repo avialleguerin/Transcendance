@@ -3,130 +3,124 @@ import { c, GRAVITY, camera, canvas } from './constants.js';
 
 
 export default class Player extends Sprite {
-    
-    constructor({position, Image_src_prefix, keys}) {
-        // Commencer avec la première image
-        super({position, Image_src: Image_src_prefix + "idle_0.png", scaleX: 0.08, scaleY: 0.08});
-        
-        this.position = position;
-        this.velocity = {
-            x: 0,
-            y: 1,
-        };
-        this.keys = keys;
-        
-        // Animation properties
-        this.frames = 0;
-        this.frameSpeed = 10;
-        this.currentSprite = 0;
-        this.totalSprites = 5;
-        this.state = "idle";
-        this.imageSrcPrefix = Image_src_prefix;
-        this.doubleJump = false;
-        this.jump = 0;
-        this.cantraverse = false;
-        this.isGrounded = false;
-        this.cantraverseDown = false;
-        this.jumps = 0;
-        this.cameraBox = {
-            position: {
-                x: this.position.x,
-                y: this.position.y,
-            },
-            width: 200,
-            height: 80,
-        };
+	
+	constructor({position, Image_src_prefix, keys}) {
+		super({position, Image_src: Image_src_prefix + "idle_0.png", scaleX: 0.08, scaleY: 0.08});
+		
+		this.position = position;
+		this.velocity = {
+			x: 0,
+			y: 1,
+		};
+		this.keys = keys;
+		
+		this.frames = 0;
+		this.frameSpeed = 10;
+		this.currentSprite = 0;
+		this.totalSprites = 5;
+		this.state = "idle";
+		this.imageSrcPrefix = Image_src_prefix;
+		this.doubleJump = false;
+		this.jump = 0;
+		this.cantraverse = false;
+		this.isGrounded = false;
+		this.cantraverseDown = false;
+		this.jumps = 0;
+		this.cameraBox = {
+			position: {
+				x: this.position.x,
+				y: this.position.y,
+			},
+			width: 200,
+			height: 80,
+		};
 
-        // Cache des images
-        this.imageCache = {};
-        this.preloadImages();
+		this.imageCache = {};
+		this.preloadImages();
 
 		this.jumpCooldown = false;
-   		this.jumpCooldownTime = 250; // 150ms de délai entre les sauts
+   		this.jumpCooldownTime = 250;
 
-        console.log("keys", keys);
-    }
+		console.log("keys", keys);
+	}
 
-    // Précharger toutes les images pour éviter les problèmes de chargement
-    preloadImages() {
-        const states = ["idle", "walk", "jumpStart", "jumpEnd", "fall", "roll"];
-        const frameCount = {
-            "idle": 5,
-            "walk": 8,
-            "jumpStart": 2,
-            "jumpEnd": 3,
-            "fall": 5,
-            "roll": 5
-        };
+	preloadImages() {
+		const states = ["idle", "walk", "jumpStart", "jumpEnd", "fall", "roll"];
+		const frameCount = {
+			"idle": 5,
+			"walk": 8,
+			"jumpStart": 2,
+			"jumpEnd": 3,
+			"fall": 5,
+			"roll": 5
+		};
 
-        states.forEach(state => {
-            this.imageCache[state] = [];
-            for (let i = 0; i < frameCount[state]; i++) {
-                const img = new Image();
-                img.src = `${this.imageSrcPrefix}${state}_${i}.png`;
-                this.imageCache[state][i] = img;
-            }
-        });
-    }
+		states.forEach(state => {
+			this.imageCache[state] = [];
+			for (let i = 0; i < frameCount[state]; i++) {
+				const img = new Image();
+				img.src = `${this.imageSrcPrefix}${state}_${i}.png`;
+				this.imageCache[state][i] = img;
+			}
+		});
+	}
 
-    isMoving() {
-        return this.keys.left.pressed || this.keys.right.pressed;
-    }
-    
-    changeState(newState) {
-        if (this.state === newState) return; // Ne pas changer l'état si c'est le même
-        
-        this.state = newState;
-        if (this.state === "idle") {
-            this.totalSprites = 5;
-        }
-        else if (this.state === "walk") {
-            this.totalSprites = 8;
-        }
-        else if (this.state === "jumpStart") {
-            this.totalSprites = 2;
-        }
-        else if (this.state === "jumpEnd") {
-            this.totalSprites = 3;
-        }
-        else if (this.state === "fall") {
-            this.totalSprites = 5;
-        }
-        else if (this.state === "roll") {
-            this.totalSprites = 5;
-        }
-        
-        // Réinitialiser le sprite courant au changement d'état
-        this.currentSprite = 0;
-        this.updateCurrentImage();
-    }
+	isMoving() {
+		return this.keys.left.pressed || this.keys.right.pressed;
+	}
+	
+	changeState(newState) {
+		if (this.state === newState) return;
+		
+		this.state = newState;
+		if (this.state === "idle") {
+			this.totalSprites = 5;
+		}
+		else if (this.state === "walk") {
+			this.totalSprites = 8;
+		}
+		else if (this.state === "jumpStart") {
+			this.totalSprites = 2;
+		}
+		else if (this.state === "jumpEnd") {
+			this.totalSprites = 3;
+		}
+		else if (this.state === "fall") {
+			this.totalSprites = 5;
+		}
+		else if (this.state === "roll") {
+			this.totalSprites = 5;
+		}
+		
+		this.currentSprite = 0;
+		this.updateCurrentImage();
+	}
 
-    updateCurrentImage() {
-        // Utiliser l'image du cache au lieu d'en créer une nouvelle
-        if (this.imageCache[this.state] && this.imageCache[this.state][this.currentSprite]) {
-            this.image = this.imageCache[this.state][this.currentSprite];
-        }
-    }
+	updateCurrentImage() {
+		if (this.imageCache[this.state] && this.imageCache[this.state][this.currentSprite]) {
+			this.image = this.imageCache[this.state][this.currentSprite];
+		}
+	}
 
-    changeSprite() {
-        if (this.frames % this.frameSpeed === 0) {
-            this.currentSprite++;
-    
-            if (this.currentSprite >= this.totalSprites) {
-                this.currentSprite = 0;
-    
-                if (this.state === "jumpStart" && this.velocity.y < 0) {
-                    this.changeState("fall");
-                }
-                else if (this.state === "jumpEnd") {
-                    this.changeState(this.isMoving() ? "walk" : "idle");
-                }
-            }
-    
-            this.updateCurrentImage();
-        }
-        this.frames = (this.frames + 1) % 1000;
-    }
+	changeSprite() {
+		if (this.frames % this.frameSpeed === 0) {
+			this.currentSprite++;
+	
+			if (this.currentSprite >= this.totalSprites) {
+				this.currentSprite = 0;
+	
+				if (this.state === "jumpStart" && this.velocity.y < 0) {
+					this.changeState("fall");
+				}
+				else if (this.state === "jumpEnd") {
+					this.changeState(this.isMoving() ? "walk" : "idle");
+				}
+			}
+	
+			this.updateCurrentImage();
+		}
+		this.frames = (this.frames + 1) % 1000;
+	}
 	
 
 	rotate_sprite()
@@ -236,12 +230,10 @@ export default class Player extends Sprite {
 		this.rotate_sprite();
 		this.draw();
 		this.updateCameraBox();
-		// this.drawCameraBox();
 	}
 	
 	
 	handleJump() {
-		// Vérifier si le joueur est en cooldown de saut
 		if (this.jumpCooldown) return;
 		
 		if (this.jumps < 2) {
@@ -252,7 +244,6 @@ export default class Player extends Sprite {
 				this.isGrounded = false;
 				this.cantraverse = false;
 				
-				// Activer le cooldown
 				this.jumpCooldown = true;
 				setTimeout(() => {
 					this.jumpCooldown = false;
@@ -266,7 +257,6 @@ export default class Player extends Sprite {
 				this.isGrounded = false;
 				this.cantraverse = false;
 				
-				// Activer le cooldown
 				this.jumpCooldown = true;
 				setTimeout(() => {
 					this.jumpCooldown = false;

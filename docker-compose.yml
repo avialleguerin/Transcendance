@@ -53,8 +53,7 @@ services:
       - ./Security/ModSecurity:/etc/modsecurity
       - ./Frontend/public:/usr/share/nginx/html:ro
       - ./Frontend/public/srcs:/usr/share/nginx/dist/srcs:ro 
-      - ./Frontend/public/static/js/css:/usr/share/nginx/dist/static/js/css:ro 
-      - ./Frontend/public/static/js/index.css:/usr/share/nginx/dist/static/js/index.css:ro  
+      - ./Frontend/public/static/js/css:/usr/share/nginx/dist/static/js/css:ro
       - ./Frontend/public/index.html:/usr/share/nginx/dist/index.html:ro
       - ./Frontend/dist:/usr/share/nginx/dist
       - ./Frontend/dist/api:/usr/share/nginx/dist/api:ro
