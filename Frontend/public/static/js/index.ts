@@ -1,9 +1,9 @@
-import home from "./views/Home.js";
+import home from "./views/home.js";
 import Game_menu from "./views/game-menu.js";
-import solo_game_1v1 from "./views/solo_game_1v1.js";
-import multi_player_game from "./views/multi_player_game.js";
+import solo_game_1v1 from "./views/solo-game-1v1.js";
+import multi_player_game from "./views/multi-player-game.js";
 import tournament from "./views/tournament.js";
-import tournament_game from "./views/tournament_game.js";
+import tournament_game from "./views/tournament-game.js";
 import PlatformView  from "./views/platformer/PlatformView.js";
 import { Route, RouteMatch } from "../../api/types.js";
 
@@ -20,11 +20,11 @@ const router = async (): Promise<void> => {
 	const routes: Route[] = [
 		{ path: "/", view: home },
 		{ path: "/game-menu", view: Game_menu },
-		{ path: "/solo_game_1v1", view: solo_game_1v1 },
-		{ path: "/multi_player_game", view: multi_player_game },
+		{ path: "/solo-game-1v1", view: solo_game_1v1 },
+		{ path: "/multi-player-game", view: multi_player_game },
 		{ path: "/tournament", view: tournament },
-		{ path: "/tournament_game", view: tournament_game },
-		{ path: "/PlatformView", view: PlatformView },
+		{ path: "/tournament-game", view: tournament_game },
+		{ path: "/platformer", view: PlatformView },
 	];
 
 	const potentialMatches: RouteMatch[] = routes.map((route) => {

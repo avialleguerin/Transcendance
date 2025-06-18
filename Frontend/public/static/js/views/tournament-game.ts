@@ -23,7 +23,7 @@ export default class extends AbstractView {
 		this.boundKeyPressHandler = this.handleKeyPress.bind(this);
 		document.addEventListener("keydown", this.boundKeyPressHandler);
 
-		if (window.location.pathname === "/tournament_game")
+		if (window.location.pathname === "/tournament-game")
 			this.gameLoop = setInterval(() => { this.checkGameOver_tournament(); 1000 });
 		const accessToken = sessionStorage.getItem("accessToken");
 		if (!accessToken || accessToken === undefined)
@@ -32,7 +32,7 @@ export default class extends AbstractView {
 
 	async getHtml() {
 		return /*html*/`
-		<link rel="stylesheet" href="./static/js/css/tournament_game.css">
+		<link rel="stylesheet" href="./static/js/css/tournament-game.css">
 		<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 		<div class="press_space" >
 			<h1 id="press_space_id">Press SPACE to Start</h1>
@@ -64,7 +64,7 @@ export default class extends AbstractView {
 	}
 
 	checkGameOver_tournament() {
-		if (window.location.pathname !== "/tournament_game")
+		if (window.location.pathname !== "/tournament-game")
 			return;
 		const winnerContainer = document.querySelector(".container-EndGame");
 		let player_1_win = getPlayer_1_win();

@@ -19,7 +19,7 @@ function create_overlay() {
 	const overlay = document.createElement("div");
 	overlay.id = "grenade_flash";
 	overlay.innerHTML = `
-		<link rel="stylesheet" href="./static/js/css/grenade_flash.css">
+		<link rel="stylesheet" href="./static/js/css/grenade-flash.css">
 		<div class="grenade-flash">
 			<div class="flash"></div>
 		</div>

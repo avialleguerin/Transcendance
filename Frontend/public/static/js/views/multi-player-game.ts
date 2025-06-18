@@ -40,7 +40,7 @@ export default class extends AbstractView {
 			this.boundKeyPressHandler = this.handleKeyPress.bind(this);
 			document.addEventListener("keydown", this.boundKeyPressHandler);
 
-			if (window.location.pathname === "/multi_player_game") {
+			if (window.location.pathname === "/multi-player-game") {
 				this.gameLoop = setInterval(() => { this.checkGameOver();}, 1000 );
 			}
 			bool = true;
@@ -53,7 +53,7 @@ export default class extends AbstractView {
 
 	async getHtml() {
 		return /*html*/`
-			<link rel="stylesheet" href="./static/js/css/multi_player_game.css">
+			<link rel="stylesheet" href="./static/js/css/multi-player-game.css">
 			<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 			<div class="container">
 				<div class="press_space" >
@@ -282,7 +282,7 @@ export default class extends AbstractView {
 	}
 
 	checkGameOver() {
-		if (window.location.pathname !== "/multi_player_game")
+		if (window.location.pathname !== "/multi-player-game")
 			return;
 		const winnerContainer = document.querySelector(".container-EndGame");
 		let team_player1_win = getIsTeam1Win();

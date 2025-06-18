@@ -30,7 +30,7 @@ export default class Game_menu extends AbstractView {
 
 	async getHtml(): Promise<string> {
 		return /*html*/`
-		<link rel="stylesheet" href="./static/js/css/game_menu.css">
+		<link rel="stylesheet" href="./static/js/css/game-menu.css">
 		<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 		<div class="navbar_menu">
 			<div class="profile_photo_circle_nav_bar" id="profile_photo_circle_nav_bar"><img src="./uploads/${localStorage.getItem('profile_picture')}" alt="profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;"></div>
@@ -441,7 +441,7 @@ export default class Game_menu extends AbstractView {
 							</div>
 						</div>
 						<button type="submit" class="valider_opponent_btn_platformer" id="validate-opponent-platformer-login">Validate</button>
-						<a style="display:none" class="valider_opponent_btn_platformer" href="/PlatformView" id="start-platformer" data-link>Start</a>
+						<a style="display:none" class="valider_opponent_btn_platformer" href="/platformer" id="start-platformer" data-link>Start</a>
 					</form>
 				</div>
 
@@ -515,7 +515,7 @@ export default class Game_menu extends AbstractView {
 						<div class="skin" id="skin">
 							<p>Custom Skin: <span id="skin_perso" class="skin_perso"></span></p>
 						</div>
-						<a id="solo_1v1_btn" class="btn" href="/solo_game_1v1" class="nav-link" data-link>Start Game</a>
+						<a id="solo_1v1_btn" class="btn" href="/solo-game-1v1" class="nav-link" data-link>Start Game</a>
 					</div>
 				</div>
 	
@@ -542,7 +542,7 @@ export default class Game_menu extends AbstractView {
 						<div class="skin" id="skin_multi">
 							<p>Custom Skin: <span id="skin_perso_game_multi" class="skin_perso"></span></p>
 						</div>
-						<a id="multiplayer_btn" class="btn" href="/multi_player_game" class="nav-link" data-link>Start Game</a>
+						<a id="multiplayer_btn" class="btn" href="/multi-player-game" class="nav-link" data-link>Start Game</a>
 					</div>
 				</div>
 			</div>

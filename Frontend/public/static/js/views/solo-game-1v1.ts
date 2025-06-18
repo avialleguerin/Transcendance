@@ -47,7 +47,7 @@ export default class solo_game extends AbstractView {
 	
 		
 		if (bool == false) {
-			if (window.location.pathname === "/solo_game_1v1") {
+			if (window.location.pathname === "/solo-game-1v1") {
 				console.log("solo_game_1v1.js ////////////////////////////////////////////////////////////////////////////////////////////////////////");
 
 				document.addEventListener("keydown", this.boundKeyPressHandler);
@@ -59,7 +59,7 @@ export default class solo_game extends AbstractView {
 
 	async getHtml(): Promise<string> {
 		return /*html*/`
-			<link rel="stylesheet" href="./static/js/css/solo_game_1v1.css">
+			<link rel="stylesheet" href="./static/js/css/solo-game-1v1.css">
 			<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 			<div class="container">
 				<div class="press_space" >
@@ -317,7 +317,7 @@ export default class solo_game extends AbstractView {
 	}
 
 	checkGameOver() {
-		if (window.location.pathname !== "/solo_game_1v1")
+		if (window.location.pathname !== "/solo-game-1v1")
 			return;
 		const winnerContainer = document.querySelector(".container-EndGame");
 		let player_1_win = getPlayer_1_win();

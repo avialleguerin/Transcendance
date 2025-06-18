@@ -449,7 +449,7 @@ engine.runRenderLoop(() => {
 		if (Multi_gameStart && !gameIsFinished) {
 			if (!initialized) {
 				initialize_Multiplayer_game();
-				initialized = true;PROFILE
+				initialized = true;
 			}
 			if (initialized) {
 				if (scene.inputStates.space && !play)

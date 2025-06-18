@@ -13,7 +13,7 @@ export default class PlatformerView extends AbstractView {
 		this.setTitle("platformer");
 		
 		if (check_verfication === true) {
-			if (window.location.pathname === "/PlatformView")
+			if (window.location.pathname === "/platformer")
 				this.gameLoop = setInterval(() => { this.check_game_is_finish(); }, 1000);
 		}
 	}
@@ -50,7 +50,7 @@ export default class PlatformerView extends AbstractView {
 		console.log("Game initialized successfully");
 		if (check_verfication === true) {
 			console.log("je suis laaaaaaaaaaaaaaaaaaa");
-			if (window.location.pathname === "/PlatformView") {
+			if (window.location.pathname === "/platformer") {
 				this.gameLoop = setInterval(() => { this.check_game_is_finish(); }, 1000);
 			}
 		}
@@ -61,7 +61,7 @@ export default class PlatformerView extends AbstractView {
 	}
 
 	check_game_is_finish() {
-		if (window.location.pathname !== "/PlatformView")
+		if (window.location.pathname !== "/platformer")
 			return;
 		let game_is_finish = Getgame_started();
 		console.log("Game is finish: " + game_is_finish);

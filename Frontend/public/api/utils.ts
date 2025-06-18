@@ -73,7 +73,7 @@ export async function fetchAPI(url: string, method: string, body: any = null, sh
 export function homeView(): void {
 	handleViewTransitions("vue1", "vue2");
 	history.pushState({}, '', '/');
-	import('../static/js/views/Home.js').then((module) => {
+	import('../static/js/views/home.js').then((module) => {
 		const Home = module.default;
 		const homeInstance = new Home();
 		homeInstance.getHtml().then((html) => {
