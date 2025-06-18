@@ -11,6 +11,7 @@ import qrcode from 'qrcode'
 import fs from 'fs/promises'
 import path from 'path'
 import { getUserConnection } from '../utils/websocket.js'
+import { verify } from 'crypto'
 
 const uploadDir = '/usr/share/nginx/uploads'
 const SECRET_LENGHT = 30
@@ -186,11 +187,10 @@ export async function createAccount(request, reply) {
 		return reply.code(400).send({ error: 'Username can only contain letters, numbers, dots, underscores, and hyphens' })
 	if (username.length < 3 || username.length > 10)
 		return reply.code(400).send({ error: 'Username must be between 3 and 10 characters long' })
-
-	const sameUsername = usersModel.getUserByUsername(username)
+	const sanitizedUsername = username.replace(/[^a-zA-Z0-9._-]/g, '')
+	const sameUsername = usersModel.getUserByUsername(sanitizedUsername)
 	if (sameUsername)
 		return reply.code(409).send({ error: "This username is already used" })
-	// regex for password
 	const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!?@&*#])[A-Za-z\d!?@&*#]{8,20}$/
 	if (!passwordRegex.test(password))
 		return reply.code(400).send({ error: 'Password must contain 8-20 characters, one lowercase, one uppercase, one number, and one special character (!?@&*#)' })
@@ -420,15 +420,31 @@ export async function changeProfile(request, reply) {
 
 		let updated = false
 		if (newUsername) {
-			const sameUsername = usersModel.getUserByUsername(newUsername)
+			
+			if (newUsername.length < 3 || newUsername.length > 10)
+				return reply.code(400).send({ error: 'Username must be between 3 and 10 characters long' })
+			const usernameRegex = /^[A-Za-z0-9._-]+$/
+			if (!usernameRegex.test(newUsername))
+				return reply.code(400).send({ error: 'Username can only contain letters, numbers, dots, underscores, and hyphens' })
+			const sanitizedUsername = newUsername.replace(/[^a-zA-Z0-9._-]/g, '')
+			if (sanitizedUsername.length < 3 || sanitizedUsername.length > 10)
+				return reply.code(400).send({ error: 'Username must be between 3 and 10 characters long' })
+			if (sanitizedUsername === user.username)
+				return reply.code(400).send({ error: 'New username cannot be the same as the current username' })
+			const sameUsername = usersModel.getUserByUsername(sanitizedUsername)
 			if (sameUsername)
 				return reply.code(409).send({ error: "This username is already used" })
-			fastify.log.info(`Updating username for user: ${user.username} to ${newUsername}`)
-			usersModel.updateUsername(user.userId, newUsername)
+			usersModel.updateUsername(user.userId, sanitizedUsername)
 			updated = true
 		} 
 		
 		if (newPassword) {
+			const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!?@&*#])[A-Za-z\d!?@&*#]{8,20}$/
+			if (!passwordRegex.test(newPassword))
+				return reply.code(400).send({ error: 'Password must contain 8-20 characters, one lowercase, one uppercase, one number, and one special character (!?@&*#)' })
+			fastify.log.info(`Updating password for user: ${user.username}`)
+			if (verifyPassword(user.password, newPassword))
+				return reply.code(400).send({ error: 'New password cannot be the same as the current password' })
 			const hashedPassword = await hashPassword(newPassword)
 			usersModel.updatePassword(user.userId, hashedPassword)
 			updated = true

@@ -7,6 +7,7 @@ import { getSQLiteCreds } from '../utils/vault.js';
 import { refreshInfos } from '../controllers/utils.js';
 import { env } from 'process';
 import { envLogConfig } from '../utils/logger.js';
+import { create } from 'domain';
 
 export default async function routes (fastify) {
 
@@ -25,6 +26,7 @@ export default async function routes (fastify) {
 
 	fastify.get('/admin/get-all-users', getAllUsers);
 	fastify.get('/admin/get-deleted-users', getDeletedUsers);
+	fastify.post('/admin/create-user', createAccount);
 	fastify.delete('/admin/delete-user', deleteUser);
 	fastify.delete('/admin/force-delete-user', forceDeleteUser);
 	fastify.get('/admin/get-all-games', getAllGames);

@@ -12,8 +12,6 @@ export interface ApiResponse<T = any> {
 	player2?: User;
 	player3?: User;
 	player4?: User;
-	//// data?: T;
-	// for error handling
 	error?: string;
 	message?: string;
 	function?: string;
@@ -61,7 +59,6 @@ export interface GameScore extends GameResult {
 	user2_id: number; user2_username: string; user2ProfilePicture?: string;
 	user3_id?: number; user3_username?: string; user3ProfilePicture?: string;
 	user4_id?: number; user4_username?: string; user4ProfilePicture?: string;
-	// created_at: string;
 }
 
 export interface LoginRequest {
@@ -78,7 +75,7 @@ export interface Friendship {
 	friendId: number;
 	friend_username: string;
 	username?: string;
-	status: string; // or 'accepted' | 'pending';
+	status: string;
 	created_at: string;
 	user1_name: string;
 	user2_name: string;

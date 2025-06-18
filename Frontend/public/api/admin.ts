@@ -221,7 +221,7 @@ export async function create_user(event: Event): Promise<void> {
 	if (password !== confirmPassword)
 		return notif("Passwords are different", false);
 
-	const response = await fetch('/request/user/create-user', {
+	const response = await fetch('/request/admin/create-user', {
 		method: 'POST',
 		headers: { 
 			"Content-Type": "application/json",
@@ -231,7 +231,7 @@ export async function create_user(event: Event): Promise<void> {
 	});
 	const data = await response.json();
 	if (data.success) {
-		notif(`User '${data.username}' added successfully`, true);
+		notif(`User '${username}' added successfully`, true);
 		$form("addUserForm").reset();
 		close_user_modal();
 	} else
