@@ -16,6 +16,19 @@ import { init_skins_podium_default } from "./solo/skin/init_skin_player_default.
 /*****************CREATION DU MOTEUR***************************/
 /**************************************************************/
 
+localStorage.removeItem("match1_result");
+localStorage.removeItem("match2_result");
+localStorage.removeItem("match3_result");
+localStorage.removeItem("match4_result");
+localStorage.removeItem("match5_result");
+localStorage.removeItem("match6_result");
+
+localStorage.removeItem("tournamentCount");
+
+localStorage.removeItem("tournamentStarted");
+localStorage.removeItem("tournament_finished");
+localStorage.removeItem("secondChance");
+
 let qualityLevel = 'medium';
 const canvas = document.getElementById('renderCanvas');
 const engine = new BABYLON.Engine(canvas, true, {
@@ -31,7 +44,6 @@ const engine = new BABYLON.Engine(canvas, true, {
 /***************************************************************/
 /*****************DETECTION DES PERFORMANCES*******************/
 /***************************************************************/
-
 
 function detectPerformanceLevel() {
 	return 'low';
@@ -105,8 +117,7 @@ function createOptimizedSkybox(scene) {
 	skyMaterial.backFaceCulling = false;
 	skyMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
 	skyMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
-	
-	// Texture avec paramètres adaptés à la qualité
+
 	const skyTexture = new BABYLON.Texture("assets/skybox/skybox.jpg", scene);
 	skyTexture.coordinatesMode = BABYLON.Texture.SPHERICAL_MODE;
 	skyTexture.hasAlpha = false;
@@ -116,8 +127,7 @@ function createOptimizedSkybox(scene) {
 		BABYLON.Texture.NEAREST_LINEAR);
 	
 	skyMaterial.diffuseTexture = skyTexture;
-	
-	// Créer une sphère optimisée
+
 	const segmentsCount = simplifiedSkybox ? 16 : 32;
 	const skySphere = BABYLON.MeshBuilder.CreateSphere("skySphere", {
 		diameter: 5000, 
@@ -144,13 +154,9 @@ let initialized = false;
 let player_1, player_2, player_3, player_4, player_1_tournament, player_2_tournament, AI_player, ball;
 let Solo_gameStart = false;
 let Multi_gameStart = false;
-let AI_gameStart = false;
 let tournament_game = false;
 let play = false;
-let canPressSpace = false; // Nouveau drapeau pour bloquer l'appui sur Espace
-let lastPerformanceCheck = Date.now();
-let frameCounter = 0;
-let fpsHistory = [];
+let canPressSpace = false
 
 
 create_environment_view1(scene);
@@ -258,7 +264,6 @@ function handleGameInitError() {
 	
 	Solo_gameStart = false;
 	Multi_gameStart = false;
-	AI_gameStart = false;
 	tournament_game = false;
 	
 	const errorMessage = document.createElement('div');
@@ -287,7 +292,6 @@ function handleGameInitError() {
 export function startGame() {
 	Solo_gameStart = true;
 	Multi_gameStart = false;
-	AI_gameStart = false;
 	tournament_game = false;
 	SetIsGameFinished(false);
 
@@ -301,14 +305,11 @@ export function startGame() {
 export function startMultiGame() {
 	Multi_gameStart = true;
 	Solo_gameStart = false;
-	AI_gameStart = false;
 	tournament_game = false;
 	SetIsGameFinished(false);
 }
 
-export function startAI_Game() {
-	AI_gameStart = true;
-	Solo_gameStart = false;
+export function startAI_Game() {	Solo_gameStart = false;
 	Multi_gameStart = false;
 	tournament_game = false;
 	SetIsGameFinished(false);
@@ -318,7 +319,6 @@ export function startTournamentGame() {
 	tournament_game = true;
 	Solo_gameStart = false;
 	Multi_gameStart = false;
-	AI_gameStart = false;
 	SetIsGameFinished(false);
 }
 
@@ -360,7 +360,6 @@ export function leave_Multiplayer_Game() {
 }
 
 export function leave_AI_Game() {
-	AI_gameStart = false;
 	initialized = false;
 	play = false;
 }

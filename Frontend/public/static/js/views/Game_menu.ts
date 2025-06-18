@@ -244,7 +244,7 @@ export default class Game_menu extends AbstractView {
 		</div>
 			<div id="container" class="container_menu">
 				<button id="btn_jouer">
-					<h1>PLAY</h1>
+					<h1>ENTER</h1>
 				</button>
 				<div class="view2" id="view2">
 					<div class="view2-content">
@@ -331,7 +331,7 @@ export default class Game_menu extends AbstractView {
 									<div class="joueur" id="joueur3">
 										<p>Player 3</p>
 										<div class="controls">
-											<p>Movement: O / L</p>
+											<p>Movement: I / K</p>
 											<p>PowerUP: 1 / 2 / 3</p>
 										</div>
 									</div>
@@ -713,29 +713,6 @@ export default class Game_menu extends AbstractView {
 		
 	`;}
 
-	init_solo_game() {
-		document.getElementById("solo_1v1_btn").addEventListener("click", () => {
-			console.debug("Solo 1v1 game started");
-			startGame();
-			handleViewTransitions("vue3", "vue2");
-		});
-	}
-
-	initEvents() {
-		document.getElementById("multiplayer_btn").addEventListener("click", () => {
-			console.debug("Multiplayer 2v2 game started");
-			startMultiGame();
-			handleViewTransitions("vue3", "vue2");
-		});
-	}
-
-
-	tournament_view() {
-		document.getElementById("tournament_view").addEventListener("click", () => {
-			console.debug("Tournament view started");
-			handleViewTransitions("tournament");
-		});
-	}
 
 	handleDeconnection() {
 		const deconnect_btn = document.getElementById("deconnect_btn");
@@ -781,7 +758,6 @@ export default class Game_menu extends AbstractView {
 		const back_to_select_mode_view8 = document.getElementById('back_to_select_mode_view8');
 		const choose_your_opponent_platformer_form = document.getElementById('choose_your_opponent_platformer_form');
 
-		//*==== CGU & Privacy Policy Modals ====*/
 		const showCguLink = document.getElementById("show-cgu");
 		const cguModal = document.getElementById("cgu-modal");
 		const cguBackButton = document.getElementById("cgu-back-button");
@@ -1613,7 +1589,7 @@ export default class Game_menu extends AbstractView {
 		});
 
 		document.getElementById("tournament_view").addEventListener("click", () => {
-			handleViewTransitions("tournament");
+			handleViewTransitions("tournament", "vue2");
 		});
 
 		const acceptedSection = document.getElementById('section-accepted');

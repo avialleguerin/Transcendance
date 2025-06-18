@@ -8,7 +8,6 @@ import { disable_skin_perso_player_first_and_seconde } from "../../../srcs/game/
 import { getPlayer_1_win, getPlayer_2_win } from "../../../srcs/game/gameplay/score.js";
 import { disable_skin_perso_player_first_and_seconde_default } from "../../../srcs/game/gameplay/solo/skin/init_skin_player_default.js";
 import { get_skin_is_init } from "../../../srcs/game/gameplay/solo/skin/init_skin_utils.js";
-// import { log } from '../../../utils/logger.js';
 import { homeView } from "../../../api/utils.js";
 
 let spacePressed = false;
@@ -48,8 +47,6 @@ export default class solo_game extends AbstractView {
 		
 		if (bool == false) {
 			if (window.location.pathname === "/solo_game_1v1") {
-				console.log("solo_game_1v1.js ////////////////////////////////////////////////////////////////////////////////////////////////////////");
-
 				document.addEventListener("keydown", this.boundKeyPressHandler);
 				this.gameLoop = setInterval(() => { this.checkGameOver();}, 1000 );
 				bool = true;
@@ -127,7 +124,7 @@ export default class solo_game extends AbstractView {
 							<h1 id="looser_id"></h1>
 						</div>
 					</div>
-					<button class="leave_game_2" id="leave_game_2_id" onclick="window.create_1v1_game(event, '${localStorage.getItem('Player1')}', '${localStorage.getItem('Player2')}')">Quitter la partie</button>
+					<button class="leave_game_2" id="leave_game_2_id" onclick="window.create_1v1_game(event, '${localStorage.getItem('Player1')}', '${localStorage.getItem('Player2')}')">Leave Game</button>
 				</div>
 			</div>
 		`;
@@ -200,19 +197,17 @@ export default class solo_game extends AbstractView {
 		document.getElementById("overlay-inverse-2").classList.toggle("active", nb_powerUP_inverse_player2 === 0);
 	}
 
-	handleKeyPress(event: KeyboardEvent) { //NOTE - jai ajouter le type event: KeyboardEvent
+	handleKeyPress(event: KeyboardEvent) {
 		const key = event.key;
 		
 		
 		
 		
-		// Vérifier si la touche a un cooldown défini
 		if (!(key in this.cooldownTimes)) return;
 		
 		if (this.cooldowns[key]) {
 			return;
-		} // Ignore l'action si en cooldown
-		// Vérifier si la touche est en cooldown
+		}
 
 		if (key === " ") {
 			const press_space = document.getElementById("press_space_id");
@@ -257,8 +252,6 @@ export default class solo_game extends AbstractView {
 					elem.innerHTML = (currentValue - 1).toString();
 					
 					this.cooldowns[key] = true;
-					
-					// Ajouter la classe d'animation pour démarrer l'overlay reloading
 					let itemCircle = null;
 					let overlayReloading = null;
 					let overlayReloading_teammate = null;
@@ -298,26 +291,18 @@ export default class solo_game extends AbstractView {
 					}
 
 					if (overlayReloading && currentValue - 1 !== 0) {
-						// Lancer l'animation en ajoutant une classe CSS pour démarrer
-						overlayReloading.classList.add("active"); // Assurez-vous que .item-loading est défini dans votre CSS
+						overlayReloading.classList.add("active");
 					}
 					if (itemCircle) {
 						itemCircle.classList.add("active");
 					}
 
 					if (overlayReloading_teammate && currentValue - 1 !== 0) {
-						// Lancer l'animation en ajoutant une classe CSS pour démarrer
-						overlayReloading_teammate.classList.add("active"); // Assurez-vous que .item-loading est défini dans votre CSS
+						overlayReloading_teammate.classList.add("active");
 					}
-		
-					// Retirer le cooldown après le délai défini pour cette touche
-					setTimeout(() => {
-						//  vérifiez que this.cooldowns est bien accessible
-
-						// Terminer le cooldown et arrêter l'animation
+					setTimeout(() =>
+					{
 						delete this.cooldowns[key];
-		
-						// Retirer la classe d'animation après le cooldown
 						if (overlayReloading && currentValue - 1 !== 0) {
 							overlayReloading.classList.remove("active");
 						}
@@ -347,7 +332,7 @@ export default class solo_game extends AbstractView {
 			return;
 		if (isGameFinished()) {
 			winnerContainer.classList.add("active");
-			clearInterval(this.gameLoop); // Arrête la boucle quand la partie est finie
+			clearInterval(this.gameLoop);
 			if (player_1_win)
 			{
 				document.getElementById("winner_id").innerHTML = `${localStorage.getItem("Player1")}`;

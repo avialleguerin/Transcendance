@@ -261,8 +261,8 @@ export function initGame()
 		}),
 		new Coin({
 			position: {
-				x: 635,
-				y: 1000,
+				x: 1350,
+				y: 1750,
 			},
 			Image_src_prefix: '/srcs/game/assets/City/',
 		}),
@@ -442,12 +442,12 @@ export function initGame()
 		
 		platforms.forEach(platform => platform.draw());
 		
-		collisionBoxes.forEach(box => box.draw());
-		collisionBoxesDown.forEach(box => box.draw());
+		// collisionBoxes.forEach(box => box.draw());
+		// collisionBoxesDown.forEach(box => box.draw());
 
 
 		// Draw coin
-		traps.forEach(trap => trap.draw());
+		// traps.forEach(trap => trap.draw());
 
 
 		// Update players

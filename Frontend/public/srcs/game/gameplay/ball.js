@@ -90,18 +90,8 @@ export function MoveBall(player_1, player_2, ball, player_1_bonus, player_2_bonu
 		return;
 	}
 
-
-	if (previousX !== null) {
-		if (Math.abs(ball.position.x - previousX) < 0.01) {
-			xBlockedFrames++;
-			if (xBlockedFrames > 10) {
-				resetBall(ball);
-				xBlockedFrames = 0;
-			}
-		} else {
-			xBlockedFrames = 0;
-		}
-	}
+	if (Math.abs(ball.position.x - previousX) < 0.001)
+		resetBall(ball);
 	previousX = ball.position.x;
 
 	const BALL_RADIUS = 1.5;
@@ -219,8 +209,8 @@ export function MoveBall2v2(player_1, player_2, player_3, player_4, ball)
 	if (!player_1 || !player_2 || !player_3 || !player_4)
 		return;
 
-	if (Math.abs(ball.position.x - previousX) < 0.01) {
-			resetBall(ball);
+	if (Math.abs(ball.position.x - previousX) < 0.001) {
+		resetBall(ball);
 	}
 	previousX = ball.position.x;
 

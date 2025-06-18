@@ -327,7 +327,7 @@
 	justify-content: center; /* Centre horizontalement */
 	align-items: center; /* Centre verticalement */
 
-	transform: translateY(-80%);
+	transform: translateY(-60%);
 	text-decoration: none;
 }
 
@@ -934,7 +934,7 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
 	transform: translateX(-50%);
 	text-align: justify;
 	width: 21%;
-	background-color: #e6e600;
+	background-color: gray;
 	padding-left: 20px;
 	padding-right: 20px;
 	padding-top: 20px;
@@ -957,7 +957,7 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
 	padding-right: 30px;
 	padding-top: 20px;
 	padding-bottom: 20px;
-	background-color: #e6e600;
+	background-color: gray;
 	height: 22%;
 }
 
@@ -976,7 +976,7 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
 	padding-right: 30px;
 	padding-top: 20px;
 	padding-bottom: 20px;
-	background-color: #e6e600; 
+	background-color: gray; 
 	height: 22%;
 }
 
@@ -995,7 +995,7 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
 	padding-right: 20px;
 	padding-top: 20px;
 	padding-bottom: 20px;
-	background-color: #e6e600;
+	background-color: gray;
 	height: 22%;
 }
 
@@ -1014,7 +1014,7 @@ background: rgba(161, 161, 161, 0.9); /* Légère transparence */
 	padding-right: 20px;
 	padding-top: 20px;
 	padding-bottom: 20px;
-	background-color: #e6e600;
+	background-color: gray;
 	height: 22%;
 }
 
@@ -2548,7 +2548,6 @@ to {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	cursor: pointer;
 	position: relative;
 	background-size: cover;
 	background-position: center;

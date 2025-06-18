@@ -143,6 +143,7 @@ export async function login_tournament(event: Event): Promise<void> {
 			updateUI({ addClass: [{ id: "tournament_graphic_id", className: "active" }, { id: "container_name_player", className: "hidden"}] });
 			$("start_tournament").style.display = 'none';
 			$("back_to_menu_view_tournament").style.display = 'none';
+			$form("container_name_player").reset();
 		}
 	} catch (err) { notif("Connexion to tournament failed", false); console.error(`login_tournament: ${err}`); }
 }

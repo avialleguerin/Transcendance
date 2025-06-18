@@ -35,15 +35,16 @@ export default class extends AbstractView {
 			"2": 15000,
 			" ": 1000,
 		};
+		
+		this.boundKeyPressHandler = this.handleKeyPress.bind(this);
 
-		if (bool === false) {
-			this.boundKeyPressHandler = this.handleKeyPress.bind(this);
-			document.addEventListener("keydown", this.boundKeyPressHandler);
-
+		if (bool === false)
+		{
 			if (window.location.pathname === "/multi_player_game") {
+				document.addEventListener("keydown", this.boundKeyPressHandler);
 				this.gameLoop = setInterval(() => { this.checkGameOver();}, 1000 );
+				bool = true;
 			}
-			bool = true;
 		}
 		const accessToken: string | null = sessionStorage.getItem('accessToken');
 		if (!accessToken || accessToken === undefined)
@@ -104,7 +105,7 @@ export default class extends AbstractView {
 					<div class="looser">
 						<h1 id="looser_id"></h1>
 					</div>
-					<button class="leave_game_2" id="leave_game_2_id" onclick="create_2v2_game(event)">Quitter la partie</button>
+					<button class="leave_game_2" id="leave_game_2_id" onclick="create_2v2_game(event)">Leave Game</button>
 				</div>
 			</div>
 		`;
@@ -117,7 +118,6 @@ export default class extends AbstractView {
 
 	leave_game_2_multi() {
 		document.getElementById("leave_game_2_id").addEventListener("click", () => {
-			console.log("leave_the_game2222222222");
 			this.cleanup();
 
 			setLeaveGameVar(true);
@@ -170,13 +170,11 @@ export default class extends AbstractView {
 	}
 
 	handleKeyPress(event: KeyboardEvent) {
-		// Vérifier si la touche est une touche de l'inventaire
 		const key = event.key;
 		
 		if (!(key in this.cooldownTimes)) return;
-	
-		// Vérifier si la touche est en cooldown
-		if (this.cooldowns[key]) return; // Ignore l'action si en cooldown
+
+		if (this.cooldowns[key]) return;
 
 		if (key === " ") {
 			console.log("space pressed");
@@ -210,14 +208,12 @@ export default class extends AbstractView {
 		if (elem) {
 			let currentValue = parseInt(elem.innerHTML, 10);
 			if (currentValue > 0) {
-				elem.innerHTML = (currentValue - 1).toString(); //NOTE - jai changer le type pour que ca passe ici
+				elem.innerHTML = (currentValue - 1).toString();
 				
 				console.log(`${key} utilisé, cooldown activé pour ${this.cooldownTimes[key]}ms`);
 				
-				// Mettre en cooldown cette touche
 				this.cooldowns[key] = true;
-				
-				// Ajouter la classe d'animation pour démarrer l'overlay reloading
+
 				let itemCircle = null;
 				let overlayReloading = null;
 				let overlayReloading_teammate = null;
@@ -293,7 +289,7 @@ export default class extends AbstractView {
 			return;
 		if (isGameFinished()) {
 			winnerContainer.classList.add("active");
-			clearInterval(this.gameLoop); // Arrête la boucle quand la partie est finie
+			clearInterval(this.gameLoop);
             if (team_player1_win) {
 				document.getElementById("Winner_id").innerHTML = localStorage.getItem("Player1") + " - " + localStorage.getItem("Player2");
 				document.getElementById("looser_id").innerHTML = localStorage.getItem("Player3") + " - " + localStorage.getItem("Player4");

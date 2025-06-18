@@ -80,9 +80,9 @@ export default class extends AbstractView {
 					<button id="leave_tournament" class="btn_leave_tournament">X</button>
 				</div>
 				<div class="message" id="message_id">
-					<p>ATTENTION : Si vous quittez le tournoi, vous ne pourrez pas revenir en arrière.</p>
+					<p>ATTENTION: If you leave the tournament, you won't be able to go back.</p>
 					<button class="close_message" id="close_message_id">X</button>
-					<button class="comfirm_leave_tournament" id="confirm_leave_tournament">Quitter le tournoi</button>
+					<button class="comfirm_leave_tournament" id="confirm_leave_tournament">Leave tournament</button>
 				</div>
 				<div class="container_endTournament" id="container_endTournament">
 					<h1>TOURNAMENT FINISHED</h1>
@@ -325,7 +325,7 @@ interface TournamentPlayerState {
 	color: string;
 }
 
-function resetTournamentState(Player1: PlayerElement, Player2: PlayerElement, Player3: PlayerElement, Player4: PlayerElement): void {    
+export function resetTournamentState(Player1: PlayerElement, Player2: PlayerElement, Player3: PlayerElement, Player4: PlayerElement): void {    
 	const joueurs: PlayerElement[] = [Player1, Player2, Player3, Player4];
 
 	localStorage.removeItem("match1_result");
