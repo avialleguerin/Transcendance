@@ -19,7 +19,7 @@ export function notifyFriend(fromUserId, toUserId, type, message = null) {
 		if (toUserConnection && fromUser)
 			toUserConnection.send(JSON.stringify({ type: type, message: message }));
 	} catch (error) {
-		console.error('Error notifying friend message:', error);
+		fastify.log.error('Error notifying friend message:', error);
 	}
 }
 
@@ -39,7 +39,7 @@ function notifyFriendsStatus(UID, status) {
 			});
 		}
 	} catch (error) {
-		console.error('Error notifying friends of status change:', error);
+		fastify.log.error('Error notifying friends of status change:', error);
 	}
 }
 
@@ -62,7 +62,7 @@ export default function websocketPlugin(fastify) {
 							connection.send(JSON.stringify({ type: 'pong' }))
 						}
 					} catch (err) {
-						console.error('Error parsing WebSocket message:', err)
+						fastify.log.error('Error parsing WebSocket message:', err)
 					}
 				})
 

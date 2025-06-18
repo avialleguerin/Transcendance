@@ -31,7 +31,7 @@ export async function changeProfilePicture(event: Event): Promise<void> {
 			<img src="./${data.profile_picture}" alt="Profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
 			`;
 		}
-	} catch (err) { console.log(`Error changing profile picture: ${err}`); }
+	} catch (err) { notif(`Error changing profile picture: ${err}`, false) }
 }
 
 export async function accessProfileInfo(event: Event): Promise<void> {

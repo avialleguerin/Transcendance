@@ -95,7 +95,7 @@ export async function fetch_users(): Promise<void> {
 			</tr>
 		`).join('');
 	} catch (err) {
-		console.error('Error fetching users:', err);
+		notif('Failed to fetch users', false);
 	}
 }
 
@@ -120,7 +120,7 @@ export async function fetch_deleted_users(): Promise<void> {
 			`).join('') || '<tr><td colspan="3" class="text-center py-4 text-gray-500">No deleted users</td></tr>';
 		}
 	} catch (err) {
-		console.error('Error fetching deleted users:', err);
+		notif('Failed to fetch deleted users', false);
 	}
 }
 
@@ -165,7 +165,7 @@ export async function fetch_games(): Promise<void> {
 			`;
 		}).join('');
 	} catch (err) {
-		console.error('Error retrieving Games:', err);
+		notif('Failed to fetch games', false);
 	}
 }
 
@@ -186,7 +186,7 @@ export async function fetch_platformers(): Promise<void> {
 			</tr>
 		`).join('');
 	} catch (err) {
-		console.error('Erreur lors de la récupération des Jeux :', err);
+		notif('Failed to fetch platformers', false);
 	}
 }
 
@@ -207,7 +207,7 @@ export async function fetch_friendships(): Promise<void> {
 			</tr>
 		`).join('');
 	} catch (err) {
-		console.error('Erreur lors de la récupération des Jeux :', err);
+		notif('Failed to fetch friendships', false);
 	}
 }
 
@@ -387,7 +387,7 @@ export async function delete_game(gameId: string): Promise<void> {
 			},);
 			await response.json();
 		} catch (err) {
-			console.error('Erreur lors de la suppression :', err);
+			notif('Failed to delete game', false);
 		}
 	}
 	fetch_games();
@@ -406,7 +406,7 @@ export async function delete_platformer(platformerId: string): Promise<void> {
 			},);
 			await response.json();
 		} catch (err) {
-			console.error('Erreur lors de la suppression :', err);
+			notif('Failed to delete platformer', false);
 		}
 	}
 	fetch_platformers();
@@ -431,7 +431,7 @@ export async function delete_friendship(friendshipId: string | number): Promise<
 				notif(data.error, false);
 			}
 		} catch (err) {
-			console.error('Erreur lors de la suppression :', err);
+			notif('Failed to delete friendship', false);
 		}
 	}
 	fetch_friendships();
