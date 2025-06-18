@@ -9,7 +9,7 @@ let y = 100;
 export default class PlatformerView extends AbstractView {
 	constructor() {
 		super();
-		this.setTitle("platformer");
+		this.setTitle("Platformer");
 	}
 
 	async getHtml() {
@@ -36,7 +36,6 @@ export default class PlatformerView extends AbstractView {
 	}
 
 	init_platformer_game() {
-		console.log("canvas created");
 		const canvas = document.querySelector("#game-canvas");
 		const c = canvas.getContext("2d");
 		canvas.width = 1024;
@@ -67,10 +66,7 @@ export default class PlatformerView extends AbstractView {
 					this.height = this.image.height * this.scaleY
 				}
 				
-				this.image.onerror = () => {
-					console.error("Failed to load image:", Image_src)
-				}
-				
+				this.image.onerror = () => {}
 				this.image.src = Image_src
 			}
 
@@ -101,12 +97,6 @@ export default class PlatformerView extends AbstractView {
 		
 			update() {
 				this.draw()
-			}
-
-			logStatus() {
-				console.log("Image loaded status:", this.loaded);
-				console.log("Image path:", this.image.src);
-				console.log("Image dimensions:", this.width, this.height);
 			}
 		}
 
@@ -146,8 +136,6 @@ export default class PlatformerView extends AbstractView {
 					x: 0,
 					y: 1,
 				};
-				
-				console.log("je rentre ici mtn ");
 				this.frames = 0;
 				this.frameSpeed = 10;
 				this.currentSprite = 0;
@@ -214,13 +202,9 @@ export default class PlatformerView extends AbstractView {
 						else if (this.state === "jumpEnd")
 						{
 							if (keysPlayer1.d.pressed || keysPlayer1.q.pressed || keysPlayer1.a.pressed || keysPlayer2.j.pressed || keysPlayer2.l.pressed)
-							{
 								this.changeState("walk");
-							}
 							else
-							{
 								this.changeState("idle");
-							}
 						}
 					}
 					let newImg = new Image();
@@ -881,14 +865,10 @@ const levelMap = `
 						break;
 					case "Enter":
 						if (this.options[this.selectedOption] === "▶ Start") {
-							console.log("Start game");
 							gameState.previous = gameState.current;
 							gameState.current = GameState.Play;
-						} else if (this.options[this.selectedOption] === "⚙ Options") {
-							// TODO: options menu
-						} else if (this.options[this.selectedOption] === "✖ Quit") {
+						} else if (this.options[this.selectedOption] === "✖ Quit")
 							window.close();
-						}
 						break;
 				}
 			}
@@ -916,12 +896,10 @@ const levelMap = `
 		
 			
 			// === Backgrounds ===
-			console.log(gameState.current);
 			switch (gameState.current)
 			{
 				case GameState.Menu:
 				{
-					console.log("je suis dans le jeu");
 					c.fillStyle = 'rgba(rgb(12, 17, 33))';
 					c.fillRect(0, 0, canvas.width, canvas.height);
 					c.save();
@@ -934,35 +912,26 @@ const levelMap = `
 					background4_bis.update();
 					background4.update();
 					
-					// === Platforms ===
 					platformss.forEach(platform => platform.draw());
 					
-					// === Collision Box ===
 					collisionBox.draw();
 					collisionBox2.draw();
 					collisionBox3.draw();
 					
-					// === Update Players ===
 					player.update();
 					player2.update();
 
-					// === Camera Logic ===
 					c.restore();
 
-					// === Movement Logic ===
 					if (keysPlayer1.d.pressed)
 						player.shouldPanCameraToRight({canvas, camera});
 					else if (keysPlayer1.a.pressed)
 						player.shouldPanCameraToLeft({canvas, camera});
 					else if (keysPlayer1.w.pressed)
-					{
-						console.log("je suis en bas");
 						player.shouldPanCameraToDown({canvas, camera});
-					}
 					handlePlayerMovement(player, keysPlayer1.a, keysPlayer1.d);
 					handlePlayerMovement(player2, keysPlayer2.j, keysPlayer2.l);
 					
-					// === Platform Collision Check ===
 					player.checkCollision(platformss);
 					player2.checkCollision(platformss);
 
@@ -985,7 +954,6 @@ const levelMap = `
 
 					if (trap1.checkCollision(player))
 					{
-						console.log("collision with trap");
 						player.position.x = 1057;
 						player.position.y = 821.16;
 						player.velocity.x = 0;
@@ -997,7 +965,6 @@ const levelMap = `
 					
 					if (trap2.checkCollision(player))
 					{
-						console.log("collision with trap");
 						player.position.x = 463;
 						player.position.y = 1653.16;
 						player.velocity.x = 0;
@@ -1007,7 +974,6 @@ const levelMap = `
 
 					if (trap3.checkCollision(player))
 					{
-						console.log("collision with trap");
 						player.position.x = 1057;
 						player.position.y = 821.16;
 						player.velocity.x = 0;
@@ -1017,7 +983,6 @@ const levelMap = `
 
 					if (trap4.checkCollision(player))
 					{
-						console.log("collision with trap");
 						player.position.x = 463;
 						player.position.y = 1653.16;
 						player.velocity.x = 0;
@@ -1027,7 +992,6 @@ const levelMap = `
 
 					if (trap5.checkCollision(player))
 					{
-						console.log("collision with trap");
 						player.position.x = 463;
 						player.position.y = 1653.16;
 						player.velocity.x = 0;
@@ -1039,14 +1003,9 @@ const levelMap = `
 			}
 		}
 		
-		// === Helper Functions ===
 		function handleCollision(player, box) {
 			const isColliding = box.checkCollision(player);
 			player.cantraverse = isColliding;
-		
-			if (isColliding) {
-				console.log("collision");
-			}
 		}
 
 		function handlePlayerMovement(player, keyLeft, keyRight) {
@@ -1073,7 +1032,6 @@ const levelMap = `
 		window.addEventListener('keydown', (event) => {
 			switch (event.key)
 			{
-				// Player 1
 				case 'd':
 					keysPlayer1.d.pressed = true;
 					break;
@@ -1093,10 +1051,8 @@ const levelMap = `
 						setTimeout(() => {
 							player.cantraverseDown = false;
 						}, 50);
-						console.log("collision");
 					}
 					break;
-				// Player 2
 				case 'j':
 					keysPlayer2.j.pressed = true;
 					break;
@@ -1104,7 +1060,6 @@ const levelMap = `
 					keysPlayer2.l.pressed = true;
 					break;
 				case 'i':
-					console.log("japui sur arrow up");
 					if (player2.jumps === 0 || (player2.jumps === 1 && !player2.doubleJump)) {
 						player2.handleJump();  // Appeler la méthode qui gère les sauts
 					}
@@ -1116,7 +1071,6 @@ const levelMap = `
 						setTimeout(() => {
 							player2.cantraverseDown = false;
 						}, 50);
-						console.log("collision");
 					}
 					break;
 				}

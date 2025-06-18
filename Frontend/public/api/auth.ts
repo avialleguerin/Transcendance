@@ -33,24 +33,19 @@ export async function login(event: Event): Promise<void> {
 		const data: ApiResponse = await fetchAPI('/request/user/login', 'POST', { username, password }, true, false);
 		
 		
-		if (!data.accessToken && !data.success)
-			console.debug(`${data.function}: ${data.error} - ${data.message}`);
-		else if (data.success && data.connection_status === "partially_connected" && data.doubleAuth_status) {
+		if (data.success && data.connection_status === "partially_connected" && data.doubleAuth_status) {
 			sessionStorage.setItem("authTicket", data.ticket); // todo change userid to id
 			updateUI({ removeClass: [{ id:"doubleAuthForm", className: "hidden" }], addClass: ["loginForm", "doubleAuthForm"] });
 			$input("login-title").textContent = "Double Authentication";
 		} else if (data.success && data.connection_status === "connected") {
-			console.debug(`${data.function}: ${data.message}. Logged with User: ${data.user.username}`);
-			setLocalStorage({ "Player1": data.user.username, "profile_picture": data.user.profile_picture });
+			setLocalStorage({ "Player1": data.username, "profile_picture": data.profile_picture });
 			connectWebSocket()
 			gameMenuView();
 			$form("loginForm").reset();
 			$input("login-password").value = "";
-		} else {
+		} else
 			$input("login-password").value = "";
-			console.warn("login : ", data.error);
-		}
-	} catch (err) { notif(`Connexion failed`, false); console.error(`login: ${err}`); }
+	} catch (err) { notif(`Connexion failed`, false); }
 }
 
 /**
@@ -58,7 +53,6 @@ export async function login(event: Event): Promise<void> {
  * @param event Form submission, where the second user enters his infos.
  */
 export async function login_1v1(event: Event) {
-	console.debug(`function called: login_1v1`);
 	event.preventDefault();
 	const username = $input("1v1-username2").value;
 	const password = $input("1v1-password2").value;
@@ -69,7 +63,6 @@ export async function login_1v1(event: Event) {
 		const data: ApiResponse  = await fetchAPI('/request/user/login-1v1', 'POST', { username, password }, true, false);
 
 		if (data.success) {
-			console.debug(`${data.function}: ${data.message}. Player2 ${data.player2.username} logged in successfully`);
 			setLocalStorage({ "Player2": data.player2.username });
 			updateUI({
 				removeClass: ["choose_your_opponent_1v1_form", "container"],
@@ -77,7 +70,7 @@ export async function login_1v1(event: Event) {
 				setContent: {"1v1-oponent-username1": localStorage.getItem("Player1"), "1v1-oponent-username2": localStorage.getItem("Player2")}
 			});
 		}
-	} catch (err) { notif("Connexion to 1v1 failed", false); console.error(`login_1v1: ${err}`); }
+	} catch (err) { notif("Connexion to 1v1 failed", false); }
 	$form("choose_your_opponent_1v1_form").reset();
 }
 
@@ -86,7 +79,6 @@ export async function login_1v1(event: Event) {
  * @param event Form submission, where all the users enter their infos.
  */
 export async function login_2v2(event: Event): Promise<void> {
-	console.debug(`function called: login_2v2`);
 	event.preventDefault();
 	const username1 = localStorage.getItem("Player1");
 	const username2 = $input("2v2-username2").value, password2 = $input("2v2-password2").value;
@@ -100,7 +92,7 @@ export async function login_2v2(event: Event): Promise<void> {
 		const data: ApiResponse = await fetchAPI('/request/user/login-2v2', 'POST', { username2, password2, username3, password3, username4, password4 }, true, false);
 
 		if (data.success) {
-			setLocalStorage({"Player2": data.player2.username, "Player3": data.player3.username, "Player4": data.player4.username });
+			setLocalStorage({"Player2": username2, "Player3": username3, "Player4": username4 });
 			updateUI({
 				removeClass: ["choose_your_opponent_multi_form", "container"],
 				addClass: ["back_to_select_mode_view8", "view8"],
@@ -112,7 +104,7 @@ export async function login_2v2(event: Event): Promise<void> {
 				}
 			});
 		}
-	} catch (err) { notif("Connexion to 2v2 failed", false); console.error(`login_2v2: ${err}`); }
+	} catch (err) { notif("Connexion to 2v2 failed", false); }
 	$form("choose_your_opponent_multi_form").reset();
 }
 
@@ -121,7 +113,6 @@ export async function login_2v2(event: Event): Promise<void> {
  * @param event Form submission, where all the users enter their infos.
  */
 export async function login_tournament(event: Event): Promise<void> {
-	console.debug(`function called: login_tournament`);
 	event.preventDefault();
 	const username1 = localStorage.getItem("Player1");
 	const username2 = $input("tournament-username2").value, password2 = $input("tournament-password2").value;
@@ -143,8 +134,9 @@ export async function login_tournament(event: Event): Promise<void> {
 			updateUI({ addClass: [{ id: "tournament_graphic_id", className: "active" }, { id: "container_name_player", className: "hidden"}] });
 			$("start_tournament").style.display = 'none';
 			$("back_to_menu_view_tournament").style.display = 'none';
+			$form("container_name_player").reset();
 		}
-	} catch (err) { notif("Connexion to tournament failed", false); console.error(`login_tournament: ${err}`); }
+	} catch (err) { notif("Connexion to tournament failed", false); }
 }
 
 /**
@@ -152,7 +144,6 @@ export async function login_tournament(event: Event): Promise<void> {
  * @param event Form submission, where the second user enters his infos.
  */
 export async function login_platformer(event: Event) {
-	console.debug(`function called: login_platformer`);
 	event.preventDefault();
 	const username = $input("platformer-username2").value;
 	const password = $input("platformer-password2").value;
@@ -167,7 +158,7 @@ export async function login_platformer(event: Event) {
 			$("start-platformer").click();
 			// PlatformerView(); //TODO
 		}
-	} catch (err) { notif("Connexion to platformer failed", false); console.error(`login_platformer: ${err}`); }
+	} catch (err) { notif("Connexion to platformer failed", false); }
 	$form("choose_your_opponent_platformer_form").reset();
 }
 
@@ -177,8 +168,6 @@ export async function login_platformer(event: Event) {
  * Log out the user, clear session and local storage, and redirect to home view.
  */
 export async function logout() {
-	console.debug(`function called: logout`);
-
 	try {
 		disconnectWebSocket()
 		await fetchAPI('/request/user/logout', 'POST', {}, true);
@@ -203,7 +192,6 @@ export async function verify2FA(event: Event) {
 			sessionStorage.removeItem("authTicket")
 			setLocalStorage({"Player1": data.username, "profile_picture": data.profile_picture});
 			connectWebSocket()
-			console.info("2FA code valid!");
 			gameMenuView();
 		}
 	} catch (err) { console.error(`verify2FA: ${err}`); }
@@ -223,7 +211,7 @@ export async function register(event: Event) {
 	if (password !== confirmPassword) return notif("Passwords are different", false);
 
 	try {
-		const data = await fetchAPI('/request/user/create-user', 'POST', { username, password });
+		const data = await fetchAPI('/request/user/create-account', 'POST', { username, password });
 		
 		if (data.success)
 			updateUI({removeClass: ["create_account_id", "loginform_id"], resetForms: ["registerForm"]});
@@ -238,22 +226,14 @@ export async function refreshInfos() { //REVIEW - maybe put in utils
 		const data = await fetchAPI('/request/user/refresh-infos', 'POST', {}, false, false);
 
 		if (!data.accessToken || data.deleted_account) {
-			console.warn(`Session expired or account deleted`);
 			sessionStorage.clear();
 			localStorage.clear();
 			homeView();
 		} else if (sessionStorage.getItem("accessToken") && sessionStorage.getItem("accessToken") !== "undefined") {
-			console.debug(`Access token found, refreshing user infos`);
-			// localStorage.clear();
 			setLocalStorage({"Player1": data.user.username, "profile_picture": data.user.profile_picture});
 			connectWebSocket();
 			gameMenuView();
 		}
-
-		if (data.success)
-			console.info(`${data.function}: ${data.message}. User: ${data.user.username}`);
-		else
-			console.debug(`${data.function}: ${data.error} - ${data.message}. If you are not logged in, this is normal.`);
 	} catch (err) { console.error(`refreshInfos: ${err}`); }
 }
 
@@ -267,28 +247,21 @@ export async function refreshInfos() { //REVIEW - maybe put in utils
  * @returns {Promise<void>}
  */
 export async function initGoogleSignIn(): Promise<void> {
-	console.trace("- `initGoogleSignIn()` called");
-
 	if (typeof google !== 'undefined' && google.accounts?.oauth2) {
 		try {
 			const data = await fetchAPI('/request/user/google-config', 'GET', null, false);
 			
-			if (!data.success || !data.client_id) {
-				console.warn("Impossible de récupérer la configuration Google");
+			if (!data.success || !data.client_id)
 				return;
-			}
 			tokenClient = google.accounts.oauth2.initTokenClient({
 				client_id: data.client_id,
 				scope: "openid email profile",
 				callback: handleGoogleSignIn,
 			});
 			localStorage.setItem("googleSignIn", "true"); // REVIEW - a cause de ts jai du le mettre en string
-			console.info("Google OAuth Token Client initialised successfully");
 		} catch (error) {
 			console.error("Erreur lors de l'initialisation OAuth:", error);
 		}
-	} else {
-		console.warn("Google OAuth API non disponible");
 	}
 }
 

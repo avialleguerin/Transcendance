@@ -18,7 +18,6 @@ let player_4 = null;
 export async function init_game_multiplayer(scene) {
 
     if (!is_init) {
-        console.log("init_game_multiplayer");
         create_game(scene);
         
         // Assignez les joueurs aux variables du module
@@ -33,17 +32,12 @@ export async function init_game_multiplayer(scene) {
             return null;
         });
     
-        if (ball) {
-            console.log("Balle chargée avec position :", ball.position);
-        }
-    
         loadScoreModel(0, true);
         loadScoreModel(0, false);
         is_init = true;
         return { player_1, player_2, player_3, player_4, ball };
     }
     else {
-        console.log("init_game_multiplayer else");
         already_init();
         loadScoreModel(0, true);
         loadScoreModel(0, false);
@@ -68,7 +62,6 @@ export function destroy_game_multiplayer(scene) {
 
 function already_init()
 {
-    console.log("already_init");
 	enable_all_by_metadata(scene, "isPlayer_parent_2v2");
 	enable_all_by_metadata(scene, "isPlayer_paddle_2v2");
 	enable_all_by_metadata(scene, "isPlayerRepere_2v2");

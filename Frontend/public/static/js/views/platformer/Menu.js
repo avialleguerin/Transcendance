@@ -92,17 +92,6 @@ export default class Menu {
 		}
 	}
 
-	// async loadGameHistory() {
-	// 	try {
-	// 		const games = await get_platformers();
-	// 		this.gameHistory = games || [];
-	// 		console.log("GameHistory loaded, number of games:", this.gameHistory.length);
-	// 	} catch (error) {
-	// 		console.error("Error loading game history:", error);
-	// 		this.gameHistory = [];
-	// 	}
-	// }
-
 	draw() {
 		this.enableControls();
 
@@ -164,7 +153,6 @@ export default class Menu {
 
 	handleSelect() {
 		const selected = this.options[this.selectedOption];
-		console.log("Selected option:", selected);
 		if (selected === "▶ Start" ) {
 			this.disableControls();
 			gameState.previous = gameState.current;
@@ -172,7 +160,6 @@ export default class Menu {
 		}
 		else if (selected === "⚙ Options") {
 			this.disableControls();
-			console.log("Open options");
 			gameState.previous = gameState.current;
 			gameState.current = GameState.Options;
 		}
@@ -183,21 +170,13 @@ export default class Menu {
 			gameState.previous = GameState.Menu;
 			gameState.current = GameState.Menu;
 			Setgame_started(false);
-			console.log("Quit game");
-			console.log(Getgame_started());
-			// window.close();
 		}
 
 		else if (selected === "☷ History") {
 			this.disableControls();
-			console.log("History selected");
 			
-			if (this.Game_History && typeof this.Game_History.loadGameHistory === 'function') {
-				console.log("Loading game history...");
+			if (this.Game_History && typeof this.Game_History.loadGameHistory === 'function')
 				this.Game_History.loadGameHistory();
-			} else {
-				console.error("Game_History n'est pas correctement initialisé ou ne possède pas la méthode loadGameHistory", this.Game_History);
-			}
 			
 			gameState.previous = gameState.current;
 			gameState.current = GameState.GameHistory;

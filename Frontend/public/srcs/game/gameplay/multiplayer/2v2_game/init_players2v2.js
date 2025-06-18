@@ -50,7 +50,6 @@ function init_border()
 export function init_2v2_Players() {
 	init_border();
 	
-	// Créer les TransformNodes parents
 	const parent_player_1 = new BABYLON.TransformNode("parent_player_1", scene);
 	const parent_player_2 = new BABYLON.TransformNode("parent_player_2", scene);
 	
@@ -77,7 +76,6 @@ export function init_2v2_Players() {
 	const paddle_left_player_4 = createPaddle("paddle_left_player_4", new BABYLON.Vector3(-18, 301, -24), parent_player_4);
 	const paddle_right_player_4 = createPaddle("paddle_right_player_4", new BABYLON.Vector3(7, 301, -24), parent_player_4);
 
-	// Stocker les paddles directement dans les objets parents pour un accès facile
 	parent_player_1.leftPaddle = paddle_left_player_1;
 	parent_player_1.rightPaddle = paddle_right_player_1;
 	
@@ -102,7 +100,6 @@ export function init_2v2_Players() {
 	return [parent_player_1, parent_player_2, parent_player_3, parent_player_4];
 }
 
-// Fonction utilitaire pour créer un paddle
 function createPaddle(name, position, parent) {
 	const paddle = new BABYLON.MeshBuilder.CreateBox(name, {
 		width: 10,
@@ -114,16 +111,13 @@ function createPaddle(name, position, parent) {
 	paddle.checkPaddleCollision = true;
 	paddle.visibility = 0;
 	paddle.setParent(parent);
-	console.log("parent === ", parent.name);
 
-	// Fonction pour importer un mesh joueur
 	function importPlayerMesh(path, filename) {
 		BABYLON.SceneLoader.ImportMesh("", path, filename, scene, function (newMeshes) {
 			const rootMesh = newMeshes.find(mesh => mesh.name === "__root__");
 			if (rootMesh) {
 				rootMesh.position = paddle.getAbsolutePosition().clone();
 				rootMesh.scaling = new BABYLON.Vector3(6, 6, 6);
-				// console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 				rootMesh.rotationQuaternion = BABYLON.Quaternion.FromEulerAngles(0, Math.PI, 0);
 				rootMesh.metadata = { isPlayer_2v2: true };
 			}
@@ -136,7 +130,6 @@ function createPaddle(name, position, parent) {
 				});
 			}
 
-			// Créer un repère pour la position du joueur
 			const playerRepere = new BABYLON.MeshBuilder.CreateBox("playerRepere", {
 				width: 10,
 				height: 0.1,
@@ -147,7 +140,6 @@ function createPaddle(name, position, parent) {
 			playerRepere.material.emissiveColor = new BABYLON.Color3.Red();
 			playerRepere.metadata = { isPlayerRepere_2v2: true };
 
-			// Synchroniser la position ABSOLUE avec le paddle
 			scene.registerBeforeRender(() => {
 				const paddleAbsPos = paddle.getAbsolutePosition();
 				rootMesh.position.copyFrom(paddleAbsPos);
@@ -158,7 +150,6 @@ function createPaddle(name, position, parent) {
 
 	// Vérification du parent et chargement du modèle 3D approprié
 	if (parent.name.startsWith("parent_player_")) {
-		console.log("JE SUIS LA ");
 		
 		// Cas spécial pour "parent_player_4" avec plusieurs skins
 		if (parent.name === "parent_player_4") {
@@ -307,7 +298,6 @@ export function reset_player_pos_multi(player_1, player_2, player_3, player_4)
         if (player_3) player_3.position = new BABYLON.Vector3(0, 0, 0);
         if (player_4) player_4.position = new BABYLON.Vector3(0, 0, 0);
 
-        console.log("Player positions reset successfully");
     } catch (error) {
         console.error("Error resetting player positions:", error);
     }

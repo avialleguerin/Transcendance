@@ -27,12 +27,10 @@ export function inverse_player1()
 
 		setTimeout(() => {
 			is_Inverse_team1 = false;
-			console.log("inverse power up fini");
 		}, 5000);
 
 		setTimeout(() => {
 			canUsePowerUP_inverse_player1 = true;
-			console.log("inverse power up recharger");
 		}, 15000);
 	}
 	return is_Inverse_team1;
@@ -48,12 +46,10 @@ export function inverse_player2()
 
 		setTimeout(() => {
 			is_Inverse_team2 = false;
-			console.log("inverse power up fini");
 		}, 5000);
 
 		setTimeout(() => {
 			canUsePowerUP_inverse_player2 = true;
-			console.log("inverse power up recharger");
 		}, 15000);
 	}
 	return is_Inverse_team2;

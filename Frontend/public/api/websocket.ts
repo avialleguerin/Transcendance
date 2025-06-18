@@ -26,15 +26,12 @@ export class WebSocketManager {
 		this.socket = new WebSocket(wsUrl)
 		
 		this.socket.onopen = () => {
-			console.log('WebSocket connected')
 			this.startHeartbeat()
 		}
 		
 		this.socket.onmessage = (event) => {
 			const data = JSON.parse(event.data)
-			if (data.type === 'pong')
-				console.log('Heartbeat response received')
-			else if (data.type === 'friend_request')
+			if (data.type === 'friend_request')
 				this.handleFriendRequest(data.message)
 			else if (data.type === 'friend_deleted')
 				this.handleFriendRequest("null")
@@ -43,7 +40,6 @@ export class WebSocketManager {
 		}
 		
 		this.socket.onclose = () => {
-			console.log('WebSocket disconnected')
 			this.stopHeartbeat()
 			// Tentative de reconnexion après 3 secondes si on a toujours un token
 			setTimeout(() => {
@@ -76,8 +72,6 @@ export class WebSocketManager {
 	disconnect() {
 		this.stopHeartbeat()
 		if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-			console.log('Closing WebSocket connection...')
-			// Forcer la fermeture immédiate
 			this.socket.close(1000, 'User logout')
 		}
 		this.socket = null
@@ -98,7 +92,6 @@ export class WebSocketManager {
 
 	handleFriendRequest(message: string | null) {
 		fetch_user_friendships()
-		console.warn('Friend request received:', message)
 		if (message !== "null")
 			notif(`${message}`, true)
 	}

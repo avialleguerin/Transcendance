@@ -5,7 +5,6 @@ import { fastify, log } from '../server.js';
 const activeConnections = new Map();
 
 export function getUserConnection(UID) {
-	console.log(`Getting connection for user ${UID}`);
 	if (activeConnections.has(UID) || activeConnections.has(UID.toString())) {
 		return true;
 	}
@@ -27,7 +26,6 @@ export function notifyFriend(fromUserId, toUserId, type, message = null) {
 function notifyFriendsStatus(UID, status) {
 	try {
 		const friendships = friendshipsModel.getUserAcceptedFriendships(UID);
-		// console.log("friendships", friendships);
 		const user = usersModel.getUserById(UID);
 		
 		usersModel.updateOnlineStatus(UID, status)
@@ -38,7 +36,6 @@ function notifyFriendsStatus(UID, status) {
 				log.debug(`Notifying friends of user ${UID} about status change to ${friendUserId}`);
 				if (UID !== friendUserId)
 					notifyFriend(UID, friendUserId, 'friend_status_update')
-				console.log
 			});
 		}
 	} catch (error) {
@@ -82,9 +79,7 @@ export default function websocketPlugin(fastify) {
 					activeConnections.delete(userId)
 					notifyFriendsStatus(userId, 0)
 				})
-			} else {
-				console.warn('Invalid userId for WebSocket connection')
+			} else
 				connection.close(1008, 'Invalid userId')
-			}
 		})
 }

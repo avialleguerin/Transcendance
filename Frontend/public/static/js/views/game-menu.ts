@@ -22,7 +22,7 @@ if (localStorage.getItem('historyIsVisible') === null)
 export default class Game_menu extends AbstractView {
 	constructor() {
 		super();
-		this.setTitle("game-menu");
+		this.setTitle("Game Menu");
 		const accessToken: string | null = sessionStorage.getItem('accessToken');
 		if (!accessToken || accessToken === undefined)
 			homeView();
@@ -277,7 +277,7 @@ export default class Game_menu extends AbstractView {
 						<div id="select_parametres" class="select_parametres">
 							<button id="profile_parrametre_btn" class="btn">PROFILE SETTINGS</button>
 							<button id="parrametre_jeux_btn" class="btn">GAME SETTINGS</button>
-							<button id="Game_History_btn" class="btn" onclick="fetch_user_games_big('${localStorage.getItem('Player1')}')">GAME HISTORY</button>
+							<button id="Game_History_btn" class="btn" onclick="fetch_user_games_big(null)">GAME HISTORY</button>
 						</div>
 					</div>
 				</div>
@@ -711,7 +711,6 @@ export default class Game_menu extends AbstractView {
 
 	init_solo_game() {
 		document.getElementById("solo_1v1_btn").addEventListener("click", () => {
-			console.debug("Solo 1v1 game started");
 			startGame();
 			handleViewTransitions("vue3", "vue2");
 		});
@@ -719,7 +718,6 @@ export default class Game_menu extends AbstractView {
 
 	initEvents() {
 		document.getElementById("multiplayer_btn").addEventListener("click", () => {
-			console.debug("Multiplayer 2v2 game started");
 			startMultiGame();
 			handleViewTransitions("vue3", "vue2");
 		});
@@ -728,7 +726,6 @@ export default class Game_menu extends AbstractView {
 
 	tournament_view() {
 		document.getElementById("tournament_view").addEventListener("click", () => {
-			console.debug("Tournament view started");
 			handleViewTransitions("tournament");
 		});
 	}
@@ -737,7 +734,6 @@ export default class Game_menu extends AbstractView {
 		const deconnect_btn = document.getElementById("deconnect_btn");
 
 		deconnect_btn.addEventListener("click", () => {
-			console.debug("Back to home page");
 			handleViewTransitions("vue1", "vue2");
 			window.history.back();
 		});
@@ -830,8 +826,6 @@ export default class Game_menu extends AbstractView {
 		});
 
 		view1_btn.addEventListener('click', () => {
-			console.log('Game mode button clicked');
-			
 			if (view5.classList.contains('active')) {
 				view5.classList.remove('active');
 				view2.classList.add('active');
@@ -846,7 +840,6 @@ export default class Game_menu extends AbstractView {
 
 
 		if (skin == false) {
-			console.debug('Skin is not initialized, hiding skin options and UI');
 			skin_id.classList.add('hidden');
 			skin_id_multi.classList.add('hidden');
 		}
@@ -892,7 +885,6 @@ export default class Game_menu extends AbstractView {
 		/***********************************************************************/
 
 		if (!view3.classList.contains('active')) {
-			console.debug('Active view: view3 (Solo Game)');
 			back_to_menu_view3.addEventListener('click', () => {
 				view3.classList.remove('active');
 				view2.classList.add('active');
@@ -902,7 +894,6 @@ export default class Game_menu extends AbstractView {
 		}
 
 		if (!view4.classList.contains('active')) {
-			console.log('Active view: view4 (Multiplayer Game)');
 			back_to_menu_view4.addEventListener('click', () => {
 				view4.classList.remove('active');
 				view2.classList.add('active');
@@ -918,14 +909,12 @@ export default class Game_menu extends AbstractView {
 
 		btn_back_home.addEventListener('click', () => {
 			if (view2.classList.contains('active')) {
-				console.debug('Back home button clicked, removing active class from view2');
 				view2.classList.remove('active');
 				view1.classList.remove('active');
 				btn_back_home.classList.remove('active');
 				btn_jouer.style.display = 'block';
 			}
 			if (view5.classList.contains('active')) {
-				console.debug('Back home button clicked, removing active class from view5');
 				view5.classList.remove('active');
 				view1.classList.remove('active');
 				btn_back_home.classList.remove('active');
@@ -937,7 +926,6 @@ export default class Game_menu extends AbstractView {
 		const choose_your_opponent_1v1_form = document.getElementById('choose_your_opponent_1v1_form');
 
 		prepar_game_1v1.addEventListener('click', () => {
-			console.log('Prepar game 1v1 clicked');
 			view3.classList.remove('active');
 			choose_your_opponent_1v1_form.classList.add('active');
 			back_to_select_mode_view6.classList.add('active');
@@ -1005,7 +993,6 @@ export default class Game_menu extends AbstractView {
 		const skin_perso_game_multi = document.getElementById('skin_perso_game_multi');
 
 		back_to_menu_view7.addEventListener('click', () => {
-			console.log('Back to menu view7 clicked');
 			view3.classList.add('active');
 			view7.classList.remove('active');
 			back_to_select_mode_view7.classList.remove('active');
@@ -1083,12 +1070,9 @@ export default class Game_menu extends AbstractView {
 		powerUP.addEventListener('click', () => {
 			powerUP.classList.toggle('checked');
 
-			if (powerUP.classList.contains('checked')) {
-				console.log('PowerUP is active');
+			if (powerUP.classList.contains('checked'))
 				power_selector.classList.add('active');
-			}
 			else {
-				console.log('PowerUP is inactive');
 				power_selector.classList.remove('active');
 				reset_powerUP_grenade();
 				reset_powerUP_teammate();
@@ -1111,7 +1095,6 @@ export default class Game_menu extends AbstractView {
 			number_powerUP_1.classList.toggle('checked');
 			number_powerUP_3.classList.remove('checked');
 			number_powerUP_5.classList.remove('checked');
-			console.log('1 powerUP selected and 3 and 5 unselected');
 			init_nb_powerUP_grenadeFlash(1);
 			init_nb_powerUP_teammate(1);
 			init_powerUP_inverse_player(1);
@@ -1122,7 +1105,6 @@ export default class Game_menu extends AbstractView {
 			number_powerUP_3.classList.toggle('checked');
 			number_powerUP_1.classList.remove('checked');
 			number_powerUP_5.classList.remove('checked');
-			console.log('3 powerUP selected and 1 and 5 unselected');
 			init_nb_powerUP_grenadeFlash(3);
 			init_nb_powerUP_teammate(3);
 			init_powerUP_inverse_player(3);
@@ -1133,7 +1115,6 @@ export default class Game_menu extends AbstractView {
 			number_powerUP_5.classList.toggle('checked');
 			number_powerUP_1.classList.remove('checked');
 			number_powerUP_3.classList.remove('checked');
-			console.log('5 powerUP selected and 1 and 3 unselected');
 			init_nb_powerUP_grenadeFlash(5);
 			init_nb_powerUP_teammate(5);
 			init_powerUP_inverse_player(5);
@@ -1153,12 +1134,9 @@ export default class Game_menu extends AbstractView {
 		powerUP_multi.addEventListener('click', () => {
 			powerUP_multi.classList.toggle('checked');
 
-			if (powerUP_multi.classList.contains('checked')) {
-				console.log('PowerUP is active');
+			if (powerUP_multi.classList.contains('checked'))
 				power_selector_game_multi.classList.add('active');
-			}
 			else {
-				console.log('PowerUP is inactive');
 				power_selector_game_multi.classList.remove('active');
 				reset_powerUP_grenadeTeam_player();
 				reset_powerUP_freeze_Team_player();
@@ -1180,7 +1158,6 @@ export default class Game_menu extends AbstractView {
 			number_powerUP_1_game_multi.classList.toggle('checked');
 			number_powerUP_3_game_multi.classList.remove('checked');
 			number_powerUP_5_game_multi.classList.remove('checked');
-			console.log('1 powerUP selected and 3 and 5 unselected');
 			init_nb_powerUP_grenadeFlash_team_player(1);
 			init_powerUP_freeze_Team_player(1);
 			powerUP_nb_multi = 1;
@@ -1190,7 +1167,6 @@ export default class Game_menu extends AbstractView {
 			number_powerUP_3_game_multi.classList.toggle('checked');
 			number_powerUP_1_game_multi.classList.remove('checked');
 			number_powerUP_5_game_multi.classList.remove('checked');
-			console.log('3 powerUP selected and 1 and 5 unselected');
 			init_nb_powerUP_grenadeFlash_team_player(3);
 			init_powerUP_freeze_Team_player(3);
 			powerUP_nb_multi = 3;
@@ -1199,7 +1175,6 @@ export default class Game_menu extends AbstractView {
 			number_powerUP_5_game_multi.classList.toggle('checked');
 			number_powerUP_1_game_multi.classList.remove('checked');
 			number_powerUP_3_game_multi.classList.remove('checked');
-			console.log('5 powerUP selected and 1 and 3 unselected');
 			init_nb_powerUP_grenadeFlash_team_player(5);
 			init_powerUP_freeze_Team_player(5);
 			powerUP_nb_multi = 5;
@@ -1225,14 +1200,12 @@ export default class Game_menu extends AbstractView {
 			skin_perso.classList.toggle('checked');
 			
 			if (skin_perso.classList.contains('checked')) {
-				console.log('Skin perso is active');
 				choose_your_skin.classList.add('active');
 				solo_1v1_btn.style.display = 'none';
 				custom_ta_game.style.visibility = 'hidden';
 				enable_skin_perso_player_solo();
 
 				valide_ton_skin.addEventListener('click', () => {
-					console.log('Validate skin button clicked');
 					choose_your_skin.classList.remove('active');
 					solo_1v1_btn.style.display = 'block';
 					custom_ta_game.style.visibility = 'visible';
@@ -1240,7 +1213,6 @@ export default class Game_menu extends AbstractView {
 				});
 			}
 			else {
-				console.log('Skin perso is inactive');
 				if (choose_your_skin.classList.contains('active')) {
 					choose_your_skin.classList.remove('active');
 					solo_1v1_btn.style.display = 'block';
@@ -1251,22 +1223,18 @@ export default class Game_menu extends AbstractView {
 		});
 
 		switch_skn_left_id1.addEventListener('click', () => {
-			console.log('Switch skin left id1 clicked');
 			switch_skin_perso_player1_left();
 		});
 
 		switch_skn_right_id1.addEventListener('click', () => {
-			console.log('Switch skin right id1 clicked');
 			switch_skin_perso_player1_right();
 		});
 
 		switch_skn_left_id2.addEventListener('click', () => {
-			console.log('Switch skin left id2 clicked');
 			switch_skin_perso_player2_left();
 		});
 
 		switch_skn_right_id2.addEventListener('click', () => {
-			console.log('Switch skin right id2 clicked');
 			switch_skin_perso_player2_right();
 		});
 
@@ -1292,14 +1260,12 @@ export default class Game_menu extends AbstractView {
 			skin_perso_game_multi.classList.toggle('checked');
 			
 			if (skin_perso_game_multi.classList.contains('checked')) {
-				console.log('Skin perso is active');
 				choose_your_skin_game_multi.classList.add('active');
 				multiplayer_btn.style.display = 'none';
 				custom_ta_game_multi.style.visibility = 'hidden';
 				enable_skin_multi();
 
 				valide_ton_skin_game_multi.addEventListener('click', () => {
-					console.log('Validate skin button clicked');
 					choose_your_skin_game_multi.classList.remove('active');
 					multiplayer_btn.style.display = 'block';
 					custom_ta_game_multi.style.visibility = 'visible';
@@ -1308,7 +1274,6 @@ export default class Game_menu extends AbstractView {
 			}
 			else
 			{
-				console.log('Skin perso is inactive');
 				if (choose_your_skin_game_multi.classList.contains('active')) {
 					choose_your_skin_game_multi.classList.remove('active');
 					multiplayer_btn.style.display = 'block';
@@ -1319,42 +1284,34 @@ export default class Game_menu extends AbstractView {
 		});
 
 		switch_skn_left_id1_game_multi.addEventListener('click', () => {
-			console.log('Switch skin left id1 clicked');
 			switch_skin_perso_player1_left_multi();
 		});
 
 		switch_skn_right_id1_game_multi.addEventListener('click', () => {
-			console.log('Switch skin right id1 clicked');
 			switch_skin_perso_player1_right_multi();
 		});
 
 		switch_skn_left_id2_game_multi.addEventListener('click', () => {
-			console.log('Switch skin left id2 clicked');
 			switch_skin_perso_player2_left_multi();
 		});
 
 		switch_skn_right_id2_game_multi.addEventListener('click', () => {
-			console.log('Switch skin right id2 clicked');
 			switch_skin_perso_player2_right_multi();
 		});
 
 		switch_skn_left_id3_game_multi.addEventListener('click', () => {
-			console.log('Switch skin left id3 clicked');
 			switch_skin_perso_player3_left_multi();
 		});
 
 		switch_skn_right_id3_game_multi.addEventListener('click', () => {
-			console.log('Switch skin right id3 clicked');
 			switch_skin_perso_player3_right_multi();
 		});
 
 		switch_skn_left_id4_game_multi.addEventListener('click', () => {
-			console.log('Switch skin left id4 clicked');
 			switch_skin_perso_player4_left_multi();
 		});
 
 		switch_skn_right_id4_game_multi.addEventListener('click', () => {
-			console.log('Switch skin right id4 clicked');
 			switch_skin_perso_player4_right_multi();
 		});
 
@@ -1412,7 +1369,6 @@ export default class Game_menu extends AbstractView {
 		const container_menu = document.getElementById('container');
 
 		parametre_jeu.addEventListener('click', () => {
-			console.log('Game settings clicked');
 			parametre_jeu_view.classList.add('active');
 			view5.classList.remove('active');
 			btn_back_home.classList.remove('active');
@@ -1424,7 +1380,6 @@ export default class Game_menu extends AbstractView {
 		});
 		
 		parametre_profile.addEventListener('click', () => {
-			console.log('Profile settings clicked');
 			parametre_profile_view.classList.add('active');
 			view5.classList.remove('active');
 			btn_back_home.classList.remove('active');
@@ -1471,19 +1426,14 @@ export default class Game_menu extends AbstractView {
 
 		active_fa.addEventListener('change', () => {
 			if (active_fa.checked) {
-				console.log('2FA is active');
 				code_validation_id.classList.add('active');
 				fa_selector.classList.remove('hidden');
 			}
-			else {
-				console.log('2FA is inactive');
+			else
 				fa_selector.classList.add('hidden');
-
-			}
 		});
 
 		cancel_fa.addEventListener('click', () => {
-			console.log('Cancel 2FA clicked');
 			code_validation_id.classList.remove('active');
 			fa_selector.classList.add('hidden');
 			active_fa.checked = false;
@@ -1508,7 +1458,6 @@ export default class Game_menu extends AbstractView {
 		});
 
 		back_to_select_mode_platformer.addEventListener('click', () => {
-			console.log('Back to select mode platformer clicked');
 			choose_your_opponent_platformer_form.classList.remove('active');
 			back_to_select_mode_platformer.classList.remove('active');
 			view2.classList.add('active');
@@ -1528,7 +1477,6 @@ export default class Game_menu extends AbstractView {
 		const deconnect_btn_navBar = document.getElementById('deconnect_btn_navBar');
 		const gameHistory = document.getElementById('game_history');
 		option_btn_navBar.addEventListener('click', () => {
-			console.log('Option deconnect clicked');
 			panel_option_navbar.classList.remove('remove'); // retire l'animation de fermeture
 			void panel_option_navbar.offsetWidth; // force le reflow pour relancer l'animation si besoin
 			panel_option_navbar.classList.add('active');
@@ -1536,8 +1484,6 @@ export default class Game_menu extends AbstractView {
 		});
 
 		option_btn_remove.addEventListener('click', () => {
-			console.log('Option deconnect back clicked');
-			// panel_option_navbar.classList.remove('active'); // retire l'animation d’ouverture
 			panel_option_navbar.classList.add('remove');
 			setTimeout(() => {
 				option_btn_navBar.style.display = 'block';
@@ -1571,7 +1517,6 @@ export default class Game_menu extends AbstractView {
 		});
 
 		document.getElementById("solo_1v1_btn").addEventListener("click", () => {
-			console.log("Solo 1v1 game started");
 			startGame();
 			handleViewTransitions("vue3", "vue2");
 		});
@@ -1606,7 +1551,6 @@ export default class Game_menu extends AbstractView {
 		});
 
 		document.getElementById("start-platformer").addEventListener('click', () => {
-			console.log("Platformer game started");
 			handleViewTransitions("platformer", "vue2");
 		});
 	}

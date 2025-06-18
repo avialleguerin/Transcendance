@@ -127,7 +127,6 @@ export default class GameCanvas extends Sprite {
 	update()
 	{
 		const now = Date.now();
-		console.log("first game =", getIsFirstGame());
 		if (now - this.lastTime >= 1000 && this.timer < 300 && !this.GameIsPaused)
 		{
 			this.timer++;
@@ -138,17 +137,12 @@ export default class GameCanvas extends Sprite {
 				this.end_come = false;
 
 			if (this.timer > 300) {
-				console.log("Timer finished");
 				this.timer = 0;
 				if (getIsFirstGame()) {
-					console.log("First game finished");
-					// this.disableControls();
 					gameState.previous = gameState.current;
 					gameState.current = GameState.EndGameFirstGame;
 				}
 				else {
-					console.log("Second game finished");
-					// this.disableControls();
 					gameState.previous = gameState.current;
 					gameState.current = GameState.EndGameSecondGame;
 				}
@@ -168,10 +162,6 @@ export default class GameCanvas extends Sprite {
 		if (this.timer_icon_loaded && !this.timer_icon_error) {
 			c.drawImage(this.timer_icon, 3, 50, 40, 40);
 		}
-		else {
-			console.error("Timer icon not loaded");
-		}
-
 
 		this.nb_coin_text = this.nb_coin + " / 7";
 
@@ -231,8 +221,8 @@ export default class GameCanvas extends Sprite {
 		this.nb_coin_text = this.nb_coin + " / 7";
 		this.timer = 0;
 		this.timer_text = this.timer;
-		this.lastTime = Date.now(); // ⏱️ init du timer
-		this.end_come = false; // ⏱️ fin du timer
+		this.lastTime = Date.now();
+		this.end_come = false;
 	}
 
 
@@ -246,12 +236,9 @@ export default class GameCanvas extends Sprite {
 				if (gameState.current === GameState.Play) {
 					this.GameIsPaused = !this.GameIsPaused;
 					if (this.GameIsPaused) {
-						console.log("Game paused");
 						this.disableControls();
-					} else {
-						console.log("Game resumed");
+					} else
 						this.enableControls();
-					}
 				}
 				break;
 		}

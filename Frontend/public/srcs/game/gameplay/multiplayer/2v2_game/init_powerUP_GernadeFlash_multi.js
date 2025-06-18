@@ -2,11 +2,8 @@ let nb_powerUP_teamPlayer1_2 = 0;
 let nb_powerUP_teamPlayer3_4 = 0;
 
 export function init_nb_powerUP_grenadeFlash_team_player(number) {
-    nb_powerUP_teamPlayer1_2 = number;
-    nb_powerUP_teamPlayer3_4 = number;
-
-    console.log("Nombre de grenades flash:", nb_powerUP_teamPlayer1_2);
-
+	nb_powerUP_teamPlayer1_2 = number;
+	nb_powerUP_teamPlayer3_4 = number;
 }
 
 export function reset_powerUP_grenadeTeam_player()
@@ -56,7 +53,6 @@ export function grenade_flash_Team_player1_2()
 		
 		setTimeout(() => {
 			canUseFlashGrenade_1 = true;
-			console.log("Grenade flash rechargée !");
 		}, 15000);
 	}
 }
@@ -75,7 +71,6 @@ export function grenade_flash_Team_player3_4()
 		
 		setTimeout(() => {
 			canUseFlashGrenade_2 = true;
-			console.log("Grenade flash rechargée !");
 		}, 15000);
 	}
 }

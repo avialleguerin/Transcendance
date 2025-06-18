@@ -39,7 +39,6 @@ function detectPerformanceLevel() {
 
 
 engine.getRenderingCanvas().addEventListener("webglcontextlost", (e) => {
-	console.log("WebGL context lost! Attempting to recover...");
 	e.preventDefault();
 	
 	qualityLevel = 'low';
@@ -156,7 +155,6 @@ let fpsHistory = [];
 create_environment_view1(scene);
 create_environment_view3(scene);
 create_environment_view2(scene);
-console.log("create_environment_view1");
 // init_all_skin(scene);
 const skybox = createOptimizedSkybox(scene);
 
@@ -294,7 +292,6 @@ export function startGame() {
 	canPressSpace = false;
 	setTimeout(() => {
 		canPressSpace = true;
-		console.log("Espace activé !");
 	}, 5000);
 }
 
@@ -412,19 +409,6 @@ engine.runRenderLoop(() => {
 			frameCount = 0;
 		}
 		applyQualitySettings();
-		// const accessToken = sessionStorage.getItem('accessToken');
-		// if ((accessToken && accessToken !== undefined) && accessToken !== "undefined" && !isConnected) {
-		// 	isConnected = true;
-		// 	console.log("User is connectedddddddddddddddddddddddddddddd");
-		// 	// handleViewTransitions("vue1", "default");
-		// }
-
-		// if (!(accessToken && accessToken !== undefined) && accessToken !== "undefined" && isConnected) {
-		// 	isConnected = false;
-		// 	console.log("User is disconnectedddddddddddddddddddddddddddddd");
-		// 	// handleViewTransitions("vue1", "vue2");
-		// }
-
 		if (Solo_gameStart && !gameIsFinished) {
 			if (!initialized) {
 				initializeGame_solo_game();
@@ -433,10 +417,8 @@ engine.runRenderLoop(() => {
 			if (initialized) {
 				// Bloquer l'appui sur Espace si canPressSpace est false
 				if (scene.inputStates.space && !play) {
-					if (!canPressSpace) {
-						console.log("Espace désactivé, veuillez attendre...");
+					if (!canPressSpace)
 						return;
-					}
 					play = true;
 				}
 				if (play) {
@@ -477,11 +459,9 @@ engine.runRenderLoop(() => {
 		}
 
 		if (DEBUG_MODE && now - lastDebugOutput > 5000) {
-			const debugFps = engine.getFps().toFixed(1);
-			console.log(`FPS: ${debugFps} | Quality: ${qualityLevel} | Active Meshes: ${scene.getActiveMeshes().length}`);
+			engine.getFps().toFixed(1);
 			lastDebugOutput = now;
 		}
-		// console.log(camera.position, camera.rotation);
 
 		scene.render();
 

@@ -39,9 +39,8 @@ export default class Player extends Sprite {
 		this.preloadImages();
 
 		this.jumpCooldown = false;
-   		this.jumpCooldownTime = 250;
+		this.jumpCooldownTime = 250;
 
-		console.log("keys", keys);
 	}
 
 	preloadImages() {

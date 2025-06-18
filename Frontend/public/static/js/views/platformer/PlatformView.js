@@ -10,7 +10,7 @@ let check_verfication = false;
 export default class PlatformerView extends AbstractView {
 	constructor() {
 		super();
-		this.setTitle("platformer");
+		this.setTitle("Platformer");
 		
 		if (check_verfication === true) {
 			if (window.location.pathname === "/platformer")
@@ -38,18 +38,13 @@ export default class PlatformerView extends AbstractView {
 			}
 			
 	init_game_platformer() {
-		console.log("Initializing platformer game");
 		
 		initCanvas();
 		initGame();
 		
 		Setgame_started(true);
 		check_verfication = true;
-		console.log("Game started: " + Getgame_started());
-		console.log("Check verification: " + check_verfication);
-		console.log("Game initialized successfully");
 		if (check_verfication === true) {
-			console.log("je suis laaaaaaaaaaaaaaaaaaa");
 			if (window.location.pathname === "/platformer") {
 				this.gameLoop = setInterval(() => { this.check_game_is_finish(); }, 1000);
 			}
@@ -64,10 +59,8 @@ export default class PlatformerView extends AbstractView {
 		if (window.location.pathname !== "/platformer")
 			return;
 		let game_is_finish = Getgame_started();
-		console.log("Game is finish: " + game_is_finish);
 		if (game_is_finish === false)
 		{
-			console.log("Game is not started yet");
 			handleViewTransitions("vue2", "platformer");
 			window.history.back();
 			clearInterval(this.gameLoop);

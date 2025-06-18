@@ -5,9 +5,6 @@ export function init_nb_powerUP_grenadeFlash(number) {
     // Assigner la valeur de la grenade pour chaque joueur
     nb_powerUP_player_1 = number;
     nb_powerUP_player_2 = number;
-
-    console.log("Nombre de grenades flash:", nb_powerUP_player_1);
-
 }
 
 export function reset_powerUP_grenade()
@@ -57,7 +54,6 @@ export function grenade_flash_player1()
 		
 		setTimeout(() => {
 			canUseFlashGrenade_1 = true;
-			console.log("Grenade flash rechargée !");
 		}, 15000);
 	}
 }
@@ -76,7 +72,6 @@ export function grenade_flash_player2()
 		
 		setTimeout(() => {
 			canUseFlashGrenade_2 = true;
-			console.log("Grenade flash rechargée !");
 		}, 15000);
 	}
 }

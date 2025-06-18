@@ -18,7 +18,6 @@ export function createLoadingOverlay()
 			</div>
 		</div>
 	`;
-	console.log("Creation of the overlay...");
 	document.body.appendChild(loadingOverlay);
 }
 

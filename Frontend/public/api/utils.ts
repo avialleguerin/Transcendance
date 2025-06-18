@@ -3,10 +3,7 @@ import { ClassModification, UIConfig } from './types.js';
 
 export function notif(message: string, success = true) {
 	const notification = document.getElementById('resultMessage');
-	console.log("notif:", message, "success:", success);
-	console.debug(`notification : ${notification}`)
 	if (notification) {
-		console.debug("je passe dans le if (notif)")
 		document.getElementById('notification-container').style.display = 'flex';
 		notification.innerHTML = `<div style='display:flex; align-items:center;'><span>${message}</span></div>`;
 		if (success)
@@ -26,7 +23,6 @@ export function notif(message: string, success = true) {
 }
 
 export async function fetchAPI(url: string, method: string, body: any = null, showNotification = true, formData: boolean | FormData | null = null): Promise<any> {
-	console.debug(`fetchAPI: ${url}:[${method}] - body: ${body} - Notif: ${showNotification} - formData: ${formData}.`);
 	try {
 		const accessToken = sessionStorage.getItem('accessToken');
 
@@ -60,13 +56,10 @@ export async function fetchAPI(url: string, method: string, body: any = null, sh
 			notif(data.message, true);
 		else if (data.error && showNotification)
 			notif(data.error, false);
-		console.log("fetchAPI: data.error:", data.error);
 		return data;
 	} catch (err) {
-		console.error(`Error in API call to ${url}: ${err}`);
 		if (showNotification)
 			notif("Une erreur s'est produite lors de la communication avec le serveur", false);
-		throw err;
 	}
 }
 

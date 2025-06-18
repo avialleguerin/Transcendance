@@ -5,6 +5,8 @@ export interface ApiResponse<T = any> {
 	accessToken?: string;
 	connection_status?: string;
 	user?: User;
+	username?: string;
+	profile_picture?: string;
 	ticket?: string;
 	doubleAuth_status?: string;
 	player2?: User;

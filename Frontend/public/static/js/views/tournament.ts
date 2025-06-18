@@ -120,8 +120,6 @@ export default class extends AbstractView {
 			count = parseInt(localStorage.getItem('tournamentCount')) || 0;
 			localStorage.setItem('tournamentCount', count.toString());
 
-			console.log(`Match ${count} terminé.`);
-			
 			const Player1 = document.getElementById('Player1');
 			const Player2 = document.getElementById('Player2');
 			const Player3 = document.getElementById('Player3');
@@ -132,8 +130,6 @@ export default class extends AbstractView {
 			secondeChance = localStorage.getItem('secondChance') === 'true';
 			
 			const tournamentFinishedFlag = localStorage.getItem('tournament_finished') === 'true';
-			
-			console.log(`SecondChance: ${secondeChance}, TournamentFinished: ${tournamentFinishedFlag}`);
 			
 			if (tournamentFinishedFlag) {
 				document.getElementById('finiched_game').style.display = 'block';
@@ -152,8 +148,6 @@ export default class extends AbstractView {
 
 		secondeChance = localStorage.getItem('secondChance') === 'true';
 		count = parseInt(localStorage.getItem('tournamentCount')) || 0;
-		
-		console.log(`Init tournament - Count: ${count}, SecondChance: ${secondeChance}`);
 		
 		updateTournamentState(count, Player1, Player2, Player3, Player4);
 
@@ -363,8 +357,6 @@ function updateTournamentState(
 	Player3: PlayerElement,
 	Player4: PlayerElement
 ): void {
-	console.log('Count:', count);
-
 	let match1_winner: PlayerElement | undefined,
 		match1_loser: PlayerElement | undefined,
 		match2_winner: PlayerElement | undefined,
@@ -568,7 +560,6 @@ function updateTournamentState(
 
 		if (match6_winner && match6_loser) {
 			if (match6_winner.id === match5_winner.id) {
-				console.log("Le joueur du losers bracket a gagné ! Seconde chance activée !");
 				secondeChance = true;
 				localStorage.setItem('secondChance', 'true');
 				localStorage.removeItem('tournament_finished');
@@ -582,7 +573,6 @@ function updateTournamentState(
 				highlightNextPlayers(match6_loser, match6_winner);
 			}
 			else if (match6_winner.id === match4_winner.id) {
-				console.log("Le joueur du winners bracket a gagné ! Tournoi terminé !");
 				match6_winner.style.top = POSITIONS.grande_final.winner.top;
 				match6_winner.style.left = POSITIONS.grande_final.winner.left;
 				match6_loser.style.color = 'red';
@@ -600,8 +590,6 @@ function updateTournamentState(
 	}
 
 	if (count >= 7 && secondeChance && match4_winner && match5_winner) {
-		console.log("Match 7 - Grande finale avec bracket reset");
-		
 		const match4_result = localStorage.getItem("match4_result");
 		const match5_result = localStorage.getItem("match5_result");
 		
@@ -636,7 +624,6 @@ function updateTournamentState(
 				match7_winner.style.left = POSITIONS.grande_final.winner.left;
 				match7_loser.style.color = 'red';
 				
-				console.log("Tournoi terminé après le match 7 !");
 				tournament_finished = true;
 				localStorage.setItem('tournament_finished', 'true');
 				secondeChance = false;

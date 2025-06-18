@@ -1,4 +1,4 @@
-import { getUserProfilePicture, createUser , deleteAccount, login, login1v1, login2v2, logout, enableDoubleAuth, disableDoubleAuth, accessProfileInfo, changeProfilePicture, changeProfile, getUserProfile, verifyDoubleAuth, activateDoubleAuth, exportUserData, anonymizeUser, googleSignIn, googleConfig } from '../controllers/usersController.js';
+import { getUserProfilePicture, createAccount , deleteAccount, login, login1v1, login2v2, logout, enableDoubleAuth, disableDoubleAuth, accessProfileInfo, changeProfilePicture, changeProfile, getUserProfile, verifyDoubleAuth, activateDoubleAuth, exportUserData, anonymizeUser, googleSignIn, googleConfig } from '../controllers/usersController.js';
 import { getUserGames, create1v1Game, create2v2Game } from '../controllers/gamesController.js';
 import { getUserPlatformer, createPlatformer } from '../controllers/platformerController.js';
 import { getUserFriendships, addFriend, acceptFriend, deleteFriend } from '../controllers/friendshipsController.js';
@@ -39,7 +39,7 @@ export default async function routes (fastify) {
 
 	fastify.get('/profile', getUserProfile);
 	fastify.get('/user/profile-picture', getUserProfilePicture);
-	fastify.post('/user/create-user', createUser);
+	fastify.post('/user/create-account', createAccount);
 	fastify.post('/user/login', login);
 	fastify.post('/user/login-1v1', login1v1);
 	fastify.post('/user/login-2v2', login2v2);

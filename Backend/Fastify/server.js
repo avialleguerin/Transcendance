@@ -13,7 +13,7 @@ import colorLoggerPlugin from './utils/logger.js'
 import websocket from '@fastify/websocket'
 import { checkEmailConfig } from './utils/mailer.js'
 
-const logActive = process.env.LOG_ACTIVE === 'true';
+const logActive = process.env.LOG_ACTIVE === 'false';
 
 export const fastify = Fastify({
 	logger: logActive ? {
@@ -51,7 +51,6 @@ cron.schedule('0 0 * * *', () => {
 	fastify.log.info('Clean inactive users...');
 	const result = usersModel.deleteInactiveUsers();
 	fastify.log.info(`Number of supressed accounts : ${result.changes}`);
-	console.log(`Number of supressed accounts : ${result.changes}`);
 });
 
 /**

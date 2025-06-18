@@ -28,8 +28,6 @@ const router = async (): Promise<void> => {
 	];
 
 	const potentialMatches: RouteMatch[] = routes.map((route) => {
-		console.log(`Router is running ${route.path}`);
-
 		return {
 			route: route,
 			isMatch: location.pathname === route.path,
@@ -116,13 +114,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	necessaryBtn?.addEventListener("click", () => {
 		persistentPopup?.classList.remove("active");
 		localStorage.setItem('cookieConsent', 'necessary');
-		console.log('Cookies: Only necessary cookies accepted');
 	});
 	
 	allowAllBtn?.addEventListener("click", () => {
 		persistentPopup?.classList.remove("active");
 		localStorage.setItem('cookieConsent', 'all');
-		console.log('Cookies: All cookies accepted');
 	});
 	
 	const existingConsent = localStorage.getItem('cookieConsent');

@@ -33,12 +33,8 @@ const IMAGE_SECURITY = {
 export async function googleConfig(request, reply) {
 	try {
 		fastify.log.debug(`Google config requested - Client ID: ${process.env.GOOGLE_CLIENT_ID}`)
-		return {
-			success: true,
-			client_id: process.env.GOOGLE_CLIENT_ID
-		}
+		return reply.code(200).send({ success: true, client_id: process.env.GOOGLE_CLIENT_ID })
 	} catch (err) {
-		fastify.log.error(`Google config error: ${err.message}`)
 		reply.code(500).send({ error: 'Server error' })
 	}
 }
@@ -46,42 +42,27 @@ export async function googleConfig(request, reply) {
 export async function googleSignIn(request, reply) {
 	try {
 		const { access_token } = request.body
-		if (!access_token) {
-			fastify.log.warn('Google sign-in attempted without access token')
-			return reply.code(400).send({ 
-				success: false, 
-				error: 'Google access_token is required' 
-			})
-		}
+		if (!access_token)
+			return reply.code(400).send({ success: false, error: 'Google access_token is required' })
 
 		fastify.log.info('Validating Google access token')
 		const response = await fetch(`https://www.googleapis.com/oauth2/v2/userinfo?access_token=${access_token}`)
 		
-		if (!response.ok) {
-			fastify.log.error(`Google API error: ${response.status}`)
-			return reply.code(401).send({ 
-				success: false, 
-				error: 'Invalid Google access token' 
-			})
-		}
+		if (!response.ok)
+			return reply.code(401).send({ success: false, error: 'Invalid Google access token' })
 
 		const googleUser = await response.json()
-		if (!googleUser.id) {
-			fastify.log.warn('Google sign-in failed: Invalid user data received')
+		if (!googleUser.id)
 			return reply.code(401).send({ success: false, error: 'Invalid Google user data'})
-		}
 		
 		const { id: googleId, name, picture: profilePictureUrl, email } = googleUser
 		fastify.log.info(`Google user attempting sign-in: ${name} (${email})`)
 		
 		let user = usersModel.getUserByGoogleId(googleId)
 		let isNewUser = false
-        let tempPassword = null
+		let tempPassword = null
 
 		if (!user || user.anonymized_at) {
-			if (user && user.anonymized_at)
-				fastify.log.info(`Previously anonymized Google user ${googleId} creating new account`)
-			
 			const username = name.replace(/\s+/g, '').toLowerCase().substring(0,10)
 			const randomPassword = Math.random().toString(36).substring(2, 17)
 			const hashedPassword = await hashPassword(randomPassword)
@@ -92,7 +73,6 @@ export async function googleSignIn(request, reply) {
 			let profilePicture = "default-profile-picture.png"
 			if (profilePictureUrl) {
 				try {
-					fastify.log.info(`Downloading Google profile picture for ${username}`)
 					const imageResponse = await fetch(profilePictureUrl)
 					if (imageResponse.ok) {
 						const imageBuffer = await imageResponse.arrayBuffer();
@@ -104,10 +84,7 @@ export async function googleSignIn(request, reply) {
 							
 							await fs.writeFile(filePath, buffer);
 							profilePicture = secureFilename;
-							
-							fastify.log.info(`Google profile picture validated and saved: ${secureFilename}`);
 						} catch (validationError) {
-							fastify.log.warn(`Google profile picture validation failed: ${validationError.message}, using default`);
 							profilePicture = "default-profile-picture.png";
 						}
 					} else {
@@ -120,9 +97,6 @@ export async function googleSignIn(request, reply) {
 			
 			const newUserInfo = usersModel.createGoogleUser(username, hashedPassword, googleId, profilePicture)
 			user = usersModel.getUserById(newUserInfo.lastInsertRowid)
-			fastify.log.info(`New Google user created: ${username} (ID: ${user.userId})`)
-		} else {
-			fastify.log.info(`Existing Google user signing in: ${user.username} (ID: ${user.userId})`)
 		}
 
 		const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, { expiresIn: '15m' })
@@ -131,18 +105,12 @@ export async function googleSignIn(request, reply) {
 		usersModel.updateLastActivity(user.userId)
 
 		if (isNewUser && tempPassword && email) {
-            try {
-				fastify.log.info(`📧 Sending welcome email to ${email} for user ${user.username}`)
-                const emailSent = await sendWelcomeEmail(email, user.username, tempPassword)
-                if (emailSent) {
-                    fastify.log.info(`Welcome email sent successfully to ${email}`)
-				} else {
-					fastify.log.warn(`Welcome email failed to send to ${email}`)
-				}
-            } catch (emailError) {
-                fastify.log.error(`Welcome email error: ${emailError.message}`)
-            }
-        }
+			try {
+				await sendWelcomeEmail(email, user.username, tempPassword)
+			} catch (emailError) {
+				fastify.log.error(`Welcome email error: ${emailError.message}`)
+			}
+		}
 
 		fastify.log.info(`Google sign-in successful for ${user.username}`)
 		return reply.setCookie('refreshToken', refreshToken, {
@@ -177,13 +145,10 @@ export async function getUserProfile(request, reply) {
 
 		const user = infos.user
 		const accessToken = infos.accessToken
-		if (!user) {
-			fastify.log.warn('Profile access denied: User not found in token')
+		if (!user)
 			return reply.code(401).send({ error: 'Unauthorized' })
-		}
 
 		const imgUrl = `uploads/${user.profile_picture}`
-		fastify.log.info(`Profile retrieved for user: ${user.username}`)
 		return reply.code(200).send({ success: true, user: user, accessToken: accessToken, profile_picture: imgUrl })
 	} catch (error) {
 		fastify.log.error(`Error retrieving user profile: ${error.message}`)
@@ -194,20 +159,15 @@ export async function getUserProfile(request, reply) {
 export async function getUserProfilePicture(request, reply) {
 	try {
 		const infos = await getUserFromToken(request)
-		if (!infos) {
-			fastify.log.warn('Profile picture access denied: Unauthorized request')
+		if (!infos)
 			return reply.code(401).send({ success: false, error: 'Unauthorized' })
-		}
 
 		const user = infos.user
 		const accessToken = infos.accessToken
-		if (!user) {
-			fastify.log.warn('Profile picture access denied: User not found in token')
+		if (!user)
 			return reply.code(401).send({ error: 'Unauthorized' })
-		}
 
 		const imgUrl = `uploads/${user.profile_picture}`
-		fastify.log.debug(`Profile picture retrieved for user: ${user.username}`)
 		return reply.code(200).send({ success: true, username: user.username, accessToken: accessToken, profile_picture: imgUrl })
 	} catch (error) {
 		fastify.log.error(`Error retrieving profile picture: ${error.message}`)
@@ -215,34 +175,30 @@ export async function getUserProfilePicture(request, reply) {
 	}
 }
 
-export async function createUser(request, reply) {
+export async function createAccount(request, reply) {
 	const { username, password } = request.body
 
-	if (!username || !password) {
-		fastify.log.warn('User creation failed: Missing username or password')
+	if (!username || !password)
 		return reply.code(400).send({ error: 'Username and Password are required' })
-	}
 
 	const usernameRegex = /^[A-Za-z0-9._-]+$/
-	if (!usernameRegex.test(username)) {
-		fastify.log.warn(`User creation failed: Invalid username format: ${username}`)
+	if (!usernameRegex.test(username))
 		return reply.code(400).send({ error: 'Username can only contain letters, numbers, dots, underscores, and hyphens' })
-	}
+	if (username.length < 3 || username.length > 10)
+		return reply.code(400).send({ error: 'Username must be between 3 and 10 characters long' })
 
 	const sameUsername = usersModel.getUserByUsername(username)
-	if (sameUsername) {
-		fastify.log.warn(`User creation failed: Username already exists: ${username}`)
+	if (sameUsername)
 		return reply.code(409).send({ error: "This username is already used" })
-	}
-
+	// regex for password
+	const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!?@&*#])[A-Za-z\d!?@&*#]{8,20}$/
+	if (!passwordRegex.test(password))
+		return reply.code(400).send({ error: 'Password must contain 8-20 characters, one lowercase, one uppercase, one number, and one special character (!?@&*#)' })
 	try {
-		fastify.log.info(`Creating new user: ${username}`)
 		const hashedPassword = await hashPassword(password)
-		const info = usersModel.createUser(username, hashedPassword)
-		fastify.log.info(`User created successfully: ${username} (ID: ${info.lastInsertRowid})`)
-		return reply.code(201).send({ success: true, id: info.lastInsertRowid, username, message: 'Account created successfully' })
+		usersModel.createUser(username, hashedPassword)
+		return reply.code(201).send({ success: true, message: 'Account created successfully' })
 	} catch (err) {
-		fastify.log.error(`Critical error creating user ${username}: ${err.message}`)
 		return reply.code(500).send({ error: err.message })
 	}
 }
@@ -253,24 +209,15 @@ export async function login(request, reply) {
 		fastify.log.info(`Login attempt for username: ${username}`)
 		const user = usersModel.getUserByUsername(username)
 		
-		if (!user) {
-			fastify.log.warn(`Login failed: User not found - ${username}`)
+		if (!user)
 			return reply.code(401).send({ success: false, error: 'Invalid credentials' })
-		}
 		if (getUserConnection(user.userId))
-		{
-			fastify.log.warn(`Login attempt on already connected user: ${username}`)
 			return reply.code(401).send({ success: false, error: 'You are already connected in another session' })
-		}
-		if (user.anonymized_at) {
-			fastify.log.warn(`Login attempt on anonymized account: ${username}`)
+		if (user.anonymized_at)
 			return reply.code(401).send({ success: false, error: 'This account has been deleted' })
-		}
 		
-		if (!await verifyPassword(user.password, password)) {
-			fastify.log.warn(`Login failed: Invalid password - ${username}`)
+		if (!await verifyPassword(user.password, password))
 			return reply.code(401).send({ success: false, error: 'Invalid credentials' })
-		}
 		
 		if (user.doubleAuth_status) {
 			const ticket = Math.random().toString(36).substring(2, 15) + Date.now().toString(36)
@@ -281,15 +228,12 @@ export async function login(request, reply) {
 		const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, {expiresIn: '15m' })
 		const refreshToken = fastify.jwt.sign({ userId: user.userId }, {expiresIn: '7d' })
 		
-		if (!accessToken || !refreshToken) {
-			fastify.log.error(`Token generation failed for user: ${username}`)
+		if (!accessToken || !refreshToken)
 			return reply.code(500).send({ error: 'Internal Server Error' })
-		}
 
 		usersModel.updateLastActivity(user.userId)
 		usersModel.updateOnlineStatus(user.userId, 1)
 		
-		fastify.log.info(`Login successful: ${username}`)
 		reply
 		.setCookie('refreshToken', refreshToken, {
 			path: '/',
@@ -302,15 +246,12 @@ export async function login(request, reply) {
 		.send({ success: true,
 			message: 'Logged in',
 			connection_status: "connected",
-			user: user,
 			username: user.username,
-			userId: user.userId,
 			profile_picture: user.profile_picture,
 			doubleAuth_status: user.doubleAuth_status,
 			accessToken: accessToken
 		})
 	} catch (err) {
-		fastify.log.error(`Critical login error for ${username}: ${err.message}`)
 		return reply.code(500).send({ error: err.message })
 	}
 }
@@ -319,35 +260,25 @@ export async function login1v1(request, reply) {
 	const { username, password } = request.body
 	try {
 		const infos = await getUserFromToken(request)
-		if (!infos) {
-			fastify.log.warn('1v1 login denied: Unauthorized request')
+		if (!infos)
 			return reply.code(401).send({ success: false, error: 'Unauthorized' })
-		}
 
 		const user = infos.user
 		const accessToken = infos.accessToken
-		if (!user || !accessToken) {
-			fastify.log.warn('1v1 login denied: Invalid user or token')
+		if (!user || !accessToken)
 			return reply.code(401).send({ error: 'Unauthorized' })
-		}
 
 		fastify.log.info(`1v1 opponent login attempt: ${username} (Player 1: ${user.username})`)
 		const player2 = usersModel.getUserByUsername(username)
-		if (!player2 || !await verifyPassword(player2.password, password)) {
-			fastify.log.warn(`1v1 login failed: Invalid credentials for ${username}`)
+		if (!player2 || !await verifyPassword(player2.password, password))
 			return reply.code(401).send({ success: false, error: 'Invalid credentials' })
-		}
 
-		if (player2.anonymized_at) {
-			fastify.log.warn(`1v1 login failed: Anonymized account ${username}`)
+		if (player2.anonymized_at)
 			return reply.code(401).send({ success: false, error: 'This account has been deleted' })
-		}
 
 		usersModel.updateLastActivity(player2.userId)
-		fastify.log.info(`1v1 game ready: ${user.username} vs ${player2.username}`)
 		reply.code(200).send({ success: true, message: 'Opponent logged in', user: user, player2: player2, accessToken: accessToken })
 	} catch (err) {
-		fastify.log.error(`Critical error in 1v1 login: ${err.message}`)
 		return reply.code(500).send({ error: err.message })
 	}
 }
@@ -364,39 +295,24 @@ export async function login2v2(request, reply) {
 			return reply.code(401).send({ success: false, message: 'You must be logged in to play 2v2', error: 'User not found' })
 		if (!accessToken)
 			return reply.code(401).send({ success: false, message: 'You must be logged in to play 2v2', error: 'Access token not found' })
+
 		const player2 = usersModel.getUserByUsername(username2)
 		const player3 = usersModel.getUserByUsername(username3)
 		const player4 = usersModel.getUserByUsername(username4)
 		
-		if (!player2 || !await verifyPassword(player2.password, password2)) {
-			fastify.log.warn(`2v2 login failed: Invalid credentials for Player 2: ${username2}`)
+		if (!player2 || !await verifyPassword(player2.password, password2))
 			return reply.code(401).send({ success: false, error: 'Player 2: Invalid credentials' })
-		}
-		if (!player3 || !await verifyPassword(player3.password, password3)) {
-			fastify.log.warn(`2v2 login failed: Invalid credentials for Player 3: ${username3}`)
+		if (!player3 || !await verifyPassword(player3.password, password3))
 			return reply.code(401).send({ success: false, error: 'Player 3: Invalid credentials' })
-		}
-		if (!player4 || !await verifyPassword(player4.password, password4)) {
-			fastify.log.warn(`2v2 login failed: Invalid credentials for Player 4: ${username4}`)
+		if (!player4 || !await verifyPassword(player4.password, password4))
 			return reply.code(401).send({ success: false, error: 'Player 4: Invalid credentials' })
-		}
 
 		usersModel.updateLastActivity(player2.userId)
 		usersModel.updateLastActivity(player3.userId)
 		usersModel.updateLastActivity(player4.userId)
 		
-		fastify.log.info(`2v2 game ready: ${user.username} & ${player2.username} vs ${player3.username} & ${player4.username}`)
-		reply.code(200).send({ 
-			success: true, 
-			message: 'Opponents logged in', 
-			player1: user, 
-			player2: player2, 
-			player3: player3, 
-			player4: player4, 
-			accessToken: accessToken 
-		})
+		reply.code(200).send({ success: true, message: 'Opponents logged in', accessToken: accessToken })
 	} catch (err) {
-		fastify.log.error(`Critical error in 2v2 login: ${err.message}`)
 		return reply.code(500).send({ error: err.message })
 	}
 }
@@ -405,16 +321,13 @@ export async function logout(request, reply) {
 	const accessToken = request.headers.authorization?.split(' ')[1]
 	const { refreshToken } = request.cookies
 	
-	if (!accessToken || accessToken === "undefined") {
-		fastify.log.warn('Logout attempt without valid access token')
+	if (!accessToken || accessToken === "undefined")
 		return reply.code(401).send({ success: false, error: 'Access token is missing' })
-	}
 
 	let username = 'unknown'
 	try {
 		const decoded = fastify.jwt.decode(accessToken)
 		username = decoded?.username || 'unknown'
-		fastify.log.info(`🚪 Logout initiated for user: ${username}`)
 	} catch (decodeError) {
 		fastify.log.warn(`Failed to decode token during logout: ${decodeError.message}`)
 	}
@@ -422,23 +335,18 @@ export async function logout(request, reply) {
 	if (accessToken && accessToken !== "undefined") {
 		const decoded = fastify.jwt.decode(accessToken)
 		const expiresIn = decoded.exp - Math.floor(Date.now() / 1000)
-		if (expiresIn > 0) {
+		if (expiresIn > 0)
 			redisModel.addToBlacklist(accessToken, expiresIn)
-			fastify.log.debug(`Access token blacklisted for ${username}`)
-		}
 	}
 
 	if (refreshToken && refreshToken !== "undefined") {
 		const decoded = fastify.jwt.decode(refreshToken)
 		const expiresIn = decoded.exp - Math.floor(Date.now() / 1000)
-		if (expiresIn > 0) {
+		if (expiresIn > 0)
 			redisModel.addToBlacklist(refreshToken, expiresIn)
-			fastify.log.debug(`Refresh token blacklisted for ${username}`)
-		}
 		reply.clearCookie('refreshToken', { path: '/' })
 	}
 
-	fastify.log.info(`Logout successful for user: ${username}`)
 	reply.code(200).send({ success: true, message: 'Logged out' })
 }
 
@@ -450,12 +358,10 @@ export async function enableDoubleAuth(request, reply) {
 		const user = infos.user
 		if (!user) return reply.code(404).send({ success: false, error: 'User not found' })
 
-		fastify.log.info(`Enabling 2FA for user: ${user.username}`)
 		const doubleAuthData = await generateDoubleAuth(user.userId)
 
 		return reply.code(200).send({ success: true, doubleAuth_status: true, message: 'Double authentication waiting for activation', secret: doubleAuthData.secret, qrCode: doubleAuthData.qrCode })
 	} catch (err) {
-		fastify.log.error(`Critical error updating double auth: ${err.message}`)
 		return reply.code(500).send({ error: err.message })
 	}
 }
@@ -482,24 +388,17 @@ export async function accessProfileInfo(request, reply) {
 	try {
 		const { password } = request.body
 		const infos = await getUserFromToken(request)
-		if (!infos) {
-			fastify.log.warn('Access to profile info denied: Unauthorized request')
+		if (!infos)
 			return reply.code(401).send({ success: false, error: 'Unauthorized' })
-		}
 
 		const user = infos.user
 		const accessToken = infos.accessToken
-		if (!user) {
-			fastify.log.warn('Access to profile info denied: User not found in token')
+		if (!user)
 			return reply.code(404).send({ success: false, error: 'User not found' })
-		}
 
-		if (!await verifyPassword(user.password, password)) {
-			fastify.log.warn(`Access to profile info denied: Invalid password for ${user.username}`)
+		if (!await verifyPassword(user.password, password))
 			return reply.code(401).send({ success: false, error: 'Invalid password' })
-		}
 		
-		fastify.log.info(`Access to profile info granted for user: ${user.username}`)
 		return reply.code(200).send({success: true, accessToken: accessToken, message: 'Access to profile infos accepted', user: user})
 	} catch (err) {
 		fastify.log.error(`Critical error accessing profile info: ${err.message}`)
@@ -511,46 +410,35 @@ export async function changeProfile(request, reply) {
 	const { newUsername, newPassword } = request.body
 	try {
 		const infos = await getUserFromToken(request)
-		if (!infos) {
-			fastify.log.warn('Profile update denied: Unauthorized request')
+		if (!infos)
 			return reply.code(401).send({ success: false, error: 'Unauthorized' })
-		}
 
 		const user = infos.user
 		const accessToken = infos.accessToken
-		if (!user) {
-			fastify.log.warn('Profile update failed: User not found in token')
+		if (!user)
 			return reply.code(404).send({ success: false, error: 'User not found' })
-		}
 
 		let updated = false
 		if (newUsername) {
 			const sameUsername = usersModel.getUserByUsername(newUsername)
-			if (sameUsername) {
-				fastify.log.warn(`Profile update failed: Username already used - ${newUsername}`)
+			if (sameUsername)
 				return reply.code(409).send({ error: "This username is already used" })
-			}
-			fastify.log.info(`✏️ Updating username for user: ${user.username} to ${newUsername}`)
+			fastify.log.info(`Updating username for user: ${user.username} to ${newUsername}`)
 			usersModel.updateUsername(user.userId, newUsername)
 			updated = true
 		} 
 		
 		if (newPassword) {
 			const hashedPassword = await hashPassword(newPassword)
-			fastify.log.info(`Updating password for user: ${user.username}`)
 			usersModel.updatePassword(user.userId, hashedPassword)
 			updated = true
 		}
 
-		if (updated) {
-			fastify.log.info(`Profile updated successfully for user: ${user.username}`)
+		if (updated)
 			return reply.code(200).send({ success: true, accessToken: accessToken, message: 'Profile updated successfully!' })
-		} else {
-			fastify.log.info(`No changes made to profile for user: ${user.username}`)
+		else
 			return reply.code(200).send({ success: true, message: 'No changes made' })
-		}
 	} catch (err) {
-		fastify.log.error(`Critical error updating profile: ${err.message}`)
 		return reply.code(500).send({ error: err.message })
 	}
 }
@@ -602,7 +490,6 @@ async function validateImageFile(buffer, originalFilename) {
 
 	if (typeValidation.type === 'jpeg' && !['.jpg', '.jpeg'].includes(originalExt))
 		fastify.log.warn(`File extension mismatch: ${originalExt} but detected JPEG`);
-
 	return typeValidation;
 }
 

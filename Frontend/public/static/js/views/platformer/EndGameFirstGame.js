@@ -50,9 +50,7 @@ export default class EndGameFirstGame {
 
 		if (key === "Enter") {
 			this.handleSelect();
-			console.log("e rentre la aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 			setIsFirstGame(false);
-			console.log("Game Finished, first_game_finished =", getIsFirstGame());
 		}
 	}
 
@@ -62,7 +60,6 @@ export default class EndGameFirstGame {
 
 	handleSelect()
 	{
-		console.log("Game Finished");
 		this.first_game_finished = true;
 		
 		if (this.player && typeof this.player.reset_Game === "function") {
@@ -75,8 +72,6 @@ export default class EndGameFirstGame {
 		}
 		
 		if (this.coins && Array.isArray(this.coins)) {
-			console.log("this.coins =", this.coins);
-			console.log("Resetting coins...");
 			this.coins.forEach(coins => {
 				if (typeof coins.Reset_coin === "function") {
 					coins.Reset_coin();
@@ -100,18 +95,14 @@ export default class EndGameFirstGame {
 		c.fillRect(0, 0, canvas.width, canvas.height);
 		c.font = this.titleFont;
 		c.textAlign = "left";
-		c.fillStyle = "#FFD700"; // doré
+		c.fillStyle = "#FFD700";
 		c.shadowColor = "#000";
 		c.shadowBlur = 10;
 		c.fillText(this.title, 350, 50);
 
-		//coin text
-
 		c.fillStyle = "white";
 		c.font = this.gameCanvasFont;
 		c.fillText(this.CoinCollected, 100, 250);
-
-		//time text
 
 		c.fillStyle = "white";
 		c.font = this.gameCanvasFont;
@@ -132,7 +123,7 @@ export default class EndGameFirstGame {
 		c.font = this.ScoreFont;
 		c.fillText(this.ScoreText, 790, 200);
 		
-		c.shadowBlur = 0; // reset
+		c.shadowBlur = 0;
 	}
 
 	checkCollision(player) {

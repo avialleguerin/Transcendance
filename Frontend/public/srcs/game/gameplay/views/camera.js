@@ -114,9 +114,6 @@ export function changeView(viewName, force = false) {
 
 export function handleViewTransitions(viewName, previousView)
 {
-	console.log("je rentre dans handleViewTransitions");
-	// console.log(viewName, previousView);
-	console.log(`${previousView} -> ${viewName}`);
 	if (isLoading)
 		return;
 	if (!previousView)
@@ -167,7 +164,6 @@ export function handleViewTransitions(viewName, previousView)
 	}
 	if (viewName === 'vue1' && previousView === 'vue2')
 	{
-		console.log('je suis la ');
 		isLoading = true;
 		createLoadingOverlay();
 		

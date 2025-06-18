@@ -30,12 +30,7 @@ export function init_Teammate_player_1(scene)
 		player_bonus1.position = new BABYLON.Vector3(-7, 301, -118);
 		player_bonus1.visibility = 0;
 		player_bonus1.metadata = { isPlayer_bonus1: true };
-	
-		if (player_bonus1) {
-			console.log("je rentre la");
-			console.log(player_bonus1.position);
-		}
-	
+
 		BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/player/", "PlayerIdleAnnimation.glb", scene, function (newMeshes) {
 			const rootMesh = newMeshes.find(mesh => mesh.name === "__root__");
 			if (rootMesh) {
@@ -75,7 +70,6 @@ export function init_Teammate_player_1(scene)
 		
 		setTimeout(() => {
 			canUsePowerUP_player1 = true;
-			console.log("PowerUP player 1 rechargé !");
 		}, 20000);
 		
 		return player_bonus1;
@@ -129,7 +123,6 @@ export function init_Teammate_player_2(scene) {
 		
 		setTimeout(() => {
 			canUsePowerUP_player2 = true;
-			console.log("PowerUP player 2 rechargé !");
 		}, 25000);
 		return player_bonus2;
 	}

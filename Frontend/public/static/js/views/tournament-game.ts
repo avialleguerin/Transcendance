@@ -92,7 +92,6 @@ export default class extends AbstractView {
 			window.history.back();
 			clearInterval(this.gameLoop);
 			handleViewTransitions('tournament', 'vue4');
-			console.log("Destruction de l'environnement et des objets du jeu");
 			setTimeout(() => {
 				leave_tournament_game();
 			}, 1500);

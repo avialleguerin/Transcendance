@@ -19,7 +19,6 @@ export function inverse_Team_player1_2()
 
 		setTimeout(() => {
 			canUsePowerUP_inverse_player1 = true;
-			console.log("inverse power up recharger");
 		}, 10000);
 	}
 }
@@ -33,7 +32,6 @@ export function inverse_Team_player3_4()
 
 		setTimeout(() => {
 			canUsePowerUP_inverse_player2 = true;
-			console.log("inverse power up recharger");
 		}, 10000);
 	}
 }

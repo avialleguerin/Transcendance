@@ -334,16 +334,11 @@ export function init_players(scene, player_1, player_2) {
 			});
 		});
 	}
-	
-	console.log("player 1 " + player_1.position);
-	console.log("player 2 " + player_2.position);
 
 	return { player_1, player_2 };
 }
 
 export function getPlayerRef() {
-	console.log("player 1 bis " + player_1.position);
-	console.log("player 2 bis " + player_2.position);
 	return { player_1, player_2 };
 }
 
@@ -432,7 +427,6 @@ export function UpdatePlayerPose(player_1, player_2) {
 			player_1_bonus = init_Teammate_player_1(scene);
 			if (player_1_bonus)
 			{
-				console.log(player_1_bonus.position);
 				setTimeout(() => {
 					player_1_bonus = null;
 				}, 10000);
@@ -446,7 +440,6 @@ export function UpdatePlayerPose(player_1, player_2) {
 			player_2_bonus = init_Teammate_player_2(scene);
 			if (player_2_bonus)
 			{
-				console.log(player_2_bonus.position);
 				setTimeout(() => {
 					player_2_bonus = null;
 				}, 10000);

@@ -28,7 +28,7 @@ export default class solo_game extends AbstractView {
 		if (!accessToken || accessToken === undefined)
 			homeView();
 		super();
-		this.setTitle("solo_game");
+		this.setTitle("Solo Game");
 
 		this.cooldowns = {};
 
@@ -48,8 +48,6 @@ export default class solo_game extends AbstractView {
 		
 		if (bool == false) {
 			if (window.location.pathname === "/solo-game-1v1") {
-				console.log("solo_game_1v1.js ////////////////////////////////////////////////////////////////////////////////////////////////////////");
-
 				document.addEventListener("keydown", this.boundKeyPressHandler);
 				this.gameLoop = setInterval(() => { this.checkGameOver();}, 1000 );
 				bool = true;
@@ -159,17 +157,13 @@ export default class solo_game extends AbstractView {
 		
 
 	init_powerUP_player() {
-		console.log("powerUP value == ", getPowerUP_value());
-
 		const container_player1 = document.getElementById("container-player1_id");
 		const container_player2 = document.getElementById("container-player2_id");
 		if (getPowerUP_value() !== 0) {
-			console.log("powerUP valueje reeeeedjkhkjefwhjkewhfkjwe == ", getPowerUP_value());
 			container_player1.classList.add("active");
 			container_player2.classList.add("active");
 		}
 		else {
-			console.log(" else    powerUP valueje reeeeedjkhkjefwhjkewhfkjwe == ", getPowerUP_value());
 			if (container_player1.classList.contains("active"))
 				container_player1.classList.remove("active");
 			if (container_player2.classList.contains("active"))

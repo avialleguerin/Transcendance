@@ -119,13 +119,11 @@ export async function delete_account(): Promise<void> {
 		try {
 			const data = await fetchAPI('/request/user/delete-account', 'DELETE')
 
-			console.log("delete_account: data :", data)
-
 			if (data.success) {
 				disconnectWebSocket()
 				sessionStorage.clear()
 				localStorage.clear()
-				homeView() //todo: why there is no transition here ?
+				homeView()
 			}
 		} catch (err) { console.error(`delete_account: ${err}`) }
 	}

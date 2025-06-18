@@ -219,7 +219,6 @@ export default class Home extends AbstractView {
 		const alreadyHaveAccountButton = document.getElementById("alreadyHaveAccountButton_id");
 
 		createAccountButton.addEventListener("click", () => {
-			console.debug("Signin Form activated");
 			loginForm.classList.add("active");
 			createAccountForm.classList.add("active");
 			(document.getElementById("login-username") as HTMLInputElement).value = "";
@@ -227,7 +226,6 @@ export default class Home extends AbstractView {
 		});
 
 		alreadyHaveAccountButton.addEventListener("click", () => {
-			console.debug("Login Form activated");
 			createAccountForm.classList.remove("active");
 			loginForm.classList.remove("active");
 			(document.getElementById("registerForm") as HTMLFormElement).reset();
@@ -253,7 +251,6 @@ export default class Home extends AbstractView {
 		const googleSignUpBtn = document.getElementById("google-signup-btn");
 
 		const handleGoogleAuth = () => {
-			console.debug("handleGoogleAuth");
 			if (typeof tokenClient !== 'undefined' && tokenClient)
 				tokenClient.requestAccessToken();
 			else 

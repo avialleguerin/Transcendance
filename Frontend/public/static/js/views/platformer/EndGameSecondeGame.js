@@ -101,19 +101,14 @@ export default class EndGameSecondeGame {
 	}
 	handleSelect()
 	{
-		console.log("Game Finished");
 		const selected = this.options[this.selectedOption];
-		console.log("selected =", selected);
 		if (selected === "Menu")
 		{
 			this.EndGame_FirstGame.first_game_finished = false;
-			console.log("this.Score =", this.Score);
-			console.log("this.EndGame_FirstGame.Score =", this.EndGame_FirstGame.Score);
 			if (this.Score > this.EndGame_FirstGame.Score)
 			{
 				this.WinnerScore = this.Score;
 				localStorage.setItem("score_player1", this.Score);
-				console.log("this.EndGame_FirstGame.Score =", this.EndGame_FirstGame.Score);
 				localStorage.setItem("score_player2", this.EndGame_FirstGame.Score);
 			}
 			else
@@ -122,9 +117,7 @@ export default class EndGameSecondeGame {
 				localStorage.setItem("score_player1", this.EndGame_FirstGame.Score);
 				localStorage.setItem("score_player2", this.Score);
 			}
-			// this.MapMenu.nb_game_started++;
 			window.create_platformer();
-			// this.historyGame.saveGameIfNeeded(this.MapMenu.nb_game_started, this.winner, this.WinnerScore, this.gameCanvas.timer);
 			if (this.player && typeof this.player.reset_Game === "function")
 				this.player.reset_Game();
 			if (this.gameCanvas)
@@ -134,8 +127,6 @@ export default class EndGameSecondeGame {
 			}
 			
 			if (this.coins && Array.isArray(this.coins)) {
-				console.log("this.coins =", this.coins);
-				console.log("Resetting coins...");
 				this.coins.forEach(coins => {
 					if (typeof coins.Reset_coin === "function") {
 						coins.Reset_coin();
@@ -149,7 +140,6 @@ export default class EndGameSecondeGame {
 		}
 
 		if (selected === "Restart") {
-			// localStorage.removeItem('platformer_game_created');
 			this.EndGame_FirstGame.first_game_finished = false;
 			if (this.player && typeof this.player.reset_Game === "function") {
 				this.player.reset_Game();
@@ -161,8 +151,6 @@ export default class EndGameSecondeGame {
 			}
 			
 			if (this.coins && Array.isArray(this.coins)) {
-				console.log("this.coins =", this.coins);
-				console.log("Resetting coins...");
 				this.coins.forEach(coins => {
 					if (typeof coins.Reset_coin === "function") {
 						coins.Reset_coin();

@@ -7,8 +7,6 @@ function $form(id: string): HTMLFormElement { return document.getElementById(id)
 
 export function notif(message: string, success = true): void {
 	const notification = document.getElementById('resultMessage');
-	console.log("notif:", message, "success:", success);
-	console.debug(`notification : ${notification}`)
 	if (notification) {
 		document.getElementById('notification-container').style.display = 'flex';
 		notification.innerHTML = `<div style='display:flex; align-items:center;'><span>${message}</span></div>`;
@@ -26,7 +24,6 @@ export function notif(message: string, success = true): void {
 }
 
 export async function fetchAPI(url: string, method: string, body: any = null, showNotification = true, formData: boolean | FormData | null = null): Promise<any> {
-	console.debug(`fetchAPI: ${url}:[${method}] - body: ${body} - Notif: ${showNotification} - formData: ${formData}.`);
 	try {
 		let accessToken = sessionStorage.getItem('accessToken');
 
@@ -57,10 +54,8 @@ export async function fetchAPI(url: string, method: string, body: any = null, sh
 			notif(data.message, true);
 		else if (data.error && showNotification)
 			notif(data.error, false);
-		console.log("fetchAPI: data.error:", data.error);
 		return data;
 	} catch (err) {
-		console.error(`Error in API call to ${url}: ${err}`);
 		if (showNotification)
 			notif("Une erreur s'est produite lors de la communication avec le serveur", false);
 		throw err;
@@ -308,7 +303,6 @@ export async function create_friendship(event: Event): Promise<void> {
 
 	const user_username = $input("addFriendship-user").value;
 	const friend_username = $input("addFriendship-friend").value;
-	console.log(user_username, friend_username)
 	if (!user_username || !friend_username)
 		return notif("Please select two users", false);
 
@@ -333,7 +327,6 @@ export async function create_friendship(event: Event): Promise<void> {
 export async function delete_user(userId: string): Promise<void> {
 	if (confirm('Do you really want to delete this account ?')) {
 		try {
-			console.log('Try to delete user with ID:', userId);
 			const response = await fetch('/request/admin/delete-user', { 
 				method: 'DELETE',
 				headers: {
@@ -343,10 +336,7 @@ export async function delete_user(userId: string): Promise<void> {
 				credentials: 'include'
 			},);
 			const data = await response.json();
-			console.log('Response from server:', data);
-			if (data.success)
-				console.log('User deleted successfully');
-			else
+			if (!data.success)
 				notif(data.error || 'Failed to delete user', false);
 		} catch (err) {
 			notif('Failed to delete user' + err, false);
@@ -361,7 +351,6 @@ export async function delete_user(userId: string): Promise<void> {
 export async function force_delete_user(userId: string): Promise<void> {
 	if (confirm('⚠️ PERMANENT DELETION WARNING ⚠️\n\nThis will PERMANENTLY DELETE the user and BREAK all game references!\nThis action cannot be undone.\n\nAre you absolutely sure?')) {
 		try {
-			console.log('Try to force delete user with ID:', userId);
 			const response = await fetch('/request/admin/force-delete-user', { 
 				method: 'DELETE',
 				headers: {
@@ -371,7 +360,6 @@ export async function force_delete_user(userId: string): Promise<void> {
 				credentials: 'include'
 			},);
 			const data = await response.json();
-			console.log('Response from server:', data);
 			if (data.success)
 				notif('User permanently deleted', true);
 			else
@@ -397,10 +385,7 @@ export async function delete_game(gameId: string): Promise<void> {
 				body: JSON.stringify({ gameId }),
 				credentials: 'include'
 			},);
-			const data = await response.json();
-			if (data.success) {
-				console.log('Game deleted successfully');
-			}
+			await response.json();
 		} catch (err) {
 			console.error('Erreur lors de la suppression :', err);
 		}
@@ -419,10 +404,7 @@ export async function delete_platformer(platformerId: string): Promise<void> {
 				body: JSON.stringify({ platformerId }),
 				credentials: 'include'
 			},);
-			const data = await response.json();
-			if (data.success) {
-				console.log('Game deleted successfully');
-			}
+			await response.json();
 		} catch (err) {
 			console.error('Erreur lors de la suppression :', err);
 		}

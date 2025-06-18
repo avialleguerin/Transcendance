@@ -50,12 +50,10 @@ export async function create_2v2_game(event: Event): Promise<void> {
 };
 
 export async function create_platformer(): Promise<void> {
-	// localStorage.setItem("platformer_game_created", "true");
 	const player1 = localStorage.getItem("Player1");
 	const player2 = localStorage.getItem("Player2");
 	const score_player1 = localStorage.getItem("score_player1");
 	const score_player2 = localStorage.getItem("score_player2");
-	console.log("Creating platformer game with", player1, player2, score_player1, score_player2);
 	if (!player1 || !player2 || !score_player1 || !score_player2)
 		return console.error("Missing paramters to create the game", false);
 
@@ -69,7 +67,6 @@ export async function create_platformer(): Promise<void> {
 export async function get_platformers(): Promise<any>
 {
 	const data = await fetchAPI('/request/platformer/get-user-platformers', 'GET', null, false);
-	console.log("Platformers:", data.platformers);
 	if (!data.success) {
 		notif(data.error, false);
 		return [];

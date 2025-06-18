@@ -24,7 +24,7 @@ export default class extends AbstractView {
 
 	constructor() {
 		super();
-		this.setTitle("multi_player_game");
+		this.setTitle("Multi Player Game");
 
 		this.cooldowns = {};
 
@@ -117,7 +117,6 @@ export default class extends AbstractView {
 
 	leave_game_2_multi() {
 		document.getElementById("leave_game_2_id").addEventListener("click", () => {
-			console.log("leave_the_game2222222222");
 			this.cleanup();
 
 			setLeaveGameVar(true);
@@ -140,14 +139,11 @@ export default class extends AbstractView {
 		const container_player1 = document.getElementById("container-player1-id");
 		const container_player2 = document.getElementById("container-player2-id");
 
-		console.log("powerUP_value_multi", getPowerUP_value_multi());
-        if (getPowerUP_value_multi() !== 0) {
-			console.log("powerUP_value_multi je rentre ici");
+		if (getPowerUP_value_multi() !== 0) {
 			container_player1.style.visibility = "visible";
 			container_player2.style.visibility = "visible";
 		}
-        else {
-			console.log("powerUP_value_multi je rentre ici222");
+		else {
 			container_player1.style.visibility = "hidden";
 			container_player2.style.visibility = "hidden";
 		}
@@ -179,13 +175,10 @@ export default class extends AbstractView {
 		if (this.cooldowns[key]) return; // Ignore l'action si en cooldown
 
 		if (key === " ") {
-			console.log("space pressed");
 			const press_space = document.getElementById("press_space_id");
 			if (press_space) {
 				press_space.style.visibility = "hidden";
 				press_space.style.animation = "none";
-			} else {
-				console.error("press_space_id introuvable !");
 			}
 			space_pressed = true;
 		}
@@ -212,12 +205,8 @@ export default class extends AbstractView {
 			if (currentValue > 0) {
 				elem.innerHTML = (currentValue - 1).toString(); //NOTE - jai changer le type pour que ca passe ici
 				
-				console.log(`${key} utilisé, cooldown activé pour ${this.cooldownTimes[key]}ms`);
-				
-				// Mettre en cooldown cette touche
 				this.cooldowns[key] = true;
 				
-				// Ajouter la classe d'animation pour démarrer l'overlay reloading
 				let itemCircle = null;
 				let overlayReloading = null;
 				let overlayReloading_teammate = null;
@@ -264,7 +253,6 @@ export default class extends AbstractView {
 				setTimeout(() =>
 				{
 					delete this.cooldowns[key];
-					console.log(`${key} cooldown terminé`);
 	
 					if (overlayReloading && currentValue - 1 !== 0)
 						overlayReloading.classList.remove("active");
@@ -293,19 +281,19 @@ export default class extends AbstractView {
 			return;
 		if (isGameFinished()) {
 			winnerContainer.classList.add("active");
-			clearInterval(this.gameLoop); // Arrête la boucle quand la partie est finie
-            if (team_player1_win) {
+			clearInterval(this.gameLoop);
+			if (team_player1_win) {
 				document.getElementById("Winner_id").innerHTML = localStorage.getItem("Player1") + " - " + localStorage.getItem("Player2");
 				document.getElementById("looser_id").innerHTML = localStorage.getItem("Player3") + " - " + localStorage.getItem("Player4");
 			}
-            else if (team_player2_win) {
+			else if (team_player2_win) {
 				document.getElementById("Winner_id").innerHTML = localStorage.getItem("Player3") + " - " + localStorage.getItem("Player4");
 				document.getElementById("looser_id").innerHTML = localStorage.getItem("Player1") + " - " + localStorage.getItem("Player2");
 			}
 			container_player1.style.visibility = "hidden";
 			container_player2.style.visibility = "hidden";
 		}
-        else {
+		else {
 			winnerContainer.classList.remove("active");
 		}
 	}

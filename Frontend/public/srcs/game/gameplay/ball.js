@@ -20,7 +20,6 @@ export function createBall(scene) {
 
 	return new Promise((resolve, reject) => {
 		BABYLON.SceneLoader.ImportMesh("", "/srcs/game/assets/3d_object/", "soccer_ball__football (3).glb", scene, function (newMeshes, particleSystems, skeletons, animationGroups) {
-			console.log("Modèle chargé avec succès !");
 
 			let rootMesh = null;
 			newMeshes.forEach(mesh => {
@@ -108,9 +107,6 @@ export function MoveBall(player_1, player_2, ball, player_1_bonus, player_2_bonu
 
 	if (ballSpeed >= 2.5)
 		ballSpeed = 2.5;
-
-	console.log("ballSpeed", ballSpeed);
-	console.log("ball_position", ball.position);
 
 	ball.position.x += ballDirection.x * ballSpeed;
 	ball.position.z += ballDirection.z * ballSpeed;

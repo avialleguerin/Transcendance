@@ -51,7 +51,6 @@ function loadSkinsForPlayer(skinPaths, scene, playerSkins, offsetX, offsetY, off
             {
                 mesh.position = new BABYLON.Vector3(offsetX, offsetY, offsetZ);
                 playerSkins.push(mesh);
-                console.log(`Skin ${skinPaths[index].name} chargé avec succès pour l'index ${index}`);
             });
         })
         .catch((error) => {

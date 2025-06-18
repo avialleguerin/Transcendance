@@ -310,20 +310,12 @@ export function initGame()
 
 
 	function handleCollision(player, box) {
-		const isColliding = box.checkCollision(player);
-	
-		if (isColliding) {
-			console.log("collision");
-		}
+		box.checkCollision(player);
 	}
 
 	function handleCollisionDown(player, box) {
-		const isColliding = box.checkCollisionDown(player);
-		if (isColliding) {
-			console.log("collision down");
-		}
+		box.checkCollisionDown(player);
 	}
-		
 
 
 	player.forceCameraToFollow({ canvas, camera });
@@ -349,7 +341,6 @@ export function initGame()
 
 	function handleTrapCollision(player, trap, respawnPoint) {
 		if (trap.checkCollision(player)) {
-			console.log("collision with trap");
 			player.position.x = respawnPoint.x;
 			player.position.y = respawnPoint.y;
 			player.velocity.x = 0;
@@ -360,10 +351,8 @@ export function initGame()
 
 	let pause = false;
 
-	// Set up event listeners
 	window.addEventListener('keydown', (event) => {
 		switch (event.key) {
-			// Player 1
 			case 'ArrowRight':
 				keysPlayer1.right.pressed = true;
 				break;
@@ -371,7 +360,6 @@ export function initGame()
 				keysPlayer1.left.pressed = true;
 				break;
 			case 'ArrowUp':
-				console.log("UP pressed");
 				if (!game_canvas.GameIsPaused)
 				{
 					if (!keysPlayer1.jump.pressed) {
@@ -384,7 +372,6 @@ export function initGame()
 							setTimeout(() => {
 								player.cantraverse = false;
 							}, 500);
-							console.log("collision");
 						}
 					}
 				}
@@ -395,19 +382,13 @@ export function initGame()
 					setTimeout(() => {
 						player.cantraverseDown = false;
 					}, 50);
-					console.log("collision");
 				}
 				break;
 			case "Escape":
-				console.log("Escape pressed");
-				if (gameState.current === GameState.Play && !pause) {
-					console.log("Game pauseddddddddddddddddddd");
+				if (gameState.current === GameState.Play && !pause)
 					pause = true;
-				}
-				else if (gameState.current === GameState.Play && pause) {
-					console.log("Game resumedddddddddddddddddddd");
+				else if (gameState.current === GameState.Play && pause)
 					pause = false;
-				}
 				break;
 			
 		}
@@ -445,19 +426,12 @@ export function initGame()
 		collisionBoxes.forEach(box => box.draw());
 		collisionBoxesDown.forEach(box => box.draw());
 
-
-		// Draw coin
 		traps.forEach(trap => trap.draw());
 
-
-		// Update players
 		player.update();
 		Coins.forEach(coin => coin.update());
-		
-		// Restore context state
 		c.restore();
 		
-		// === Movement Logic ===
 		if (keysPlayer1.right.pressed) {
 			player.shouldPanCameraToRight({canvas, camera});
 		}
@@ -470,22 +444,16 @@ export function initGame()
 		
 		handlePlayerMovement(player, keysPlayer1.left, keysPlayer1.right);
 		
-		// === Platform Collision Check ===
 		player.checkCollision(platforms);
 		
-		// Camera follow logic for jumps and falls
-		if (player.velocity.y < 0) {
+		if (player.velocity.y < 0)
 			player.shouldPanCameraToDown({canvas, camera});
-		} else if (player.velocity.y > 0) {
+		else if (player.velocity.y > 0)
 			player.shouldPanCameraToUP({canvas, camera});
-		}
 		
-		// Update grounded status
-		if (player.velocity.y > 1) {
+		if (player.velocity.y > 1)
 			player.isGrounded = false;
-		}
 
-		// Handle collisions with pass-through platforms
 		collisionBoxes.forEach(box => {
 			handleCollision(player, box);
 		});
@@ -495,7 +463,6 @@ export function initGame()
 		});
 
 		
-		// Handle trap collisions
 		handleTrapCollision(player, traps[0], { x: 1057, y: 821.16 });
 		handleTrapCollision(player, traps[1], { x: 463, y: 1653.16 });
 		handleTrapCollision(player, traps[2], { x: 1057, y: 821.16 });
@@ -509,52 +476,38 @@ export function initGame()
 
 		Coins.forEach(coin => {
 			if (coin.checkCollision(player)) {
-				console.log("collision with coin");
 				coin.destroy();
 				game_canvas.nb_coin++;
-				// Handle coin collection here
 			}
 		});
 
 		if (end_game.checkCollision(player)) {
-			console.log("collision with end game");
 			if (end_game.first_game_finished === false)
-			{
-				console.log("first game finished");
 				gameState.current = GameState.EndGameFirstGame;
-			}
 			if (end_game.first_game_finished === true)
-			{
-				console.log("second game finished");
 				gameState.current = GameState.EndGameSecondGame;
-			}
 		}
 	}
 	
 	const options = new Option();
 
-	// Animation loop
 	function animate() {
 
 		window.requestAnimationFrame(animate);
 	
-		// === Clear Canvas ===
 		c.fillStyle = 'rgba(rgb(12, 17, 33))';
 		c.fillRect(0, 0, canvas.width, canvas.height);
 
-		// console.log("Game State:", gameState.current);
 		if (game_canvas.GameIsPaused) {
 			player.velocity.x = 0;
 			player.velocity.y = 0;
 		}
 
-		// === Game State Logic ===
 		switch (gameState.current) {
 			case GameState.Menu:
 				menu.draw();
 				break;
 			case GameState.MapMenu:
-				// console.log("Map Menu");
 				mapMenu.draw();
 				break;
 			case GameState.Play:
@@ -576,6 +529,5 @@ export function initGame()
 		}
 	}
 	
-	// Start the game
 	animate(keysPlayer1);
 }

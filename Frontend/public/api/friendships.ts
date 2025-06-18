@@ -104,7 +104,6 @@ export async function fetch_user_friendships(): Promise<void> {
 		friendPhotos.forEach(photo => {
 			(photo as HTMLElement).onclick = function() {
 				if (!gameHistory.classList.contains('active')) {
-					console.log("Opening game history view");
 					fetch_user_games_big((this as HTMLElement).nextElementSibling.querySelector('.friend_name').textContent);
 					gameHistory.classList.add('active');
 					exit_game_history_btn.style.display = 'none';
@@ -115,7 +114,6 @@ export async function fetch_user_friendships(): Promise<void> {
 					friendDeleteBtns.style.display = 'none';
 				}
 				else if (localStorage.getItem('bool') === "true" && gameHistory.classList.contains('active')) {
-					console.log("Closing game history view");
 					gameHistory.classList.remove('active');
 					exit_game_history_btn.style.display = 'block';
 					localStorage.setItem('historyIsVisible', 'false');
@@ -123,7 +121,6 @@ export async function fetch_user_friendships(): Promise<void> {
 					localStorage.setItem("bool", "false");
 					friendDeleteBtns.style.display = 'block';
 					localStorage.setItem('historyVisible', 'true');
-					console.log("bool =", localStorage.getItem("bool"));
 				}
 			};
 		});
@@ -135,7 +132,6 @@ export async function fetch_user_friendships(): Promise<void> {
 				button.addEventListener('click', function(event) {
 					event.stopPropagation();
 					if (gameHistory.classList.contains('active')) {
-						console.log("Fermeture de l'historique des jeux avant suppression");
 						gameHistory.classList.remove('active');
 						exit_game_history_btn.style.display = 'block';
 						localStorage.setItem('historyIsVisible', 'false');
@@ -161,7 +157,6 @@ export async function fetch_user_friendships(): Promise<void> {
 
 export async function fetch_user_games(): Promise<void> {
 	try {
-		console.log("fetch_user_games");
 		const data = await fetchAPI('/request/game/get-user-games', 'GET', null, false);
 		if (!data.success) {
 			notif(data.error, false);
@@ -267,12 +262,11 @@ export async function fetch_user_games(): Promise<void> {
 
 export async function fetch_user_games_big(username: string): Promise<void> {
 	try {
-		console.log("fetch_user_games");
+		if (!username)
+			username = localStorage.getItem(localStorage.getItem("Player1")) || '';
 		const data = await fetchAPI('/request/game/get-friend-games', 'POST', { username }, null, false);
-		if (!data.success) {
-			notif(data.error, false);
-			return;
-		}
+		if (!data.success)
+			return notif(data.error, false);
 		const user = data.user;
 		const userId = user.userId;
 		const games = data.games;

@@ -51,10 +51,4 @@ export default class Sprite {
 	update() {
 		this.draw();
 	}
-
-	logStatus() {
-		console.log("Image loaded status:", this.loaded);
-		console.log("Image path:", this.image.src);
-		console.log("Image dimensions:", this.width, this.height);
-	}
 }

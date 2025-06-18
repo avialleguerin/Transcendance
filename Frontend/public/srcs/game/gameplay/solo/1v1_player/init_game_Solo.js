@@ -12,67 +12,63 @@ let player_1, player_2;
 let is_init = false;
 
 export async function init_game_solo(scene) {
-    if (!is_init)
-    {
-        create_game(scene);
-        
-        ({ player_1, player_2 } = init_players(scene));
-    
-        ball = await createBall(scene).catch(error => {
-            console.error(error);
-            return null;
-        });
-    
-        if (ball) {
-            console.log("Balle chargée avec position :", ball.position);
-        }
-    
-        loadScoreModel(0, true);
-        loadScoreModel(0, false);
-        is_init = true;
-        
-        return { player_1, player_2, ball };
-    }
-    else
-    {
-        already_init();
-        loadScoreModel(0, true);
-        loadScoreModel(0, false);
-        reset_player_position(player_1, player_2);
-        return { player_1, player_2, ball };
-    }
+	if (!is_init)
+	{
+		create_game(scene);
+		
+		({ player_1, player_2 } = init_players(scene));
+	
+		ball = await createBall(scene).catch(error => {
+			console.error(error);
+			return null;
+		});
+	
+		loadScoreModel(0, true);
+		loadScoreModel(0, false);
+		is_init = true;
+		
+		return { player_1, player_2, ball };
+	}
+	else
+	{
+		already_init();
+		loadScoreModel(0, true);
+		loadScoreModel(0, false);
+		reset_player_position(player_1, player_2);
+		return { player_1, player_2, ball };
+	}
 
 }
 
 export function start_game_solo(scene)
 {
-    gameStart = true;
+	gameStart = true;
 }
 
 function already_init()
 {
-    enable_all_by_metadata(scene, "isPlayerRepere_1v1");
-    enable_all_by_metadata(scene, "isPlayer_paddle_1v1");
-    enable_all_by_metadata(scene, "isPlayer_1v1");
-    init_game(scene);
-    init_ball(ball);
+	enable_all_by_metadata(scene, "isPlayerRepere_1v1");
+	enable_all_by_metadata(scene, "isPlayer_paddle_1v1");
+	enable_all_by_metadata(scene, "isPlayer_1v1");
+	init_game(scene);
+	init_ball(ball);
 }
 
 
 function enable_all_by_metadata(scene, metadataKey) {
-    scene.meshes
-        .filter(mesh => mesh.metadata && mesh.metadata[metadataKey])
-        .forEach(mesh => mesh.setEnabled(true));
+	scene.meshes
+		.filter(mesh => mesh.metadata && mesh.metadata[metadataKey])
+		.forEach(mesh => mesh.setEnabled(true));
 }
 
 export async function destroy_game_solo(scene)
 {
-    destroy_all_by_metadata(scene, "isPlayerRepere_1v1");
-    destroy_all_by_metadata(scene, "isPlayer_paddle_1v1");
-    destroy_all_by_metadata(scene, "isPlayer_1v1");
-    destroy_game(scene);
-    destroy_ball(ball);
-    destroy_score();
+	destroy_all_by_metadata(scene, "isPlayerRepere_1v1");
+	destroy_all_by_metadata(scene, "isPlayer_paddle_1v1");
+	destroy_all_by_metadata(scene, "isPlayer_1v1");
+	destroy_game(scene);
+	destroy_ball(ball);
+	destroy_score();
 }
 
 function destroy_all_by_metadata(scene, metadataKey) {

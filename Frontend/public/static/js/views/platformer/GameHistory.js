@@ -25,7 +25,6 @@ export default class GameHistory {
 		this.buttonAreas = [
 			{ option: "Back", x: 900, y: 530, width: 100, height: 40 }
 		];
-		console.log("GameHistory initialized, number of entries:", this.gameHistory.length);
 	}
 
 	// Nouvelle méthode pour charger l'historique de façon asynchrone
@@ -33,7 +32,6 @@ export default class GameHistory {
 		try {
 			const games = await get_platformers();
 			this.gameHistory = games || [];
-			console.log("GameHistory loaded, number of games:", this.gameHistory.length);
 		} catch (error) {
 			console.error("Error loading game history:", error);
 			this.gameHistory = [];
