@@ -16,6 +16,19 @@ import { init_skins_podium_default } from "./solo/skin/init_skin_player_default.
 /*****************CREATION DU MOTEUR***************************/
 /**************************************************************/
 
+localStorage.removeItem("match1_result");
+localStorage.removeItem("match2_result");
+localStorage.removeItem("match3_result");
+localStorage.removeItem("match4_result");
+localStorage.removeItem("match5_result");
+localStorage.removeItem("match6_result");
+
+localStorage.removeItem("tournamentCount");
+
+localStorage.removeItem("tournamentStarted");
+localStorage.removeItem("tournament_finished");
+localStorage.removeItem("secondChance");
+
 let qualityLevel = 'medium';
 const canvas = document.getElementById('renderCanvas');
 const engine = new BABYLON.Engine(canvas, true, {
@@ -31,7 +44,6 @@ const engine = new BABYLON.Engine(canvas, true, {
 /***************************************************************/
 /*****************DETECTION DES PERFORMANCES*******************/
 /***************************************************************/
-
 
 function detectPerformanceLevel() {
 	return 'low';
@@ -104,8 +116,7 @@ function createOptimizedSkybox(scene) {
 	skyMaterial.backFaceCulling = false;
 	skyMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
 	skyMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
-	
-	// Texture avec paramètres adaptés à la qualité
+
 	const skyTexture = new BABYLON.Texture("assets/skybox/skybox.jpg", scene);
 	skyTexture.coordinatesMode = BABYLON.Texture.SPHERICAL_MODE;
 	skyTexture.hasAlpha = false;
@@ -115,8 +126,7 @@ function createOptimizedSkybox(scene) {
 		BABYLON.Texture.NEAREST_LINEAR);
 	
 	skyMaterial.diffuseTexture = skyTexture;
-	
-	// Créer une sphère optimisée
+
 	const segmentsCount = simplifiedSkybox ? 16 : 32;
 	const skySphere = BABYLON.MeshBuilder.CreateSphere("skySphere", {
 		diameter: 5000, 
@@ -143,13 +153,9 @@ let initialized = false;
 let player_1, player_2, player_3, player_4, player_1_tournament, player_2_tournament, AI_player, ball;
 let Solo_gameStart = false;
 let Multi_gameStart = false;
-let AI_gameStart = false;
 let tournament_game = false;
 let play = false;
-let canPressSpace = false; // Nouveau drapeau pour bloquer l'appui sur Espace
-let lastPerformanceCheck = Date.now();
-let frameCounter = 0;
-let fpsHistory = [];
+let canPressSpace = false
 
 
 create_environment_view1(scene);
@@ -256,7 +262,6 @@ function handleGameInitError() {
 	
 	Solo_gameStart = false;
 	Multi_gameStart = false;
-	AI_gameStart = false;
 	tournament_game = false;
 	
 	const errorMessage = document.createElement('div');
@@ -285,7 +290,6 @@ function handleGameInitError() {
 export function startGame() {
 	Solo_gameStart = true;
 	Multi_gameStart = false;
-	AI_gameStart = false;
 	tournament_game = false;
 	SetIsGameFinished(false);
 
@@ -298,14 +302,11 @@ export function startGame() {
 export function startMultiGame() {
 	Multi_gameStart = true;
 	Solo_gameStart = false;
-	AI_gameStart = false;
 	tournament_game = false;
 	SetIsGameFinished(false);
 }
 
-export function startAI_Game() {
-	AI_gameStart = true;
-	Solo_gameStart = false;
+export function startAI_Game() {	Solo_gameStart = false;
 	Multi_gameStart = false;
 	tournament_game = false;
 	SetIsGameFinished(false);
@@ -315,7 +316,6 @@ export function startTournamentGame() {
 	tournament_game = true;
 	Solo_gameStart = false;
 	Multi_gameStart = false;
-	AI_gameStart = false;
 	SetIsGameFinished(false);
 }
 
@@ -357,7 +357,6 @@ export function leave_Multiplayer_Game() {
 }
 
 export function leave_AI_Game() {
-	AI_gameStart = false;
 	initialized = false;
 	play = false;
 }
@@ -390,15 +389,13 @@ let isConnected = false;
 engine.runRenderLoop(() => {
 	try
 	{
-		// Toujours utiliser l'échelle 1.0 puisque qualityLevel est toujours 'low'
 		const scale = 1.0;
 		if (canvas.width !== canvas.clientWidth * scale || canvas.height !== canvas.clientHeight * scale) {
 			canvas.width = canvas.clientWidth * scale;
 			canvas.height = canvas.clientHeight * scale;
 			engine.resize(true);
 		}
-		
-		// Mise à jour du compteur FPS
+
 		frameCount++;
 		const now = performance.now();
 		const delta = now - lastFpsUpdate;
@@ -415,43 +412,51 @@ engine.runRenderLoop(() => {
 				initialized = true;
 			}
 			if (initialized) {
-				// Bloquer l'appui sur Espace si canPressSpace est false
 				if (scene.inputStates.space && !play) {
 					if (!canPressSpace)
 						return;
 					play = true;
 				}
-				if (play) {
+				if (play)
+				{
 					const bonusPlayer = UpdatePlayerPose(player_1, player_2);
 					MoveBall(player_1, player_2, ball, bonusPlayer.player_1_bonus, bonusPlayer.player_2_bonus);
 				}
 			}
 		}
 
-		if (Multi_gameStart && !gameIsFinished) {
-			if (!initialized) {
+		if (Multi_gameStart && !gameIsFinished)
+		{
+			if (!initialized)
+			{
 				initialize_Multiplayer_game();
 				initialized = true;
 			}
-			if (initialized) {
+			if (initialized)
+			{
 				if (scene.inputStates.space && !play)
 					play = true;
-				if (play) {
+				if (play)
+				{
 					UpdatePLayerPoseMulti(player_1, player_2, player_3, player_4);
 					MoveBall2v2(player_1, player_2, player_3, player_4, ball);
 				}
 			}
 		}
 
-		if (tournament_game && !gameIsFinished) {
-			if (!initialized) {
+		if (tournament_game && !gameIsFinished)
+		{
+			if (!initialized)
+			{
 				initializeGame_tournament();
 				initialized = true;
 			}
-			if (initialized) {
+			if (initialized)
+			{
 				if (scene.inputStates.space && !play)
 					play = true;
-				if (play) {
+				if (play)
+				{
 					move_player_tournament(player_1_tournament, player_2_tournament);
 					MoveBall(player_1_tournament, player_2_tournament, ball);
 				}
@@ -462,7 +467,6 @@ engine.runRenderLoop(() => {
 			engine.getFps().toFixed(1);
 			lastDebugOutput = now;
 		}
-
 		scene.render();
 
 	} catch (error) {

@@ -192,6 +192,7 @@ export function handleViewTransitions(viewName, previousView)
 	}
 	if (viewName === 'tournament' && previousView === 'vue4')
 	{
+		console.log('je suis laaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
 		isLoading = true;
 		changeView('vue3', true);
 		setTimeout(() => {
@@ -210,7 +211,7 @@ export function handleViewTransitions(viewName, previousView)
 	}
 	if (viewName === 'winner')
 		changeView('winner', true);
-	if (viewName === 'tournament')
+	if (viewName === 'tournament' && previousView === 'vue2')
 		changeView('tournament', true);
 	if (viewName === 'vue2' && previousView === 'tournament')
 		changeView('vue2', true);

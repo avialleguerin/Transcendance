@@ -1,6 +1,6 @@
 import { c, canvas, gameState, GameState } from './constants.js';
 import Sprite from './Sprite.js';
-import { setIsFirstGame, getIsFirstGame} from './constants.js';
+import { getIsFirstGame} from './constants.js';
 
 export default class GameCanvas extends Sprite {
 	constructor({position,  Image_src_prefix, player}) {

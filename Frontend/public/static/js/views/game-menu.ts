@@ -240,7 +240,7 @@ export default class Game_menu extends AbstractView {
 		</div>
 			<div id="container" class="container_menu">
 				<button id="btn_jouer">
-					<h1>PLAY</h1>
+					<h1>ENTER</h1>
 				</button>
 				<div class="view2" id="view2">
 					<div class="view2-content">
@@ -327,7 +327,7 @@ export default class Game_menu extends AbstractView {
 									<div class="joueur" id="joueur3">
 										<p>Player 3</p>
 										<div class="controls">
-											<p>Movement: O / L</p>
+											<p>Movement: I / K</p>
 											<p>PowerUP: 1 / 2 / 3</p>
 										</div>
 									</div>
@@ -709,26 +709,6 @@ export default class Game_menu extends AbstractView {
 		
 	`;}
 
-	init_solo_game() {
-		document.getElementById("solo_1v1_btn").addEventListener("click", () => {
-			startGame();
-			handleViewTransitions("vue3", "vue2");
-		});
-	}
-
-	initEvents() {
-		document.getElementById("multiplayer_btn").addEventListener("click", () => {
-			startMultiGame();
-			handleViewTransitions("vue3", "vue2");
-		});
-	}
-
-
-	tournament_view() {
-		document.getElementById("tournament_view").addEventListener("click", () => {
-			handleViewTransitions("tournament");
-		});
-	}
 
 	handleDeconnection() {
 		const deconnect_btn = document.getElementById("deconnect_btn");
@@ -773,10 +753,14 @@ export default class Game_menu extends AbstractView {
 		const back_to_select_mode_view8 = document.getElementById('back_to_select_mode_view8');
 		const choose_your_opponent_platformer_form = document.getElementById('choose_your_opponent_platformer_form');
 
-		//*==== CGU & Privacy Policy Modals ====*/
 		const showCguLink = document.getElementById("show-cgu");
 		const cguModal = document.getElementById("cgu-modal");
 		const cguBackButton = document.getElementById("cgu-back-button");
+
+
+		view1_btn.style.color = '#e6e600';
+		view1_btn.style.textShadow = '0 0 10px #e6e600';
+		view1_btn.style.cursor = 'default';
 		
 		showCguLink?.addEventListener("click", (e) => {
 			e.preventDefault();
@@ -829,7 +813,13 @@ export default class Game_menu extends AbstractView {
 			if (view5.classList.contains('active')) {
 				view5.classList.remove('active');
 				view2.classList.add('active');
-			} 
+				view1_btn.style.color = '#e6e600';
+				view1_btn.style.textShadow = '0 0 10px #e6e600';
+				settings_btn.style.color = 'white';
+				settings_btn.style.textShadow = 'none';
+				view1_btn.style.cursor = 'default';
+				settings_btn.style.cursor = 'pointer';
+			}
 			else if (!view2.classList.contains('active'))
 				view2.classList.add('active');
 		});
@@ -857,6 +847,12 @@ export default class Game_menu extends AbstractView {
 		settings_btn.addEventListener('click', () => {
 			view2.classList.remove('active');
 			view5.classList.add('active');
+			view1_btn.style.color = 'white';
+			view1_btn.style.textShadow = 'none';
+			settings_btn.style.color = 'yellow';
+			settings_btn.style.textShadow = '0 0 10px yellow';
+			view1_btn.style.cursor = 'pointer';
+			settings_btn.style.cursor = 'default';
 		});
 
 
@@ -913,12 +909,24 @@ export default class Game_menu extends AbstractView {
 				view1.classList.remove('active');
 				btn_back_home.classList.remove('active');
 				btn_jouer.style.display = 'block';
+				view1_btn.style.cursor = 'default';
+				view1_btn.style.color = 'yellow';
+				view1_btn.style.textShadow = '0 0 10px yellow';
+				settings_btn.style.color = 'white';
+				settings_btn.style.textShadow = 'none';
+				settings_btn.style.cursor = 'pointer';
 			}
 			if (view5.classList.contains('active')) {
 				view5.classList.remove('active');
 				view1.classList.remove('active');
 				btn_back_home.classList.remove('active');
 				btn_jouer.style.display = 'block';
+				view1_btn.style.cursor = 'default';
+				view1_btn.style.color = 'yellow';
+				view1_btn.style.textShadow = '0 0 10px yellow';
+				settings_btn.style.color = 'white';
+				settings_btn.style.textShadow = 'none';
+				settings_btn.style.cursor = 'pointer';
 			}
 
 		});
@@ -929,8 +937,6 @@ export default class Game_menu extends AbstractView {
 			view3.classList.remove('active');
 			choose_your_opponent_1v1_form.classList.add('active');
 			back_to_select_mode_view6.classList.add('active');
-			container_menu.classList.add('active');
-			container_menu.scrollTop = 0;
 		});
 		
 		const choose_your_opponent_multi_form = document.getElementById('choose_your_opponent_multi_form');
@@ -1453,8 +1459,6 @@ export default class Game_menu extends AbstractView {
 			view1.classList.remove('active');
 			choose_your_opponent_platformer_form.classList.add('active');
 			back_to_select_mode_platformer.classList.add('active');
-			container_menu.classList.add('active');
-			container_menu.scrollTop = 0; // Reset scroll position to the top
 		});
 
 		back_to_select_mode_platformer.addEventListener('click', () => {
@@ -1463,8 +1467,6 @@ export default class Game_menu extends AbstractView {
 			view2.classList.add('active');
 			view1.classList.add('active');
 			btn_back_home.classList.add('active');
-			container_menu.classList.remove('active');
-			container_menu.scrollTop = 0; // Reset scroll position to the top
 		});
 
 		/***********************************************************************/
@@ -1527,7 +1529,7 @@ export default class Game_menu extends AbstractView {
 		});
 
 		document.getElementById("tournament_view").addEventListener("click", () => {
-			handleViewTransitions("tournament");
+			handleViewTransitions("tournament", "vue2");
 		});
 
 		const acceptedSection = document.getElementById('section-accepted');

@@ -27,8 +27,8 @@
 }
 
 .tournament_view-content h1 {
-	color: #ffffff;
-	text-shadow: 2px 2px 4px rgb(0, 0, 0);
+	color: #e6e600;
+	text-shadow: 2px 2px 4px rgb(165, 165, 165);
 	font-size: 2.5vw;
 	position: relative;
 	top: 2%;
@@ -139,6 +139,10 @@
 	position: absolute;
 	bottom: 5%;
 	right: 5%;
+}
+
+.btn_back_tournament:hover, .btn_start_tournament:hover {
+	color: #e6e600;
 }
 
 .container_name_player h2 {

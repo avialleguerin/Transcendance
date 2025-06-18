@@ -35,15 +35,16 @@ export default class extends AbstractView {
 			"2": 15000,
 			" ": 1000,
 		};
+		
+		this.boundKeyPressHandler = this.handleKeyPress.bind(this);
 
-		if (bool === false) {
-			this.boundKeyPressHandler = this.handleKeyPress.bind(this);
-			document.addEventListener("keydown", this.boundKeyPressHandler);
-
+		if (bool === false)
+		{
 			if (window.location.pathname === "/multi-player-game") {
+				document.addEventListener("keydown", this.boundKeyPressHandler);
 				this.gameLoop = setInterval(() => { this.checkGameOver();}, 1000 );
+				bool = true;
 			}
-			bool = true;
 		}
 		const accessToken: string | null = sessionStorage.getItem('accessToken');
 		if (!accessToken || accessToken === undefined)
@@ -104,7 +105,7 @@ export default class extends AbstractView {
 					<div class="looser">
 						<h1 id="looser_id"></h1>
 					</div>
-					<button class="leave_game_2" id="leave_game_2_id" onclick="create_2v2_game(event)">Quitter la partie</button>
+					<button class="leave_game_2" id="leave_game_2_id" onclick="create_2v2_game(event)">Leave Game</button>
 				</div>
 			</div>
 		`;
@@ -166,13 +167,11 @@ export default class extends AbstractView {
 	}
 
 	handleKeyPress(event: KeyboardEvent) {
-		// Vérifier si la touche est une touche de l'inventaire
 		const key = event.key;
 		
 		if (!(key in this.cooldownTimes)) return;
-	
-		// Vérifier si la touche est en cooldown
-		if (this.cooldowns[key]) return; // Ignore l'action si en cooldown
+
+		if (this.cooldowns[key]) return;
 
 		if (key === " ") {
 			const press_space = document.getElementById("press_space_id");
@@ -203,7 +202,7 @@ export default class extends AbstractView {
 		if (elem) {
 			let currentValue = parseInt(elem.innerHTML, 10);
 			if (currentValue > 0) {
-				elem.innerHTML = (currentValue - 1).toString(); //NOTE - jai changer le type pour que ca passe ici
+				elem.innerHTML = (currentValue - 1).toString();
 				
 				this.cooldowns[key] = true;
 				

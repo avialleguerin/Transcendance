@@ -319,7 +319,7 @@ interface TournamentPlayerState {
 	color: string;
 }
 
-function resetTournamentState(Player1: PlayerElement, Player2: PlayerElement, Player3: PlayerElement, Player4: PlayerElement): void {    
+export function resetTournamentState(Player1: PlayerElement, Player2: PlayerElement, Player3: PlayerElement, Player4: PlayerElement): void {    
 	const joueurs: PlayerElement[] = [Player1, Player2, Player3, Player4];
 
 	localStorage.removeItem("match1_result");
