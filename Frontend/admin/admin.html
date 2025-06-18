@@ -477,7 +477,11 @@
 			};
 			
 			localStorage.setItem('transcendance_admin_active_tab', tabId);
-			
+			fetch_users();
+			fetch_games();
+			fetch_platformers();
+			fetch_friendships();
+			fetch_deleted_users();
 			document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
 			document.getElementById(tabId).classList.remove('hidden');
 			document.getElementById('header-title').textContent = tabNames[tabId];
