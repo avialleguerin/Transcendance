@@ -51,12 +51,11 @@ services:
       - ./Security/Nginx/conf.d:/etc/nginx/conf.d
       - ./Security/Nginx/passwd:/etc/nginx/passwd
       - ./Security/ModSecurity:/etc/modsecurity
-      - ./Frontend/public:/usr/share/nginx/html:ro
-      - ./Frontend/public/srcs:/usr/share/nginx/dist/srcs:ro 
-      - ./Frontend/public/static/js/css:/usr/share/nginx/dist/static/js/css:ro
-      - ./Frontend/public/index.html:/usr/share/nginx/dist/index.html:ro
-      - ./Frontend/dist:/usr/share/nginx/dist
-      - ./Frontend/dist/api:/usr/share/nginx/dist/api:ro
+      - ./Frontend/public/srcs:/usr/share/nginx/html/srcs:ro 
+      - ./Frontend/public/static/js/css:/usr/share/nginx/html/static/js/css:ro
+      - ./Frontend/public/index.html:/usr/share/nginx/html/index.html:ro
+      - ./Frontend/dist:/usr/share/nginx/html
+      - ./Frontend/dist/api:/usr/share/nginx/html/api:ro
       - ./Frontend/admin:/usr/share/nginx/admin:ro
       - ./Data/uploads:/usr/share/nginx/uploads
 

@@ -30,7 +30,7 @@ server {
 	ssl_prefer_server_ciphers off;
 
 	location / {
-		root /usr/share/nginx/dist;
+		root /usr/share/nginx/html;
 		index index.html;
 		try_files $uri $uri/ /index.html;
 	}
@@ -45,7 +45,7 @@ server {
 	}
 
 	location /assets/ {
-		alias /usr/share/nginx/dist/srcs/game/assets/;
+		alias /usr/share/nginx/html/srcs/game/assets/;
 		types {
 			image/jpeg jpg jpeg;
 			image/png png;
@@ -103,7 +103,7 @@ server {
 	}
 
 	location /api/ {
-		alias /usr/share/nginx/dist/api/;
+		alias /usr/share/nginx/html/api/;
 		add_header Content-Type "application/javascript" always;
 		types {
 			application/javascript js;
@@ -112,7 +112,7 @@ server {
 	}
 
 	location /image/ {
-		alias /usr/share/nginx/dist/srcs/game/assets/image/;
+		alias /usr/share/nginx/html/srcs/game/assets/image/;
 		types {
 			image/jpeg jpg jpeg;
 			image/png png;
@@ -121,7 +121,7 @@ server {
 	}
 
 	# location /srcs/ {
-	# 	alias /usr/share/nginx/dist/srcs/;
+	# 	alias /usr/share/nginx/html/srcs/;
 	# 	add_header Content-Type "application/javascript" always;
 	# 	types {
 	# 		application/javascript js;
