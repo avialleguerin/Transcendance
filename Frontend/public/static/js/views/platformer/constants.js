@@ -73,3 +73,13 @@ export function setIsFirstGame(value) {
 export function getIsFirstGame() {
     return IsFirstGame;
 }
+
+let secondeGameFinish = false;
+
+export function setSecondeGameFinish(value) {
+    secondeGameFinish = value;
+}   
+
+export function getSecondeGameFinish() {
+    return secondeGameFinish;
+}

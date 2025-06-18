@@ -1,5 +1,5 @@
 import { c, canvas } from "./constants.js";
-import { gameState, GameState, setIsFirstGame } from "./constants.js";
+import { gameState, GameState, setIsFirstGame, setSecondeGameFinish, getSecondeGameFinish } from "./constants.js";
 
 export default class EndGameSecondeGame {
 	constructor({gameCanvas, player, coins, EndGame_FirstGame, historyGame, MapMenu}) {
@@ -102,8 +102,9 @@ export default class EndGameSecondeGame {
 	handleSelect()
 	{
 		const selected = this.options[this.selectedOption];
-		if (selected === "Menu")
+		if (selected === "Menu" && getSecondeGameFinish() === false)
 		{
+			console.log("window.create_platformer");
 			this.EndGame_FirstGame.first_game_finished = false;
 			if (this.Score > this.EndGame_FirstGame.Score)
 			{
@@ -117,6 +118,7 @@ export default class EndGameSecondeGame {
 				localStorage.setItem("score_player1", this.EndGame_FirstGame.Score);
 				localStorage.setItem("score_player2", this.Score);
 			}
+			console.log("window.create_platformer");
 			window.create_platformer();
 			if (this.player && typeof this.player.reset_Game === "function")
 				this.player.reset_Game();
@@ -137,6 +139,7 @@ export default class EndGameSecondeGame {
 			gameState.previous = gameState.current;
 			gameState.current = GameState.MapMenu;
 			setIsFirstGame(true);
+			setSecondeGameFinish(true);
 		}
 
 		if (selected === "Restart") {
