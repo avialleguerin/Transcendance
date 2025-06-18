@@ -58,7 +58,7 @@ down:
 	@docker compose down --remove-orphans
 	@rm -rf ./Frontend/dist
 	@rm -rf ./Security/Nginx/passwd
-	@rm -rf ./Data/sqlite_data/database.sqlite
+# @rm -rf ./Data/sqlite_data/database.sqlite
 	@echo "$(MSG_DOWN_SUCCESS)"
 
 re:

@@ -21,7 +21,7 @@ SETUP_COMPLETED_FILE="/vault/data/.setup_completed"
 ###* CHECK IF COMPLETED *###
 #############*##############
 if [ -f "$SETUP_COMPLETED_FILE" ]; then
-    echo -e "${GREEN}✅ Vault setup already completed. (${CYAN}📝 Root token: $(cat /vault/data/root_token.txt 2>/dev/null || echo 'not found')${RESET}"
+    echo -e "${GREEN}✅ Vault setup already completed. ${CYAN}📝 Root token: $(cat /vault/data/root_token.txt 2>/dev/null || echo 'not found')${RESET}"
     exit 0
 fi
 
@@ -41,22 +41,12 @@ echo -e "${GREEN}✅ Vault is now available!${RESET}"
 if vault status 2>&1 | grep -q "Initialized.*false"; then
     echo -e "${RED}❌ Vault not initialized. Initializing now...${RESET}"
     
-    # Initialiser Vault avec 5 clés et seuil de 3
     init_output=$(vault operator init -key-shares=5 -key-threshold=3 -format=json)
-    
-    # Sauvegarder la sortie complète
-    echo "$init_output" > /vault/data/init_output.json
-    
-    # Extraire et sauvegarder le token root
+    echo "$init_output" > /vault/data/init_output.json    
     echo "$init_output" | jq -r '.root_token' > /vault/data/root_token.txt
-    
-    # Extraire et sauvegarder les clés d'unsealing
     echo "$init_output" | jq -r '.unseal_keys_b64[]' > /vault/data/unseal_keys.txt
-    
-    echo -e "${GREEN}✅ Vault initialized! Keys saved.${RESET}"
-    echo -e "${YELLOW}⚠️  IMPORTANT: Backup /vault/data/init_output.json !${RESET}"
-    
-    # Lire le token root généré
+    echo -e "${GREEN}✅ Vault initialized! Keys saved. (${YELLOW}⚠️ IMPORTANT: Backup /vault/data/init_output.json !${RESET})"
+
     root_token=$(cat /vault/data/root_token.txt)
     echo -e "${GREEN}Root token generated: $root_token${RESET}"
 else
@@ -74,7 +64,7 @@ if vault status 2>&1 | grep -q "Sealed.*true"; then
         exit 1
     fi
 
-    # Utiliser 3 clés pour déverrouiller (seuil minimum)
+    # Use 3 keys to unseal (minimum threshold)
     count=0
     while IFS= read -r key && [ $count -lt 3 ]; do
         echo "Using key $((count + 1))/3"
