@@ -1,0 +1,21 @@
+*.exe
+*.out
+*.o
+
+# Password files
+.htpasswd
+
+# Python & dockers
+db.sqlite3
+__pycache__/
+.envPy
+.env
+.docker
+
+Data/vault_data/
+
+# Builds
+Frontend/dist
+Frontend/node_modules
+Backend/node_modules
+node_modules
