@@ -272,9 +272,9 @@ export async function handleGoogleSignIn(response: { access_token: string }) {
 
 		if (data.success) {
 			sessionStorage.setItem("accessToken", data.accessToken);
-			localStorage.setItem("Player1", data.user.username);
-			if (data.user.profile_picture)
-				localStorage.setItem("profile_picture", data.user.profile_picture);
+			localStorage.setItem("Player1", data.name);
+			if (data.avatar)
+				localStorage.setItem("profile_picture", data.avatar);
 			notif("Connexion Google réussie !", true);
 			gameMenuView();
 		} else

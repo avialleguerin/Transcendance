@@ -1,4 +1,4 @@
-import { c, canvas, gameState, GameState } from './constants.js';
+import { c, canvas, gameState, GameState, getSecondeGameFinish, setSecondeGameFinish } from './constants.js';
 
 export default class MapMenu_c {
 	constructor() {
@@ -169,6 +169,7 @@ export default class MapMenu_c {
 		if (selected === "Map 1")
 		{
 			this.disableControls();
+			setSecondeGameFinish(false);
 			gameState.previous = gameState.current;
 			gameState.current = GameState.Play;
 		}
