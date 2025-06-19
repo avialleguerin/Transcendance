@@ -20,15 +20,16 @@ const colorize = {
 	magenta:(text) => `${colors.magenta}${text}${colors.reset}`,
 	cyan:	(text) => `${colors.cyan}${text}${colors.reset}`,
 
-	error:	(text) => `\t${colors.red} ${text}${colors.reset}`,
-	success:(text) => `\t${colors.green} ${text}${colors.reset}`,
-	warning:(text) => `\t${colors.yellow} ${text}${colors.reset}`,
-	info:	(text) => `\t${colors.cyan} ${text}${colors.reset}`,
-	debug:	(text) => `\t${colors.blue} ${text}${colors.reset}`,
-	trace:	(text) => `\t${colors.magenta} ${text}${colors.reset}`,
+	error:	(text) => `\b${colors.red} ${text}${colors.reset}`,
+	success:(text) => `\b${colors.green} ${text}${colors.reset}`,
+	warning:(text) => `\b${colors.yellow} ${text}${colors.reset}`,
+	info:	(text) => `\b${colors.cyan} ${text}${colors.reset}`,
+	debug:	(text) => `\b${colors.blue} ${text}${colors.reset}`,
+	trace:	(text) => `\b${colors.magenta} ${text}${colors.reset}`,
 }
 
 async function colorLoggerPlugin(fastify) {
+
 	fastify.decorate('logger', {
 		red:	(message) => fastify.log.info(colorize.red(message)),
 		green:	(message) => fastify.log.info(colorize.green(message)),

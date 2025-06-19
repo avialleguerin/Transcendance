@@ -34,7 +34,8 @@ await fastify.register(jwt, { secret: 'supersecretkey', cookie: { cookieName: 't
 await fastify.register(cookie);
 await fastify.register(colorLoggerPlugin)
 export const log = fastify.logger;
-await fastify.register(websocketPlugin)
+console.log("");
+await fastify.register(websocketPlugin);
 setupRedisLogging(log);
 await redisClient.connect();
 const { initializeDb } = await import("./utils/db.js");
