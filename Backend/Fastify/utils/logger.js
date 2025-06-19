@@ -13,35 +13,36 @@ const colors = {
 }
 
 const colorize = {
-	red: (text) => `${colors.red}${text}${colors.reset}`,
-	green: (text) => `${colors.green}${text}${colors.reset}`,
-	yellow: (text) => `${colors.yellow}${text}${colors.reset}`,
-	blue: (text) => `${colors.blue}${text}${colors.reset}`,
-	magenta: (text) => `${colors.magenta}${text}${colors.reset}`,
-	cyan: (text) => `${colors.cyan}${text}${colors.reset}`,
+	red:	(text) => `${colors.red}${text}${colors.reset}`,
+	green:	(text) => `${colors.green}${text}${colors.reset}`,
+	yellow:	(text) => `${colors.yellow}${text}${colors.reset}`,
+	blue:	(text) => `${colors.blue}${text}${colors.reset}`,
+	magenta:(text) => `${colors.magenta}${text}${colors.reset}`,
+	cyan:	(text) => `${colors.cyan}${text}${colors.reset}`,
 
-	error: (text) => `${colors.red} ${text}${colors.reset}`,
-	success: (text) => `${colors.green} ${text}${colors.reset}`,
-	warning: (text) => `${colors.yellow} ${text}${colors.reset}`,
-	info: (text) => `${colors.cyan} ${text}${colors.reset}`,
-	debug: (text) => `${colors.blue} ${text}${colors.reset}`,
+	error:	(text) => `\t${colors.red} ${text}${colors.reset}`,
+	success:(text) => `\t${colors.green} ${text}${colors.reset}`,
+	warning:(text) => `\t${colors.yellow} ${text}${colors.reset}`,
+	info:	(text) => `\t${colors.cyan} ${text}${colors.reset}`,
+	debug:	(text) => `\t${colors.blue} ${text}${colors.reset}`,
+	trace:	(text) => `\t${colors.magenta} ${text}${colors.reset}`,
 }
 
 async function colorLoggerPlugin(fastify) {
 	fastify.decorate('logger', {
-		red: (message) => fastify.log.info(colorize.red(message)),
-		green: (message) => fastify.log.info(colorize.green(message)),
-		yellow: (message) => fastify.log.info(colorize.yellow(message)),
-		blue: (message) => fastify.log.info(colorize.blue(message)),
-		magenta: (message) => fastify.log.info(colorize.magenta(message)),
-		cyan: (message) => fastify.log.info(colorize.cyan(message)),
+		red:	(message) => fastify.log.info(colorize.red(message)),
+		green:	(message) => fastify.log.info(colorize.green(message)),
+		yellow:	(message) => fastify.log.info(colorize.yellow(message)),
+		blue:	(message) => fastify.log.info(colorize.blue(message)),
+		magenta:(message) => fastify.log.info(colorize.magenta(message)),
+		cyan:	(message) => fastify.log.info(colorize.cyan(message)),
 		
-		error: (message) => fastify.log.error(colorize.error(message)),
-		
-		success: (message) => fastify.log.info(colorize.success(message)),
-		warn: (message) => fastify.log.warn(colorize.warning(message)),
-		info: (message) => fastify.log.info(colorize.info(message)),
-		debug: (message) => fastify.log.debug(colorize.debug(message)),
+		error:	(message) => fastify.log.error(colorize.error(message)),
+		success:(message) => fastify.log.info(colorize.success(message)),
+		warn:	(message) => fastify.log.warn(colorize.warning(message)),
+		info:	(message) => fastify.log.info(colorize.info(message)),
+		debug:	(message) => fastify.log.debug(colorize.debug(message)),
+		trace:	(message) => fastify.log.trace(colorize.trace(message)),
 	})
 }
 

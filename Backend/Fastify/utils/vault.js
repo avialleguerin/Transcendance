@@ -19,9 +19,9 @@ let vaultClient = null;
 // 		});
 
 // 		vault.token = response.auth.client_token;
-// 		fastify.log.info("Authenticated with Vault, token acquired.");
+// 		log.info("Authenticated with Vault, token acquired.");
 // 	} catch (error) {
-// 		fastify.log.error("Vault authentication failed:", error);
+// 		log.error("Vault authentication failed:", error);
 // 	}
 // }
 
@@ -76,7 +76,7 @@ export async function getSQLiteCreds(log) {
 		const secret = await vault.read("secret/data/sqlite");
 
 		if (log) {
-			log.info("SQLite credentials retrieved from Vault");
+			log.success("SQLite credentials retrieved from Vault");
 		} else {
 			console.log("SQLite credentials retrieved from Vault");
 		}
@@ -87,11 +87,11 @@ export async function getSQLiteCreds(log) {
         };
 	} catch (err) {
 		if (log) {
-			log.error("Error retrieving Vault secret :", err);
+			log.error("Error retrieving SQLite credentials:", err.message);
 		} else {
-			console.log("Error retrieving Vault secret :\n", err);
+			console.error("Error retrieving SQLite credentials:", err.message);
 		}
-		throw Error("Could not fetch credentials from Vault");
+		throw err;
 	}
 }
 

@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-import { fastify } from '../server.js';
+import { fastify, log } from '../server.js';
 
 const createTransporter = () => {
 	try {
@@ -16,7 +16,7 @@ const createTransporter = () => {
 		}
 		});
 	} catch (error) {
-		fastify.log.error('Error creating email transporter:' + error);
+		log.error('Error creating email transporter:' + error);
 		throw error;
 	}
 };
@@ -29,7 +29,7 @@ const createTransporter = () => {
  */
 export default async function sendWelcomeEmail(to, username, tempPassword) {
 	if (!process.env.GMAIL_USER || !process.env.GMAIL_PASS) {
-		fastify.log.warn('Email environment variables not configured, email not sent');
+		log.warn('Email environment variables not configured, email not sent');
 		return false;
 	}
 
@@ -113,19 +113,19 @@ export default async function sendWelcomeEmail(to, username, tempPassword) {
 
 	try {
 		const info = await transporter.sendMail(mailOptions);
-		fastify.log.info(`📧 Welcome email sent to ${to}: ${info.messageId}`);
+		log.info(`Welcome email sent to ${to}: ${info.messageId}`);
 		return true;
 	} catch (err) {
-		fastify.log.error(`Error sending email to ${to}:` + err);
+		log.error(`Error sending email to ${to}:` + err);
 		return false;
 	}
 }
 
 export function checkEmailConfig() {
 	if (!process.env.GMAIL_USER || !process.env.GMAIL_PASS) {
-		fastify.log.warn('Email configuration missing - Emails will not be sent');
+		log.warn('Email configuration missing - Emails will not be sent');
 		return false;
 	}
-	fastify.log.info('Mail initialized successfully');
+	log.success('Mail initialized successfully');
 	return true;
 }

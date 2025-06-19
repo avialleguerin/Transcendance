@@ -8,7 +8,7 @@ export function notifyFriend(fromUserId, toUserId, type, message = null) {
 	try {
 		const fromUser = usersModel.getUserById(fromUserId);
 		const toUserConnection = activeConnections.get(	toUserId.toString());
-		fastify.log.debug(`Notifying friend ${toUserId} of type ${type} from user ${fromUserId}`);
+		log.debug(`Notifying friend ${toUserId} of type ${type} from user ${fromUserId}`);
 		if (toUserConnection && fromUser)
 			toUserConnection.send(JSON.stringify({ type: type, message: message }));
 	} catch (error) {
@@ -42,8 +42,8 @@ export default function websocketPlugin(fastify) {
 			if (userId && !isNaN(userId)) {
 				activeConnections.set(userId, connection)
 				notifyFriendsStatus(userId, 1)
-				fastify.log.debug(`User ${userId} WebSocket connected`)
-				fastify.log.debug(`Active connections: ${activeConnections.size}`)
+				log.debug(`User ${userId} WebSocket connected`)
+				log.debug(`Active connections: ${activeConnections.size}`)
 				
 				connection.on('message', (message) => {
 					try {
@@ -59,7 +59,7 @@ export default function websocketPlugin(fastify) {
 				})
 
 				connection.on('close', (code, reason) => {
-					fastify.log.info(`User ${userId} WebSocket disconnected - Code: ${code}, Reason: ${reason}`)
+					log.info(`User ${userId} WebSocket disconnected - Code: ${code}, Reason: ${reason}`)
 					activeConnections.delete(userId)
 					
 					const user = usersModel.getUserById(userId)
@@ -67,7 +67,7 @@ export default function websocketPlugin(fastify) {
 						notifyFriendsStatus(userId, 0)
 				})
 				connection.on('error', (error) => {
-					fastify.log.error(`WebSocket error for user ${userId}:`, error)
+					log.error(`WebSocket error for user ${userId}:`, error)
 					activeConnections.delete(userId)
 					notifyFriendsStatus(userId, 0)
 				})

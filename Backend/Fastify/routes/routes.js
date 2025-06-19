@@ -20,7 +20,7 @@ export default async function routes (fastify) {
 			return `${method}`;
 		};
 		const description = getRouteDescription(request.method, request.url);
-		fastify.log.info(`${description} → ${request.url}`);
+		log.info(`${description} → ${request.url}`);
 	});
 
 	fastify.get('/admin/get-all-users', getAllUsers);

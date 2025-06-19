@@ -29,23 +29,23 @@ export const fastify = Fastify({
 })
 
 await fastify.register(websocket)
-setupRedisLogging(fastify);
-await redisClient.connect();
 await fastify.register(fastifyMultipart, { attachFieldsToBody: true, limits: { fileSize: 5 * 1024 * 1024 } });
 await fastify.register(jwt, { secret: 'supersecretkey', cookie: { cookieName: 'token', signed: false } });
 await fastify.register(cookie);
 await fastify.register(colorLoggerPlugin)
 export const log = fastify.logger;
 await fastify.register(websocketPlugin)
+setupRedisLogging(log);
+await redisClient.connect();
 const { initializeDb } = await import("./utils/db.js");
 await initializeDb(log);
 fastify.register(routes, { prefix: '/request' })
 fastify.decorate('redis', redisClient);
 
 cron.schedule('0 0 * * *', () => {
-	fastify.log.info('Clean inactive users...');
+	log.info('Clean inactive users...');
 	const result = usersModel.deleteInactiveUsers();
-	fastify.log.info(`Number of suppressed accounts : ${result.changes}`);
+	log.info(`Number of suppressed accounts : ${result.changes}`);
 	console.log(`Number of suppressed accounts : ${result.changes}`);
 });
 

@@ -38,7 +38,7 @@ export async function initializeDb(log) {
         db.prepare(CREATE_FRIENDSHIPS_TABLE).run();
         db.prepare(CREATE_PLATFORMERS_TABLE).run();
         
-        log.info("Db created successfully");
+        log.success("Db created successfully");
     }
     return db;
 }
