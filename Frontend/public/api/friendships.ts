@@ -319,6 +319,7 @@ export async function fetch_user_games_big(username: string): Promise<void> {
 							</div>
 						</td>
 						<td class="vs_info_navBar">
+							<p class="date_history">${game.created_at}</p>
 							<p class="score_navBar">${dispScoreLeft} - ${dispScoreRight}</p>
 						</td>
 						<td class="opponent_navBar_team">
@@ -353,6 +354,7 @@ export async function fetch_user_games_big(username: string): Promise<void> {
 							<p class="username_navBar">${leftPlayer.username}</p>
 						</td>
 						<td class="vs_info_navBar">
+							<p class="date_history">${game.created_at}</p>
 							<p class="score_navBar">${dispScoreLeft} - ${dispScoreRight}</p>
 						</td>
 						<td class="opponent_navBar">

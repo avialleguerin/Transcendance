@@ -72,7 +72,7 @@ export async function refreshInfos(request, reply) {
 		
 		return reply.code(200).send({ 
 			success: true, 
-			user: user, 
+			user: user,
 			deleted_account: user.deleted_at, 
 			accessToken: accessToken, 
 			message: 'User infos refreshed' 
