@@ -38,7 +38,7 @@ export async function login(event: Event): Promise<void> {
 			updateUI({ removeClass: [{ id:"doubleAuthForm", className: "hidden" }], addClass: ["loginForm", "doubleAuthForm"] });
 			$input("login-title").textContent = "Double Authentication";
 		} else if (data.success && data.connection_status === "connected") {
-			setLocalStorage({ "Player1": data.name, "profile_picture": data.profile_picture });
+			setLocalStorage({ "Player1": data.name, "avatar": data.avatar });
 			connectWebSocket()
 			gameMenuView();
 			$form("loginForm").reset();
@@ -190,7 +190,7 @@ export async function verify2FA(event: Event) {
 
 		if (data.success) {
 			sessionStorage.removeItem("authTicket")
-			setLocalStorage({"Player1": data.name, "profile_picture": data.profile_picture});
+			setLocalStorage({"Player1": data.name, "avatar": data.avatar});
 			connectWebSocket()
 			gameMenuView();
 		}
@@ -230,7 +230,7 @@ export async function refreshInfos() { //REVIEW - maybe put in utils
 			localStorage.clear();
 			homeView();
 		} else if (sessionStorage.getItem("accessToken") && sessionStorage.getItem("accessToken") !== "undefined") {
-			setLocalStorage({"Player1": data.user.name, "profile_picture": data.user.profile_picture});
+			setLocalStorage({"Player1": data.user.name, "avatar": data.user.avatar});
 			connectWebSocket();
 			gameMenuView();
 		}
@@ -274,7 +274,7 @@ export async function handleGoogleSignIn(response: { access_token: string }) {
 			sessionStorage.setItem("accessToken", data.accessToken);
 			localStorage.setItem("Player1", data.name);
 			if (data.avatar)
-				localStorage.setItem("profile_picture", data.avatar);
+				localStorage.setItem("avatar", data.avatar);
 			notif("Connexion Google réussie !", true);
 			gameMenuView();
 		} else

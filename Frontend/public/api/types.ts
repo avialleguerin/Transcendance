@@ -6,7 +6,7 @@ export interface ApiResponse<T = any> {
 	connection_status?: string;
 	user?: User;
 	name?: string;
-	profile_picture?: string;
+	avatar?: string;
 	ticket?: string;
 	doubleAuth_status?: string;
 	player2?: User;
@@ -33,7 +33,7 @@ export interface User {
 	cgu_version?: string;
 	email?: string;
 	doubleAuth_status?: boolean | number;
-	profile_picture?: string;
+	avatar?: string;
 	online_status?: number;
 	last_activity?: string;
 	created_at?: string;

@@ -26,9 +26,9 @@ export async function changeProfilePicture(event: Event): Promise<void> {
 		if (data.success) {
 			$form("uploadForm").reset();
 			fetchProfile();
-			localStorage.setItem("profile_picture", data.profile_picture);
+			localStorage.setItem("avatar", data.avatar);
 			document.getElementById("profile_photo_circle_nav_bar").innerHTML = `
-			<img src="./${data.profile_picture}" alt="Profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+			<img src="./${data.avatar}" alt="Profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
 			`;
 		}
 	} catch (err) { notif(`Error changing profile picture: ${err}`, false) }
@@ -133,7 +133,7 @@ export async function fetchProfile(): Promise<void> {
 		const data = await fetchAPI('/request/profile', 'GET', null, false);
 
 		if (data.success) {
-			document.getElementById("profile_photo_circle").innerHTML = `<img src="./${data.profile_picture}" alt="${data.name} profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+			document.getElementById("profile_photo_circle").innerHTML = `<img src="./${data.avatar}" alt="${data.name} profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
 			$("player_name").textContent = data.name;
 			localStorage.setItem("Player1", data.name);
 			const name = $input("change_name");

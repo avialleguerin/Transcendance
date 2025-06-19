@@ -215,10 +215,10 @@ export default class extends AbstractView {
 		finish_tournament.addEventListener('click', () => {
 			tournament_graphic_id.classList.remove('active');
 			const player1 = localStorage.getItem('Player1');
-			const profile_picture = localStorage.getItem('profile_picture');
+			const avatar = localStorage.getItem('avatar');
 			localStorage.clear()
 			localStorage.setItem('Player1', player1);
-			localStorage.setItem('profile_picture', profile_picture);
+			localStorage.setItem('avatar', avatar);
 			container_name_player.classList.remove('hidden');
 			const container_endTournament = document.getElementById('container_endTournament');
 			container_endTournament.classList.remove('active');

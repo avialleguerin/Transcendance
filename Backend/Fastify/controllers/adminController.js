@@ -32,8 +32,8 @@ export async function deleteUser(request, reply) {
 		const user = usersModel.getUserById(userId)
 		if (!user) return reply.code(404).send({ error: 'User not found' })
 
-		const oldProfilePicture = user.profile_picture;
-		if (oldProfilePicture !== "default-profile-picture.png") {
+		const oldProfilePicture = user.avatar;
+		if (oldProfilePicture !== "avatar.png") {
 			try {
 				const oldFilePath = path.join(uploadDir, oldProfilePicture);
 				const fileExists = await fs.access(oldFilePath)
@@ -60,8 +60,8 @@ export async function forceDeleteUser(request, reply) {
 		const user = usersModel.getUserById(userId)
 		if (!user) return reply.code(404).send({ error: 'User not found' })
 
-		const oldProfilePicture = user.profile_picture;
-		if (oldProfilePicture !== "default-profile-picture.png") {
+		const oldProfilePicture = user.avatar;
+		if (oldProfilePicture !== "avatar.png") {
 			try {
 				const oldFilePath = path.join(uploadDir, oldProfilePicture);
 				const fileExists = await fs.access(oldFilePath)

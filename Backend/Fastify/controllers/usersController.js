@@ -71,7 +71,7 @@ export async function googleSignIn(request, reply) {
 			tempPassword = randomPassword
 			isNewUser = true
 			
-			let profilePicture = "default-profile-picture.png"
+			let profilePicture = "avatar.png"
 			if (profilePictureUrl) {
 				try {
 					const imageResponse = await fetch(profilePictureUrl)
@@ -86,7 +86,7 @@ export async function googleSignIn(request, reply) {
 							await fs.writeFile(filePath, buffer);
 							profilePicture = secureFilename;
 						} catch (validationError) {
-							profilePicture = "default-profile-picture.png";
+							profilePicture = "avatar.png";
 						}
 					} else {
 						fastify.log.warn(`Failed to download Google profile picture: ${imageResponse.status}`)
@@ -125,7 +125,7 @@ export async function googleSignIn(request, reply) {
 				message: 'Google Sign-In successful', 
 				connection_status: "connected", 
 				name: user.name,
-				avatar: user.profile_picture,
+				avatar: user.avatar,
 				accessToken: accessToken 
 			})
 			
@@ -148,8 +148,8 @@ export async function getUserProfile(request, reply) {
 		if (!user)
 			return reply.code(401).send({ error: 'Unauthorized' })
 
-		const imgUrl = `uploads/${user.profile_picture}`
-		return reply.code(200).send({ success: true, name: user.name, doubleAuth_status: user.doubleAuth_status, accessToken: accessToken, profile_picture: imgUrl })
+		const imgUrl = `uploads/${user.avatar}`
+		return reply.code(200).send({ success: true, name: user.name, doubleAuth_status: user.doubleAuth_status, accessToken: accessToken, avatar: imgUrl })
 	} catch (error) {
 		fastify.log.error(`Error retrieving user profile: ${error.message}`)
 		reply.code(500).send({ error: 'Internal Server Error' })
@@ -167,8 +167,8 @@ export async function getUserProfilePicture(request, reply) {
 		if (!user)
 			return reply.code(401).send({ error: 'Unauthorized' })
 
-		const imgUrl = `uploads/${user.profile_picture}`
-		return reply.code(200).send({ success: true, name: user.name, accessToken: accessToken, profile_picture: imgUrl })
+		const imgUrl = `uploads/${user.avatar}`
+		return reply.code(200).send({ success: true, name: user.name, accessToken: accessToken, avatar: imgUrl })
 	} catch (error) {
 		fastify.log.error(`Error retrieving profile picture: ${error.message}`)
 		reply.code(500).send({ error: 'Internal Server Error' })
@@ -246,7 +246,7 @@ export async function login(request, reply) {
 			message: 'Logged in',
 			connection_status: "connected",
 			name: user.name,
-			profile_picture: user.profile_picture,
+			avatar: user.avatar,
 			doubleAuth_status: user.doubleAuth_status,
 			accessToken: accessToken
 		})
@@ -582,8 +582,8 @@ export async function changeProfilePicture(request, reply) {
 			});
 		}
 
-		const oldProfilePicture = user.profile_picture
-		if (oldProfilePicture !== "default-profile-picture.png") {
+		const oldProfilePicture = user.avatar
+		if (oldProfilePicture !== "avatar.png") {
 			try {
 				const oldFilePath = path.join(uploadDir, oldProfilePicture)
 				const fileExists = await fs.access(oldFilePath)
@@ -607,7 +607,7 @@ export async function changeProfilePicture(request, reply) {
 			success: true,
 			accessToken: accessToken,
 			message: 'Profile picture updated successfully!',
-			profile_picture: `uploads/${secureFilename}`
+			avatar: `uploads/${secureFilename}`
 		})
 
 	} catch (err) {
@@ -652,8 +652,8 @@ export async function deleteAccount(request, reply) {
 			}
 		}
 
-		const oldProfilePicture = user.profile_picture
-		if (oldProfilePicture !== "default-profile-picture.png") {
+		const oldProfilePicture = user.avatar
+		if (oldProfilePicture !== "avatar.png") {
 			try {
 				const oldFilePath = path.join(uploadDir, oldProfilePicture)
 				const fileExists = await fs.access(oldFilePath)
@@ -726,7 +726,7 @@ export async function verifyDoubleAuth(request, reply) {
 				success:  true, 
 				message: '2FA validated successfully!', 
 				name: user.name, 
-				profile_picture: user.profile_picture, 
+				avatar: user.avatar, 
 				connection_status: "connected", 
 				accessToken: accessToken 
 			})
@@ -824,7 +824,7 @@ export async function exportUserData(request, reply) {
 			personal_information: {
 				userId: user.userId,
 				name: user.name,
-				profile_picture: user.profile_picture,
+				avatar: user.avatar,
 				created_at: user.created_at,
 				doubleAuth_status: !!user.doubleAuth_status
 			},
@@ -858,7 +858,7 @@ export async function anonymizeUser(request, reply) {
 		}
 		
 		const anonymizedName = `Anonym${user.userId}`
-		const anonymizedProfilePicture = "default-profile-picture.png"
+		const anonymizedProfilePicture = "avatar.png"
 		
 		fastify.log.info(`Anonymizing user account: ${user.name}`)
 		usersModel.updateName(user.userId, anonymizedName)

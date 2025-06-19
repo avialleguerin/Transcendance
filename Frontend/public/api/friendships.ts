@@ -64,7 +64,7 @@ export async function fetch_user_friendships(): Promise<void> {
 		const renderFriend = (friendship: Friendship, showActions: boolean): string => {
 			let statusClass: string = `${friendship.friendOnlineStatus ? 'friend_online_status online' : 'friend_online_status offline'}`;
 			let statusTitle: string = `${friendship.friendOnlineStatus ? 'Online' : 'Offline'}`;
-			let friendshipProfilePicture: string = friendship.status === 'accepted' ? friendship.friendProfilePicture : 'default-profile-picture.png';
+			let friendshipProfilePicture: string = friendship.status === 'accepted' ? friendship.friendProfilePicture : 'avatar.png';
 			return `
 				<div id="friendId-${friendship.friendId}" class="friend">
 					<div class="friend-info">
@@ -271,7 +271,7 @@ export async function fetch_user_games_big(name: string): Promise<void> {
 		const user = data.user;
 		const userId = user.userId;
 		const games = data.games;
-		document.getElementById("profile_photo_circle_Game_History").innerHTML = `<img src="/uploads/${user.profile_picture}" alt="${user.name} profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;	
+		document.getElementById("profile_photo_circle_Game_History").innerHTML = `<img src="/uploads/${user.avatar}" alt="${user.name} profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;	
 		document.getElementById("game_history_name").innerHTML = `${user.name}`;
 		document.getElementById("games_won_history").innerHTML = `${user.games_won}`;
 		document.getElementById("games_lost_history").innerHTML = `${user.games_lost}`;

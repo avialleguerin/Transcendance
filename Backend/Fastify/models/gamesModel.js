@@ -42,7 +42,7 @@ const gamesModel = {
 	getUserGames: (user) => {
 		return db.prepare(`
 			SELECT g.gameId, g.user1_id, g.user2_id, g.user3_id, g.user4_id, g.score_left, g.score_right, g.created_at,
-				u1.name as user1_name, u1.profile_picture as user1ProfilePicture, u2.name as user2_name, u2.profile_picture as user2ProfilePicture, u3.name as user3_name, u3.profile_picture as user3ProfilePicture, u4.name as user4_name, u4.profile_picture as user4ProfilePicture
+				u1.name as user1_name, u1.avatar as user1ProfilePicture, u2.name as user2_name, u2.avatar as user2ProfilePicture, u3.name as user3_name, u3.avatar as user3ProfilePicture, u4.name as user4_name, u4.avatar as user4ProfilePicture
 			FROM games g
 			JOIN users u1 ON g.user1_id = u1.userId 
 			JOIN users u2 ON g.user2_id = u2.userId

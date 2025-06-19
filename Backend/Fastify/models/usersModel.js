@@ -4,7 +4,7 @@ import { getCurrentCGUVersion } from "../utils/cgu.js";
 export const CREATE_USERS_TABLE = `
 	CREATE TABLE IF NOT EXISTS users (
 		userId INTEGER PRIMARY KEY AUTOINCREMENT,
-		profile_picture TEXT DEFAULT 'default-profile-picture.png',
+		avatar TEXT DEFAULT 'avatar.png',
 		name TEXT UNIQUE NOT NULL CHECK(length(name) >= 3 AND length(name) <= 10),
 		password TEXT NOT NULL CHECK(length(password) <= 255),
 		doubleAuth_status INTEGER DEFAULT 0 CHECK(doubleAuth_status IN (0, 1)),
@@ -29,7 +29,7 @@ const usersModel = {
 	createGoogleUser: (name, password, googleId, profilePicture) => {
 		const currentCGUVersion = getCurrentCGUVersion();
 		return db.prepare(`
-			INSERT INTO users (name, password, google_id, profile_picture, cgu_version) 
+			INSERT INTO users (name, password, google_id, avatar, cgu_version) 
 			VALUES (?, ?, ?, ?, ?)
 		`).run(name, password, googleId, profilePicture, currentCGUVersion);
 	},
@@ -48,7 +48,7 @@ const usersModel = {
 	updatePassword: (userId, newPassword) => { return db.prepare("UPDATE users SET password = ? WHERE userId = ?").run(newPassword, userId) },
 	updateOnlineStatus: (userId, NewOnlineStatus) => { return db.prepare("UPDATE users SET online_status = ? WHERE userId = ?").run(NewOnlineStatus, userId) },
 	setInactiveUsersOffline: (inactiveSince) => { return db.prepare("UPDATE users SET online_status = 0 WHERE last_activity <= ?").run(inactiveSince); },
-	updateProfilePicture: (userId, profile_picture) => { return db.prepare("UPDATE users SET profile_picture = ? WHERE userId = ?").run(profile_picture, userId) },
+	updateProfilePicture: (userId, avatar) => { return db.prepare("UPDATE users SET avatar = ? WHERE userId = ?").run(avatar, userId) },
 	updateGamesWon: (userId) => { return db.prepare("UPDATE users SET games_won = games_won + 1 WHERE userId = ?").run(userId) },
 	updateGamesLost: (userId) => { return db.prepare("UPDATE users SET games_lost = games_lost + 1 WHERE userId = ?").run(userId) },
 	updateUserCGUVersion: (userId, version) => { return db.prepare("UPDATE users SET cgu_version = ?, cgu_accepted = CURRENT_TIMESTAMP WHERE userId = ?").run(version, userId) },
@@ -60,8 +60,8 @@ const usersModel = {
 	anonymizeUser: (userId) => {
 		const anonymizedName = `del_${userId}`;
 		const anonymizedPassword = 'DELETED_ACCOUNT';
-		const defaultProfilePicture = 'default-profile-picture.png';
-		return db.prepare(`UPDATE users SET name = ?, password = ?, profile_picture = ?, doubleAuth_status = 0, doubleAuth_secret = ?, google_id = NULL, deleted_at = CURRENT_TIMESTAMP WHERE userId = ?`).run(anonymizedName, anonymizedPassword, defaultProfilePicture, null, userId);
+		const defaultProfilePicture = 'avatar.png';
+		return db.prepare(`UPDATE users SET name = ?, password = ?, avatar = ?, doubleAuth_status = 0, doubleAuth_secret = ?, google_id = NULL, deleted_at = CURRENT_TIMESTAMP WHERE userId = ?`).run(anonymizedName, anonymizedPassword, defaultProfilePicture, null, userId);
 	},
 	forceDeleteUser: (userId) => {
 		const transaction = db.transaction(() => {
