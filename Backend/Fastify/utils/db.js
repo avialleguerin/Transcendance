@@ -24,9 +24,9 @@ async function setupDatabase(log) {
     }
 }
 
-export async function initializeDb(log) {
+export async function initializeDb(fastify) {
     if (!db) {
-        db = await setupDatabase(log);
+        db = await setupDatabase(fastify.log);
         
         const { CREATE_USERS_TABLE } = await import('../models/usersModel.js');
         const { CREATE_GAMES_TABLE } = await import('../models/gamesModel.js');
@@ -38,7 +38,7 @@ export async function initializeDb(log) {
         db.prepare(CREATE_FRIENDSHIPS_TABLE).run();
         db.prepare(CREATE_PLATFORMERS_TABLE).run();
         
-        log.info("Db created successfully");
+        fastify.log.info("Db created successfully");
     }
     return db;
 }
