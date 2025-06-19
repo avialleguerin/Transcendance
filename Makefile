@@ -32,7 +32,7 @@ MSG_NLOG_SUCCESS	:= ${GREEN}✓ Logs deactivated (LOG_ACTIVE=false).${RESET}
 
 
 # Docker Compose
-NO_LOGS 	:= --no-attach vault --no-attach redis --no-attach tsengine --no-attach nginx ##--no-attach fastify
+NO_LOGS 	:= --no-attach vault --no-attach redis --no-attach tsengine --no-attach nginx #--no-attach fastify
 
 # Variables BABYLON
 BABYLON_FILE = ./Frontend/public/srcs/game/gameplay/babylon.js
@@ -58,7 +58,7 @@ down:
 	@docker compose down --remove-orphans
 	@rm -rf ./Frontend/dist
 	@rm -rf ./Security/Nginx/passwd
-	@rm -rf ./Data/sqlite_data/database.sqlite
+# @rm -rf ./Data/sqlite_data/database.sqlite
 	@echo "$(MSG_DOWN_SUCCESS)"
 
 re:
