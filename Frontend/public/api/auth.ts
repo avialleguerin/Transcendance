@@ -231,6 +231,9 @@ export async function refreshInfos() { //REVIEW - maybe put in utils
 			homeView();
 		} else if (sessionStorage.getItem("accessToken") && sessionStorage.getItem("accessToken") !== "undefined") {
 			setLocalStorage({"Player1": data.user.username, "profile_picture": data.user.profile_picture});
+			document.getElementById("profile_photo_circle_nav_bar").innerHTML = `
+			<img src="./uploads/${data.user.profile_picture}" alt="Profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+			`;
 			connectWebSocket();
 			gameMenuView();
 		}

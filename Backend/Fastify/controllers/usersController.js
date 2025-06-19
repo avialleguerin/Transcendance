@@ -866,7 +866,7 @@ export async function anonymizeUser(request, reply) {
 		usersModel.updateProfilePicture(user.userId, anonymizedProfilePicture)
 		
 		fastify.log.info(`User account anonymized successfully: ${user.username}`)
-		return reply.code(200).send({ success: true, message: 'User account anonymized successfully' })
+		return reply.code(200).send({ success: true, profile_picture: anonymizedProfilePicture, message: 'User account anonymized successfully' })
 	} catch (error) {
 		fastify.log.error(`Error anonymizing user account: ${error.message}`)
 		return reply.code(500).send({ success: false, error: 'Failed to anonymize user account : ' + error.message })
