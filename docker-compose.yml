@@ -23,8 +23,10 @@ services:
       # - VAULT_DEV_ROOT_TOKEN_ID=root
       - VAULT_ADDR=http://vault:8200
     depends_on:
-      - redis
-      - vault
+      vault:
+        condition: service_healthy
+      redis:
+        condition: service_started
     volumes: # TODO - Changer "app" -> "Fatsify" for the node modules to be installed efficiently
       - ./Backend/Fastify:/app
       - /app/node_modules    # Preserve the modules installed in the container 
@@ -99,7 +101,12 @@ services:
       # - ./Security/Vault/vault_data:/vault/data
     cap_add:
       - IPC_LOCK
-    # entrypoint: "vault server -dev -dev-listen-address=0.0.0.0:8200"
+    healthcheck:
+      test: ["CMD", "sh", "-c", "vault status | grep -q 'Sealed.*false' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
 
 # networks:
 #   transcendence-network:

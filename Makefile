@@ -137,6 +137,10 @@ vault:
 	@echo "${BLUE}Status:${RESET}"
 	@docker exec vault vault status 2>/dev/null || echo "${RED}Vault unavailable${RESET}"
 
+vunseal:
+	@echo "${YELLOW}🔓 Force unsealing Vault...${RESET}"
+	@docker exec vault sh -c 'if vault status 2>&1 | grep -q "Sealed.*true"; then echo "Unsealing..."; count=0; while IFS= read -r key && [ $$count -lt 3 ]; do vault operator unseal "$$key"; count=$$((count + 1)); done < /vault/data/unseal_keys.txt; echo "✅ Vault unsealed!"; else echo "✅ Vault already unsealed"; fi' 2>/dev/null || echo "${RED}Failed to unseal${RESET}"
+
 vsecrets:
 	@echo "${BLUE}=== VAULT SECRETS ===${RESET}"
 	@docker exec vault sh -c 'export VAULT_TOKEN=$$(cat /vault/data/root_token.txt 2>/dev/null) && vault kv get secret/sqlite' 2>/dev/null || echo "${RED}No secrets found.${RESET}"

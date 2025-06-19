@@ -1,32 +1,55 @@
 import Vault from 'node-vault';
 import fs from 'fs';
 
-// const vault = Vault({
-// 	endopint: 'http://vault:8200',
-// 	// token: 'root' // TODO Remplacer avec AppRole en production
-// });
-
 let vaultClient = null;
 
-// const role_id = "8a5c7e1b-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
-// const secret_id = "57d4c1a2-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
+// Fonction pour attendre avec un délai
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
-// export async function authenticate() {
-// 	try {
-// 		const response = await vault.approleLogin({
-// 		role_id,
-// 		secret_id,
-// 		});
-
-// 		vault.token = response.auth.client_token;
-// 		log.info("Authenticated with Vault, token acquired.");
-// 	} catch (error) {
-// 		log.error("Vault authentication failed:", error);
-// 	}
-// }
+// Fonction pour attendre que Vault soit disponible et unsealed
+async function waitForVault(log, maxRetries = 30, delayMs = 2000) {
+    for (let i = 0; i < maxRetries; i++) {
+        try {
+            const response = await fetch('http://vault:8200/v1/sys/health');
+            const health = await response.json();
+            
+            if (!health.sealed) {
+                if (log) {
+                    log.success(`Vault is ready and unsealed (attempt ${i + 1}/${maxRetries})`);
+                } else {
+                    console.log(`Vault is ready and unsealed (attempt ${i + 1}/${maxRetries})`);
+                }
+                return true;
+            } else {
+                if (log) {
+                    log.warn(`Vault is sealed, waiting... (attempt ${i + 1}/${maxRetries})`);
+                } else {
+                    console.log(`Vault is sealed, waiting... (attempt ${i + 1}/${maxRetries})`);
+                }
+            }
+        } catch (error) {
+            if (log) {
+                log.warn(`Vault not available yet, retrying... (attempt ${i + 1}/${maxRetries})`);
+            } else {
+                console.log(`Vault not available yet, retrying... (attempt ${i + 1}/${maxRetries})`);
+            }
+        }
+        
+        if (i < maxRetries - 1) {
+            await sleep(delayMs);
+        }
+    }
+    
+    throw new Error('Vault not available or still sealed after maximum retries');
+}
 
 async function initVault(log) {
     if (vaultClient) return vaultClient;
+
+    // Attendre que Vault soit prêt
+    await waitForVault(log);
 
     try {
         // En production, lire le token depuis le fichier généré par le script setup
@@ -47,19 +70,33 @@ async function initVault(log) {
         }
 
         vaultClient = Vault({
-            endpoint: process.env.VAULT_ADDR || 'http://vault:8200', // Correction: endopint -> endpoint
+            endpoint: process.env.VAULT_ADDR || 'http://vault:8200',
             token: token
         });
 
-        // Tester la connexion
-        await vaultClient.read('auth/token/lookup-self');
-        if (log) {
-            log.success('Vault connection established');
-        } else {
-            console.log('Vault connection established');
+        // Tester la connexion avec retry
+        let lastError;
+        for (let i = 0; i < 5; i++) {
+            try {
+                await vaultClient.read('auth/token/lookup-self');
+                if (log) {
+                    log.success('Vault connection established');
+                } else {
+                    console.log('Vault connection established');
+                }
+                return vaultClient;
+            } catch (error) {
+                lastError = error;
+                if (log) {
+                    log.warn(`Vault connection attempt ${i + 1}/5 failed: ${error.message}`);
+                } else {
+                    console.warn(`Vault connection attempt ${i + 1}/5 failed: ${error.message}`);
+                }
+                if (i < 4) await sleep(1000);
+            }
         }
         
-        return vaultClient;
+        throw lastError;
     } catch (error) {
         if (log) {
             log.error('Failed to initialize Vault:', error.message);

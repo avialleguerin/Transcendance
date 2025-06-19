@@ -9,5 +9,6 @@ listener "tcp" {
 
 api_addr = "http://127.0.0.1:8200"
 ui = true
+log_level = "WARN"
 
-// TODO - enable TLS
+// REVIEW: enable TLS ?
