@@ -8,6 +8,7 @@ RUN	apt-get update && \
 		apt-get install -y \
 			libmodsecurity3 \
 			apache2-utils \
+			openssl \
 		&& rm -rf /var/lib/apt/lists/*
 
 # 2) Remettre l’utilisateur d’origine (optionnel)
@@ -30,6 +31,14 @@ RUN rm /docker-entrypoint.d/95-configure-rules.sh
 
 # 4) Créer le répertoire pour htpasswd et un script d'initialisation
 RUN mkdir -p /etc/nginx/passwd
+RUN mkdir -p /etc/nginx/conf
+
+# Copier le script de génération SSL
+COPY Nginx/generate-ssl.sh /usr/local/bin/generate-ssl.sh
+RUN chmod +x /usr/local/bin/generate-ssl.sh
+
+# Générer les certificats SSL
+RUN /usr/local/bin/generate-ssl.sh
 
 # Créer un script d'entrée personnalisé
 RUN echo '#!/bin/bash\n\

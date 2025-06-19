@@ -180,7 +180,7 @@ fi
 #############*##############
 nginx_user=$(vault kv get -field=username secret/nginx 2>/dev/null)
 nginx_pass=$(vault kv get -field=password secret/nginx 2>/dev/null)
-NGINX_DIR="/etc/nginx/passwd"
+NGINX_DIR="/nginx/passwd"
 HTPASSWD_FILE="$NGINX_DIR/.htpasswd"
 mkdir -p "$NGINX_DIR"
 htpasswd -cb "$HTPASSWD_FILE" "$nginx_user" "$nginx_pass" > /dev/null 2>&1

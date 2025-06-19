@@ -45,14 +45,11 @@ services:
       - "8443:8443"
       - "8143:8143"
     depends_on:
-      fastify:
-        condition: service_started
-      tsengine:
-        condition: service_started
-      vault:
-        condition: service_healthy
+      - fastify
+      - tsengine
     environment:
       - NGINX_ENVSUBST_TEMPLATE_DIR=off
+      - DNS_SERVER=127.0.0.11
     volumes:
       - ./Security/Nginx/conf.d:/etc/nginx/conf.d
       - ./Security/Nginx/passwd:/etc/nginx/passwd
@@ -101,7 +98,7 @@ services:
     volumes:
       - ./Data/vault_data:/vault/data
       - ./Security/Vault/scripts:/vault/scripts #maybe add policies
-      - ./Security/Nginx/passwd:/etc/nginx/passwd
+      - ./Security/Nginx/passwd:/nginx/passwd
       # - ./Security/Vault/vault_data:/vault/data
     cap_add:
       - IPC_LOCK
