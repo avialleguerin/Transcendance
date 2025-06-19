@@ -53,6 +53,29 @@ if [ -f "$SETUP_COMPLETED_FILE" ]; then
         echo -e "${GREEN}🔓 Vault is now unlocked after restart!${RESET}"
     fi
     
+    # Toujours recréer le fichier .htpasswd même si le setup est déjà fait
+    echo -e "${YELLOW}🔄 Recreating .htpasswd file...${RESET}"
+    if [ -f /vault/data/root_token.txt ]; then
+        export VAULT_TOKEN=$(cat /vault/data/root_token.txt)
+        if vault token lookup &>/dev/null; then
+            nginx_user=$(vault kv get -field=username secret/nginx 2>/dev/null)
+            nginx_pass=$(vault kv get -field=password secret/nginx 2>/dev/null)
+            if [ -n "$nginx_user" ] && [ -n "$nginx_pass" ]; then
+                NGINX_DIR="/etc/nginx/passwd"
+                HTPASSWD_FILE="$NGINX_DIR/.htpasswd"
+                mkdir -p "$NGINX_DIR"
+                htpasswd -cb "$HTPASSWD_FILE" "$nginx_user" "$nginx_pass" > /dev/null 2>&1
+                echo -e "${GREEN}✅ .htpasswd file recreated successfully!${RESET}"
+            else
+                echo -e "${RED}❌ Failed to get nginx credentials from Vault${RESET}"
+            fi
+        else
+            echo -e "${RED}❌ Vault authentication failed${RESET}"
+        fi
+    else
+        echo -e "${RED}❌ Root token not found${RESET}"
+    fi
+    
     exit 0
 fi
 
@@ -157,7 +180,7 @@ fi
 #############*##############
 nginx_user=$(vault kv get -field=username secret/nginx 2>/dev/null)
 nginx_pass=$(vault kv get -field=password secret/nginx 2>/dev/null)
-NGINX_DIR="/nginx/passwd"
+NGINX_DIR="/etc/nginx/passwd"
 HTPASSWD_FILE="$NGINX_DIR/.htpasswd"
 mkdir -p "$NGINX_DIR"
 htpasswd -cb "$HTPASSWD_FILE" "$nginx_user" "$nginx_pass" > /dev/null 2>&1

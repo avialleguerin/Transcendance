@@ -7,6 +7,7 @@ USER root
 RUN	apt-get update && \
 		apt-get install -y \
 			libmodsecurity3 \
+			apache2-utils \
 		&& rm -rf /var/lib/apt/lists/*
 
 # 2) Remettre l’utilisateur d’origine (optionnel)
@@ -26,6 +27,30 @@ RUN	mkdir -p /etc/nginx/includes \
 # 3.5) desactiver le script chiant
 RUN	rm /docker-entrypoint.d/90-copy-modsecurity-config.sh
 RUN rm /docker-entrypoint.d/95-configure-rules.sh
+
+# 4) Créer le répertoire pour htpasswd et un script d'initialisation
+RUN mkdir -p /etc/nginx/passwd
+
+# Créer un script d'entrée personnalisé
+RUN echo '#!/bin/bash\n\
+echo "Waiting for .htpasswd file..."\n\
+timeout=60\n\
+count=0\n\
+while [ ! -f /etc/nginx/passwd/.htpasswd ] && [ $count -lt $timeout ]; do\n\
+    echo "Waiting for .htpasswd file... ($count/$timeout)"\n\
+    sleep 1\n\
+    count=$((count + 1))\n\
+done\n\
+\n\
+if [ ! -f /etc/nginx/passwd/.htpasswd ]; then\n\
+    echo "Warning: .htpasswd file not found, creating default one"\n\
+    echo "admin:$apr1$xyz$abc123" > /etc/nginx/passwd/.htpasswd\n\
+fi\n\
+\n\
+echo "Starting nginx..."\n\
+exec nginx -g "daemon off;"' > /docker-entrypoint-custom.sh
+
+RUN chmod +x /docker-entrypoint-custom.sh
 
 # 4) Copier tes fichiers « template » Nginx
 # COPY Nginx/conf.d/default.conf		/etc/nginx/templates/conf.d/default.conf.template
@@ -48,4 +73,4 @@ COPY Nginx/nginx.conf					/etc/nginx/nginx.conf
 # 7) On laisse optionnellement envsubst actif ou non
 ENV	NGINX_ENVSUBST_TEMPLATE_DIR=off
 	
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["/docker-entrypoint-custom.sh"]

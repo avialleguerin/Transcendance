@@ -13,6 +13,34 @@ import { checkEmailConfig } from './utils/mailer.js'
 
 const logActive = process.env.LOG_ACTIVE === 'true';
 
+// Function to wait for Vault to be ready
+async function waitForVault() {
+	const vaultAddr = process.env.VAULT_ADDR || 'http://vault:8200';
+	const maxRetries = 30;
+	let retries = 0;
+	
+	while (retries < maxRetries) {
+		try {
+			const response = await fetch(`${vaultAddr}/v1/sys/health`);
+			if (response.ok) {
+				const health = await response.json();
+				if (health.initialized && !health.sealed) {
+					console.log('✅ Vault is ready and unsealed');
+					return true;
+				}
+			}
+		} catch (error) {
+			// Vault not ready yet
+		}
+		
+		console.log(`⏳ Waiting for Vault... (${retries + 1}/${maxRetries})`);
+		await new Promise(resolve => setTimeout(resolve, 2000));
+		retries++;
+	}
+	
+	throw new Error('Vault is not ready after maximum retries');
+}
+
 export const fastify = Fastify({
 	logger: logActive ? {
 		level: 'debug',
@@ -27,6 +55,9 @@ export const fastify = Fastify({
 	} : false,
 	disableRequestLogging: true
 })
+
+// Wait for Vault before continuing
+await waitForVault();
 
 await fastify.register(websocket)
 await fastify.register(fastifyMultipart, { attachFieldsToBody: true, limits: { fileSize: 5 * 1024 * 1024 } });

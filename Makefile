@@ -34,7 +34,7 @@ MSG_LOG_SUCCESS		:= ${GREEN}✓ Logs activated (LOG_ACTIVE=true).${RESET}
 MSG_LOG_DISABLE		:= \n${BLUE}Starting containers without logs...${RESET}
 MSG_NLOG_SUCCESS	:= ${GREEN}✓ Logs deactivated (LOG_ACTIVE=false).${RESET}
 
-NO_LOGS 	:= --no-attach redis --no-attach tsengine --no-attach nginx #--no-attach fastify  --no-attach vault
+NO_LOGS 	:= --no-attach redis --no-attach tsengine #--no-attach nginx #--no-attach fastify  --no-attach vault
 BABYLON_FILE = ./Frontend/public/srcs/game/gameplay/babylon.js
 SCRIPT_SECURITY = ./Security/requests-test.sh
 
@@ -57,7 +57,7 @@ build:
 down:
 	@docker compose down --remove-orphans
 	@rm -rf ./Frontend/dist
-	@rm -rf ./Security/Nginx/passwd
+# @rm -rf ./Security/Nginx/passwd
 # @rm -rf ./Data/sqlite_data/database.sqlite
 	@echo "$(MSG_DOWN_SUCCESS)"
 

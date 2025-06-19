@@ -45,8 +45,12 @@ services:
       - "8443:8443"
       - "8143:8143"
     depends_on:
-      - fastify
-      - tsengine
+      fastify:
+        condition: service_started
+      tsengine:
+        condition: service_started
+      vault:
+        condition: service_healthy
     environment:
       - NGINX_ENVSUBST_TEMPLATE_DIR=off
     volumes:
@@ -97,7 +101,7 @@ services:
     volumes:
       - ./Data/vault_data:/vault/data
       - ./Security/Vault/scripts:/vault/scripts #maybe add policies
-      - ./Security/Nginx/passwd:/nginx/passwd
+      - ./Security/Nginx/passwd:/etc/nginx/passwd
       # - ./Security/Vault/vault_data:/vault/data
     cap_add:
       - IPC_LOCK
