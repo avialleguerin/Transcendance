@@ -38,7 +38,7 @@ export default class extends AbstractView {
 						<p>Player 2</p>
 						<div class="input-container">
 							<label for="player2">Username</label>
-							<input type="text" id="tournament-username2" class="input_name_player" placeholder="Username player 2">
+							<input type="text" id="tournament-name2" class="input_name_player" placeholder="Username player 2">
 						</div>
 						<div class="input-container">
 							<label for="player2">Password</label>
@@ -49,7 +49,7 @@ export default class extends AbstractView {
 						<p>Player 3</p>
 						<div class="input-container">
 							<label for="player3">Username</label>
-							<input type="text" id="tournament-username3" class="input_name_player" placeholder="Username player 3">
+							<input type="text" id="tournament-name3" class="input_name_player" placeholder="Username player 3">
 						</div>
 						<div class="input-container">
 							<label for="player3">Password</label>
@@ -60,7 +60,7 @@ export default class extends AbstractView {
 						<p>Player 4</p>
 						<div class="input-container">
 							<label for="player4">Username</label>
-							<input type="text" id="tournament-username4" class="input_name_player" placeholder="Username Player 4">
+							<input type="text" id="tournament-name4" class="input_name_player" placeholder="Username Player 4">
 						</div>
 						<div class="input-container">
 							<label for="player4">Password</label>

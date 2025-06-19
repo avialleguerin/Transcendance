@@ -30,7 +30,7 @@ export async function addFriend(request, reply) {
 		if (!infos.user) return reply.code(401).send({ error: "User not found", accessToken: infos.accessToken })
 		if (!infos.accessToken) return reply.code(401).send({ error: "Unauthorized" })
 		
-		const friendExists = usersModel.getUserByUsername(friend)
+		const friendExists = usersModel.getUserByName(friend)
 		if (!friendExists || friendExists.anonymized_at) return reply.code(404).send({ success: false, error: `User '${friend}' not found`, accessToken: infos.accessToken })
 		if (friendExists.userId === infos.user.userId) return reply.code(400).send({ success: false, error: `You can't invite yourself as friend`, accessToken: infos.accessToken })
 		
@@ -64,7 +64,7 @@ export async function acceptFriend(request, reply) {
 		if (friendship.friendId !== infos.user.userId) return reply.code(403).send({ success: false, error: `You are not allowed to accept this friend`, accessToken: infos.accessToken })
 
 		friendshipsModel.acceptFriendship(friendship.userId, infos.user.userId);
-		notifyFriend(infos.user.userId, friendship.userId, "friend_request", `${infos.user.username} has accepted your friend request`);
+		notifyFriend(infos.user.userId, friendship.userId, "friend_request", `${infos.user.name} has accepted your friend request`);
 
 		return reply.send({ success: true, message: "Friend accepted successfully", accessToken: infos.accessToken });
 	} catch (err) {
@@ -93,7 +93,7 @@ export async function deleteFriend(request, reply) {
 		
 		if (deleteResult.changes === 0) return reply.code(404).send({ success: false, error: `Friend not found`, accessToken: infos.accessToken })
 		
-		notifyFriend(infos.user.userId, otherUserId, "friend_deleted", `${infos.user.username} has deleted you from their friends list`);
+		notifyFriend(infos.user.userId, otherUserId, "friend_deleted", `${infos.user.name} has deleted you from their friends list`);
 		
 		return reply.send({ success: true, message: "Friend deleted successfully", accessToken: infos.accessToken })
 	} catch (err) {

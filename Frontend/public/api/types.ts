@@ -5,7 +5,7 @@ export interface ApiResponse<T = any> {
 	accessToken?: string;
 	connection_status?: string;
 	user?: User;
-	username?: string;
+	name?: string;
 	profile_picture?: string;
 	ticket?: string;
 	doubleAuth_status?: string;
@@ -25,7 +25,7 @@ export interface Err {
 
 export interface User {
 	id: number;
-	username: string;
+	name: string;
 	userId?: string;
 	google_id?: string;
 	games_won?: number;
@@ -55,14 +55,14 @@ export interface GameResult {
 export interface GameScore extends GameResult {
 	score_left: number;
 	score_right: number;
-	user1_id: number; user1_username: string; user1ProfilePicture?: string;
-	user2_id: number; user2_username: string; user2ProfilePicture?: string;
-	user3_id?: number; user3_username?: string; user3ProfilePicture?: string;
-	user4_id?: number; user4_username?: string; user4ProfilePicture?: string;
+	user1_id: number; user1_name: string; user1ProfilePicture?: string;
+	user2_id: number; user2_name: string; user2ProfilePicture?: string;
+	user3_id?: number; user3_name?: string; user3ProfilePicture?: string;
+	user4_id?: number; user4_name?: string; user4ProfilePicture?: string;
 }
 
 export interface LoginRequest {
-	username: string;
+	name: string;
 	password: string;
 }
 
@@ -73,8 +73,8 @@ export interface RegisterRequest extends LoginRequest {
 export interface Friendship {
 	friendshipId: number;
 	friendId: number;
-	friend_username: string;
-	username?: string;
+	friend_name: string;
+	name?: string;
 	status: string;
 	created_at: string;
 	user1_name: string;
@@ -87,8 +87,8 @@ export interface PlatformerGame {
 	platformerId?: number;
 	user1_name?: string;
 	user2_name?: string;
-	score_player1?: number;
-	score_player2?: number;
+	score1?: number;
+	score2?: number;
 	created_at?: string;
 }
 
@@ -173,7 +173,7 @@ declare global {
 		delete_friendship: (friendshipId: string | number) => Promise<void>;
 		fetch_user_friendships: () => Promise<void>;
 		fetch_user_games: () => Promise<void>;
-		fetch_user_games_big: (username: string) => Promise<void>;
+		fetch_user_games_big: (name: string) => Promise<void>;
 		togglePanel: (event: Event) => void;
 
 		//* userManagement.ts

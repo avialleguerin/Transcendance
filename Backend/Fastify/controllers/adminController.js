@@ -91,28 +91,28 @@ export async function getAllGames(request, reply) {
 }
 
 export async function addGame(request, reply) {
-	const { user1, user2, user3, user4 } = request.body
+	const { name1, name2, name3, name4 } = request.body
 	
 	try {
-		const user1Exists = usersModel.getUserByUsername(user1)
-		const user2Exists = usersModel.getUserByUsername(user2)
+		const user1 = usersModel.getUserByName(name1)
+		const user2 = usersModel.getUserByName(name2)
 		
-		if (!user1Exists) return reply.code(404).send({ success: false, error: `User '${user1}' not found` })
-		if (!user2Exists) return reply.code(404).send({ success: false, error: `User '${user2}' not found` })
-		if (user1 === user2) return reply.code(400).send({ success: false, error: "Cannot create a game with duplicate players" })
+		if (!user1) return reply.code(404).send({ success: false, error: `User '${name1}' not found` })
+		if (!user2) return reply.code(404).send({ success: false, error: `User '${name2}' not found` })
+		if (name1 === name2) return reply.code(400).send({ success: false, error: "Cannot create a game with duplicate players" })
 		
-		if (user3 || user4) {
-			const user3Exists = user3 ? usersModel.getUserByUsername(user3) : null
-			const user4Exists = user4 ? usersModel.getUserByUsername(user4) : null
+		if (name3 || name4) {
+			const user3 = name3 ? usersModel.getUserByName(name3) : null
+			const user4 = name4 ? usersModel.getUserByName(name4) : null
 			
-			if (user3 && !user3Exists) return reply.code(404).send({ success: false, error: `User '${user3}' not found` })
-			if (user4 && !user4Exists) return reply.code(404).send({ success: false, error: `User '${user4}' not found` })
-			if (user3 && (user1 === user3 || user2 === user3)) return reply.code(400).send({ success: false, error: "Cannot create a game with duplicate players" })
-			if (user4 && (user1 === user4 || user2 === user4 || user3 === user4)) return reply.code(400).send({ success: false, error: "Cannot create a game with duplicate players" })
+			if (name3 && !user3) return reply.code(404).send({ success: false, error: `User '${name3}' not found` })
+			if (name4 && !user4) return reply.code(404).send({ success: false, error: `User '${name4}' not found` })
+			if (name3 && (name1 === name3 || name2 === name3)) return reply.code(400).send({ success: false, error: "Cannot create a game with duplicate players" })
+			if (name4 && (name1 === name4 || name2 === name4 || name3 === name4)) return reply.code(400).send({ success: false, error: "Cannot create a game with duplicate players" })
 			
-			if (user3Exists && user4Exists) gamesModel.create2v2Game(user1Exists.userId, user2Exists.userId, user3Exists.userId, user4Exists.userId, 0, 0)
-			else return reply.code(400).send({ success: false, error: "Both user3 and user4 are required for a 2v2 game" })
-		} else gamesModel.createGame(user1Exists.userId, user2Exists.userId)
+			if (user3 && user4) gamesModel.create2v2Game(user1.userId, user2.userId, user3.userId, user4.userId, 0, 0)
+			else return reply.code(400).send({ success: false, error: "User 3 and user 4 are required for a 2v2 game" })
+		} else gamesModel.createGame(user1.userId, user2.userId)
 			
 		return reply.code(201).send({ success: true, message: "Game created successfully" })
 	} catch (err) {
@@ -145,14 +145,14 @@ export async function getAllFriendships(request, reply) {
 }
 
 export async function addFriendship(request, reply) {
-	const { user_username, friend_username } = request.body
+	const { user_name, friend_name } = request.body
 	
 	try {
-		const user = usersModel.getUserByUsername(user_username)
+		const user = usersModel.getUserByName(user_name)
 		if (!user) return reply.code(401).send({ error: "User not found" })
 		
-		const friend = usersModel.getUserByUsername(friend_username)
-		if (!friend) return reply.code(404).send({ success: false, error: `User '${friend_username}' not found` })
+		const friend = usersModel.getUserByName(friend_name)
+		if (!friend) return reply.code(404).send({ success: false, error: `User '${friend_name}' not found` })
 
 		const status = friendshipsModel.checkFriendshipStatus(user.userId, friend.userId);
 		if (status.requestSent || status.requestReceived) return reply.code(400).send({ success: false, error: "Friendship already exists" });
@@ -190,21 +190,21 @@ export async function getAllPlatformers(request, reply) {
 }
 
 export async function addPlatformer(request, reply) {
-	const { username1, username2, score_player1, score_player2 } = request.body
+	const { name1, name2, score1, score2 } = request.body
 
 	try {
-		if (!username1 || !username2 || score_player1 === undefined || score_player2 === undefined) return reply.code(400).send({ success: false, error: "Missing parameters" })
+		if (!name1 || !name2 || score1 === undefined || score2 === undefined) return reply.code(400).send({ success: false, error: "Missing parameters" })
 		
-		const player1 = usersModel.getUserByUsername(username1)
-		const player2 = usersModel.getUserByUsername(username2)
+		const player1 = usersModel.getUserByName(name1)
+		const player2 = usersModel.getUserByName(name2)
 		
-		if (!player1) return reply.code(404).send({ success: false, error: `User '${username1}' not found` })
+		if (!player1) return reply.code(404).send({ success: false, error: `User '${name1}' not found` })
 		
-		if (!player2) return reply.code(404).send({ success: false, error: `User '${username2}' not found` })
+		if (!player2) return reply.code(404).send({ success: false, error: `User '${name2}' not found` })
 		
 		if (player1.userId === player2.userId) return reply.code(400).send({ success: false, error: "Cannot create a platformer with the same user" })
 		
-		platformersModel.createPlatformer(player1.userId, player2.userId, score_player1, score_player2)
+		platformersModel.createPlatformer(player1.userId, player2.userId, score1, score2)
 
 		return reply.code(201).send({ success: true, message: "Platformer finished successfully" })
 	} catch (err) {

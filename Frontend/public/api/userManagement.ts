@@ -86,7 +86,7 @@ export async function export_data(): Promise<void> {
 		// notif("Preparing your data for download...", true);
 		const data = await fetchAPI('/request/user/export-data', 'GET', null, false);
 
-		const username = data.personal_information.username;
+		const name = data.personal_information.name;
 		const jsonString = JSON.stringify(data, null, 2);
 		const blob = new Blob([jsonString], { type: 'application/json' });
 		const url = window.URL.createObjectURL(blob);
@@ -94,7 +94,7 @@ export async function export_data(): Promise<void> {
 		const date = new Date().toISOString().split('T')[0];
 		
 		a.href = url;
-		a.download = `transcendance-${username}-data-${date}.json`;
+		a.download = `transcendance-${name}-data-${date}.json`;
 		document.body.appendChild(a);
 		a.click();
 		window.URL.revokeObjectURL(url);
@@ -132,15 +132,14 @@ export async function fetchProfile(): Promise<void> {
 	try {
 		const data = await fetchAPI('/request/profile', 'GET', null, false);
 
-		if (data.user) {
-			const user = data.user;
-			document.getElementById("profile_photo_circle").innerHTML = `<img src="./${data.profile_picture}" alt="${user.username} profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
-			$("player_name").textContent = user.username;
-			localStorage.setItem("Player1", user.username);
-			const username = $input("change_username");
-			username.placeholder = user.username;
+		if (data.success) {
+			document.getElementById("profile_photo_circle").innerHTML = `<img src="./${data.profile_picture}" alt="${data.name} profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+			$("player_name").textContent = data.name;
+			localStorage.setItem("Player1", data.name);
+			const name = $input("change_name");
+			name.placeholder = data.name;
 			const doubleAuth = $input("active_fa");
-			if (user.doubleAuth_status)
+			if (data.doubleAuth_status)
 				doubleAuth.checked = true;
 			else {
 				doubleAuth.checked = false;
@@ -153,14 +152,14 @@ export async function fetchProfile(): Promise<void> {
 
 export async function updateProfileInfo(event: Event): Promise<void> {
 	event.preventDefault();
-	const newUsername = $input("change_username").value;
+	const newName = $input("change_name").value;
 	const newPassword = $input("change_password").value;
 	const confirmPassword = $input("confirm_change_password").value;
-	if (newUsername === "" && newPassword === "") return notif("Please fill at least one field!", false);
+	if (newName === "" && newPassword === "") return notif("Please fill at least one field!", false);
 	if (newPassword && (!confirmPassword || newPassword !== confirmPassword)) return notif("Passwords do not match!", false);
 
 	try {
-		await fetchAPI('/request/user/update-profile', 'PUT', { newUsername, newPassword });
+		await fetchAPI('/request/user/update-profile', 'PUT', { newName, newPassword });
 		$form("updateProfileForm").reset();
 		fetchProfile();
 	} catch (err) { console.error(`updateProfileInfo: ${err}`); }

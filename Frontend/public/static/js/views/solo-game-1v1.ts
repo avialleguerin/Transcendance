@@ -64,7 +64,7 @@ export default class solo_game extends AbstractView {
 				</div>
 
 				<div class="container-Player1" id="container-player1_id">
-					<h1 id="player1-username" >${localStorage.getItem('Player1')}</h1>
+					<h1 id="player1-name" >${localStorage.getItem('Player1')}</h1>
 					<div class="container-item_player1">
 						<p id="nb-item-grenade-1"></p>
 						<p class="touch_player1">Z</p>

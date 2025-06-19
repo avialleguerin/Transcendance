@@ -49,7 +49,7 @@ export async function getUserFromToken(request) {
 			if (!user) return null;
 			
 			usersModel.updateLastActivity(user.userId)
-			const newAccessToken = fastify.jwt.sign({ userId: userId, username: user.username }, { expiresIn: '15m' })
+			const newAccessToken = fastify.jwt.sign({ userId: userId, name: user.name }, { expiresIn: '15m' })
 			return { user: user, accessToken: newAccessToken };
 		}
 	} catch (err) {

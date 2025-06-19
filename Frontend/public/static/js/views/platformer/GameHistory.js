@@ -101,9 +101,9 @@ export default class GameHistory {
 
 			this.gameHistory.forEach((game, index) => {
 				const yPosition = 200 + index * 35;
-				const isPlayer1Winner = game.score_player1 > game.score_player2;
+				const isPlayer1Winner = game.score1 > game.score2;
 				const winner = isPlayer1Winner ? game.player1 : game.player2;
-				const winnerScore = isPlayer1Winner ? game.score_player1 : game.score_player2;
+				const winnerScore = isPlayer1Winner ? game.score1 : game.score2;
 				
 				const player1Color = "#4DA6FF";
 				const player2Color = "#FFD700";
@@ -127,7 +127,7 @@ export default class GameHistory {
 				
 				// Score
 				c.fillStyle = "white";
-				c.fillText(`${game.score_player1} - ${game.score_player2}`, columns.score1, yPosition);
+				c.fillText(`${game.score1} - ${game.score2}`, columns.score1, yPosition);
 				
 				// Gagnant
 				if (isPlayer1Winner)

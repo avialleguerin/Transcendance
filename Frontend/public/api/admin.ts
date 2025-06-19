@@ -71,7 +71,7 @@ export async function fetch_users(): Promise<void> {
 		document.getElementById('users-table').innerHTML = users.map((user: User) => /*html*/`
 			<tr class="border-collapse text-sm hover:shadow-lg hover:rounded-xl hover:-translate-y-1 transition-all duration-200 ease-in-out cursor-pointer">
 				<td class="bg-white px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${user.userId}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.username}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.name}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.google_id || "—"}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.games_won}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.games_lost}</td>
@@ -110,7 +110,7 @@ export async function fetch_deleted_users(): Promise<void> {
 			document.getElementById('deleted-users-table').innerHTML = data.users.map((user: User) => /*html*/`
 				<tr class="border-collapse text-sm hover:shadow-lg hover:rounded-xl hover:-translate-y-1 transition-all duration-200 ease-in-out">
 					<td class="bg-gray-50 px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${user.userId}</td>
-					<td class="bg-gray-50 px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.username}</td>
+					<td class="bg-gray-50 px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.name}</td>
 					<td class="bg-gray-50 px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.google_id || "—"}</td>
 					<td class="bg-gray-50 px-6 py-2 border border-gray-100 border-l-0">${new Date(user.deleted_at).toLocaleString()}</td>
 					<td class="bg-gray-50 px-6 py-2 rounded-r-xl border border-gray-100 border-l-0">
@@ -179,7 +179,7 @@ export async function fetch_platformers(): Promise<void> {
 			<tr class="border-collapse text-sm hover:shadow-lg hover:rounded-xl hover:-translate-y-1 transition-all duration-200 ease-in-out cursor-pointer">
 				<td class="bg-white px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${platformer.platformerId}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.user1_name}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.score_player1} - ${platformer.score_player2}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.score1} - ${platformer.score2}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.user2_name}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.created_at}</td>
 				<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0"><button class="bg-red-200 hover:bg-red-300 m-2 text-red-500 hover:text-red-600 px-4 py-1 rounded-full transition-colors duration-300 ease-in-out" onclick="delete_platformer(${platformer.platformerId})">Delete</button></td>
@@ -199,8 +199,8 @@ export async function fetch_friendships(): Promise<void> {
 		document.getElementById('friendships-table').innerHTML = friendships.map((friendship: Friendship) => /*html*/`
 			<tr class="border-collapse text-sm hover:shadow-lg hover:rounded-xl hover:-translate-y-1 transition-all duration-200 ease-in-out cursor-pointer">
 				<td class="bg-white px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${friendship.friendshipId}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${friendship.username}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${friendship.friend_username}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${friendship.name}</td>
+				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${friendship.friend_name}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${friendship.status}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${friendship.created_at}</td>
 				<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0"><button class="bg-red-200 hover:bg-red-300 m-2 text-red-500 hover:text-red-600 px-4 py-1 rounded-full" onclick="delete_friendship(${friendship.friendshipId})">Delete</button></td>
@@ -214,7 +214,7 @@ export async function fetch_friendships(): Promise<void> {
 export async function create_user(event: Event): Promise<void> {
 	event.preventDefault();
 
-	const username = $input("addUser-username").value;
+	const name = $input("addUser-name").value;
 	const password = $input("addUser-password").value;
 	const confirmPassword = $input("addUser-confirm-password").value;
 
@@ -226,12 +226,12 @@ export async function create_user(event: Event): Promise<void> {
 		headers: { 
 			"Content-Type": "application/json",
 		},
-		body: JSON.stringify({ username, password }),
+		body: JSON.stringify({ name, password }),
 		credentials: 'include',
 	});
 	const data = await response.json();
 	if (data.success) {
-		notif(`User '${username}' added successfully`, true);
+		notif(`User '${name}' added successfully`, true);
 		$form("addUserForm").reset();
 		close_user_modal();
 	} else
@@ -242,12 +242,12 @@ export async function create_user(event: Event): Promise<void> {
 export async function create_game(event: Event): Promise<void> {
 	event.preventDefault();
 
-	const user1 = $input("addGame-user1").value;
-	const user2 = $input("addGame-user2").value;
-	const user3 = $input("addGame-user3").value;
-	const user4 = $input("addGame-user4").value;
+	const name1 = $input("addGame-name1").value;
+	const name2 = $input("addGame-name2").value;
+	const name3 = $input("addGame-name3").value;
+	const name4 = $input("addGame-name4").value;
 
-	if (!user1 || !user2)
+	if (!name1 || !name2)
 		return notif("Please select two users", false);
 
 	const response = await fetch('/request/admin/create-game', {
@@ -255,12 +255,12 @@ export async function create_game(event: Event): Promise<void> {
 		headers: { 
 			"Content-Type": "application/json",
 		},
-		body: JSON.stringify({ user1, user2, user3, user4 }),
+		body: JSON.stringify({ name1, name2, name3, name4 }),
 		credentials: 'include',
 	});
 	const data = await response.json();
 	if (data.success) {
-		notif(`Game added : ${data.user1} vs ${data.user2}`, true);
+		notif(`Game added : ${name1} vs ${name2}`, true);
 		close_game_modal();
 	} else
 		notif(data.error, false);
@@ -271,12 +271,12 @@ export async function create_game(event: Event): Promise<void> {
 export async function create_platformer(event: Event): Promise<void> {
 	event.preventDefault();
 
-	const username1 = $input("addPlatformer-username1").value;
-	const username2 = $input("addPlatformer-username2").value;
-	const score_player1 = $input("addPlatformer-score1").value;
-	const score_player2 = $input("addPlatformer-score2").value;
+	const name1 = $input("addPlatformer-name1").value;
+	const name2 = $input("addPlatformer-name2").value;
+	const score1 = $input("addPlatformer-score1").value;
+	const score2 = $input("addPlatformer-score2").value;
 
-	if (!username1 || !username2 || !score_player1 || !score_player2)
+	if (!name1 || !name2 || !score1 || !score2)
 		return notif("Please select the users and their scores", false);
 
 	const response = await fetch('/request/admin/create-platformer', {
@@ -284,12 +284,12 @@ export async function create_platformer(event: Event): Promise<void> {
 		headers: { 
 			"Content-Type": "application/json",
 		},
-		body: JSON.stringify({ username1, username2, score_player1, score_player2 }),
+		body: JSON.stringify({ name1, name2, score1, score2 }),
 		credentials: 'include',
 	});
 	const data = await response.json();
 	if (data.success) {
-		notif(`Platformer added : ${data.username} in ${data.chrono}s`, true);
+		notif(`Platformer added : ${data.name} in ${data.chrono}s`, true);
 		close_platformer_modal();
 	} else
 		notif(data.error, false);
@@ -301,9 +301,9 @@ export async function create_platformer(event: Event): Promise<void> {
 export async function create_friendship(event: Event): Promise<void> {
 	event.preventDefault();
 
-	const user_username = $input("addFriendship-user").value;
-	const friend_username = $input("addFriendship-friend").value;
-	if (!user_username || !friend_username)
+	const user_name = $input("addFriendship-user").value;
+	const friend_name = $input("addFriendship-friend").value;
+	if (!user_name || !friend_name)
 		return notif("Please select two users", false);
 
 	const response = await fetch('/request/admin/create-friendship', {
@@ -311,12 +311,12 @@ export async function create_friendship(event: Event): Promise<void> {
 		headers: { 
 			"Content-Type": "application/json",
 		},
-		body: JSON.stringify({ user_username, friend_username }),
+		body: JSON.stringify({ user_name, friend_name }),
 		credentials: 'include',
 	});
 	const data = await response.json();
 	if (data.success) {
-		notif(`Frienship added : ${user_username} with ${friend_username}`, true);
+		notif(`Frienship added : ${user_name} with ${friend_name}`, true);
 		close_friendship_modal();
 	} else
 		notif(data.error, false);

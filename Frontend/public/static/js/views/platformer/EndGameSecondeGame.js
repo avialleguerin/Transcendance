@@ -108,14 +108,14 @@ export default class EndGameSecondeGame {
 			if (this.Score > this.EndGame_FirstGame.Score)
 			{
 				this.WinnerScore = this.Score;
-				localStorage.setItem("score_player1", this.Score);
-				localStorage.setItem("score_player2", this.EndGame_FirstGame.Score);
+				localStorage.setItem("score1", this.Score);
+				localStorage.setItem("score2", this.EndGame_FirstGame.Score);
 			}
 			else
 			{
 				this.WinnerScore = this.EndGame_FirstGame.Score;
-				localStorage.setItem("score_player1", this.EndGame_FirstGame.Score);
-				localStorage.setItem("score_player2", this.Score);
+				localStorage.setItem("score1", this.EndGame_FirstGame.Score);
+				localStorage.setItem("score2", this.Score);
 			}
 			window.create_platformer();
 			if (this.player && typeof this.player.reset_Game === "function")

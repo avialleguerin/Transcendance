@@ -97,10 +97,10 @@ test_user_routes() {
 	print_section "👤 Testing User Routes"
 	
 	print_test "POST /user/create-user"
-	test_route "POST" "/user/create-user" '{"username":"testuser","password":"testpass"}' "200 201 409"
+	test_route "POST" "/user/create-user" '{"name":"testuser","password":"testpass"}' "200 201 409"
 	
 	print_test "POST /user/login"
-	test_route "POST" "/user/login" '{"username":"testuser","password":"testpass"}' "200 401"
+	test_route "POST" "/user/login" '{"name":"testuser","password":"testpass"}' "200 401"
 	
 	print_test "GET /profile (no auth)"
 	test_route "GET" "/profile" "" "401"
@@ -159,7 +159,7 @@ test_security() {
 	print_test "Advanced SQL Injection Tests"
 	# Différentes variantes d'injection SQL
 	test_security_attack "${BASE_URL}/user/login?id=1%27%20UNION%20SELECT%20*%20FROM%20users--" "SQL UNION" "true"
-	test_security_attack "${BASE_URL}/user/login?username=admin%27--&password=anything" "SQL Comment" "true"
+	test_security_attack "${BASE_URL}/user/login?name=admin%27--&password=anything" "SQL Comment" "true"
 	test_security_attack "${BASE_URL}/profile?search=1%27%29%20OR%20%271%27%3D%271%20--%20" "SQL Bypass" "true"
 }
 
@@ -260,15 +260,15 @@ test_authentication() {
 	
 	# Tableau des credentials à tester
 	local credentials=(
-		'{"username":"admin","password":"admin"}'
-		'{"username":"testuser","password":"testpass"}'
-		'{"username":"user","password":"password"}'
-		'{"username":"root","password":"root"}'
+		'{"name":"admin","password":"admin"}'
+		'{"name":"testuser","password":"testpass"}'
+		'{"name":"user","password":"password"}'
+		'{"name":"root","password":"root"}'
 	)
 	
 	for cred in "${credentials[@]}"; do
-		local username=$(echo "$cred" | jq -r '.username')
-		print_test "Login attempt with user: $username"
+		local name=$(echo "$cred" | jq -r '.name')
+		print_test "Login attempt with user: $name"
 		
 		response=$(curl $CURL_OPTS -X POST "$BASE_URL/user/login" \
 			-H "Content-Type: application/json" \
@@ -280,7 +280,7 @@ test_authentication() {
 		success=$(echo "$response" | jq -r '.success // .status // "unknown"' 2>/dev/null)
 		
 		if [ "$success" = "true" ] || echo "$response" | grep -q '"token"'; then
-			echo "✅ Login successful for $username"
+			echo "✅ Login successful for $name"
 			
 			# Essayer d'extraire le token
 			token=$(echo "$response" | jq -r '.accessToken // .token // .access_token // .jwt // .sessionToken // .data.token' 2>/dev/null)
@@ -296,7 +296,7 @@ test_authentication() {
 				return 0  # Succès, on sort de la fonction
 			fi
 		else
-			echo "❌ Login failed for $username"
+			echo "❌ Login failed for $name"
 		fi
 		echo ""
 	done
@@ -305,7 +305,7 @@ test_authentication() {
 	print_test "Testing session-based authentication"
 	response=$(curl $CURL_OPTS -c /tmp/cookies -X POST "$BASE_URL/user/login" \
 		-H "Content-Type: application/json" \
-		-d '{"username":"admin","password":"admin"}')
+		-d '{"name":"admin","password":"admin"}')
 	
 	if echo "$response" | grep -q '"success":true'; then
 		print_test "GET /profile (with session cookies)"
@@ -325,7 +325,7 @@ test_authentication_with_setup() {
     print_test "Creating test user"
     create_response=$(curl $CURL_OPTS -X POST "$BASE_URL/user/create-user" \
         -H "Content-Type: application/json" \
-        -d '{"username":"testauth","password":"testauth123","email":"test@test.com"}')
+        -d '{"name":"testauth","password":"testauth123","email":"test@test.com"}')
     
     echo "User creation response: $create_response"
     
@@ -333,7 +333,7 @@ test_authentication_with_setup() {
     print_test "Login with created user"
     response=$(curl $CURL_OPTS -X POST "$BASE_URL/user/login" \
         -H "Content-Type: application/json" \
-        -d '{"username":"testauth","password":"testauth123"}')
+        -d '{"name":"testauth","password":"testauth123"}')
     
     echo "Login response: $response"
     
@@ -362,12 +362,12 @@ test_detailed_response() {
 	print_test "POST /user/login (verbose)"
 	curl -k -v "$BASE_URL/user/login" \
 		-H "Content-Type: application/json" \
-		-d '{"username":"admin","password":"admin"}' 2>&1 | head -30
+		-d '{"name":"admin","password":"admin"}' 2>&1 | head -30
 	
 	print_test "Response body analysis"
 	response=$(curl $CURL_OPTS "$BASE_URL/user/login" \
 		-H "Content-Type: application/json" \
-		-d '{"username":"admin","password":"admin"}')
+		-d '{"name":"admin","password":"admin"}')
 	
 	if echo "$response" | jq . >/dev/null 2>&1; then
 		echo "✅ Valid JSON response"

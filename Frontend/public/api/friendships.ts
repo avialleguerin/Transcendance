@@ -71,7 +71,7 @@ export async function fetch_user_friendships(): Promise<void> {
 						<div id="friendStatus-${friendship.friendId}" class="${friendship.status === 'accepted' ? statusClass : ''}" title="${statusTitle}"></div>
 						<img src="/uploads/${friendshipProfilePicture}" class="friend_photo" alt="Profile">
 						<div class="friend-details">
-							<p class="friend_name">${friendship.friend_username}</p>
+							<p class="friend_name">${friendship.friend_name}</p>
 							<div class="friend-status-actions">
 								${
 									showActions
@@ -174,12 +174,12 @@ export async function fetch_user_games(): Promise<void> {
 				const is2v2 = game.user3_id && game.user4_id;
 				if (is2v2) {
 					let leftTeam = [
-					  { id: game.user1_id, username: game.user1_username, profilePicture: game.user1ProfilePicture },
-					  { id: game.user2_id, username: game.user2_username, profilePicture: game.user2ProfilePicture }
+					  { id: game.user1_id, name: game.user1_name, profilePicture: game.user1ProfilePicture },
+					  { id: game.user2_id, name: game.user2_name, profilePicture: game.user2ProfilePicture }
 					];
 					let rightTeam = [
-					  { id: game.user3_id, username: game.user3_username, profilePicture: game.user3ProfilePicture },
-					  { id: game.user4_id, username: game.user4_username, profilePicture: game.user4ProfilePicture }
+					  { id: game.user3_id, name: game.user3_name, profilePicture: game.user3ProfilePicture },
+					  { id: game.user4_id, name: game.user4_name, profilePicture: game.user4ProfilePicture }
 					];
 
 					const leftHasCurrent = leftTeam.some(player => player.id == userId);
@@ -202,8 +202,8 @@ export async function fetch_user_games(): Promise<void> {
 							<img src="/uploads/${leftTeam[1].profilePicture}" alt="profile" />
 						  </div>
 						  <div class="team-player">
-							<p class="username_navBar">${leftTeam[0].username}</p>
-							<p class="username_navBar">${leftTeam[1].username}</p>
+							<p class="name_navBar">${leftTeam[0].name}</p>
+							<p class="name_navBar">${leftTeam[1].name}</p>
 						  </div>
 						</td>
 						<td class="vs_info_navBar">
@@ -211,8 +211,8 @@ export async function fetch_user_games(): Promise<void> {
 						</td>
 						<td class="opponent_navBar_team">
 						  <div class="team-player">
-							<p class="username_navBar">${rightTeam[0].username}</p>
-							<p class="username_navBar">${rightTeam[1].username}</p>
+							<p class="name_navBar">${rightTeam[0].name}</p>
+							<p class="name_navBar">${rightTeam[1].name}</p>
 						  </div>
 						  <div class="team-player">
 							<img src="/uploads/${rightTeam[0].profilePicture}" alt="profile" />
@@ -222,8 +222,8 @@ export async function fetch_user_games(): Promise<void> {
 					  </tr>
 					`;
 				} else {
-					let leftPlayer = { id: game.user1_id, username: game.user1_username, profilePicture: game.user1ProfilePicture };
-					let rightPlayer = { id: game.user2_id, username: game.user2_username, profilePicture: game.user2ProfilePicture };
+					let leftPlayer = { id: game.user1_id, name: game.user1_name, profilePicture: game.user1ProfilePicture };
+					let rightPlayer = { id: game.user2_id, name: game.user2_name, profilePicture: game.user2ProfilePicture };
 
 					if (rightPlayer.id == userId && leftPlayer.id != userId) {
 					  const tempPlayer = leftPlayer;
@@ -238,13 +238,13 @@ export async function fetch_user_games(): Promise<void> {
 					  <tr class="game_card_navBar ${result1v1}">
 						<td class="profile_navBar">
 						  <img src="/uploads/${leftPlayer.profilePicture}" alt="profile" />
-						  <p class="username_navBar">${leftPlayer.username}</p>
+						  <p class="name_navBar">${leftPlayer.name}</p>
 						</td>
 						<td class="vs_info_navBar">
 						  <p class="score_navBar">${dispScoreLeft} - ${dispScoreRight}</p>
 						</td>
 						<td class="opponent_navBar">
-						  <p class="username_navBar">${rightPlayer.username}</p>
+						  <p class="name_navBar">${rightPlayer.name}</p>
 						  <img src="/uploads/${rightPlayer.profilePicture}" alt="profile" />
 						</td>
 					  </tr>
@@ -261,18 +261,18 @@ export async function fetch_user_games(): Promise<void> {
 	}
 }
 
-export async function fetch_user_games_big(username: string): Promise<void> {
+export async function fetch_user_games_big(name: string): Promise<void> {
 	try {
-		if (!username)
-			username = localStorage.getItem(localStorage.getItem("Player1")) || '';
-		const data = await fetchAPI('/request/game/get-friend-games', 'POST', { username }, null, false);
+		if (!name)
+			name = localStorage.getItem(localStorage.getItem("Player1")) || '';
+		const data = await fetchAPI('/request/game/get-friend-games', 'POST', { name }, null, false);
 		if (!data.success)
 			return notif(data.error, false);
 		const user = data.user;
 		const userId = user.userId;
 		const games = data.games;
-		document.getElementById("profile_photo_circle_Game_History").innerHTML = `<img src="/uploads/${data.user.profile_picture}" alt="${data.username} profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;	
-		document.getElementById("game_history_username").innerHTML = `${data.user.username}`;
+		document.getElementById("profile_photo_circle_Game_History").innerHTML = `<img src="/uploads/${user.profile_picture}" alt="${user.name} profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;	
+		document.getElementById("game_history_name").innerHTML = `${user.name}`;
 		document.getElementById("games_won_history").innerHTML = `${user.games_won}`;
 		document.getElementById("games_lost_history").innerHTML = `${user.games_lost}`;
 		document.getElementById("games_played_history").innerHTML = `${user.games_lost + user.games_won}`;
@@ -286,12 +286,12 @@ export async function fetch_user_games_big(username: string): Promise<void> {
 				const is2v2 = game.user3_id && game.user4_id;
 				if (is2v2) {
 					let leftTeam = [
-					  { id: game.user1_id, username: game.user1_username, profilePicture: game.user1ProfilePicture },
-					  { id: game.user2_id, username: game.user2_username, profilePicture: game.user2ProfilePicture }
+					  { id: game.user1_id, name: game.user1_name, profilePicture: game.user1ProfilePicture },
+					  { id: game.user2_id, name: game.user2_name, profilePicture: game.user2ProfilePicture }
 					];
 					let rightTeam = [
-					  { id: game.user3_id, username: game.user3_username, profilePicture: game.user3ProfilePicture },
-					  { id: game.user4_id, username: game.user4_username, profilePicture: game.user4ProfilePicture }
+					  { id: game.user3_id, name: game.user3_name, profilePicture: game.user3ProfilePicture },
+					  { id: game.user4_id, name: game.user4_name, profilePicture: game.user4ProfilePicture }
 					];
 
 					const leftHasCurrent = leftTeam.some(player => player.id == userId);
@@ -314,8 +314,8 @@ export async function fetch_user_games_big(username: string): Promise<void> {
 								<img src="/uploads/${leftTeam[1].profilePicture}" alt="profile" />
 							</div>
 							<div class="team-player">
-								<p class="username_navBar">${leftTeam[0].username}</p>
-								<p class="username_navBar">${leftTeam[1].username}</p>
+								<p class="name_navBar">${leftTeam[0].name}</p>
+								<p class="name_navBar">${leftTeam[1].name}</p>
 							</div>
 						</td>
 						<td class="vs_info_navBar">
@@ -323,8 +323,8 @@ export async function fetch_user_games_big(username: string): Promise<void> {
 						</td>
 						<td class="opponent_navBar_team">
 							<div class="team-player">
-								<p class="username_navBar">${rightTeam[0].username}</p>
-								<p class="username_navBar">${rightTeam[1].username}</p>
+								<p class="name_navBar">${rightTeam[0].name}</p>
+								<p class="name_navBar">${rightTeam[1].name}</p>
 							</div>
 							<div class="team-player">
 								<img src="/uploads/${rightTeam[0].profilePicture}" alt="profile" />
@@ -334,8 +334,8 @@ export async function fetch_user_games_big(username: string): Promise<void> {
 					</tr>
 					`;
 				} else {
-					let leftPlayer = { id: game.user1_id, username: game.user1_username, profilePicture: game.user1ProfilePicture };
-					let rightPlayer = { id: game.user2_id, username: game.user2_username, profilePicture: game.user2ProfilePicture };
+					let leftPlayer = { id: game.user1_id, name: game.user1_name, profilePicture: game.user1ProfilePicture };
+					let rightPlayer = { id: game.user2_id, name: game.user2_name, profilePicture: game.user2ProfilePicture };
 
 					if (rightPlayer.id == userId && leftPlayer.id != userId) {
 						const tempPlayer = leftPlayer;
@@ -350,13 +350,13 @@ export async function fetch_user_games_big(username: string): Promise<void> {
 					<tr class="game_card_navBar ${result1v1}">
 						<td class="profile_navBar">
 							<img src="/uploads/${leftPlayer.profilePicture}" alt="profile" />
-							<p class="username_navBar">${leftPlayer.username}</p>
+							<p class="name_navBar">${leftPlayer.name}</p>
 						</td>
 						<td class="vs_info_navBar">
 							<p class="score_navBar">${dispScoreLeft} - ${dispScoreRight}</p>
 						</td>
 						<td class="opponent_navBar">
-							<p class="username_navBar">${rightPlayer.username}</p>
+							<p class="name_navBar">${rightPlayer.name}</p>
 							<img src="/uploads/${rightPlayer.profilePicture}" alt="profile" />
 						</td>
 					</tr>

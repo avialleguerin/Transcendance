@@ -24,10 +24,10 @@ const createTransporter = () => {
 /**
  * Sends welcome email with temporary password.
  * @param {string} to - Recipient email address
- * @param {string} username - Username
+ * @param {string} name - Name
  * @param {string} tempPassword - Temporary password
  */
-export default async function sendWelcomeEmail(to, username, tempPassword) {
+export default async function sendWelcomeEmail(to, name, tempPassword) {
 	if (!process.env.GMAIL_USER || !process.env.GMAIL_PASS) {
 		fastify.log.warn('Email environment variables not configured, email not sent');
 		return false;
@@ -59,14 +59,14 @@ export default async function sendWelcomeEmail(to, username, tempPassword) {
 				<h2>Welcome to Transcendance!</h2>
 			</div>
 			<div class="content">
-				<p>Hello <strong>${username}</strong>,</p>
+				<p>Hello <strong>${name}</strong>,</p>
 				
 				<p>Your account has been successfully created via Google Sign-In. Here are your temporary login credentials:</p>
 				
 				<div class="credentials">
 				<h3>📋 Your credentials:</h3>
 				<ul>
-					<li><strong>Username:</strong> ${username}</li>
+					<li><strong>Username:</strong> ${name}</li>
 					<li><strong>Email:</strong> ${to}</li>
 					<li><strong>Temporary password:</strong> <code>${tempPassword}</code></li>
 				</ul>
@@ -98,10 +98,10 @@ export default async function sendWelcomeEmail(to, username, tempPassword) {
 		</html>
 		`,
 		text: `
-		Welcome ${username} to Transcendance!
+		Welcome ${name} to Transcendance!
 		
 		Your temporary credentials:
-		- Username: ${username}
+		- Username: ${name}
 		- Email: ${to}
 		- Temporary password: ${tempPassword}
 		

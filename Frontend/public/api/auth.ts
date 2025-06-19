@@ -26,11 +26,11 @@ if (typeof window !== 'undefined') {
  */
 export async function login(event: Event): Promise<void> {
 	event.preventDefault();
-	const username = $input("login-username").value;
+	const name = $input("login-name").value;
 	const password = $input("login-password").value;
 
 	try {
-		const data: ApiResponse = await fetchAPI('/request/user/login', 'POST', { username, password }, true, false);
+		const data: ApiResponse = await fetchAPI('/request/user/login', 'POST', { name, password }, true, false);
 		
 		
 		if (data.success && data.connection_status === "partially_connected" && data.doubleAuth_status) {
@@ -38,7 +38,7 @@ export async function login(event: Event): Promise<void> {
 			updateUI({ removeClass: [{ id:"doubleAuthForm", className: "hidden" }], addClass: ["loginForm", "doubleAuthForm"] });
 			$input("login-title").textContent = "Double Authentication";
 		} else if (data.success && data.connection_status === "connected") {
-			setLocalStorage({ "Player1": data.username, "profile_picture": data.profile_picture });
+			setLocalStorage({ "Player1": data.name, "profile_picture": data.profile_picture });
 			connectWebSocket()
 			gameMenuView();
 			$form("loginForm").reset();
@@ -54,20 +54,20 @@ export async function login(event: Event): Promise<void> {
  */
 export async function login_1v1(event: Event) {
 	event.preventDefault();
-	const username = $input("1v1-username2").value;
+	const name2 = $input("1v1-name2").value;
 	const password = $input("1v1-password2").value;
-	if (!username || !password)	return notif("Please fill in all fields", false);
-	if (username === localStorage.getItem("Player1")) return notif("You cannot play against yourself", false);
+	if (!name2 || !password)	return notif("Please fill in all fields", false);
+	if (name2 === localStorage.getItem("Player1")) return notif("You cannot play against yourself", false);
 
 	try {
-		const data: ApiResponse  = await fetchAPI('/request/user/login-1v1', 'POST', { username, password }, true, false);
+		const data: ApiResponse  = await fetchAPI('/request/user/login-1v1', 'POST', { name2, password }, true, false);
 
 		if (data.success) {
-			setLocalStorage({ "Player2": data.player2.username });
+			setLocalStorage({ "Player2": name2 });
 			updateUI({
 				removeClass: ["choose_your_opponent_1v1_form", "container"],
 				addClass: ["back_to_select_mode_view6", "view6"],
-				setContent: {"1v1-oponent-username1": localStorage.getItem("Player1"), "1v1-oponent-username2": localStorage.getItem("Player2")}
+				setContent: {"1v1-oponent-name1": localStorage.getItem("Player1"), "1v1-oponent-name2": localStorage.getItem("Player2")}
 			});
 		}
 	} catch (err) { notif("Connexion to 1v1 failed", false); }
@@ -80,27 +80,27 @@ export async function login_1v1(event: Event) {
  */
 export async function login_2v2(event: Event): Promise<void> {
 	event.preventDefault();
-	const username1 = localStorage.getItem("Player1");
-	const username2 = $input("2v2-username2").value, password2 = $input("2v2-password2").value;
-	const username3 = $input("2v2-username3").value, password3 = $input("2v2-password3").value;
-	const username4 = $input("2v2-username4").value, password4 = $input("2v2-password4").value;
-	if (!username2 || !password2 || !username3 || !password3 || !username4 || !password4)	return notif("Please fill in all fields", false);
-	if (username1 === username2 || username1 === username3 || username1 === username4 ||
-		username2 === username3 || username2 === username4 || username3 === username4)		return notif("There can't be the same player 2 times", false);
+	const name1 = localStorage.getItem("Player1");
+	const name2 = $input("2v2-name2").value, password2 = $input("2v2-password2").value;
+	const name3 = $input("2v2-name3").value, password3 = $input("2v2-password3").value;
+	const name4 = $input("2v2-name4").value, password4 = $input("2v2-password4").value;
+	if (!name2 || !password2 || !name3 || !password3 || !name4 || !password4)	return notif("Please fill in all fields", false);
+	if (name1 === name2 || name1 === name3 || name1 === name4 ||
+		name2 === name3 || name2 === name4 || name3 === name4)		return notif("There can't be the same player 2 times", false);
 
 	try {
-		const data: ApiResponse = await fetchAPI('/request/user/login-2v2', 'POST', { username2, password2, username3, password3, username4, password4 }, true, false);
+		const data: ApiResponse = await fetchAPI('/request/user/login-2v2', 'POST', { name2, password2, name3, password3, name4, password4 }, true, false);
 
 		if (data.success) {
-			setLocalStorage({"Player2": username2, "Player3": username3, "Player4": username4 });
+			setLocalStorage({"Player2": name2, "Player3": name3, "Player4": name4 });
 			updateUI({
 				removeClass: ["choose_your_opponent_multi_form", "container"],
 				addClass: ["back_to_select_mode_view8", "view8"],
 				setContent: {
-					"2v2-oponent-username1": localStorage.getItem("Player1"),
-					"2v2-oponent-username2": localStorage.getItem("Player2"),
-					"2v2-oponent-username3": localStorage.getItem("Player3"),
-					"2v2-oponent-username4": localStorage.getItem("Player4")
+					"2v2-oponent-name1": localStorage.getItem("Player1"),
+					"2v2-oponent-name2": localStorage.getItem("Player2"),
+					"2v2-oponent-name3": localStorage.getItem("Player3"),
+					"2v2-oponent-name4": localStorage.getItem("Player4")
 				}
 			});
 		}
@@ -114,19 +114,19 @@ export async function login_2v2(event: Event): Promise<void> {
  */
 export async function login_tournament(event: Event): Promise<void> {
 	event.preventDefault();
-	const username1 = localStorage.getItem("Player1");
-	const username2 = $input("tournament-username2").value, password2 = $input("tournament-password2").value;
-	const username3 = $input("tournament-username3").value, password3 = $input("tournament-password3").value;
-	const username4 = $input("tournament-username4").value, password4 = $input("tournament-password4").value;
-	if (!username2 || !password2 || !username3 || !password3 || !username4 || !password4)	return notif("Please fill in all fields", false);
-	if (username1 === username2 || username1 === username3 || username1 === username4 ||
-		username2 === username3 || username2 === username4 || username3 === username4)		return notif("There can't be the same player 2 times", false);
+	const name1 = localStorage.getItem("Player1");
+	const name2 = $input("tournament-name2").value, password2 = $input("tournament-password2").value;
+	const name3 = $input("tournament-name3").value, password3 = $input("tournament-password3").value;
+	const name4 = $input("tournament-name4").value, password4 = $input("tournament-password4").value;
+	if (!name2 || !password2 || !name3 || !password3 || !name4 || !password4)	return notif("Please fill in all fields", false);
+	if (name1 === name2 || name1 === name3 || name1 === name4 ||
+		name2 === name3 || name2 === name4 || name3 === name4)		return notif("There can't be the same player 2 times", false);
 
 	try {
-		const data = await fetchAPI('/request/user/login-2v2', 'POST', { username2, password2, username3, password3, username4, password4 }, true, false);		
+		const data = await fetchAPI('/request/user/login-2v2', 'POST', { name2, password2, name3, password3, name4, password4 }, true, false);		
 
 		if (data.success) {
-			setLocalStorage({"Player2": data.player2.username, "Player3": data.player3.username, "Player4": data.player4.username });
+			setLocalStorage({"Player2": data.player2.name, "Player3": data.player3.name, "Player4": data.player4.name });
 			updateUI({ setContent: { "Player1": localStorage.getItem("Player1"), "Player2": localStorage.getItem("Player2"), "Player3": localStorage.getItem("Player3"), "Player4": localStorage.getItem("Player4") }});
 			setLocalStorage({"current_player1": localStorage.getItem("Player1"), "current_player2": localStorage.getItem("Player2") });
 			const tournamentStarted = true;
@@ -145,16 +145,16 @@ export async function login_tournament(event: Event): Promise<void> {
  */
 export async function login_platformer(event: Event) {
 	event.preventDefault();
-	const username = $input("platformer-username2").value;
+	const name2 = $input("platformer-name2").value;
 	const password = $input("platformer-password2").value;
-	if (!username || !password)	return notif("Please fill in all fields", false);
-	if (username === localStorage.getItem("Player1")) return notif("You cannot play against yourself", false);
+	if (!name2 || !password)	return notif("Please fill in all fields", false);
+	if (name2 === localStorage.getItem("Player1")) return notif("You cannot play against yourself", false);
 
 	try {
-		const data = await fetchAPI('/request/user/login-1v1', 'POST', { username, password }, true, false);
+		const data = await fetchAPI('/request/user/login-1v1', 'POST', { name2, password }, true, false);
 
 		if (data.success) {
-			setLocalStorage({"Player1": localStorage.getItem("Player1"), "Player2": data.player2.username, "platformer_view": true });
+			setLocalStorage({"Player1": localStorage.getItem("Player1"), "Player2": name2, "platformer_view": true });
 			$("start-platformer").click();
 			// PlatformerView(); //TODO
 		}
@@ -190,7 +190,7 @@ export async function verify2FA(event: Event) {
 
 		if (data.success) {
 			sessionStorage.removeItem("authTicket")
-			setLocalStorage({"Player1": data.username, "profile_picture": data.profile_picture});
+			setLocalStorage({"Player1": data.name, "profile_picture": data.profile_picture});
 			connectWebSocket()
 			gameMenuView();
 		}
@@ -205,13 +205,13 @@ export async function verify2FA(event: Event) {
  */
 export async function register(event: Event) {
 	event.preventDefault();
-	const username = $input("register-username").value;
+	const name = $input("register-name").value;
 	const password = $input("register-password").value;
 	const confirmPassword = $input("register-confirm-password").value;
 	if (password !== confirmPassword) return notif("Passwords are different", false);
 
 	try {
-		const data = await fetchAPI('/request/user/create-account', 'POST', { username, password });
+		const data = await fetchAPI('/request/user/create-account', 'POST', { name, password });
 		
 		if (data.success)
 			updateUI({removeClass: ["create_account_id", "loginform_id"], resetForms: ["registerForm"]});
@@ -230,7 +230,7 @@ export async function refreshInfos() { //REVIEW - maybe put in utils
 			localStorage.clear();
 			homeView();
 		} else if (sessionStorage.getItem("accessToken") && sessionStorage.getItem("accessToken") !== "undefined") {
-			setLocalStorage({"Player1": data.user.username, "profile_picture": data.user.profile_picture});
+			setLocalStorage({"Player1": data.user.name, "profile_picture": data.user.profile_picture});
 			connectWebSocket();
 			gameMenuView();
 		}
@@ -272,9 +272,9 @@ export async function handleGoogleSignIn(response: { access_token: string }) {
 
 		if (data.success) {
 			sessionStorage.setItem("accessToken", data.accessToken);
-			localStorage.setItem("Player1", data.user.username);
-			if (data.user.profile_picture)
-				localStorage.setItem("profile_picture", data.user.profile_picture);
+			localStorage.setItem("Player1", data.name);
+			if (data.avatar)
+				localStorage.setItem("profile_picture", data.avatar);
 			notif("Connexion Google réussie !", true);
 			gameMenuView();
 		} else

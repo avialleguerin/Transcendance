@@ -2444,7 +2444,7 @@ to {
 	border: 2px solid #555;
 }
 
-.username {
+.name {
 	font-size: 14px;
 	font-weight: bold;
 	margin: 0;
@@ -2774,7 +2774,7 @@ to {
 }
 
 
-.username_navBar {
+.name_navBar {
 	font-size: 10px;
 	font-weight: bold;
 	margin: 0;

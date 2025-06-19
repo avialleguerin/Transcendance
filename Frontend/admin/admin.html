@@ -99,8 +99,8 @@
 			<form id="addUserForm" class="mx-auto bg-white p-6 rounded-lg shadow-lg" onsubmit="create_user(event)">
 				<h2 class="text-2xl font-semibold text-center mb-2">Add User</h2>
 				<div class="mb-2">
-					<label for="username" class="block text-gray-700 font-medium">Username :</label>
-					<input type="text" id="addUser-username" name="username" placeholder="Username" autocomplete="username" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
+					<label for="name" class="block text-gray-700 font-medium">Username :</label>
+					<input type="text" id="addUser-name" name="name" placeholder="Username" autocomplete="username" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
 				</div>
 				<div class="mb-2">
 					<label for="password" class="block text-gray-700 font-medium">Password :</label>
@@ -143,12 +143,12 @@
 			<form id="addFriendshipForm" class="mx-auto bg-white p-6 rounded-lg shadow-lg" onsubmit="create_friendship(event)">
 				<h2 class="text-2xl font-semibold text-center mb-2">Add Friendship</h2>
 				<div class="mb-2">
-					<label for="username" class="block text-gray-700 font-medium">User :</label>
-					<input type="text" id="addFriendship-user" name="username" placeholder="Username" autocomplete="username" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
+					<label for="name" class="block text-gray-700 font-medium">User :</label>
+					<input type="text" id="addFriendship-user" name="name" placeholder="Username" autocomplete="username" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
 				</div>
 				<div class="mb-2">
-					<label for="username" class="block text-gray-700 font-medium">Friend username :</label>
-					<input type="text" id="addFriendship-friend" name="friendname" placeholder="friendname" autocomplete="friendname" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
+					<label for="friend_name" class="block text-gray-700 font-medium">Friend username :</label>
+					<input type="text" id="addFriendship-friend" name="friend_name" placeholder="friendname" autocomplete="friendname" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
 				</div>
 				<button type="submit" class="w-full bg-violet-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-violet-600 transition">Add</button>
 				<button type="button" class="mt-4 w-full border border-violet-500 text-violet-500 font-bold py-2 px-4 rounded-lg hover:bg-violet-500 hover:text-white transition" onclick="close_friendship_modal()">Cancel</button>
@@ -184,20 +184,20 @@
 			<form id="addGameForm" class="mx-auto bg-white p-6 rounded-lg shadow-lg" onsubmit="create_game(event)">
 				<h2 class="text-2xl font-semibold text-center mb-2">Add Game</h2>
 				<div class="mb-2">
-					<label for="username" class="block text-gray-700 font-medium">Player 1 :</label>
-					<input type="text" id="addGame-user1" name="username" placeholder="Username" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
+					<label for="name1" class="block text-gray-700 font-medium">Player 1 :</label>
+					<input type="text" id="addGame-name1" name="name1" placeholder="Username 1" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
 				</div>
 				<div class="mb-2">
-					<label for="username" class="block text-gray-700 font-medium">Player 2 :</label>
-					<input type="text" id="addGame-user2" name="username" placeholder="Username" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
+					<label for="name2" class="block text-gray-700 font-medium">Player 2 :</label>
+					<input type="text" id="addGame-name2" name="name2" placeholder="Username 2" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
 				</div>
 				<div class="mb-2">
-					<label for="username" class="block text-gray-700 font-medium">Player 3 :</label>
-					<input type="text" id="addGame-user3" name="username" placeholder="Username" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500">
+					<label for="name3" class="block text-gray-700 font-medium">Player 3 :</label>
+					<input type="text" id="addGame-name3" name="name3" placeholder="Username 3" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500">
 				</div>
 				<div class="mb-2">
-					<label for="username" class="block text-gray-700 font-medium">Player 4 :</label>
-					<input type="text" id="addGame-user4" name="username" placeholder="Username" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500">
+					<label for="name4" class="block text-gray-700 font-medium">Player 4 :</label>
+					<input type="text" id="addGame-name4" name="name4" placeholder="Username 4" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500">
 				</div>
 				<button type="submit" class="w-full bg-violet-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-violet-600 transition">Add</button>
 				<button type="button" class="mt-4 w-full border border-violet-500 text-violet-500 font-bold py-2 px-4 rounded-lg hover:bg-violet-500 hover:text-white transition" onclick="close_game_modal()">Cancel</button>
@@ -232,12 +232,12 @@
 			<form id="addPlatformerForm" class="mx-auto bg-white p-6 rounded-lg shadow-lg" onsubmit="create_platformer(event)">
 				<h2 class="text-2xl font-semibold text-center mb-2">Add Platformer</h2>
 				<div class="mb-2">
-					<label for="username1" class="block text-gray-700 font-medium">Player 1:</label>
-					<input type="text" id="addPlatformer-username1" name="username1" placeholder="Username player 1" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
+					<label for="name1" class="block text-gray-700 font-medium">Player 1:</label>
+					<input type="text" id="addPlatformer-name1" name="name1" placeholder="Username 1" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
 				</div>
 				<div class="mb-2">
-					<label for="username2" class="block text-gray-700 font-medium">Player 2 :</label>
-					<input type="text" id="addPlatformer-username2" name="username2" placeholder="Username player 2" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
+					<label for="name2" class="block text-gray-700 font-medium">Player 2 :</label>
+					<input type="text" id="addPlatformer-name2" name="name2" placeholder="Username 2" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
 				</div>
 				<div class="mb-2">
 					<label for="score1" class="block text-gray-700 font-medium">Score player 1 :</label>

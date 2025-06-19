@@ -147,8 +147,8 @@ export default class Home extends AbstractView {
 					<div class="form-group"> 
 						<form id="loginForm" class="loginForm" onsubmit="login(event)">
 							<div class="input-container">
-								<label for="username">Username :</label>
-								<input type="text" id="login-username" name="username" placeholder="Your username" required>
+								<label for="name">Username :</label>
+								<input type="text" id="login-name" name="name" placeholder="Your username" required>
 							</div>
 							<div class="input-container">
 								<label for="password">Password :</label>
@@ -178,8 +178,8 @@ export default class Home extends AbstractView {
 					<div class="form-group">
 						<form id="registerForm" onsubmit="register(event)">
 							<div class="input-container">
-								<label for="username">Username :</label>
-									<input type="text" id="register-username" name="username" placeholder="Your username" required>
+								<label for="name">Username :</label>
+									<input type="text" id="register-name" name="name" placeholder="Your username" required>
 							</div>
 							<div class="input-container">
 								<label for="password">Password :</label>
@@ -221,7 +221,7 @@ export default class Home extends AbstractView {
 		createAccountButton.addEventListener("click", () => {
 			loginForm.classList.add("active");
 			createAccountForm.classList.add("active");
-			(document.getElementById("login-username") as HTMLInputElement).value = "";
+			(document.getElementById("login-name") as HTMLInputElement).value = "";
 			(document.getElementById("login-password") as HTMLInputElement).value = "";
 		});
 

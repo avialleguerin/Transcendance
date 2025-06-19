@@ -369,8 +369,8 @@ export default class Game_menu extends AbstractView {
 							</div>
 							<form id="updateProfileForm" onsubmit="updateProfileInfo(event)">
 								<div class="input_container">
-									<label for="username">Change username</label>
-									<input type="text" id="change_username" name="username">
+									<label for="name">Change username</label>
+									<input type="text" id="change_name" name="name">
 								</div>
 								<div class="input_container">
 									<label for="password">Change password</label>
@@ -414,8 +414,8 @@ export default class Game_menu extends AbstractView {
 						<div class="player-section">
 							<p>PLAYER 2</p>
 							<div class="input-container">
-								<label for="username2">Username :</label>
-								<input type="text" id="1v1-username2" name="username2" placeholder="Player 2 username" required>
+								<label for="name2">Username :</label>
+								<input type="text" id="1v1-name2" name="name2" placeholder="Player 2 username" required>
 							</div>
 							<div class="input-container">
 								<label for="password2">Password :</label>
@@ -432,8 +432,8 @@ export default class Game_menu extends AbstractView {
 						<div class="player-section">
 							<p>PLAYER 2</p>
 							<div class="input-container">
-								<label for="username2">Username :</label>
-								<input type="text" id="platformer-username2" name="username2" placeholder="Player 2 username" required>
+								<label for="name2">Username :</label>
+								<input type="text" id="platformer-name2" name="name2" placeholder="Player 2 username" required>
 							</div>
 							<div class="input-container">
 								<label for="password2">Password :</label>
@@ -453,8 +453,8 @@ export default class Game_menu extends AbstractView {
 						<div class="player-section">
 						<p>PLAYER 2</p>
 						<div class="input-container">
-							<label for="username2">Username :</label>
-							<input type="text" id="2v2-username2" name="username2" placeholder="Player 2 username" required>
+							<label for="name2">Username :</label>
+							<input type="text" id="2v2-name2" name="name2" placeholder="Player 2 username" required>
 						</div>
 						<div class="input-container">
 							<label for="password2">Password :</label>
@@ -465,8 +465,8 @@ export default class Game_menu extends AbstractView {
 						<div class="player-section">
 						<p>PLAYER 3</p>
 						<div class="input-container">
-							<label for="username3">Username :</label>
-							<input type="text" id="2v2-username3" name="username3" placeholder="Player 3 username" required>
+							<label for="name3">Username :</label>
+							<input type="text" id="2v2-name3" name="name3" placeholder="Player 3 username" required>
 						</div>
 						<div class="input-container">
 							<label for="password3">Password :</label>
@@ -477,8 +477,8 @@ export default class Game_menu extends AbstractView {
 						<div class="player-section">
 						<p>PLAYER 4</p>
 						<div class="input-container">
-							<label for="username4">Username :</label>
-							<input type="text" id="2v2-username4" name="username4" placeholder="Player 4 username" required>
+							<label for="name4">Username :</label>
+							<input type="text" id="2v2-name4" name="name4" placeholder="Player 4 username" required>
 						</div>
 						<div class="input-container">
 							<label for="password4">Password :</label>
@@ -559,7 +559,7 @@ export default class Game_menu extends AbstractView {
 				<div class="game_history_content">
 					<div class="game_history_header">
 						<div class="profile_photo_circle_Game_History" id="profile_photo_circle_Game_History"></div>
-						<h1 id="game_history_username"></h1>
+						<h1 id="game_history_name"></h1>
 					</div>
 
 					<div class="game_statistics_history">
@@ -615,12 +615,12 @@ export default class Game_menu extends AbstractView {
 				<div class="player1">
 					<button class="switch_skin_left" id="switch_skn_left_id1"></button>
 					<button class="switch_skin_right" id="switch_skn_right_id1"></button>
-					<p id="1v1-oponent-username1">${localStorage.getItem('Player1')}</p>
+					<p id="1v1-oponent-name1">${localStorage.getItem('Player1')}</p>
 				</div>
 				<div class="player2">
 					<button class="switch_skin_left" id="switch_skn_left_id2"></button>
 					<button class="switch_skin_right" id="switch_skn_right_id2"></button>
-					<p id="1v1-oponent-username2">${localStorage.getItem('Player2')}</p>
+					<p id="1v1-oponent-name2">${localStorage.getItem('Player2')}</p>
 				</div>
 				<button id="valide_ton_skin" class="btn">Confirm</button>
 			</div>
@@ -630,22 +630,22 @@ export default class Game_menu extends AbstractView {
 				<div class="player1_game_multi">
 					<button class="switch_skin_left" id="switch_skn_left_id1_game_multi"></button>
 					<button class="switch_skin_right" id="switch_skn_right_id1_game_multi"></button>
-					<p id="2v2-oponent-username1">${localStorage.getItem('Player1')}</p>
+					<p id="2v2-oponent-name1">${localStorage.getItem('Player1')}</p>
 				</div>
 				<div class="player2_game_multi">
 					<button class="switch_skin_left" id="switch_skn_left_id2_game_multi"></button>
 					<button class="switch_skin_right" id="switch_skn_right_id2_game_multi"></button>
-					<p id="2v2-oponent-username2">${localStorage.getItem('Player2')}</p>
+					<p id="2v2-oponent-name2">${localStorage.getItem('Player2')}</p>
 				</div>
 				<div class="player3_game_multi">
 					<button class="switch_skin_left" id="switch_skn_left_id3_game_multi"></button>
 					<button class="switch_skin_right" id="switch_skn_right_id3_game_multi"></button>
-					<p id="2v2-oponent-username3">${localStorage.getItem('Player3')}</p>
+					<p id="2v2-oponent-name3">${localStorage.getItem('Player3')}</p>
 				</div>
 				<div class="player4_game_multi">
 					<button class="switch_skin_left" id="switch_skn_left_id4_game_multi"></button>
 					<button class="switch_skin_right" id="switch_skn_right_id4_game_multi"></button>
-					<p id="2v2-oponent-username4">${localStorage.getItem('Player4')}</p>
+					<p id="2v2-oponent-name4">${localStorage.getItem('Player4')}</p>
 				</div>
 				<button id="valide_ton_skin_game_multi" class="btn">Confirm</button>
 			</div>
