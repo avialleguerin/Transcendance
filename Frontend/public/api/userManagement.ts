@@ -143,12 +143,18 @@ export async function fetchProfile(): Promise<void> {
 			const username = $input("change_username");
 			username.placeholder = user.username;
 			const doubleAuth = $input("active_fa");
-			if (user.doubleAuth_status)
-				doubleAuth.checked = true;
+			if (user.google_id) {
+				$("fa_selector").style.display = "none";
+			}
 			else {
-				doubleAuth.checked = false;
-				if (doubleAuth.classList.contains("checked"))
-					doubleAuth.classList.remove("checked");
+				$("fa_selector").style.display = "flex";
+				if (user.doubleAuth_status)
+					doubleAuth.checked = true;
+				else {
+					doubleAuth.checked = false;
+					if (doubleAuth.classList.contains("checked"))
+						doubleAuth.classList.remove("checked");
+				}
 			}
 		}
 	} catch (err) { console.error(`fetchProfile: ${err}`); }

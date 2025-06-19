@@ -443,8 +443,6 @@ export async function changeProfile(request, reply) {
 			if (!passwordRegex.test(newPassword))
 				return reply.code(400).send({ error: 'Password must contain 8-20 characters, one lowercase, one uppercase, one number, and one special character (!?@&*#)' })
 			fastify.log.info(`Updating password for user: ${user.username}`)
-			if (verifyPassword(user.password, newPassword))
-				return reply.code(400).send({ error: 'New password cannot be the same as the current password' })
 			const hashedPassword = await hashPassword(newPassword)
 			usersModel.updatePassword(user.userId, hashedPassword)
 			updated = true

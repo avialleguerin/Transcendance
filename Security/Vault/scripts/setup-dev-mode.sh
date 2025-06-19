@@ -43,7 +43,7 @@ if vault kv get secret/nginx >/dev/null 2>&1; then										# Vérifier si le se
 	echo -e "${YELLOW} Le secret Nginx existe déjà. Pas besoin de l'écraser.${RESET}"          
 else
 	echo -e "\n${GREEN}Ajout du secret Nginx...${RESET}"								# Ajouter le secret Nginx uniquement si absent
-	vault kv put secret/nginx username="panel" password="1234"							# REVIEW - This is a test password
+	vault kv put secret/nginx username="tr_iao_8143" password="Qwe123!@"							# REVIEW - This is a test password
 	echo -e "${GREEN}Secret Nginx ajouté !${RESET}"
 fi
 
