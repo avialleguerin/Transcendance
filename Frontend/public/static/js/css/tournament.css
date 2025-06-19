@@ -1,0 +1,644 @@
+/****************************************************************/
+/****************TOURNAMENT_VIEW**********************************/
+/****************************************************************/
+.tournament_view {
+	position: absolute;
+	top: 50%;
+	left: 55%;
+	width: 58%;
+	height: 80%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
+	opacity: 1;
+	transition: opacity 0.3sease;
+	transform: translate(-50%, -50%);
+	z-index: 15;
+}
+
+
+.tournament_view-content {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	height: 100%;
+	justify-content: flex-start;
+}
+
+.tournament_view-content h1 {
+	color: #e6e600;
+	text-shadow: 2px 2px 4px rgb(165, 165, 165);
+	font-size: 2.5vw;
+	position: relative;
+	top: 2%;
+	font-family: 'Black Ops One', sans-serif;
+	left: 75%;
+	width: 21%;
+}
+
+.container_name_player {
+	position: absolute;
+	top: 50%;
+	left: 25%;
+	transform: translate(-50%, -50%);
+	width: 53%;
+	height: 69%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	background-image: url("../../../srcs/game/assets/image/homeV2.svg");
+	background-size: 100% auto;
+	background-repeat: no-repeat;
+	background-position: center;
+	gap: 7px;
+}
+
+.container_name_player h1 {
+	color: #ffffff;
+	text-shadow: 2px 2px 4px rgb(0, 0, 0);
+	font-size: 1.3vw;
+	position: absolute;
+	font-family: 'Black Ops One', sans-serif;
+	width: 100%;
+	top: 0%;
+	left: 38%;
+}
+
+.input-container {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	width: 100%;
+	height: 60%;
+	/* background-color: #00000082; */
+	margin-top: -10px;
+}
+
+.input-container label {
+	color: #fff;
+	font-size: 14px;
+	font-family: "Black Ops One", sans-serif;
+	width: 30%;
+	text-align: right;
+}
+
+.input-container input {
+	width: 66%;
+	padding: 10px;
+	border: none;
+	font-size: 16px;
+	outline: none;
+	background: rgba(255, 255, 255, 0.2);
+	color: white;
+	height: 33%;
+}
+
+.input-container input::placeholder {
+	color: rgba(255, 255, 255, 0.6);
+}
+
+.input-container input:focus {
+	border: 1px solid #ffffff;
+	box-shadow: 0 0 8px #ffffff;
+}
+
+
+.container_name_player.hidden {
+	display: none;
+	pointer-events: none;
+}
+
+
+
+.btn_back_tournament {
+	padding: 15px 0px;
+	font-size: 0.7vw;
+	font-weight: bold;
+	color: rgb(255, 255, 255);
+	border: 2px solid #44444400;
+	background-color: transparent;
+	/* border-radius: 8px; */
+	cursor: pointer;
+
+	text-align: center;
+	background-image: url("../../../srcs/game/assets/image/boutton.svg");
+	background-size: 100% auto;
+	background-position: center;
+	background-repeat: no-repeat;
+	line-height: 4vh;
+	
+	/* Ajout de dimensions fixes */
+	width: 120px;  /* Largeur fixe */
+	height: 70px;  /* Hauteur fixe */
+	display: flex; /* Pour aider au centrage du texte */
+	justify-content: center; /* Centre horizontalement */
+	align-items: center; /* Centre verticalement */
+
+	position: absolute;
+	bottom: 5%;
+	right: 5%;
+}
+
+.btn_back_tournament:hover, .btn_start_tournament:hover {
+	color: #e6e600;
+}
+
+.container_name_player h2 {
+	color: white;
+	font-family: 'Black Ops One', sans-serif;
+	font-size: 0.8vw;
+	text-align: center;
+	position: relative;
+	top: -7%; /* Assurez-vous qu'il soit en haut */
+}
+
+.btn_start_tournament {
+	padding: 15px 0px;
+	font-size: 1.2vw;
+	font-weight: bold;
+	color: rgb(255, 255, 255);
+	border: 2px solid #44444400;
+	background-color: transparent;
+	/* border-radius: 8px; */
+	cursor: pointer;
+	text-align: center;
+	background-image: url("../../../srcs/game/assets/image/boutton.svg");
+	background-size: 100% auto;
+	background-position: center;
+	background-repeat: no-repeat;
+	line-height: 4vh;
+	width: 145px;
+	height: 124px;
+	display: flex
+;
+	justify-content: center;
+	align-items: center;
+	position: absolute;
+	bottom: 40%;
+	right: 23%;
+	transform: translate(50%, 0);
+}
+
+.tournament_graphic {
+	position: absolute;
+	top: 55%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 128%;
+	height: 80%;
+	display: none;
+	justify-content: center;
+	align-items: center;
+}
+
+.tournament_graphic img {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+}
+
+.loserBracket {
+	color: white;
+	font-family: 'Black Ops One', sans-serif;
+	font-size: 0.8vw;
+	position: absolute;
+	top: 57%;
+	left: 21%;
+}
+
+.winnerBracket {
+	color: white;
+	font-family: 'Black Ops One', sans-serif;
+	font-size: 0.8vw;
+	position: absolute;
+	top: 2%;
+	left: 21%;
+}
+
+.joueur1 {
+	color: forestgreen;
+	font-family: 'Black Ops One', sans-serif;
+	font-size: 0.8vw;
+	position: absolute;
+	top: 7.8%;
+	left: 20%;
+	width: 11%;
+	height: 6.2%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+}
+
+.joueur2 {
+	color: forestgreen;
+	font-family: 'Black Ops One', sans-serif;
+	font-size: 0.8vw;
+	position: absolute;
+	top: 16%;
+	left: 20%;
+	width: 11%;
+	height: 6.2%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+}
+
+.joueur3 {
+	color: white;
+	font-family: 'Black Ops One', sans-serif;
+	font-size: 0.8vw;
+	position: absolute;
+	top: 27.7%;
+	left: 20%;
+	width: 11%;
+	height: 6.2%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+}
+
+.joueur4 {
+	color: white;
+	font-family: 'Black Ops One', sans-serif;
+	font-size: 0.8vw;
+	position: absolute;
+	top: 36%;
+	left: 20%;
+	width: 11%;
+	height: 6.2%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+}
+
+.btn_incremente_place {
+	padding: 15px 0px;
+	font-size: 0.7vw;
+	font-weight: bold;
+	color: rgb(255, 255, 255);
+	border: 2px solid #44444400;
+	background-color: transparent;
+	/* border-radius: 8px; */
+	cursor: pointer;
+
+	text-align: center;
+	background-image: url("../../../srcs/game/assets/image/boutton.svg");
+	background-size: 100% auto;
+	background-position: center;
+	background-repeat: no-repeat;
+	line-height: 4vh;
+	
+	/* Ajout de dimensions fixes */
+	width: 120px;  /* Largeur fixe */
+	height: 70px;  /* Hauteur fixe */
+	display: flex; /* Pour aider au centrage du texte */
+	justify-content: center; /* Centre horizontalement */
+	align-items: center; /* Centre verticalement */
+
+	position: absolute;
+	bottom: 3%;
+	left: 5%;
+	transform: translate(-50%, 0);
+}
+
+
+.btn_start_game {
+	padding: 8px 12px;
+	border: none;
+	border-radius: 5px;
+	background-color: #e6e600;
+	color: black;
+	cursor: pointer;
+	transition: background 0.2s;
+	position: absolute;
+	top: 65%;
+	left: 60%;
+	font-family: 'Black Ops One', sans-serif;
+	text-decoration: none;
+}
+
+.btn_start_game a {
+	text-decoration: none;
+	color: #ffffff;
+	font-family: 'Black Ops One', sans-serif;
+	font-size: 0.8vw;
+}
+
+.btn_start_game:hover {
+	background-color: #bb0;
+}
+
+
+.btn_finished_game {
+	padding: 8px 12px;
+	border: none;
+	border-radius: 5px;
+	background-color: #e6e600;
+	color: white;
+	cursor: pointer;
+	transition: background 0.2s;
+	position: absolute;
+	right: 32%;
+	top: 60%;
+	font-family: 'Black Ops One', sans-serif;
+}
+
+.btn_finished_game:hover {
+	background-color: #bb0;
+}
+
+
+.tournament_graphic.active {
+	display: flex;
+}
+
+
+/*****************************************************************/
+/****************leave_tournament*********************************/
+/*****************************************************************/
+
+
+.btn_leave_tournament {
+	position: absolute;
+	top: 2%;
+	left: 9%;
+	/* right: 14%; */
+	width: 6%;
+	height: 4%;
+	/* display: flex; */
+	align-items: center;
+	background-color: #e6e600;
+	clip-path: polygon(0% 0%, 98% 0%, 70% 100%, 0% 100%);
+	font-family: 'Black Ops One', sans-serif;
+	color : black;
+}
+
+.btn_leave_tournament:hover {
+	background-color: #bb0;
+}
+
+.message {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 40%;
+	height: 40%;
+	display: none;
+	background-color: rgb(49, 49, 49);
+	/* clip-path: polygon(0% 0%, 98% 0%, 85% 100%, 15% 100%);*/
+	border-radius: 2px;
+	border: 2px solid white;
+}
+
+.message p {
+	position: absolute;
+	top: 30%;
+	left: 50%;
+
+	transform: translate(-50%, -50%);
+
+	color: white;
+	font-family: 'Black Ops One', sans-serif;
+	font-size: 0.8vw;
+}
+
+.message .close_message {
+	position: absolute;
+	top: 0%;
+	/* left: 50%; */
+	right: 0%;
+	/* transform: translate(-50%, -50%); */
+	width: 10%;
+	height: 7%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: rgb(0, 0, 0);
+	font-family: 'Black Ops One', sans-serif;
+	z-index: 100;
+	background-color: #e6e600;
+}
+
+.message .close_message:hover {
+	background-color: #bb0;
+}
+
+.message.active {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding-left: 20px;
+}
+
+.comfirm_leave_tournament {
+	padding: 8px 12px;
+	border: none;
+	border-radius: 5px;
+	background-color: #e6e600;
+	color: black;
+	cursor: pointer;
+	transition: background 0.2s;
+	position: absolute;
+	top: 73%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	font-family: 'Black Ops One', sans-serif;
+}
+
+.comfirm_leave_tournament:hover {
+	background-color: #bb0;
+}
+
+
+.continue_btn {
+	position: absolute;
+	top: 93%;
+	right: -2%;
+	transform: translate(-50%, -50%);
+	width: 15%;
+	height: 7%;
+	background-color: #1c1c1c;
+	font-family: 'Black Ops One', sans-serif;
+	color: #ffffff;
+}
+
+.player_section {
+	background: rgba(255, 255, 255, 0.05);
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	border-radius: 12px;
+	padding: 20px;
+	width: 70%;
+	box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	height: 17%;
+}
+
+.player_section p {
+	color: white;
+	font-family: 'Black Ops One', sans-serif;
+	font-size: 0.8vw;
+	text-align: center;
+	margin-top: -30px;
+	transform: translateY(20px);
+}
+
+
+.container_endTournament {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 75%;
+	height: 58%;
+	display: none;
+	background-color: rgb(49, 49, 49);
+	border-radius: 2px;
+	border: 2px solid white;
+	border: 3px solid #ffffff;
+	box-shadow: 0 0 20px rgba(255, 255, 255, 0.6), inset 0 0 10px rgba(0, 247, 255, 0.3);
+	border-radius: 10px;
+}
+
+.container_endTournament.active {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding-left: 20px;
+}
+
+.container_endTournament h1 {
+	position: absolute;
+	top: 8%;
+	left: 76%;
+	transform: translate(-50%, -50%);
+	color: white;
+	font-family: 'Black Ops One', sans-serif;
+	font-size: 1.5vw;
+	width: 100%;
+}
+
+.container_endTournament img {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 95%;
+	height: 75%;
+	object-fit: contain;
+}
+
+.result {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.first_place {
+	position: absolute;
+	top: 46%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.first_place p {
+	color: white;
+	font-family: 'Black Ops One', sans-serif;
+	font-size: 0.8vw;
+	text-align: center;
+	color: gold;
+	width: 11%;
+	height: 6.2%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.second_place {
+	position: absolute;
+	top: 53%;
+	left: 26.5%;
+	transform: translate(-50%, -50%);
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.second_place p {
+	color: white;
+	font-family: 'Black Ops One', sans-serif;
+	font-size: 0.8vw;
+	text-align: center;
+	color: silver;
+	width: 11%;
+	height: 6.2%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.third_place {
+	position: absolute;
+	top: 53%;
+	left: 74%;
+	transform: translate(-50%, -50%);
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.third_place p {
+	color: white;
+	font-family: 'Black Ops One', sans-serif;
+	font-size: 0.8vw;
+	text-align: center;
+	color: #cd7f32;
+	width: 11%;
+	height: 6.2%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+}
+
+.finish_tournament {
+	position: absolute;
+	top: 90%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	padding: 8px 12px;
+	border: none;
+	border-radius: 5px;
+	background-color: #e6e600;
+	color: white;
+	cursor: pointer;
+	transition: background 0.2s;
+	font-family: 'Black Ops One', sans-serif;
+}
+
+.finish_tournament:hover {
+	background-color: #bb0;
+}

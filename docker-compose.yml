@@ -1,0 +1,113 @@
+services:
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6380:6379"
+    restart: always
+
+  fastify:
+    container_name: fastify
+    image: custom-fastify
+    build:
+      context: ./Backend
+      dockerfile: Fastify/Dockerfile
+    ports:
+      - "3000:3000"
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - REDIS_URL="redis://redis:6379"
+      - VAULT_DEV_ROOT_TOKEN_ID=root
+      - VAULT_ADDR=http://vault:8200
+    depends_on:
+      - redis
+      - vault
+    volumes: # TODO - Changer "app" -> "Fatsify" for the node modules to be installed efficiently
+      - ./Backend/Fastify:/app
+      - /app/node_modules    # Preserve the modules installed in the container 
+      - ./Data/vault_data:/app/vault/data
+      - ./Data/sqlite_data:/app/Data/db
+      - ./Data/uploads:/usr/share/nginx/uploads
+
+  nginx:
+    container_name: nginx
+    build:
+      context: ./Security
+      dockerfile: Nginx/Dockerfile
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+      - "8443:8443"
+      - "8143:8143"
+    depends_on:
+      - fastify
+      - tsengine
+    environment:
+      - NGINX_ENVSUBST_TEMPLATE_DIR=off
+    volumes:
+      - ./Security/Nginx/conf.d:/etc/nginx/conf.d
+      - ./Security/Nginx/passwd:/etc/nginx/passwd
+      - ./Security/ModSecurity:/etc/modsecurity
+      - ./Frontend/public:/usr/share/nginx/html:ro
+      - ./Frontend/public/srcs:/usr/share/nginx/dist/srcs:ro 
+      - ./Frontend/public/static/js/css:/usr/share/nginx/dist/static/js/css:ro
+      - ./Frontend/public/index.html:/usr/share/nginx/dist/index.html:ro
+      - ./Frontend/dist:/usr/share/nginx/dist
+      - ./Frontend/dist/api:/usr/share/nginx/dist/api:ro
+      - ./Frontend/admin:/usr/share/nginx/admin:ro
+      - ./Data/uploads:/usr/share/nginx/uploads
+
+  tsengine:
+    image: node:20-alpine
+    container_name: tsengine
+    working_dir: /app
+    environment:
+    - TZ=Europe/Paris
+    command: >
+      sh -c "apk add --no-cache tzdata &&
+              npm i -g typescript && npm i &&
+              mkdir -p /app/dist &&
+              tsc --project /app/tsconfig.json --watch"
+    volumes:
+      - ./Frontend/public:/app/public
+      - ./Frontend/dist:/app/dist
+      - ./Frontend/package.json:/app/package.json
+      - ./Frontend/tsconfig.json:/app/tsconfig.json
+      - /app/node_modules
+    restart: unless-stopped
+
+  vault:
+    image: custom-vault
+    container_name: vault
+    restart: always
+    build:
+      context: ./Security/Vault
+      dockerfile: Dockerfile
+    ports:
+      - "8200:8200"
+    environment:
+      - VAULT_ADDR=http://127.0.0.1:8200
+      - VAULT_DEV_ROOT_TOKEN_ID=root
+    volumes:
+      - ./Data/vault_data:/vault/data
+      - ./Security/Vault/scripts:/vault/scripts
+      - ./Security/Nginx/passwd:/nginx/passwd
+      # - ./Security/Vault/vault_data:/vault/data
+    cap_add:
+      - IPC_LOCK
+    # entrypoint: "vault server -dev -dev-listen-address=0.0.0.0:8200"
+
+# networks:
+#   transcendence-network:
+#      driver: bridge
+
+# volumes:
+  # postgresql_data:
+  #   driver: local
+  # sqlite_data:
+  #   driver: local
+  # vault_data:
+  #   driver: local

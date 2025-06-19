@@ -1,0 +1,133 @@
+.container-EndGame {
+    position: absolute;
+    top: 68%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 35%;
+    height: 35%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    background: linear-gradient(135deg, #2a2a2a 0%, #404040 50%, #2a2a2a 100%);
+    visibility: hidden;
+    border: 3px solid #ffffff;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.6), inset 0 0 10px #3a6ce0;;
+    border-radius: 10px;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    padding: 20px;
+    backdrop-filter: blur(5px);
+}
+
+.winner {
+    position: absolute;
+    top: 14%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.5vw;
+    font-family: 'Black Ops One', sans-serif;
+    color: #ffffff;
+    text-shadow: 
+        0 0 5px #ffffff,
+        0 0 10px #ffffff,
+        0 0 20px #ffffff,
+        2px 2px 5px rgba(0, 0, 0, 0.7);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.container-EndGame h1 {
+    font-size: 1.2vw;
+    font-family: 'Black Ops One', sans-serif;
+    color: #ffffff;
+    text-shadow: 
+        2px 2px 5px rgba(0, 0, 0, 0.7),
+        0 0 15px rgba(255, 255, 255, 0.5);
+    margin: 10px 0;
+    letter-spacing: 1px;
+}
+
+.container-EndGame.active {
+    visibility: visible;
+    opacity: 1;
+    animation: pulseGlow 2s infinite alternate;
+}
+
+.looser {
+    position: absolute;
+    top: 11%;
+    right: 31%;
+    font-size: 2vw;
+    font-family: 'Black Ops One', sans-serif;
+    color: rgb(255, 255, 255);
+    text-shadow: 2px 2px 2px #000000;
+}
+
+@keyframes press_space {
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+
+.press_space h1 {
+    position: absolute;
+    top: 58%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.5vw;
+    font-family: 'Black Ops One', sans-serif;
+    color: rgb(0, 0, 0);
+    text-shadow: 2px 2px 2px #ffffff;
+    animation: press_space 2s infinite;
+    visibility: visible;
+}
+
+.press_space.active {
+	visibility: hidden;
+	animation: none;
+}
+
+.leave_game_2
+{
+    position: absolute;
+    top: 75%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: bold;
+    background-color: transparent;
+    color: rgb(255, 255, 255);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3sease;
+    background-image: url("../../../srcs/game/assets/image/boutton.svg");
+    background-size: 100% auto;
+    background-position: center;
+    background-repeat: no-repeat;
+    /* line-height: 3vh; */
+    width: 170px;
+    height: 112px;
+    display: flex
+;
+    justify-content: center;
+    align-items: center;
+    bottom: -4%;
+
+}
+
+.nav-link {
+    color: #000000;
+    font-size: 0.8vw;
+    font-family: 'Black Ops One', sans-serif;
+    text-shadow: 2px 2px 2px #ffffff;
+    text-decoration: none;
+}

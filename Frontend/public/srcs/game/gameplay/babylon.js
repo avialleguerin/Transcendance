@@ -1,0 +1,541 @@
+import { create_environment_view1, create_environment_view3, create_environment_view2 } from "./init_game.js";
+import { UpdatePlayerPose } from "./player.js";
+import { MoveBall, MoveBall2v2 } from "./ball.js";
+import { init_game_solo, start_game_solo, destroy_game_solo } from "./solo/1v1_player/init_game_Solo.js";
+import { init_game_multiplayer, destroy_game_multiplayer } from "./multiplayer/init_game_2v2.js";
+import { UpdatePLayerPoseMulti } from "./multiplayer/2v2_game/init_players2v2.js";
+import { gameIsFinished, SetIsGameFinished } from "./score.js";
+import { init_game_tournament, destroy_game_solo_tournament } from "./tournament/tournament.js";
+import { move_player_tournament } from "./tournament/init_player_tournament.js";
+import { init_all_skin } from "./solo/skin/init_skin_perso.js";
+import { handleViewTransitions } from "./views/camera.js";
+import { get_skin_is_init } from "./solo/skin/init_skin_utils.js";
+import { init_skins_podium_default } from "./solo/skin/init_skin_player_default.js";
+
+/**************************************************************/
+/*****************CREATION DU MOTEUR***************************/
+/**************************************************************/
+
+localStorage.removeItem("match1_result");
+localStorage.removeItem("match2_result");
+localStorage.removeItem("match3_result");
+localStorage.removeItem("match4_result");
+localStorage.removeItem("match5_result");
+localStorage.removeItem("match6_result");
+
+localStorage.removeItem("tournamentCount");
+
+localStorage.removeItem("tournamentStarted");
+localStorage.removeItem("tournament_finished");
+localStorage.removeItem("secondChance");
+
+let qualityLevel = 'medium';
+const canvas = document.getElementById('renderCanvas');
+const engine = new BABYLON.Engine(canvas, true, {
+	preserveDrawingBuffer: true,
+	stencil: true,
+	antialias: true,
+	adaptToDeviceRatio: false,
+	disableWebGLWarnings: true,
+	powerPreference: "high-performance"
+});
+
+
+/***************************************************************/
+/*****************DETECTION DES PERFORMANCES*******************/
+/***************************************************************/
+
+function detectPerformanceLevel() {
+	return 'low';
+}
+
+
+engine.getRenderingCanvas().addEventListener("webglcontextlost", (e) => {
+	e.preventDefault();
+	
+	qualityLevel = 'low';
+	applyQualitySettings();
+
+	setTimeout(() => {
+		try {
+			engine.resize(true);
+		} catch (err) {
+			console.error("Failed to recover WebGL context:", err);
+			showErrorMessage("Graphics error detected. Please refresh the page.");
+		}
+	}, 1000);
+});
+
+const originalConsoleWarn = console.warn;
+console.warn = function(message)
+{
+	const ignoredPatterns = ["generateMipmap", "WEBGL_debug_renderer_info", "precision issues"];
+	if (typeof message === 'string' && ignoredPatterns.some(pattern => message.includes(pattern))) {
+		return;
+	}
+	originalConsoleWarn.apply(console, arguments);
+};
+
+function applyQualitySettings()
+{
+	qualityLevel = 'low';
+}
+
+function applyQualitySettingsImmediate() {
+	engine.setHardwareScalingLevel(1);
+	scene.postProcessesEnabled = false;
+	pipeline.fxaaEnabled = false;
+	pipeline.sharpenEnabled = false;
+	pipeline.samples = 1;
+	scene.particlesEnabled = false;
+}
+
+/**************************************************************/
+/*****************CREATION DE LA SCENE*************************/
+/**************************************************************/
+
+window.scene = new BABYLON.Scene(engine);
+scene.clearColor = new BABYLON.Color4(0, 0, 0, 1);
+scene.blockMaterialDirtyMechanism = true;
+
+window.camera = new BABYLON.FreeCamera("camera", new BABYLON.Vector3(-46.5848927854827, 7.033186073453854, -36.673950554376425), scene);
+camera.rotation = new BABYLON.Vector3(-0.06270675424618415, -2.546876145234487, 0);
+camera.minZ = 0.1;
+camera.maxZ = 5000;
+camera.speed = 5;
+
+const pipeline = new BABYLON.DefaultRenderingPipeline("defaultPipeline", true, scene, [camera]);
+
+const ambientLight = new BABYLON.HemisphericLight("ambientLight", new BABYLON.Vector3(0, 1, 0), scene);
+ambientLight.intensity = 3;
+
+function createOptimizedSkybox(scene) {
+	const simplifiedSkybox = qualityLevel === 'low';
+	
+	const skyMaterial = new BABYLON.StandardMaterial("skyMaterial", scene);
+	skyMaterial.backFaceCulling = false;
+	skyMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+	skyMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
+
+	const skyTexture = new BABYLON.Texture("assets/skybox/skybox.jpg", scene);
+	skyTexture.coordinatesMode = BABYLON.Texture.SPHERICAL_MODE;
+	skyTexture.hasAlpha = false;
+	skyTexture.generateMipMaps = !simplifiedSkybox;
+	skyTexture.updateSamplingMode(simplifiedSkybox ? 
+		BABYLON.Texture.NEAREST_NEAREST : 
+		BABYLON.Texture.NEAREST_LINEAR);
+	
+	skyMaterial.diffuseTexture = skyTexture;
+
+	const segmentsCount = simplifiedSkybox ? 16 : 32;
+	const skySphere = BABYLON.MeshBuilder.CreateSphere("skySphere", {
+		diameter: 5000, 
+		segments: segmentsCount,
+		sideOrientation: BABYLON.Mesh.BACKSIDE
+	}, scene);
+	
+	skySphere.material = skyMaterial;
+	skySphere.isPickable = false;
+	skySphere.infiniteDistance = true;
+	skySphere.scaling.y = -1;
+
+	skySphere.freezeWorldMatrix();
+	skySphere.doNotSyncBoundingInfo = true;
+	skyMaterial.freeze();
+	
+	return skySphere;
+}
+/*************************************************************/
+/*****************VARIABLE DE JEUX ***************************/
+/**************************************************************/
+
+let initialized = false;
+let player_1, player_2, player_3, player_4, player_1_tournament, player_2_tournament, AI_player, ball;
+let Solo_gameStart = false;
+let Multi_gameStart = false;
+let tournament_game = false;
+let play = false;
+let canPressSpace = false
+
+
+create_environment_view1(scene);
+create_environment_view3(scene);
+create_environment_view2(scene);
+// init_all_skin(scene);
+const skybox = createOptimizedSkybox(scene);
+
+let skin = get_skin_is_init();
+if (skin === false) {
+	init_skins_podium_default(scene);
+}
+
+qualityLevel = detectPerformanceLevel();
+applyQualitySettingsImmediate();
+
+scene.inputStates = { space: false };
+
+window.addEventListener("keydown", (event) => {
+	if (event.code === "Space") {
+		scene.inputStates.space = true;
+	}
+});
+
+window.addEventListener("keyup", (event) => {
+	if (event.code === "Space") {
+		scene.inputStates.space = false;
+	}
+});
+
+/*************************************************************/
+/*****************INITIALISATION DES JEUX ********************/
+/*************************************************************/
+
+async function initializeGame_solo_game() {
+	try {
+		let players = await init_game_solo(scene);
+		player_1 = players.player_1;
+		player_2 = players.player_2;
+		ball = players.ball;
+		optimizeGameObjects([player_1, player_2, ball]);
+	} catch (error) {
+		console.error("Error initializing solo game:", error);
+		handleGameInitError();
+	}
+}
+
+async function initialize_Multiplayer_game() {
+	try {
+		let players = await init_game_multiplayer(scene);
+		player_1 = players.player_1;
+		player_2 = players.player_2;
+		player_3 = players.player_3;
+		player_4 = players.player_4;
+		ball = players.ball;
+		optimizeGameObjects([player_1, player_2, player_3, player_4, ball]);
+	} catch (error) {
+		console.error("Error initializing multiplayer game:", error);
+		handleGameInitError();
+	}
+}
+
+
+async function initializeGame_tournament() {
+	try {
+		let players = await init_game_tournament(scene);
+		player_1_tournament = players.player_1_tournament;
+		player_2_tournament = players.player_2_tournament;
+		ball = players.ball;
+		optimizeGameObjects([player_1_tournament, player_2_tournament, ball]);
+	} catch (error) {
+		console.error("Error initializing tournament game:", error);
+		handleGameInitError();
+	}
+}
+
+function optimizeGameObjects(objects) {
+	objects.forEach(obj => {
+		if (!obj) return;
+		
+		if (obj.getChildMeshes) {
+			const meshes = obj.getChildMeshes();
+			meshes.forEach(mesh => {
+				if (!mesh.isVisible) return;
+				
+				if (qualityLevel === 'low') {
+					if (mesh.simplify) {
+						mesh.simplify([{ quality: 0.5, distance: 50 }], true);
+					}
+				}
+				if (!mesh.name.includes("player") && !mesh.name.includes("ball")) {
+					mesh.doNotSyncBoundingInfo = true;
+					mesh.alwaysSelectAsActiveMesh = false;
+				}
+			});
+		}
+	});
+}
+
+function handleGameInitError() {
+	console.error("Game initialization failed. Back to menu...");
+	initialized = false;
+	play = false;
+	
+	Solo_gameStart = false;
+	Multi_gameStart = false;
+	tournament_game = false;
+	
+	const errorMessage = document.createElement('div');
+	errorMessage.style.position = 'absolute';
+	errorMessage.style.top = '50%';
+	errorMessage.style.left = '50%';
+	errorMessage.style.transform = 'translate(-50%, -50%)';
+	errorMessage.style.backgroundColor = 'rgba(0,0,0,0.8)';
+	errorMessage.style.color = 'white';
+	errorMessage.style.padding = '20px';
+	errorMessage.style.borderRadius = '5px';
+	errorMessage.style.zIndex = '1000';
+	errorMessage.textContent = 'Error loading game. Back to menu...';
+	
+	document.body.appendChild(errorMessage);
+	setTimeout(() => {
+		document.body.removeChild(errorMessage);
+		window.location.href = '/game-menu';
+	}, 3000);
+}
+
+/*************************************************************/
+/*****************COMMENCEMENT DES JEUX **********************/
+/*************************************************************/
+
+export function startGame() {
+	Solo_gameStart = true;
+	Multi_gameStart = false;
+	tournament_game = false;
+	SetIsGameFinished(false);
+
+	canPressSpace = false;
+	setTimeout(() => {
+		canPressSpace = true;
+	}, 5000);
+}
+
+export function startMultiGame() {
+	Multi_gameStart = true;
+	Solo_gameStart = false;
+	tournament_game = false;
+	SetIsGameFinished(false);
+}
+
+export function startAI_Game() {	Solo_gameStart = false;
+	Multi_gameStart = false;
+	tournament_game = false;
+	SetIsGameFinished(false);
+}
+
+export function startTournamentGame() {
+	tournament_game = true;
+	Solo_gameStart = false;
+	Multi_gameStart = false;
+	SetIsGameFinished(false);
+}
+
+/*************************************************************/
+/*****************QUITTER LES JEUX ***************************/
+/*************************************************************/
+
+export function leave_Game() {
+	try {
+		destroy_game_solo(scene);
+	} catch (e) {
+		console.error("Error cleaning up solo game:", e);
+	}
+	Solo_gameStart = false;
+	initialized = false;
+	play = false;
+}
+
+export function leave_tournament_game() {
+	try {
+		destroy_game_solo_tournament(scene);
+	} catch (e) {
+		console.error("Error cleaning up tournament game:", e);
+	}
+	tournament_game = false;
+	initialized = false;
+	play = false;
+}
+
+export function leave_Multiplayer_Game() {
+	try {
+		destroy_game_multiplayer(scene);
+	} catch (e) {
+		console.error("Error cleaning up multiplayer game:", e);
+	}
+	Multi_gameStart = false;
+	initialized = false;
+	play = false;
+}
+
+export function leave_AI_Game() {
+	initialized = false;
+	play = false;
+}
+
+/*************************************************************/
+/*****************COMPTEUR FPS *******************************/
+/*************************************************************/
+
+const fpsDiv = document.createElement('div');
+fpsDiv.style.position = 'absolute';
+fpsDiv.style.top = '50px';
+fpsDiv.style.left = '10px';
+fpsDiv.style.color = 'green';
+fpsDiv.style.zIndex = '1000';
+fpsDiv.style.fontSize = '10px';
+fpsDiv.style.fontFamily = 'monospace';
+fpsDiv.style.backgroundColor = 'rgba(0, 0, 0, 0)';
+fpsDiv.style.padding = '5px';
+document.body.appendChild(fpsDiv);
+let frameCount = 0;
+let lastFpsUpdate = performance.now();
+
+/***********************************************************/
+/*****************BOUCLE PRINCIPALE ************************/
+/***********************************************************/
+
+let isConnected = false;
+
+
+engine.runRenderLoop(() => {
+	try
+	{
+		const scale = 1.0;
+		if (canvas.width !== canvas.clientWidth * scale || canvas.height !== canvas.clientHeight * scale) {
+			canvas.width = canvas.clientWidth * scale;
+			canvas.height = canvas.clientHeight * scale;
+			engine.resize(true);
+		}
+
+		frameCount++;
+		const now = performance.now();
+		const delta = now - lastFpsUpdate;
+		if (delta >= 250) {
+			const fps = (frameCount / delta) * 1000;
+			fpsDiv.textContent = `FPS: ${fps.toFixed(1)}`;
+			lastFpsUpdate = now;
+			frameCount = 0;
+		}
+		applyQualitySettings();
+		if (Solo_gameStart && !gameIsFinished) {
+			if (!initialized) {
+				initializeGame_solo_game();
+				initialized = true;
+			}
+			if (initialized) {
+				if (scene.inputStates.space && !play) {
+					if (!canPressSpace)
+						return;
+					play = true;
+				}
+				if (play)
+				{
+					const bonusPlayer = UpdatePlayerPose(player_1, player_2);
+					MoveBall(player_1, player_2, ball, bonusPlayer.player_1_bonus, bonusPlayer.player_2_bonus);
+				}
+			}
+		}
+
+		if (Multi_gameStart && !gameIsFinished)
+		{
+			if (!initialized)
+			{
+				initialize_Multiplayer_game();
+				initialized = true;
+			}
+			if (initialized)
+			{
+				if (scene.inputStates.space && !play)
+					play = true;
+				if (play)
+				{
+					UpdatePLayerPoseMulti(player_1, player_2, player_3, player_4);
+					MoveBall2v2(player_1, player_2, player_3, player_4, ball);
+				}
+			}
+		}
+
+		if (tournament_game && !gameIsFinished)
+		{
+			if (!initialized)
+			{
+				initializeGame_tournament();
+				initialized = true;
+			}
+			if (initialized)
+			{
+				if (scene.inputStates.space && !play)
+					play = true;
+				if (play)
+				{
+					move_player_tournament(player_1_tournament, player_2_tournament);
+					MoveBall(player_1_tournament, player_2_tournament, ball);
+				}
+			}
+		}
+
+		if (DEBUG_MODE && now - lastDebugOutput > 5000) {
+			engine.getFps().toFixed(1);
+			lastDebugOutput = now;
+		}
+		scene.render();
+
+	} catch (error) {
+		console.error("Error in render loop:", error);
+		if (qualityLevel !== 'low') {
+			qualityLevel = 'low';
+			applyQualitySettingsImmediate();
+		}
+	}
+});
+
+let resizeTimeout;
+window.addEventListener('resize', () => {
+	clearTimeout(resizeTimeout);
+	resizeTimeout = setTimeout(() => {
+		engine.resize(true);
+	}, 100);
+});
+
+window.addEventListener('blur', () => {
+	engine.hideLoadingUI();
+	engine.renderEvenInBackground = false;
+});
+
+window.addEventListener('focus', () => {
+	engine.renderEvenInBackground = true;
+});
+
+const DEBUG_MODE = false;
+let lastDebugOutput = 0;
+
+export function getSoloGameStart() {
+	return Solo_gameStart;
+}
+
+export function getMultiGameStart() {
+	return Multi_gameStart;
+}
+
+
+export function getTournamentGameStart() {
+	return tournament_game;
+}
+
+export function setQualityLevel(level) {
+	if (['low', 'medium', 'high'].includes(level)) {
+		qualityLevel = level;
+		applyQualitySettingsImmediate();
+		return true;
+	}
+	return false;
+}
+
+function showErrorMessage(message) {
+	const errorDiv = document.createElement('div');
+	errorDiv.style.position = 'absolute';
+	errorDiv.style.top = '10px';
+	errorDiv.style.left = '50%';
+	errorDiv.style.transform = 'translateX(-50%)';
+	errorDiv.style.backgroundColor = 'rgba(255, 0, 0, 0.7)';
+	errorDiv.style.color = 'white';
+	errorDiv.style.padding = '10px';
+	errorDiv.style.borderRadius = '5px';
+	errorDiv.style.zIndex = '1000';
+	errorDiv.textContent = message;
+	
+	document.body.appendChild(errorDiv);
+	
+	setTimeout(() => {
+		document.body.removeChild(errorDiv);
+	}, 5000);
+}
