@@ -7,6 +7,9 @@ import { CREATE_PLATFORMERS_TABLE } from '../models/platformersModel.js';
 
 const dbFile = "Data/db/database.sqlite";
 
+// Déclarer dbInstance avant les fonctions pour éviter la Temporal Dead Zone
+let dbInstance = null;
+
 async function setupDatabase() {
     try {
         console.log("🔄 Setting up database connection...");
@@ -58,8 +61,6 @@ export async function initDb() {
 // export default db;
 
 // À la place, exporter une fonction pour obtenir la DB quand nécessaire
-let dbInstance = null;
-
 export async function getDb() {
     if (!dbInstance) {
         dbInstance = await setupDatabase();

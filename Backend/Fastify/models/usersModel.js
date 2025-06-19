@@ -1,5 +1,5 @@
-import db from "../utils/db.js";
 import { getCurrentCGUVersion } from "../utils/cgu.js";
+import {getDb} from "../utils/db.js";
 
 export const CREATE_USERS_TABLE = `
 	CREATE TABLE IF NOT EXISTS users (
@@ -23,11 +23,11 @@ export const CREATE_USERS_TABLE = `
 
 const usersModel = {
 	//* Create
-	createUser: async (username, password) => { 
+	createUser: async (username, password) => {
 		const db = await getDb();
-		const currentCGUVersion = "1.0"; 
-		db.prepare("INSERT INTO users (username, password, cgu_version) VALUES (?, ?, ?)").run(username, password, currentCGUVersion); 
-		return { username }; 
+		const currentCGUVersion = "1.0";
+		db.prepare("INSERT INTO users (username, password, cgu_version) VALUES (?, ?, ?)").run(username, password, currentCGUVersion);
+		return { username };
 	},
 
 	//* Read
@@ -35,92 +35,92 @@ const usersModel = {
 		const db = await getDb();
 		const currentCGUVersion = getCurrentCGUVersion();
 		return db.prepare(`
-			INSERT INTO users (username, password, google_id, profile_picture, cgu_version) 
+			INSERT INTO users (username, password, google_id, profile_picture, cgu_version)
 			VALUES (?, ?, ?, ?, ?)
 		`).run(username, password, googleId, profilePicture, currentCGUVersion);
 	},
-	getAllUsers: async () => { 
+	getAllUsers: async () => {
 		const db = await getDb();
 		return db.prepare("SELECT * FROM users").all();
 	},
-	getUserById: async (userId) => { 
+	getUserById: async (userId) => {
 		const db = await getDb();
 		return db.prepare("SELECT * FROM users WHERE userId = ?").get(userId);
 	},
-	getUserByUsername: async (username) => { 
+	getUserByUsername: async (username) => {
 		const db = await getDb();
 		return db.prepare("SELECT * FROM users WHERE username = ?").get(username);
 	},
-	getUsersWithOldCGU: async () => { 
+	getUsersWithOldCGU: async () => {
 		const db = await getDb();
-		const currentVersion = getCurrentCGUVersion(); 
-		return db.prepare("SELECT * FROM users WHERE cgu_version != ?").all(currentVersion); 
+		const currentVersion = getCurrentCGUVersion();
+		return db.prepare("SELECT * FROM users WHERE cgu_version != ?").all(currentVersion);
 	},
-	getActiveUsers: async () => { 
+	getActiveUsers: async () => {
 		const db = await getDb();
-		return db.prepare("SELECT * FROM users WHERE deleted_at IS NULL").all(); 
+		return db.prepare("SELECT * FROM users WHERE deleted_at IS NULL").all();
 	},
-	getDeletedUsers: async () => { 
+	getDeletedUsers: async () => {
 		const db = await getDb();
-		return db.prepare("SELECT userId, username, deleted_at FROM users WHERE deleted_at IS NOT NULL ORDER BY deleted_at DESC").all(); 
+		return db.prepare("SELECT userId, username, deleted_at FROM users WHERE deleted_at IS NOT NULL ORDER BY deleted_at DESC").all();
 	},
-	getUserByGoogleId: async (googleId) => { 
+	getUserByGoogleId: async (googleId) => {
 		const db = await getDb();
-		return db.prepare("SELECT * FROM users WHERE google_id = ?").get(googleId); 
+		return db.prepare("SELECT * FROM users WHERE google_id = ?").get(googleId);
 	},
 
 	//* Update
-	updateDoubleAuth_status: async (userId, doubleAuth_status) => { 
+	updateDoubleAuth_status: async (userId, doubleAuth_status) => {
 		const db = await getDb();
 		return db.prepare("UPDATE users SET doubleAuth_status = ? WHERE userId = ?").run(doubleAuth_status, userId);
 	},
-	updateDoubleAuth_secret: async (userId, doubleAuth_secret) => { 
+	updateDoubleAuth_secret: async (userId, doubleAuth_secret) => {
 		const db = await getDb();
 		return db.prepare("UPDATE users SET doubleAuth_secret = ? WHERE userId = ?").run(doubleAuth_secret, userId);
 	},
-	updateUsername: async (userId, newUsername) => { 
+	updateUsername: async (userId, newUsername) => {
 		const db = await getDb();
 		return db.prepare("UPDATE users SET username = ? WHERE userId = ?").run(newUsername, userId);
 	},
-	updatePassword: async (userId, newPassword) => { 
+	updatePassword: async (userId, newPassword) => {
 		const db = await getDb();
 		return db.prepare("UPDATE users SET password = ? WHERE userId = ?").run(newPassword, userId);
 	},
-	updateOnlineStatus: async (userId, NewOnlineStatus) => { 
+	updateOnlineStatus: async (userId, NewOnlineStatus) => {
 		const db = await getDb();
 		return db.prepare("UPDATE users SET online_status = ? WHERE userId = ?").run(NewOnlineStatus, userId);
 	},
-	setInactiveUsersOffline: async (inactiveSince) => { 
+	setInactiveUsersOffline: async (inactiveSince) => {
 		const db = await getDb();
-		return db.prepare("UPDATE users SET online_status = 0 WHERE last_activity <= ?").run(inactiveSince); 
+		return db.prepare("UPDATE users SET online_status = 0 WHERE last_activity <= ?").run(inactiveSince);
 	},
-	updateProfilePicture: async (userId, profile_picture) => { 
+	updateProfilePicture: async (userId, profile_picture) => {
 		const db = await getDb();
 		return db.prepare("UPDATE users SET profile_picture = ? WHERE userId = ?").run(profile_picture, userId);
 	},
-	updateGamesWon: async (userId) => { 
+	updateGamesWon: async (userId) => {
 		const db = await getDb();
 		return db.prepare("UPDATE users SET games_won = games_won + 1 WHERE userId = ?").run(userId);
 	},
-	updateGamesLost: async (userId) => { 
+	updateGamesLost: async (userId) => {
 		const db = await getDb();
 		return db.prepare("UPDATE users SET games_lost = games_lost + 1 WHERE userId = ?").run(userId);
 	},
-	updateUserCGUVersion: async (userId, version) => { 
+	updateUserCGUVersion: async (userId, version) => {
 		const db = await getDb();
 		return db.prepare("UPDATE users SET cgu_version = ?, cgu_accepted = CURRENT_TIMESTAMP WHERE userId = ?").run(version, userId);
 	},
-	updateLastActivity: async (userId) => { 
+	updateLastActivity: async (userId) => {
 		const db = await getDb();
 		return db.prepare("UPDATE users SET last_activity = CURRENT_TIMESTAMP WHERE userId = ?").run(userId);
 	},
-	
+
 	//* Delete
-	delete: async (userId) => { 
+	delete: async (userId) => {
 		const db = await getDb();
 		return db.prepare("DELETE FROM users WHERE userId = ?").run(userId);
 	},
-	deleteInactiveUsers: async () => { 
+	deleteInactiveUsers: async () => {
 		const db = await getDb();
 		return db.prepare("DELETE FROM users WHERE last_activity <= date('now', '-3 years')").run();
 	},
@@ -140,8 +140,6 @@ const usersModel = {
 		});
 		return transaction();
 	},
-	
-	
 }
 
 export default usersModel;

@@ -10,6 +10,8 @@ import websocketPlugin from './utils/websocket.js'
 import colorLoggerPlugin from './utils/logger.js'
 import websocket from '@fastify/websocket'
 import { checkEmailConfig } from './utils/mailer.js'
+import { initDb } from "./utils/db.js"
+await initDb();
 
 const logActive = process.env.LOG_ACTIVE === 'true';
 
@@ -51,16 +53,16 @@ cron.schedule('0 0 * * *', () => {
 });
 
 // Initialiser la base de données de manière asynchrone APRÈS que Fastify soit configuré
-async function initializeDatabase() {
-    console.log("🔄 Initializing database...");
+// async function initializeDatabase() {
+//     console.log("🔄 Initializing database...");
     
-    // Attendre un peu que Vault soit prêt
-    await new Promise(resolve => setTimeout(resolve, 5000));
+//     // Attendre un peu que Vault soit prêt
+//     await new Promise(resolve => setTimeout(resolve, 5000));
     
-    const { initDb } = await import("./utils/db.js");
-    await initDb();
-    console.log("✅ Database initialization completed");
-}
+//     const { initDb } = await import("./utils/db.js");
+//     await initDb();
+//     console.log("✅ Database initialization completed");
+// }
 
 /**
  * Main function for run the server
@@ -69,18 +71,8 @@ async function initializeDatabase() {
 const start = async () => {
 	try {
 		checkEmailConfig();
-		
-		// Démarrer le serveur Fastify
+
 		await fastify.listen({ port: 3000, host: '0.0.0.0' })
-		console.log("🚀 Fastify server started successfully on port 3000");
-		
-		// Initialiser la base de données APRÈS que le serveur soit démarré
-		try {
-			await initializeDatabase();
-		} catch (err) {
-			console.error("❌ Failed to initialize database:", err);
-			// Ne pas faire process.exit(1) ici pour éviter de tuer le serveur
-		}
 		
 	} catch (err) {
 		fastify.log.error(err)
