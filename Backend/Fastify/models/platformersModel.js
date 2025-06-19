@@ -1,4 +1,4 @@
-import {getDb} from "../utils/db.js";
+import { db } from "../utils/db.js";
 
 export const CREATE_PLATFORMERS_TABLE = `
 	CREATE TABLE IF NOT EXISTS platformers (
@@ -14,12 +14,10 @@ export const CREATE_PLATFORMERS_TABLE = `
 `;
 
 const platformersModel = {
-	createPlatformer: async (user1_id, user2_id, score_player1, score_player2) => {
-		const db = await getDb();
+	createPlatformer: (user1_id, user2_id, score_player1, score_player2) => {
 		db.prepare("INSERT INTO platformers (user1_id, user2_id, score_player1, score_player2) VALUES (?, ?, ?, ?)").run(user1_id, user2_id, score_player1, score_player2);
 	},
-	getAllPlatformers: async () => {
-		const db = await getDb();
+	getAllPlatformers: () => {
 		return db.prepare(`
 			SELECT p.platformerId, p.user1_id, p.user2_id, p.score_player1, p.score_player2, p.created_at,
 				u1.username as user1_name, u2.username as user2_name
@@ -27,20 +25,16 @@ const platformersModel = {
 			JOIN users u1 ON p.user1_id = u1.userId
 			JOIN users u2 ON p.user2_id = u2.userId`).all();
 	},
-	getPlatformerById: async (platformerId) => {
-		const db = await getDb();
+	getPlatformerById: (platformerId) => {
 		return db.prepare("SELECT * FROM platformers WHERE platformerId = ?").get(platformerId);
 	},
-	deletePlatformer: async (platformerId) => {
-		const db = await getDb();
+	deletePlatformer: (platformerId) => {
 		return db.prepare("DELETE FROM platformers WHERE platformerId = ?").run(platformerId);
 	},
-	getUserPlatformer: async (user) => {
-		const db = await getDb();
+	getUserPlatformer: (user) => {
 		return db.prepare("SELECT p.platformerId, p.user1_id, p.score_player1, p.created_at, u.username FROM platformers p JOIN users u ON p.user1_id = u.userId WHERE p.user1_id = ? OR p.user2_id = ? ORDER BY p.created_at DESC").all(user, user);
 	},
-	getPlatformerByUserId: async (userId) => {
-		const db = await getDb();
+	getPlatformerByUserId: (userId) => {
 		return db.prepare("SELECT * FROM platformers WHERE user1_id = ? OR user2_id = ? ORDER BY created_at DESC").all(userId);
 	}
 }

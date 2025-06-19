@@ -228,7 +228,7 @@ export async function createUser(request, reply) {
 		return reply.code(400).send({ error: 'Username can only contain letters, numbers, dots, underscores, and hyphens' })
 	}
 
-	const sameUsername = await usersModel.getUserByUsername(username)
+	const sameUsername = usersModel.getUserByUsername(username)
 	log.debug(`Checking if username already exists: ${username} - Found: ${sameUsername}`)
 	if (sameUsername) {
 		log.warn(`User creation failed: Username already exists: ${username}`)
@@ -238,7 +238,7 @@ export async function createUser(request, reply) {
 	try {
 		log.info(`Creating new user: ${username}`)
 		const hashedPassword = await hashPassword(password)
-		const info = await usersModel.createUser(username, hashedPassword)
+		const info = usersModel.createUser(username, hashedPassword)
 		log.info(`User created successfully: ${username} (ID: ${info.lastInsertRowid})`)
 		return reply.code(201).send({ success: true, id: info.lastInsertRowid, username, message: 'Account created successfully' })
 	} catch (err) {
@@ -251,7 +251,7 @@ export async function login(request, reply) {
 	const { username, password } = request.body
 	try {
 		log.info(`Login attempt for username: ${username}`)
-		const user = await usersModel.getUserByUsername(username)
+		const user = usersModel.getUserByUsername(username)
 		
 		if (!user) {
 			log.warn(`Login failed: User not found - ${username}`)
@@ -282,8 +282,8 @@ export async function login(request, reply) {
 			return reply.code(500).send({ error: 'Internal Server Error' })
 		}
 
-		await usersModel.updateLastActivity(user.userId)
-		await usersModel.updateOnlineStatus(user.userId, 1)
+		usersModel.updateLastActivity(user.userId)
+		usersModel.updateOnlineStatus(user.userId, 1)
 		
 		log.info(`Login successful: ${username}`)
 		reply

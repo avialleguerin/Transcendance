@@ -1,5 +1,5 @@
 import fp from 'fastify-plugin'
-
+//todo: add a tab
 const colors = {
 	reset: '\x1b[0m',
 	red: '\x1b[31m',
@@ -23,8 +23,8 @@ const colorize = {
 	error: (text) => `${colors.red} ${text}${colors.reset}`,
 	success: (text) => `${colors.green} ${text}${colors.reset}`,
 	warning: (text) => `${colors.yellow} ${text}${colors.reset}`,
-	info: (text) => `${colors.blue} ${text}${colors.reset}`,
-	debug: (text) => `${colors.cyan} ${text}${colors.reset}`,
+	info: (text) => `${colors.cyan} ${text}${colors.reset}`,
+	debug: (text) => `${colors.blue} ${text}${colors.reset}`,
 }
 
 async function colorLoggerPlugin(fastify) {
