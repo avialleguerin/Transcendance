@@ -375,6 +375,6 @@ export async function fetch_user_games_big(username: string): Promise<void> {
 
 export async function togglePanel(event: Event): Promise<void> {
 	event.preventDefault();
-	await fetch_user_friendships(); //REVIEW - i add await
+	await fetch_user_friendships();
 	await fetch_user_games();
 }

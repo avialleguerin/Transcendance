@@ -108,8 +108,7 @@ export async function anonymize_user(): Promise<void> {
 	if (confirm('Do you really want to anonymize your account ?')) {
 		try {
 			const data = await fetchAPI('/request/user/anonymize-account', 'PUT');
-			fetchProfile(); //REVIEW - they are this here: fetchProfilePicture();
-			fetch
+			fetchProfile();
 		} catch (err) { console.error(`anonymize_user: ${err}`); }
 	}
 }
