@@ -8,7 +8,12 @@ import path from 'path'
 
 const uploadDir = '/usr/share/nginx/uploads'
 
-// Utility function to generate anonymous username (shared with usersController)
+// Fonction utilitaire pour automatiser les réponses
+function sendResponse(reply, code, msg) {
+	const success = code >= 200 && code < 300
+	return reply.code(code).send({ success, [success ? 'message' : 'error']: msg })
+}
+
 async function generateAnonymousUsername(userId) {
 	const adjectives = ['Cool', 'Fast', 'Wild', 'Bold', 'Wise', 'Smart', 'Calm', 'Quick']
 	const nouns = ['Cat', 'Fox', 'Wolf', 'Bear', 'Lion', 'Hawk', 'Tiger', 'Owl']
@@ -25,7 +30,6 @@ async function generateAnonymousUsername(userId) {
 		
 		anonymizedUsername = `${randomAdjective}${randomNoun}${randomNumber}`
 		
-		// Ensure username is under 10 characters
 		if (anonymizedUsername.length < 10) {
 			try {
 				const result = usersModel.updateUsername(userId, anonymizedUsername)
@@ -44,10 +48,8 @@ async function generateAnonymousUsername(userId) {
 		attempts++
 	}
 	
-	if (!updateSuccess) {
-		fastify.log.error(`Failed to generate unique username after ${maxAttempts} attempts`)
-		throw new Error('Failed to generate unique username')
-	}
+	if (!updateSuccess)
+		throw new Error(`Failed to generate unique username after ${maxAttempts} attempts`)
 	
 	return anonymizedUsername
 }
@@ -88,7 +90,6 @@ export async function deleteUser(request, reply) {
 			} catch (deleteErr) {}
 		}
 
-		// Generate anonymous username with retry logic
 		try {
 			const anonymizedUsername = await generateAnonymousUsername(userId)
 			fastify.log.info(`Admin anonymizing user: ${user.username} -> ${anonymizedUsername}`)
@@ -97,7 +98,6 @@ export async function deleteUser(request, reply) {
 			return reply.code(500).send({ error: 'Failed to generate unique username' })
 		}
 
-		// Complete anonymization with other fields
 		const anonymizedPassword = 'DELETED_ACCOUNT'
 		const defaultProfilePicture = 'default-profile-picture.png'
 		
@@ -151,8 +151,12 @@ export async function addGame(request, reply) {
 	const { user1, user2, user3, user4 } = request.body
 	
 	try {
-		const user1Exists = usersModel.getUserByUsername(user1)
+		const user1Exists = usersModel.getUserByUsername(user1) 
 		const user2Exists = usersModel.getUserByUsername(user2)
+
+		if (usersModel.getDelByUsername(user1).length > 0 || usersModel.getDelByUsername(user2).length > 0
+			|| (user3 && usersModel.getDelByUsername(user3).length > 0) || (user4 && usersModel.getDelByUsername(user4).length > 0))
+			return reply.code(400).send({ success: false, error: "Cannot create a game with a deleted user" })
 		
 		if (!user1Exists) return reply.code(404).send({ success: false, error: `User '${user1}' not found` })
 		if (!user2Exists) return reply.code(404).send({ success: false, error: `User '${user2}' not found` })

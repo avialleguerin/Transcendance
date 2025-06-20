@@ -1,5 +1,6 @@
 import db from "../utils/db.js";
 import { getCurrentCGUVersion } from "../utils/cgu.js";
+import { getDeletedUsers } from "../controllers/adminController.js";
 
 export const CREATE_USERS_TABLE = `
 	CREATE TABLE IF NOT EXISTS users (
@@ -39,6 +40,9 @@ const usersModel = {
 	getUsersWithOldCGU: () => { const currentVersion = getCurrentCGUVersion(); return db.prepare("SELECT * FROM users WHERE cgu_version != ?").all(currentVersion); },
 	getActiveUsers: () => { return db.prepare("SELECT * FROM users WHERE deleted_at IS NULL").all(); },
 	getDeletedUsers: () => { return db.prepare("SELECT userId, username, deleted_at FROM users WHERE deleted_at IS NOT NULL ORDER BY deleted_at DESC").all(); },
+	getDelByUsername: (name) => {
+		return db.prepare("SELECT userId, username, deleted_at FROM users WHERE deleted_at IS NOT NULL AND username LIKE ? ORDER BY deleted_at DESC").all(`%${name}%`);
+	},
 	getUserByGoogleId: (googleId) => { return db.prepare("SELECT * FROM users WHERE google_id = ?").get(googleId); },
 
 	//* Update
@@ -57,14 +61,7 @@ const usersModel = {
 	//* Delete
 	delete: (userId) => { return db.prepare("DELETE FROM users WHERE userId = ?").run(userId) },
 	deleteInactiveUsers: () => { return db.prepare("DELETE FROM users WHERE last_activity <= date('now', '-3 years')").run() },
-	anonymizeUser: (userId) => {
-		const anonymizedPassword = 'DELETED_ACCOUNT';
-		const defaultProfilePicture = 'default-profile-picture.png';
-		return db.prepare(`UPDATE users SET password = ?, profile_picture = ?, doubleAuth_status = 0, doubleAuth_secret = ?, google_id = NULL, deleted_at = CURRENT_TIMESTAMP WHERE userId = ?`).run(anonymizedPassword, defaultProfilePicture, null, userId);
-	},
-	anonymizeUserData: (userId, anonymizedPassword, defaultProfilePicture) => {
-		return db.prepare(`UPDATE users SET password = ?, profile_picture = ?, doubleAuth_status = 0, doubleAuth_secret = ?, google_id = NULL, deleted_at = CURRENT_TIMESTAMP WHERE userId = ?`).run(anonymizedPassword, defaultProfilePicture, null, userId);
-	},
+	anonymizeUserData: (userId, anonymizedPassword, defaultProfilePicture) => {return db.prepare(`UPDATE users SET password = ?, profile_picture = ?, doubleAuth_status = 0, doubleAuth_secret = ?, google_id = NULL, deleted_at = CURRENT_TIMESTAMP WHERE userId = ?`).run(anonymizedPassword, defaultProfilePicture, null, userId); },
 	forceDeleteUser: (userId) => {
 		const transaction = db.transaction(() => {
 			db.prepare("DELETE FROM games WHERE user1_id = ? OR user2_id = ? OR user3_id = ? OR user4_id = ?").run(userId, userId, userId, userId);
