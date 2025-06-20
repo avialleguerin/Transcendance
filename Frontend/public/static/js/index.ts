@@ -1,3 +1,4 @@
+
 import home from "./views/home.js";
 import Game_menu from "./views/game-menu.js";
 import solo_game_1v1 from "./views/solo-game-1v1.js";
@@ -7,14 +8,110 @@ import tournament_game from "./views/tournament-game.js";
 import PlatformView  from "./views/platformer/PlatformView.js";
 import { Route, RouteMatch } from "../../api/types.js";
 import { gameMenuView } from "../../api/utils.js";
+import { handleViewTransitions } from "../../srcs/game/gameplay/views/camera.js";
+import { leave_Game, leave_Multiplayer_Game, leave_tournament_game } from "../../srcs/game/gameplay/babylon.js";
+import { c } from "./views/platformer/constants.js";
 
-
-
+let canTransition: boolean = true; // Variable pour contrôler les transitions de page
 let leave_game_var: boolean = false;
+let currentPage: string = location.pathname; // Variable pour tracker la page actuelle
 
 const navigateTo = (url: string): void => {
+	const previousPage = currentPage; // Sauvegarde de la page précédente
+	const nextPage = url; // Page de destination
+	console.log("je suis laaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+	// Log de la transition
+	console.log(`🔄 Navigation: ${previousPage} → ${nextPage}`);
+	console.log(`🔄 URL: ${url}`)
+	console.log(`🔄 Current Page: ${currentPage}`)
+	console.log(`🔄 Previous Page: ${previousPage}`);
+	console.log(`🔄 Next Page: ${nextPage}`);
+	logPageTransition(previousPage, nextPage);
+	
 	history.pushState(null, "", url);
 	router();
+};
+
+const logPageTransition = (from: string, to: string): void => {
+	if (from === "/")
+	{
+		if (to === "/game-menu")
+			console.log("📱 Transition: Accueil → Menu de jeu");
+	}
+	
+	else if (from === "/game-menu")
+	{
+		if (to === "/")
+		{
+			console.log("🏠 Transition: Menu de jeu → Accueil");
+		}
+		else if (to === "/solo-game-1v1")
+		{
+			console.log("🎮 Transition: Menu de jeu → Jeu solo 1v1");
+			gameMenuView(false, "You dont have oponents to play with");
+		}
+		else if (to === "/multi-player-game")
+		{
+			console.log("👥 Transition: Menu de jeu → Jeu multijoueur");
+			gameMenuView(false, "You dont have oponents to play with");
+		}
+		else if (to === "/tournament")
+		{
+			console.log("🏆 Transition: Menu de jeu → Tournoi");
+			console.log("handleViewTransitions('tournament', 'vue2')");
+			handleViewTransitions("tournament", "vue2");
+		}
+		else if (to === "/platformer")
+		{
+			console.log("🏃 Transition: Menu de jeu → Platformer");
+			handleViewTransitions("platformer", "vue2");
+		}
+	}
+
+	else if (from === "/solo-game-1v1")
+	{
+		if (to === "/game-menu") {
+			console.log("📱 Transition: Jeu solo 1v1 → Menu de jeu");
+			handleViewTransitions("vue2", "vue4");
+			leave_Game();
+		}
+	}
+	
+	else if (from === "/multi-player-game") {
+		if (to === "/game-menu") {
+			console.log("📱 Transition: Jeu multijoueur → Menu de jeu");
+			handleViewTransitions("vue2", "vue4");
+			leave_Multiplayer_Game();
+		}
+	}
+
+	else if (from === "/tournament") {
+		if (to === "/game-menu") {
+			console.log("📱 Transition: Tournoi → Menu de jeu");
+			console.log("handleViewTransitions(vue2, tournament");
+			handleViewTransitions("vue2", "tournament");
+		} else if (to === "/tournament-game") {
+			console.log("🎯 Transition: Tournoi → Jeu de tournoi");
+		}
+	}
+
+	else if (from === "/tournament-game") {
+		if (to === "/tournament") {
+			console.log("🏆 Transition: Jeu de tournoi → Tournoi");
+
+		}
+	}
+
+	else if (from === "/platformer") {
+		if (to === "/game-menu") {
+			console.log("📱 Transition: Platformer → Menu de jeu");
+			handleViewTransitions("vue2", "platformer");
+		}
+	}
+
+	else {
+		console.log(`❓ Transition inconnue: ${from} → ${to}`);
+	}
 };
 
 const router = async (): Promise<void> => {
@@ -27,6 +124,11 @@ const router = async (): Promise<void> => {
 		{ path: "/tournament-game", view: tournament_game },
 		{ path: "/platformer", view: PlatformView },
 	];
+
+	if (canTransition === false && currentPage === "/game-menu" && to ) {
+		gameMenuView(false, "You dont have oponents to play with");
+		return;
+	}
 
 	const potentialMatches: RouteMatch[] = routes.map((route) => {
 		return {
@@ -44,6 +146,18 @@ const router = async (): Promise<void> => {
 		};
 	}
 
+	// Mise à jour de la page actuelle
+	const previousPage = currentPage;
+	currentPage = location.pathname;
+	
+	// Si on vient d'une navigation directe (back/forward), on log aussi
+	if (previousPage !== currentPage) {
+		logPageTransition(previousPage, currentPage);
+	}
+	
+	console.log(`📍 Page actuelle: ${currentPage}`);
+	console.log(`📍 Page précédente: ${previousPage}`);
+
 	const view = new match.route.view();
 	const app: HTMLElement | null = document.querySelector("#app");
 	
@@ -54,7 +168,7 @@ const router = async (): Promise<void> => {
 		const accessToken = sessionStorage.getItem("accessToken");
 		if (match.route.path === "/" && accessToken) {
 			console.log("Vue home chargée !");
-			gameMenuView(false);
+			gameMenuView(false, "You are already logged in");
 		}
 		app.innerHTML = await view.getHtml();
 		app.style.transition = "opacity 0.5s ease-in-out";
@@ -86,8 +200,23 @@ const router = async (): Promise<void> => {
 		if (typeof view.init_platformer_game === "function") view.init_platformer_game();
 		if (typeof view.init_game_platformer === "function") view.init_game_platformer();
 		if (typeof view.handleDeconnection === "function") view.handleDeconnection();
+		
+		console.log(`✅ Page chargée: ${currentPage}`);
 	}, 1500);
 };
+
+// Fonction pour obtenir la page actuelle
+export function getCurrentPage(): string {
+	return currentPage;
+}
+
+// Fonction pour obtenir des informations de navigation
+export function getNavigationInfo(): { current: string, previous?: string } {
+	return {
+		current: currentPage,
+		previous: document.referrer ? new URL(document.referrer).pathname : undefined
+	};
+}
 
 window.addEventListener("popstate", router);
 
@@ -117,7 +246,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	const necessaryBtn = document.getElementById("necessary-btn");
 	const allowAllBtn = document.getElementById("allow-all-btn");
 
-	necessaryBtn?.addEventListener("click", () => {
+	necessaryBtn.addEventListener("click", () => {
 		persistentPopup?.classList.remove("active");
 		localStorage.setItem('cookieConsent', 'necessary');
 	});

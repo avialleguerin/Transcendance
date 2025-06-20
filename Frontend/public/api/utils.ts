@@ -81,7 +81,7 @@ export function homeView(): void {
 	});
 }
 
-export function gameMenuView(changeView: boolean): void {
+export function gameMenuView(changeView: boolean, txt: string): void {
 	if (changeView)
 	{
 		handleViewTransitions("vue1", "default");
@@ -101,8 +101,9 @@ export function gameMenuView(changeView: boolean): void {
 	}
 	else 
 	{
-		notif("You are already connected", false);
-		history.pushState({}, '', '/game-menu');
+		notif(txt, false);
+		// if (txt === "You are already logged in")
+			history.pushState({}, '', '/game-menu');
 		import('../static/js/views/game-menu.js').then(module => {
 			const GameMenu = module.default;
 			const gameMenuInstance = new GameMenu();

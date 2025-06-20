@@ -40,7 +40,7 @@ export async function login(event: Event): Promise<void> {
 		} else if (data.success && data.connection_status === "connected") {
 			setLocalStorage({ "Player1": data.username, "profile_picture": data.profile_picture });
 			connectWebSocket()
-			gameMenuView(true);
+			gameMenuView(true, null);
 			$form("loginForm").reset();
 			$input("login-password").value = "";
 		} else
@@ -192,7 +192,7 @@ export async function verify2FA(event: Event) {
 			sessionStorage.removeItem("authTicket")
 			setLocalStorage({"Player1": data.username, "profile_picture": data.profile_picture});
 			connectWebSocket()
-			gameMenuView(true);
+			gameMenuView(true, null);
 		}
 	} catch (err) { console.error(`verify2FA: ${err}`); }
 }
@@ -233,7 +233,7 @@ export async function refreshInfos() { //REVIEW - maybe put in utils
 		} else if (sessionStorage.getItem("accessToken") && sessionStorage.getItem("accessToken") !== "undefined") {
 			setLocalStorage({"Player1": data.user.username, "profile_picture": data.user.profile_picture});
 			connectWebSocket();
-			gameMenuView(true);
+			gameMenuView(true, null);
 		}
 	} catch (err) { console.error(`refreshInfos: ${err}`); }
 }
@@ -277,7 +277,7 @@ export async function handleGoogleSignIn(response: { access_token: string }) {
 			if (data.avatar)
 				localStorage.setItem("profile_picture", data.avatar);
 			notif("Connexion Google réussie !", true);
-			gameMenuView(true);
+			gameMenuView(true, null);
 		} else
 			notif(data.error || "Erreur lors de la connexion Google", false);
 	} catch (err) {
