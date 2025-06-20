@@ -13,6 +13,7 @@ __pycache__/
 .docker
 
 Data/vault_data/
+Data/sqlite_data/
 
 # Builds
 Frontend/dist

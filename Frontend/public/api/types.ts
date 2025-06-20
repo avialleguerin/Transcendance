@@ -101,6 +101,13 @@ export interface WebSocketMessage {
 	data?: any;
 }
 
+export interface WebSocketManager {
+	connect(): void;
+	disconnect(): void;
+	getUserIdFromToken(): number | null;
+	handleFriendRequest(message: string | null): void;
+}
+
 export interface GameModeData {
 	player1?: string;
 	player2?: string;
@@ -142,6 +149,8 @@ export interface RouteMatch {
 	route: Route;
 	isMatch: boolean;
 }
+
+
  
 declare global {
 	const google: Window['google'];
@@ -219,8 +228,17 @@ declare global {
 		delete_platformer: (platformerId: string) => Promise<void>;
 		create_user: (event: Event) => Promise<void>;
 		create_game: (event: Event) => Promise<void>;
-		create_platformer: (event: Event) => Promise<void>;
 		create_friendship: (event: Event) => Promise<void>;
+
+		//* game.ts
+		create_1v1_game: (event: Event, player1: string, player2: string) => Promise<void>;
+		create_2v2_game: (event: Event) => Promise<void>;
+		create_platformer: (event: Event) => Promise<void>;
 		get_platformers: () => Promise<any>;
+
+		//* websocket.ts
+		connectWebSocket: () => void;
+		disconnectWebSocket: () => void;
+		wsManager: WebSocketManager | null;
 	}
-}``
+}

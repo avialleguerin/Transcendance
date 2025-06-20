@@ -139,7 +139,7 @@ export async function fetch_user_friendships(): Promise<void> {
 						localStorage.setItem('bool', 'false');
 						historyIsActive = false;
 						document.querySelectorAll('.delete-btn').forEach(btn => {
-							btn.style.display = 'block';
+							(btn as HTMLElement).style.display = 'block';
 						});
 					}
 				});

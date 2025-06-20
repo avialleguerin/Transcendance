@@ -4,7 +4,7 @@ import { fetch_user_friendships } from './friendships.js'
 
 export class WebSocketManager {
 	private socket: WebSocket | null;
-	private heartbeatInterval: NodeJS.Timeout | null;
+	private heartbeatInterval: ReturnType<typeof setInterval> | null;
 	
 	constructor() {
 		this.socket = null
@@ -102,16 +102,19 @@ export class WebSocketManager {
 export const wsManager = new WebSocketManager()
 
 // Connexion automatique après login
-export function connectWebSocket() {
+export function connectWebSocket(): void {
 	wsManager.connect()
 }
 
 // Déconnexion lors du logout
-export function disconnectWebSocket() {
+export function disconnectWebSocket(): void {
 	wsManager.disconnect()
 }
 
 // AJOUT : Rendre les fonctions accessibles globalement pour les fichiers non-modules
-window.connectWebSocket = connectWebSocket;
-window.disconnectWebSocket = disconnectWebSocket;
-window.wsManager = wsManager;
+if (typeof window !== 'undefined') {
+	window.connectWebSocket = connectWebSocket;
+	window.disconnectWebSocket = disconnectWebSocket;
+	window.wsManager = wsManager;
+}
+
