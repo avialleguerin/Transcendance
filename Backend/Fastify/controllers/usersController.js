@@ -33,7 +33,6 @@ const IMAGE_SECURITY = {
 
 export async function googleConfig(request, reply) {
 	try {
-		fastify.log.debug(`Google config requested - Client ID: ${process.env.GOOGLE_CLIENT_ID}`)
 		return reply.code(200).send({ success: true, client_id: process.env.GOOGLE_CLIENT_ID })
 	} catch (err) {
 		reply.code(500).send({ error: 'Server error' })
@@ -210,22 +209,17 @@ export async function login(request, reply) {
 		fastify.log.info(`Login attempt for username: ${username}`)
 		const user = usersModel.getUserByUsername(username)
 		
-		if (!user)
-			return reply.code(401).send({ success: false, error: 'Invalid credentials' })
-		if (getUserConnection(user.userId))
-			return reply.code(401).send({ success: false, error: 'You are already connected in another session' })
-		if (user.anonymized_at)
-			return reply.code(401).send({ success: false, error: 'This account has been deleted' })
-		
-		if (!await verifyPassword(user.password, password))
-			return reply.code(401).send({ success: false, error: 'Invalid credentials' })
+		if (!user) return reply.code(401).send({ success: false, error: 'Invalid credentials' })
+		if (getUserConnection(user.userId)) return reply.code(401).send({ success: false, error: 'You are already connected in another session' })
+		if (user.deleted_at) return reply.code(401).send({ success: false, error: 'This account has been deleted' })
+		if (!await verifyPassword(user.password, password)) return reply.code(401).send({ success: false, error: 'Invalid credentials' })
 		
 		if (user.doubleAuth_status) {
 			const ticket = Math.random().toString(36).substring(2, 15) + Date.now().toString(36)
 			await redisModel.setex(`2fa_ticket_${ticket}`, 300, user.userId.toString())
 			return reply.code(200).send({success: true, connection_status: "partially_connected", doubleAuth_status: user.doubleAuth_status, message: 'Double authentication required', ticket: ticket})
 		}
-		
+
 		const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, {expiresIn: '15m' })
 		const refreshToken = fastify.jwt.sign({ userId: user.userId }, {expiresIn: '7d' })
 		
@@ -616,11 +610,54 @@ export async function changeProfilePicture(request, reply) {
 	}
 }
 
+// Utility function to generate anonymous username
+async function generateAnonymousUsername(userId) {
+	const adjectives = ['Cool', 'Fast', 'Wild', 'Bold', 'Wise', 'Smart', 'Calm', 'Quick']
+	const nouns = ['Cat', 'Fox', 'Wolf', 'Bear', 'Lion', 'Hawk', 'Tiger', 'Owl']
+	
+	let anonymizedUsername = ''
+	let updateSuccess = false
+	let attempts = 0
+	const maxAttempts = 50 // Safety limit to prevent infinite loops
+	
+	while (!updateSuccess && attempts < maxAttempts) {
+		const randomAdjective = adjectives[Math.floor(Math.random() * adjectives.length)]
+		const randomNoun = nouns[Math.floor(Math.random() * nouns.length)]
+		const randomNumber = Math.floor(Math.random() * 9) + 1  // 1-9 (single digit)
+		
+		anonymizedUsername = `${randomAdjective}${randomNoun}${randomNumber}`
+		
+		// Ensure username is under 10 characters
+		if (anonymizedUsername.length < 10) {
+			try {
+				const result = usersModel.updateUsername(userId, anonymizedUsername)
+				if (result && result.changes > 0) {
+					updateSuccess = true
+					fastify.log.info(`Username updated successfully to: ${anonymizedUsername}`)
+				} else {
+					fastify.log.warn(`Username ${anonymizedUsername} already exists, retrying...`)
+					attempts++
+				}
+			} catch (error) {
+				fastify.log.warn(`Error updating username ${anonymizedUsername}: ${error.message}, retrying...`)
+				attempts++
+			}
+		}
+		attempts++
+	}
+	
+	if (!updateSuccess) {
+		fastify.log.error(`Failed to generate unique username after ${maxAttempts} attempts`)
+		throw new Error('Failed to generate unique username')
+	}
+	
+	return anonymizedUsername
+}
+
 export async function deleteAccount(request, reply) {
 	try {
 		const { refreshToken } = request.cookies
 		const infos = await getUserFromToken(request)
-		fastify.log.info("infos :" + infos)
 		if (!infos) {
 			fastify.log.warn('Account deletion denied: Unauthorized request')
 			return reply.code(401).send({ success: false, error: 'Unauthorized' })
@@ -671,7 +708,20 @@ export async function deleteAccount(request, reply) {
 			}
 		}
 
-		const info = usersModel.anonymizeUser(user.userId)
+		// Generate anonymous username with retry logic
+		try {
+			const anonymizedUsername = await generateAnonymousUsername(user.userId)
+			fastify.log.info(`Anonymizing user account: ${user.username} -> ${anonymizedUsername}`)
+		} catch (usernameError) {
+			fastify.log.error(`Failed to generate anonymous username: ${usernameError.message}`)
+			return reply.code(500).send({ success: false, error: 'Failed to generate unique username' })
+		}
+
+		// Complete anonymization with other fields
+		const anonymizedPassword = 'DELETED_ACCOUNT'
+		const defaultProfilePicture = 'default-profile-picture.png'
+		
+		const info = usersModel.anonymizeUserData(user.userId, anonymizedPassword, defaultProfilePicture)
 			
 		if (info.changes === 0) {
 			fastify.log.warn(`Account deletion failed: User not found - ${user.userId}`)
@@ -846,7 +896,6 @@ export async function exportUserData(request, reply) {
 export async function anonymizeUser(request, reply) {
 	try {
 		const infos = await getUserFromToken(request)
-		fastify.log.debug(`The request: ${JSON.stringify(request.body)}`)
 		if (!infos) {
 			fastify.log.warn('Anonymization denied: Unauthorized request')
 			return reply.code(401).send({ success: false, error: 'Unauthorized' })
@@ -858,51 +907,19 @@ export async function anonymizeUser(request, reply) {
 			return reply.code(401).send({ success: false, error: 'User not found' })
 		}
 		
-		// Generate a random but memorable username under 10 characters
-		const adjectives = ['Cool', 'Fast', 'Wild', 'Bold', 'Wise', 'Smart', 'Calm', 'Quick']
-		const nouns = ['Cat', 'Fox', 'Wolf', 'Bear', 'Lion', 'Hawk', 'Tiger', 'Owl']
-		
-		let anonymizedUsername = ''
-		let updateSuccess = false
-		let attempts = 0
-		const maxAttempts = 50 // Safety limit to prevent infinite loops
-		
-		while (!updateSuccess && attempts < maxAttempts) {
-			const randomAdjective = adjectives[Math.floor(Math.random() * adjectives.length)]
-			const randomNoun = nouns[Math.floor(Math.random() * nouns.length)]
-			const randomNumber = Math.floor(Math.random() * 9) + 1  // 1-9 (single digit)
-			
-			anonymizedUsername = `${randomAdjective}${randomNoun}${randomNumber}`
-			
-			// Ensure username is under 10 characters
-			if (anonymizedUsername.length < 10) {
-				try {
-					const result = usersModel.updateUsername(user.userId, anonymizedUsername)
-					if (result && result.changes > 0) {
-						updateSuccess = true
-						fastify.log.info(`Username updated successfully to: ${anonymizedUsername}`)
-					} else {
-						fastify.log.warn(`Username ${anonymizedUsername} already exists, retrying...`)
-						attempts++
-					}
-				} catch (error) {
-					fastify.log.warn(`Error updating username ${anonymizedUsername}: ${error.message}, retrying...`)
-					attempts++
-				}
-			}
-		}
-		
-		if (!updateSuccess) {
-			fastify.log.error(`Failed to generate unique username after ${maxAttempts} attempts`)
+		// Generate anonymous username with retry logic
+		try {
+			const anonymizedUsername = await generateAnonymousUsername(user.userId)
+			fastify.log.info(`Anonymizing user account: ${user.username} -> ${anonymizedUsername}`)
+		} catch (usernameError) {
+			fastify.log.error(`Failed to generate anonymous username: ${usernameError.message}`)
 			return reply.code(500).send({ success: false, error: 'Failed to generate unique username' })
 		}
 		
 		const anonymizedProfilePicture = "default-profile-picture.png"
-		
-		fastify.log.info(`Anonymizing user account: ${user.username}`)
 		usersModel.updateProfilePicture(user.userId, anonymizedProfilePicture)
 		
-		fastify.log.info(`User account anonymized successfully: ${user.username} -> ${anonymizedUsername}`)
+		fastify.log.info(`User account anonymized successfully: ${user.username}`)
 		return reply.code(200).send({ success: true, profile_picture: anonymizedProfilePicture, message: 'User account anonymized successfully' })
 	} catch (error) {
 		fastify.log.error(`Error anonymizing user account: ${error.message}`)

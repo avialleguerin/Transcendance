@@ -8,6 +8,50 @@ import path from 'path'
 
 const uploadDir = '/usr/share/nginx/uploads'
 
+// Utility function to generate anonymous username (shared with usersController)
+async function generateAnonymousUsername(userId) {
+	const adjectives = ['Cool', 'Fast', 'Wild', 'Bold', 'Wise', 'Smart', 'Calm', 'Quick']
+	const nouns = ['Cat', 'Fox', 'Wolf', 'Bear', 'Lion', 'Hawk', 'Tiger', 'Owl']
+	
+	let anonymizedUsername = ''
+	let updateSuccess = false
+	let attempts = 0
+	const maxAttempts = 50 // Safety limit to prevent infinite loops
+	
+	while (!updateSuccess && attempts < maxAttempts) {
+		const randomAdjective = adjectives[Math.floor(Math.random() * adjectives.length)]
+		const randomNoun = nouns[Math.floor(Math.random() * nouns.length)]
+		const randomNumber = Math.floor(Math.random() * 9) + 1  // 1-9 (single digit)
+		
+		anonymizedUsername = `${randomAdjective}${randomNoun}${randomNumber}`
+		
+		// Ensure username is under 10 characters
+		if (anonymizedUsername.length < 10) {
+			try {
+				const result = usersModel.updateUsername(userId, anonymizedUsername)
+				if (result && result.changes > 0) {
+					updateSuccess = true
+					fastify.log.info(`Username updated successfully to: ${anonymizedUsername}`)
+				} else {
+					fastify.log.warn(`Username ${anonymizedUsername} already exists, retrying...`)
+					attempts++
+				}
+			} catch (error) {
+				fastify.log.warn(`Error updating username ${anonymizedUsername}: ${error.message}, retrying...`)
+				attempts++
+			}
+		}
+		attempts++
+	}
+	
+	if (!updateSuccess) {
+		fastify.log.error(`Failed to generate unique username after ${maxAttempts} attempts`)
+		throw new Error('Failed to generate unique username')
+	}
+	
+	return anonymizedUsername
+}
+
 export async function getAllUsers(request, reply) {
 	try {
 		return usersModel.getActiveUsers()
@@ -44,7 +88,20 @@ export async function deleteUser(request, reply) {
 			} catch (deleteErr) {}
 		}
 
-		const info = usersModel.anonymizeUser(userId)
+		// Generate anonymous username with retry logic
+		try {
+			const anonymizedUsername = await generateAnonymousUsername(userId)
+			fastify.log.info(`Admin anonymizing user: ${user.username} -> ${anonymizedUsername}`)
+		} catch (usernameError) {
+			fastify.log.error(`Failed to generate anonymous username: ${usernameError.message}`)
+			return reply.code(500).send({ error: 'Failed to generate unique username' })
+		}
+
+		// Complete anonymization with other fields
+		const anonymizedPassword = 'DELETED_ACCOUNT'
+		const defaultProfilePicture = 'default-profile-picture.png'
+		
+		const info = usersModel.anonymizeUserData(userId, anonymizedPassword, defaultProfilePicture)
 		if (info.changes === 0) return reply.code(404).send({ error: "User not found" })
 		
 		return reply.send({ success: true, message: "User anonymized successfully"})

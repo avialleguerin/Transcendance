@@ -58,10 +58,12 @@ const usersModel = {
 	delete: (userId) => { return db.prepare("DELETE FROM users WHERE userId = ?").run(userId) },
 	deleteInactiveUsers: () => { return db.prepare("DELETE FROM users WHERE last_activity <= date('now', '-3 years')").run() },
 	anonymizeUser: (userId) => {
-		const anonymizedUsername = `del_${userId}`;
 		const anonymizedPassword = 'DELETED_ACCOUNT';
 		const defaultProfilePicture = 'default-profile-picture.png';
-		return db.prepare(`UPDATE users SET username = ?, password = ?, profile_picture = ?, doubleAuth_status = 0, doubleAuth_secret = ?, google_id = NULL, deleted_at = CURRENT_TIMESTAMP WHERE userId = ?`).run(anonymizedUsername, anonymizedPassword, defaultProfilePicture, null, userId);
+		return db.prepare(`UPDATE users SET password = ?, profile_picture = ?, doubleAuth_status = 0, doubleAuth_secret = ?, google_id = NULL, deleted_at = CURRENT_TIMESTAMP WHERE userId = ?`).run(anonymizedPassword, defaultProfilePicture, null, userId);
+	},
+	anonymizeUserData: (userId, anonymizedPassword, defaultProfilePicture) => {
+		return db.prepare(`UPDATE users SET password = ?, profile_picture = ?, doubleAuth_status = 0, doubleAuth_secret = ?, google_id = NULL, deleted_at = CURRENT_TIMESTAMP WHERE userId = ?`).run(anonymizedPassword, defaultProfilePicture, null, userId);
 	},
 	forceDeleteUser: (userId) => {
 		const transaction = db.transaction(() => {
