@@ -139,6 +139,7 @@ export async function googleSignIn(request, reply) {
 export async function getUserProfile(request, reply) {
 	try {
 		const infos = await getUserFromToken(request)
+		fastify.log.debug(`User profile requested - Infos: ${JSON.stringify(infos)}`)
 		if (!infos) {
 			fastify.log.warn('Profile access denied: Unauthorized request')
 			return reply.code(401).send({ success: false, error: 'Unauthorized' })
@@ -845,6 +846,7 @@ export async function exportUserData(request, reply) {
 export async function anonymizeUser(request, reply) {
 	try {
 		const infos = await getUserFromToken(request)
+		fastify.log.debug(`The request: ${JSON.stringify(request.body)}`)
 		if (!infos) {
 			fastify.log.warn('Anonymization denied: Unauthorized request')
 			return reply.code(401).send({ success: false, error: 'Unauthorized' })
@@ -856,14 +858,51 @@ export async function anonymizeUser(request, reply) {
 			return reply.code(401).send({ success: false, error: 'User not found' })
 		}
 		
-		const anonymizedUsername = `Anonym${user.userId}`
+		// Generate a random but memorable username under 10 characters
+		const adjectives = ['Cool', 'Fast', 'Wild', 'Bold', 'Wise', 'Smart', 'Calm', 'Quick']
+		const nouns = ['Cat', 'Fox', 'Wolf', 'Bear', 'Lion', 'Hawk', 'Tiger', 'Owl']
+		
+		let anonymizedUsername = ''
+		let updateSuccess = false
+		let attempts = 0
+		const maxAttempts = 50 // Safety limit to prevent infinite loops
+		
+		while (!updateSuccess && attempts < maxAttempts) {
+			const randomAdjective = adjectives[Math.floor(Math.random() * adjectives.length)]
+			const randomNoun = nouns[Math.floor(Math.random() * nouns.length)]
+			const randomNumber = Math.floor(Math.random() * 9) + 1  // 1-9 (single digit)
+			
+			anonymizedUsername = `${randomAdjective}${randomNoun}${randomNumber}`
+			
+			// Ensure username is under 10 characters
+			if (anonymizedUsername.length < 10) {
+				try {
+					const result = usersModel.updateUsername(user.userId, anonymizedUsername)
+					if (result && result.changes > 0) {
+						updateSuccess = true
+						fastify.log.info(`Username updated successfully to: ${anonymizedUsername}`)
+					} else {
+						fastify.log.warn(`Username ${anonymizedUsername} already exists, retrying...`)
+						attempts++
+					}
+				} catch (error) {
+					fastify.log.warn(`Error updating username ${anonymizedUsername}: ${error.message}, retrying...`)
+					attempts++
+				}
+			}
+		}
+		
+		if (!updateSuccess) {
+			fastify.log.error(`Failed to generate unique username after ${maxAttempts} attempts`)
+			return reply.code(500).send({ success: false, error: 'Failed to generate unique username' })
+		}
+		
 		const anonymizedProfilePicture = "default-profile-picture.png"
 		
 		fastify.log.info(`Anonymizing user account: ${user.username}`)
-		usersModel.updateUsername(user.userId, anonymizedUsername)
 		usersModel.updateProfilePicture(user.userId, anonymizedProfilePicture)
 		
-		fastify.log.info(`User account anonymized successfully: ${user.username}`)
+		fastify.log.info(`User account anonymized successfully: ${user.username} -> ${anonymizedUsername}`)
 		return reply.code(200).send({ success: true, profile_picture: anonymizedProfilePicture, message: 'User account anonymized successfully' })
 	} catch (error) {
 		fastify.log.error(`Error anonymizing user account: ${error.message}`)
