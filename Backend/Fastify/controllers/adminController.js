@@ -5,14 +5,15 @@ import platformersModel from '../models/platformersModel.js'
 import friendshipsModel from '../models/friendshipsModel.js'
 import fs from 'fs/promises'
 import path from 'path'
+import { send } from 'process'
 
 const uploadDir = '/usr/share/nginx/uploads'
 
 // Fonction utilitaire pour automatiser les réponses
-function sendResponse(reply, code, msg) {
-	const success = code >= 200 && code < 300
-	return reply.code(code).send({ success, [success ? 'message' : 'error']: msg })
-}
+// function response(reply, code, msg) {
+// 	const success = code >= 200 && code < 300
+// 	return reply.code(code).send({ success, [success ? 'message' : 'error']: msg })
+// }
 
 async function generateAnonymousUsername(userId) {
 	const adjectives = ['Cool', 'Fast', 'Wild', 'Bold', 'Wise', 'Smart', 'Calm', 'Quick']
@@ -158,8 +159,8 @@ export async function addGame(request, reply) {
 			|| (user3 && usersModel.getDelByUsername(user3).length > 0) || (user4 && usersModel.getDelByUsername(user4).length > 0))
 			return reply.code(400).send({ success: false, error: "Cannot create a game with a deleted user" })
 		
-		if (!user1Exists) return reply.code(404).send({ success: false, error: `User '${user1}' not found` })
-		if (!user2Exists) return reply.code(404).send({ success: false, error: `User '${user2}' not found` })
+		if (!user1Exists) return sendResponse(reply, 404, `User '${user1}' not found`)
+		if (!user2Exists) return sendResponse(reply, 404, `User '${user2}' not found`)
 		if (user1 === user2) return reply.code(400).send({ success: false, error: "Cannot create a game with duplicate players" })
 		
 		if (user3 || user4) {
