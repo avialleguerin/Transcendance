@@ -255,57 +255,38 @@ export async function login1v1(request, reply) {
 	const { username, password } = request.body
 	try {
 		const infos = await getUserFromToken(request)
-		if (!infos)
-			return reply.code(401).send({ success: false, error: 'Unauthorized' })
-
-		const user = infos.user
-		const accessToken = infos.accessToken
-		if (!user || !accessToken)
-			return reply.code(401).send({ error: 'Unauthorized' })
-
-		fastify.log.info(`1v1 opponent login attempt: ${username} (Player 1: ${user.username})`)
+		if (!infos || !infos.user || !infos.accessToken) return reply.code(401).send({ success: false, error: 'Unauthorized' })		
 		const player2 = usersModel.getUserByUsername(username)
-		if (!player2 || !await verifyPassword(player2.password, password))
-			return reply.code(401).send({ success: false, error: 'Invalid credentials' })
-
-		if (player2.anonymized_at)
-			return reply.code(401).send({ success: false, error: 'This account has been deleted' })
+		if (!player2) return reply.code(401).send({ success: false, error: 'Invalid credentials' })
+		if (player2.deleted_at) return reply.code(401).send({ success: false, error: 'This account has been deleted' })
+		if (!await verifyPassword(player2.password, password)) return reply.code(401).send({ success: false, error: 'Invalid credentials' })
 
 		usersModel.updateLastActivity(player2.userId)
-		reply.code(200).send({ success: true, message: 'Opponent logged in', user: user, player2: player2, accessToken: accessToken })
-	} catch (err) {
-		return reply.code(500).send({ error: err.message })
-	}
+		reply.code(200).send({ success: true, message: 'Opponent logged in', user: infos.user, player2: player2, accessToken: infos.accessToken })
+	} catch (err) { return reply.code(500).send({ error: err.message }) }
 }
 
 export async function login2v2(request, reply) {
 	const { username2, password2, username3, password3, username4, password4 } = request.body
 	try {
 		const infos = await getUserFromToken(request)
-		if (!infos)
-			return reply.code(401).send({ success: false, message: 'You must be logged in to play 2v2', error: `infos: ${infos}` })
-		const user = infos.user
-		const accessToken = infos.accessToken
-		if (!user)
-			return reply.code(401).send({ success: false, message: 'You must be logged in to play 2v2', error: 'User not found' })
-		if (!accessToken)
-			return reply.code(401).send({ success: false, message: 'You must be logged in to play 2v2', error: 'Access token not found' })
-
+		if (!infos || !infos.user || !infos.accessToken) return reply.code(401).send({ success: false, error: 'Unauthorized' })
 		const player2 = usersModel.getUserByUsername(username2)
 		const player3 = usersModel.getUserByUsername(username3)
 		const player4 = usersModel.getUserByUsername(username4)
-		
-		if (!player2 || !await verifyPassword(player2.password, password2))
-			return reply.code(401).send({ success: false, error: 'Player 2: Invalid credentials' })
-		if (!player3 || !await verifyPassword(player3.password, password3))
-			return reply.code(401).send({ success: false, error: 'Player 3: Invalid credentials' })
-		if (!player4 || !await verifyPassword(player4.password, password4))
-			return reply.code(401).send({ success: false, error: 'Player 4: Invalid credentials' })
+		if (!player2) return reply.code(401).send({ success: false, error: 'Player 2: User not found' })
+		if (player2.deleted_at) return reply.code(401).send({ success: false, error: 'Player 2: This account has been deleted' })
+		if (!await verifyPassword(player2.password, password2)) return reply.code(401).send({ success: false, error: 'Player 2: Invalid credentials' })
+		if (!player3) return reply.code(401).send({ success: false, error: 'Player 3: User not found' })
+		if (player3.deleted_at) return reply.code(401).send({ success: false, error: 'Player 3: This account has been deleted' })
+		if (!await verifyPassword(player3.password, password3)) return reply.code(401).send({ success: false, error: 'Player 3: Invalid credentials' })
+		if (!player4) return reply.code(401).send({ success: false, error: 'Player 4: User not found' })
+		if (player4.deleted_at) return reply.code(401).send({ success: false, error: 'Player 4: This account has been deleted' })
+		if (!await verifyPassword(player4.password, password4)) return reply.code(401).send({ success: false, error: 'Player 4: Invalid credentials' })
 
 		usersModel.updateLastActivity(player2.userId)
 		usersModel.updateLastActivity(player3.userId)
 		usersModel.updateLastActivity(player4.userId)
-		
 		reply.code(200).send({ success: true, message: 'Opponents logged in', accessToken: accessToken })
 	} catch (err) {
 		return reply.code(500).send({ error: err.message })

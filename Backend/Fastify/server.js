@@ -13,7 +13,7 @@ import colorLoggerPlugin from './utils/logger.js'
 import websocket from '@fastify/websocket'
 import { checkEmailConfig } from './utils/mailer.js'
 
-const logActive = process.env.LOG_ACTIVE === 'false';
+const logActive = process.env.LOG_ACTIVE === 'true';
 
 export const fastify = Fastify({
 	logger: logActive ? {

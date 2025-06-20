@@ -32,7 +32,7 @@ MSG_NLOG_SUCCESS	:= ${GREEN}✓ Logs deactivated (LOG_ACTIVE=false).${RESET}
 
 
 # Docker Compose
-NO_LOGS 	:= --no-attach vault --no-attach redis --no-attach tsengine --no-attach nginx #--no-attach fastify
+NO_LOGS 	:= --no-attach vault --no-attach redis --no-attach nginx --no-attach tsengine #--no-attach fastify
 
 # Variables BABYLON
 BABYLON_FILE = ./Frontend/public/srcs/game/gameplay/babylon.js

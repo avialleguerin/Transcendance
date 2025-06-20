@@ -25,6 +25,7 @@ export async function addFriend(request, reply) {
 	if (!friend || typeof friend !== 'string' || friend.trim() === '') return reply.code(400).send({ error: "Friend username is required" })
 	
 	try {
+		if (usersModel.getDelByUsername(friend).length > 0) return reply.code(404).send({ success: false, error: `cannot add deleted user '${friend}' as friend`})
 		infos = await getUserFromToken(request)
 		if (!infos) return reply.code(401).send({ error: "Unauthorized" })
 		if (!infos.user) return reply.code(401).send({ error: "User not found", accessToken: infos.accessToken })
