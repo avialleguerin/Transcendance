@@ -81,10 +81,28 @@ export function homeView(): void {
 	});
 }
 
-export function gameMenuView(): void {
-	handleViewTransitions("vue1", "default");
-	history.pushState({}, '', '/game-menu');
-	setTimeout(() => {
+export function gameMenuView(changeView: boolean): void {
+	if (changeView)
+	{
+		handleViewTransitions("vue1", "default");
+		history.pushState({}, '', '/game-menu');
+		setTimeout(() => {
+			import('../static/js/views/game-menu.js').then(module => {
+				const GameMenu = module.default;
+				const gameMenuInstance = new GameMenu();
+				gameMenuInstance.getHtml().then(html => {
+					document.getElementById('app').innerHTML = html;
+					if (gameMenuInstance.game_menu) {
+						gameMenuInstance.game_menu();
+					}
+				});
+			});
+		}, 2000);
+	}
+	else 
+	{
+		notif("You are already connected", false);
+		history.pushState({}, '', '/game-menu');
 		import('../static/js/views/game-menu.js').then(module => {
 			const GameMenu = module.default;
 			const gameMenuInstance = new GameMenu();
@@ -95,8 +113,9 @@ export function gameMenuView(): void {
 				}
 			});
 		});
-	}, 2000);
+	}
 }
+
 
 export function platformerView(): void {
 	history.pushState({}, '', '/platformer');

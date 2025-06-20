@@ -40,7 +40,7 @@ export async function login(event: Event): Promise<void> {
 		} else if (data.success && data.connection_status === "connected") {
 			setLocalStorage({ "Player1": data.username, "profile_picture": data.profile_picture });
 			connectWebSocket()
-			gameMenuView();
+			gameMenuView(true);
 			$form("loginForm").reset();
 			$input("login-password").value = "";
 		} else
@@ -192,7 +192,7 @@ export async function verify2FA(event: Event) {
 			sessionStorage.removeItem("authTicket")
 			setLocalStorage({"Player1": data.username, "profile_picture": data.profile_picture});
 			connectWebSocket()
-			gameMenuView();
+			gameMenuView(true);
 		}
 	} catch (err) { console.error(`verify2FA: ${err}`); }
 }
@@ -229,13 +229,11 @@ export async function refreshInfos() { //REVIEW - maybe put in utils
 			sessionStorage.clear();
 			localStorage.clear();
 			homeView();
+			
 		} else if (sessionStorage.getItem("accessToken") && sessionStorage.getItem("accessToken") !== "undefined") {
 			setLocalStorage({"Player1": data.user.username, "profile_picture": data.user.profile_picture});
-			document.getElementById("profile_photo_circle_nav_bar").innerHTML = `
-			<img src="./uploads/${data.user.profile_picture}" alt="Profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
-			`;
 			connectWebSocket();
-			gameMenuView();
+			gameMenuView(true);
 		}
 	} catch (err) { console.error(`refreshInfos: ${err}`); }
 }
@@ -279,7 +277,7 @@ export async function handleGoogleSignIn(response: { access_token: string }) {
 			if (data.avatar)
 				localStorage.setItem("profile_picture", data.avatar);
 			notif("Connexion Google réussie !", true);
-			gameMenuView();
+			gameMenuView(true);
 		} else
 			notif(data.error || "Erreur lors de la connexion Google", false);
 	} catch (err) {

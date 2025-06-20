@@ -6,6 +6,7 @@ import tournament from "./views/tournament.js";
 import tournament_game from "./views/tournament-game.js";
 import PlatformView  from "./views/platformer/PlatformView.js";
 import { Route, RouteMatch } from "../../api/types.js";
+import { gameMenuView } from "../../api/utils.js";
 
 
 
@@ -50,6 +51,11 @@ const router = async (): Promise<void> => {
 
 	setTimeout(async () => {
 		const view = new match.route.view();
+		const accessToken = sessionStorage.getItem("accessToken");
+		if (match.route.path === "/" && accessToken) {
+			console.log("Vue home chargée !");
+			gameMenuView(false);
+		}
 		app.innerHTML = await view.getHtml();
 		app.style.transition = "opacity 0.5s ease-in-out";
 		app.style.opacity = "1";
