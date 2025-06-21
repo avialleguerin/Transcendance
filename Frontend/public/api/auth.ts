@@ -261,7 +261,7 @@ export async function initGoogleSignIn(): Promise<void> {
 				scope: "openid email profile",
 				callback: handleGoogleSignIn,
 			});
-			localStorage.setItem("googleSignIn", "true"); // REVIEW - a cause de ts jai du le mettre en string
+			localStorage.setItem("googleSignIn", "true");
 		} catch (error) {
 			console.error("Erreur lors de l'initialisation OAuth:", error);
 		}

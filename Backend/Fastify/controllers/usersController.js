@@ -43,28 +43,21 @@ export async function googleConfig(request, reply) {
 export async function googleSignIn(request, reply) {
 	try {
 		const { access_token } = request.body
-		if (!access_token)
-			return reply.code(400).send({ success: false, error: 'Google access_token is required' })
+		if (!access_token) return reply.code(400).send({ success: false, error: 'Unauthorized' })
 
-		fastify.log.info('Validating Google access token')
 		const response = await fetch(`https://www.googleapis.com/oauth2/v2/userinfo?access_token=${access_token}`)
-		
-		if (!response.ok)
-			return reply.code(401).send({ success: false, error: 'Invalid Google access token' })
-
+		if (!response.ok) return reply.code(401).send({ success: false, error: 'Invalid Google access token' })
 		const googleUser = await response.json()
-		if (!googleUser.id)
-			return reply.code(401).send({ success: false, error: 'Invalid Google user data'})
+		if (!googleUser.id) return reply.code(401).send({ success: false, error: 'Invalid Google user data'})
 		
 		const { id: googleId, name, picture: profilePictureUrl, email } = googleUser
-		fastify.log.info(`Google user attempting sign-in: ${name} (${email})`)
 		
 		let user = usersModel.getUserByGoogleId(googleId)
 		let isNewUser = false
 		let tempPassword = null
 
-		if (!user || user.anonymized_at) {
-			const username = name.replace(/\s+/g, '').toLowerCase().substring(0,10)
+		if (!user || user.deleted_at) {
+			const username = generateUniqueGoogleUsername(name)
 			const randomPassword = Math.random().toString(36).substring(2, 17)
 			const hashedPassword = await hashPassword(randomPassword)
 
@@ -868,7 +861,6 @@ export async function anonymizeUser(request, reply) {
 			return reply.code(401).send({ success: false, error: 'User not found' })
 		}
 		
-		// Generate anonymous username with retry logic
 		try {
 			const anonymizedUsername = await generateAnonymousUsername(user.userId)
 			fastify.log.info(`Anonymizing user account: ${user.username} -> ${anonymizedUsername}`)
@@ -886,4 +878,31 @@ export async function anonymizeUser(request, reply) {
 		fastify.log.error(`Error anonymizing user account: ${error.message}`)
 		return reply.code(500).send({ success: false, error: 'Failed to anonymize user account : ' + error.message })
 	}
+}
+
+function generateUniqueGoogleUsername(googleName) {
+	let baseUsername = googleName.replace(/\s+/g, '').toLowerCase().replace(/[^a-zA-Z0-9._-]/g, '').substring(0, 8);
+	if (baseUsername.length < 3) baseUsername = baseUsername.padEnd(3, 'x');
+	if (!usersModel.getUserByUsername(baseUsername)) return baseUsername;
+	
+	for (let i = 1; i <= 99; i++) {
+		const variant = baseUsername + i;
+		
+		if (variant.length <= 10)
+			if (!usersModel.getUserByUsername(variant)) return variant;
+		else {
+			const shorterBase = baseUsername.substring(0, baseUsername.length - 1);
+			const variant = shorterBase + i;
+			if (variant.length <= 10 && !usersModel.getUserByUsername(variant)) return variant;
+		}
+	}
+	
+	for (let attempt = 0; attempt < 50; attempt++) {
+		const randomSuffix = Math.floor(Math.random() * 1000);
+		const fallbackUsername = `user${randomSuffix}`;
+		
+		if (fallbackUsername.length <= 10 && !usersModel.getUserByUsername(fallbackUsername)) return fallbackUsername;
+	}
+	
+	throw new Error('Unable to generate unique username');
 }
