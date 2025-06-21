@@ -10,6 +10,7 @@ import speakeasy from 'speakeasy'
 import qrcode from 'qrcode'
 import fs from 'fs/promises'
 import path from 'path'
+import { generateRandomString } from './utils.js'
 import { getUserConnection } from '../utils/websocket.js'
 import { verify } from 'crypto'
 
@@ -33,7 +34,6 @@ const IMAGE_SECURITY = {
 
 export async function googleConfig(request, reply) {
 	try {
-		fastify.log.debug(`Google config requested - Client ID: ${process.env.GOOGLE_CLIENT_ID}`)
 		return reply.code(200).send({ success: true, client_id: process.env.GOOGLE_CLIENT_ID })
 	} catch (err) {
 		reply.code(500).send({ error: 'Server error' })
@@ -139,6 +139,7 @@ export async function googleSignIn(request, reply) {
 export async function getUserProfile(request, reply) {
 	try {
 		const infos = await getUserFromToken(request)
+		fastify.log.debug(`User profile requested - Infos: ${JSON.stringify(infos)}`)
 		if (!infos) {
 			fastify.log.warn('Profile access denied: Unauthorized request')
 			return reply.code(401).send({ success: false, error: 'Unauthorized' })
@@ -209,22 +210,17 @@ export async function login(request, reply) {
 		fastify.log.info(`Login attempt for username: ${username}`)
 		const user = usersModel.getUserByUsername(username)
 		
-		if (!user)
-			return reply.code(401).send({ success: false, error: 'Invalid credentials' })
-		if (getUserConnection(user.userId))
-			return reply.code(401).send({ success: false, error: 'You are already connected in another session' })
-		if (user.anonymized_at)
-			return reply.code(401).send({ success: false, error: 'This account has been deleted' })
-		
-		if (!await verifyPassword(user.password, password))
-			return reply.code(401).send({ success: false, error: 'Invalid credentials' })
+		if (!user) return reply.code(401).send({ success: false, error: 'Invalid credentials' })
+		if (getUserConnection(user.userId)) return reply.code(401).send({ success: false, error: 'You are already connected in another session' })
+		if (user.deleted_at) return reply.code(401).send({ success: false, error: 'This account has been deleted' })
+		if (!await verifyPassword(user.password, password)) return reply.code(401).send({ success: false, error: 'Invalid credentials' })
 		
 		if (user.doubleAuth_status) {
 			const ticket = Math.random().toString(36).substring(2, 15) + Date.now().toString(36)
 			await redisModel.setex(`2fa_ticket_${ticket}`, 300, user.userId.toString())
 			return reply.code(200).send({success: true, connection_status: "partially_connected", doubleAuth_status: user.doubleAuth_status, message: 'Double authentication required', ticket: ticket})
 		}
-		
+
 		const accessToken = fastify.jwt.sign({ userId: user.userId, username: user.username }, {expiresIn: '15m' })
 		const refreshToken = fastify.jwt.sign({ userId: user.userId }, {expiresIn: '7d' })
 		
@@ -260,57 +256,38 @@ export async function login1v1(request, reply) {
 	const { username, password } = request.body
 	try {
 		const infos = await getUserFromToken(request)
-		if (!infos)
-			return reply.code(401).send({ success: false, error: 'Unauthorized' })
-
-		const user = infos.user
-		const accessToken = infos.accessToken
-		if (!user || !accessToken)
-			return reply.code(401).send({ error: 'Unauthorized' })
-
-		fastify.log.info(`1v1 opponent login attempt: ${username} (Player 1: ${user.username})`)
+		if (!infos || !infos.user || !infos.accessToken) return reply.code(401).send({ success: false, error: 'Unauthorized' })		
 		const player2 = usersModel.getUserByUsername(username)
-		if (!player2 || !await verifyPassword(player2.password, password))
-			return reply.code(401).send({ success: false, error: 'Invalid credentials' })
-
-		if (player2.anonymized_at)
-			return reply.code(401).send({ success: false, error: 'This account has been deleted' })
+		if (!player2) return reply.code(401).send({ success: false, error: 'Invalid credentials' })
+		if (player2.deleted_at) return reply.code(401).send({ success: false, error: 'This account has been deleted' })
+		if (!await verifyPassword(player2.password, password)) return reply.code(401).send({ success: false, error: 'Invalid credentials' })
 
 		usersModel.updateLastActivity(player2.userId)
-		reply.code(200).send({ success: true, message: 'Opponent logged in', user: user, player2: player2, accessToken: accessToken })
-	} catch (err) {
-		return reply.code(500).send({ error: err.message })
-	}
+		reply.code(200).send({ success: true, message: 'Opponent logged in', user: infos.user, player2: player2, accessToken: infos.accessToken })
+	} catch (err) { return reply.code(500).send({ error: err.message }) }
 }
 
 export async function login2v2(request, reply) {
 	const { username2, password2, username3, password3, username4, password4 } = request.body
 	try {
 		const infos = await getUserFromToken(request)
-		if (!infos)
-			return reply.code(401).send({ success: false, message: 'You must be logged in to play 2v2', error: `infos: ${infos}` })
-		const user = infos.user
-		const accessToken = infos.accessToken
-		if (!user)
-			return reply.code(401).send({ success: false, message: 'You must be logged in to play 2v2', error: 'User not found' })
-		if (!accessToken)
-			return reply.code(401).send({ success: false, message: 'You must be logged in to play 2v2', error: 'Access token not found' })
-
+		if (!infos || !infos.user || !infos.accessToken) return reply.code(401).send({ success: false, error: 'Unauthorized' })
 		const player2 = usersModel.getUserByUsername(username2)
 		const player3 = usersModel.getUserByUsername(username3)
 		const player4 = usersModel.getUserByUsername(username4)
-		
-		if (!player2 || !await verifyPassword(player2.password, password2))
-			return reply.code(401).send({ success: false, error: 'Player 2: Invalid credentials' })
-		if (!player3 || !await verifyPassword(player3.password, password3))
-			return reply.code(401).send({ success: false, error: 'Player 3: Invalid credentials' })
-		if (!player4 || !await verifyPassword(player4.password, password4))
-			return reply.code(401).send({ success: false, error: 'Player 4: Invalid credentials' })
+		if (!player2) return reply.code(401).send({ success: false, error: 'Player 2: User not found' })
+		if (player2.deleted_at) return reply.code(401).send({ success: false, error: 'Player 2: This account has been deleted' })
+		if (!await verifyPassword(player2.password, password2)) return reply.code(401).send({ success: false, error: 'Player 2: Invalid credentials' })
+		if (!player3) return reply.code(401).send({ success: false, error: 'Player 3: User not found' })
+		if (player3.deleted_at) return reply.code(401).send({ success: false, error: 'Player 3: This account has been deleted' })
+		if (!await verifyPassword(player3.password, password3)) return reply.code(401).send({ success: false, error: 'Player 3: Invalid credentials' })
+		if (!player4) return reply.code(401).send({ success: false, error: 'Player 4: User not found' })
+		if (player4.deleted_at) return reply.code(401).send({ success: false, error: 'Player 4: This account has been deleted' })
+		if (!await verifyPassword(player4.password, password4)) return reply.code(401).send({ success: false, error: 'Player 4: Invalid credentials' })
 
 		usersModel.updateLastActivity(player2.userId)
 		usersModel.updateLastActivity(player3.userId)
 		usersModel.updateLastActivity(player4.userId)
-		
 		reply.code(200).send({ success: true, message: 'Opponents logged in', accessToken: accessToken })
 	} catch (err) {
 		return reply.code(500).send({ error: err.message })
@@ -615,22 +592,57 @@ export async function changeProfilePicture(request, reply) {
 	}
 }
 
+// Utility function to generate anonymous username
+async function generateAnonymousUsername(userId) {
+	const adjectives = ['Cool', 'Fast', 'Wild', 'Bold', 'Wise', 'Smart', 'Calm', 'Quick']
+	const nouns = ['Cat', 'Fox', 'Wolf', 'Bear', 'Lion', 'Hawk', 'Tiger', 'Owl']
+	
+	let anonymizedUsername = ''
+	let updateSuccess = false
+	let attempts = 0
+	const maxAttempts = 50 // Safety limit to prevent infinite loops
+	
+	while (!updateSuccess && attempts < maxAttempts) {
+		const randomAdjective = adjectives[Math.floor(Math.random() * adjectives.length)]
+		const randomNoun = nouns[Math.floor(Math.random() * nouns.length)]
+		const randomNumber = Math.floor(Math.random() * 9) + 1  // 1-9 (single digit)
+		
+		anonymizedUsername = `${randomAdjective}${randomNoun}${randomNumber}`
+		
+		// Ensure username is under 10 characters
+		if (anonymizedUsername.length < 10) {
+			try {
+				const result = usersModel.updateUsername(userId, anonymizedUsername)
+				if (result && result.changes > 0) {
+					updateSuccess = true
+					fastify.log.info(`Username updated successfully to: ${anonymizedUsername}`)
+				} else {
+					fastify.log.warn(`Username ${anonymizedUsername} already exists, retrying...`)
+					attempts++
+				}
+			} catch (error) {
+				fastify.log.warn(`Error updating username ${anonymizedUsername}: ${error.message}, retrying...`)
+				attempts++
+			}
+		}
+		attempts++
+	}
+	
+	if (!updateSuccess) {
+		fastify.log.error(`Failed to generate unique username after ${maxAttempts} attempts`)
+		throw new Error('Failed to generate unique username')
+	}
+	
+	return anonymizedUsername
+}
+
 export async function deleteAccount(request, reply) {
 	try {
 		const { refreshToken } = request.cookies
 		const infos = await getUserFromToken(request)
-		fastify.log.info("infos :" + infos)
-		if (!infos) {
-			fastify.log.warn('Account deletion denied: Unauthorized request')
-			return reply.code(401).send({ success: false, error: 'Unauthorized' })
-		}
-
+		if (!infos || !infos.user || !infos.accessToken) return reply.code(401).send({ success: false, error: 'Unauthorized' })
 		const user = infos.user
-		const accessToken = infos.accessToken
-		if (!user) {
-			fastify.log.warn('Account deletion failed: User not found in token')
-			return reply.code(404).send({ error: 'User not found' })
-		}
+
 
 		if (refreshToken && refreshToken !== undefined && refreshToken !== null) {
 			const decodedRefresh = fastify.jwt.decode(refreshToken)
@@ -642,6 +654,7 @@ export async function deleteAccount(request, reply) {
 			reply.clearCookie('refreshToken', { path: '/' })
 		}
 
+		const accessToken = infos.accessToken
 		if (accessToken && accessToken !== undefined && accessToken !== null) {
 			const decodedAccess = fastify.jwt.decode(accessToken)
 			const expiresInAccess = decodedAccess.exp - Math.floor(Date.now() / 1000)
@@ -670,14 +683,13 @@ export async function deleteAccount(request, reply) {
 			}
 		}
 
-		const info = usersModel.anonymizeUser(user.userId)
-			
-		if (info.changes === 0) {
-			fastify.log.warn(`Account deletion failed: User not found - ${user.userId}`)
-			return reply.code(404).send({ error: "User not found" })
-		}
+		const anonymizedUsername = generateRandomString(9)
+		usersModel.updateUsername(user.userId, anonymizedUsername)
+		const anonymizedPassword = generateRandomString(9)
+		const defaultProfilePicture = 'default-profile-picture.png'
+		const info = usersModel.anonymizeUserData(user.userId, anonymizedPassword, defaultProfilePicture)
+		if (info.changes === 0) return reply.code(404).send({ error: "User not found" })
 
-		fastify.log.info(`User ${user.username} (ID: ${user.userId}) has been anonymized`)
 		return reply.send({ success: true, message: "Account anonymized successfully"})
 	} catch (err) {
 		fastify.log.error(`Critical error deleting account: ${err.message}`)
@@ -856,11 +868,16 @@ export async function anonymizeUser(request, reply) {
 			return reply.code(401).send({ success: false, error: 'User not found' })
 		}
 		
-		const anonymizedUsername = `Anonym${user.userId}`
-		const anonymizedProfilePicture = "default-profile-picture.png"
+		// Generate anonymous username with retry logic
+		try {
+			const anonymizedUsername = await generateAnonymousUsername(user.userId)
+			fastify.log.info(`Anonymizing user account: ${user.username} -> ${anonymizedUsername}`)
+		} catch (usernameError) {
+			fastify.log.error(`Failed to generate anonymous username: ${usernameError.message}`)
+			return reply.code(500).send({ success: false, error: 'Failed to generate unique username' })
+		}
 		
-		fastify.log.info(`Anonymizing user account: ${user.username}`)
-		usersModel.updateUsername(user.userId, anonymizedUsername)
+		const anonymizedProfilePicture = "default-profile-picture.png"
 		usersModel.updateProfilePicture(user.userId, anonymizedProfilePicture)
 		
 		fastify.log.info(`User account anonymized successfully: ${user.username}`)

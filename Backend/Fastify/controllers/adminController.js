@@ -3,10 +3,19 @@ import usersModel from '../models/usersModel.js'
 import gamesModel from '../models/gamesModel.js'
 import platformersModel from '../models/platformersModel.js'
 import friendshipsModel from '../models/friendshipsModel.js'
+import { generateRandomString } from './utils.js'
 import fs from 'fs/promises'
 import path from 'path'
+import { send } from 'process'
 
 const uploadDir = '/usr/share/nginx/uploads'
+
+// function response(reply, code, msg) {
+// 	const success = code >= 200 && code < 300
+// 	return reply.code(code).send({ success, [success ? 'message' : 'error']: msg })
+// }
+
+
 
 export async function getAllUsers(request, reply) {
 	try {
@@ -44,7 +53,11 @@ export async function deleteUser(request, reply) {
 			} catch (deleteErr) {}
 		}
 
-		const info = usersModel.anonymizeUser(userId)
+		const anonymizedUsername = generateRandomString(9)
+		const anonymizedPassword = generateRandomString(9)
+		const defaultProfilePicture = 'default-profile-picture.png'
+		usersModel.updateUsername(userId, anonymizedUsername)
+		const info = usersModel.anonymizeUserData(userId, anonymizedPassword, defaultProfilePicture)
 		if (info.changes === 0) return reply.code(404).send({ error: "User not found" })
 		
 		return reply.send({ success: true, message: "User anonymized successfully"})
@@ -94,11 +107,15 @@ export async function addGame(request, reply) {
 	const { user1, user2, user3, user4 } = request.body
 	
 	try {
-		const user1Exists = usersModel.getUserByUsername(user1)
+		const user1Exists = usersModel.getUserByUsername(user1) 
 		const user2Exists = usersModel.getUserByUsername(user2)
+
+		if (usersModel.getDelByUsername(user1).length > 0 || usersModel.getDelByUsername(user2).length > 0
+			|| (user3 && usersModel.getDelByUsername(user3).length > 0) || (user4 && usersModel.getDelByUsername(user4).length > 0))
+			return reply.code(400).send({ success: false, error: "Cannot create a game with a deleted user" })
 		
-		if (!user1Exists) return reply.code(404).send({ success: false, error: `User '${user1}' not found` })
-		if (!user2Exists) return reply.code(404).send({ success: false, error: `User '${user2}' not found` })
+		if (!user1Exists) return sendResponse(reply, 404, `User '${user1}' not found`)
+		if (!user2Exists) return sendResponse(reply, 404, `User '${user2}' not found`)
 		if (user1 === user2) return reply.code(400).send({ success: false, error: "Cannot create a game with duplicate players" })
 		
 		if (user3 || user4) {
@@ -148,12 +165,11 @@ export async function addFriendship(request, reply) {
 	const { user_username, friend_username } = request.body
 	
 	try {
+		if (usersModel.getDelByUsername(user_username).length > 0 || usersModel.getDelByUsername(friend_username).length > 0) return reply.code(400).send({ success: false, error: "Cannot create a friendship with a deleted user" })
 		const user = usersModel.getUserByUsername(user_username)
 		if (!user) return reply.code(401).send({ error: "User not found" })
-		
 		const friend = usersModel.getUserByUsername(friend_username)
 		if (!friend) return reply.code(404).send({ success: false, error: `User '${friend_username}' not found` })
-
 		const status = friendshipsModel.checkFriendshipStatus(user.userId, friend.userId);
 		if (status.requestSent || status.requestReceived) return reply.code(400).send({ success: false, error: "Friendship already exists" });
 
@@ -191,25 +207,20 @@ export async function getAllPlatformers(request, reply) {
 
 export async function addPlatformer(request, reply) {
 	const { username1, username2, score_player1, score_player2 } = request.body
+	if (!username1 || !username2 || score_player1 === undefined || score_player2 === undefined) return reply.code(400).send({ success: false, error: "Missing parameters" })
 
 	try {
-		if (!username1 || !username2 || score_player1 === undefined || score_player2 === undefined) return reply.code(400).send({ success: false, error: "Missing parameters" })
-		
+		if (usersModel.getDelByUsername(username1).length > 0 || usersModel.getDelByUsername(username2).length > 0) return reply.code(400).send({ success: false, error: "Cannot create a game with a deleted user" })
 		const player1 = usersModel.getUserByUsername(username1)
 		const player2 = usersModel.getUserByUsername(username2)
-		
 		if (!player1) return reply.code(404).send({ success: false, error: `User '${username1}' not found` })
-		
 		if (!player2) return reply.code(404).send({ success: false, error: `User '${username2}' not found` })
-		
 		if (player1.userId === player2.userId) return reply.code(400).send({ success: false, error: "Cannot create a platformer with the same user" })
 		
 		platformersModel.createPlatformer(player1.userId, player2.userId, score_player1, score_player2)
 
 		return reply.code(201).send({ success: true, message: "Platformer finished successfully" })
-	} catch (err) {
-		return reply.code(500).send({ error: err.message })
-	}
+	} catch (err) { return reply.code(500).send({ error: err.message }) }
 }
 
 export async function deletePlatformer(request, reply) {
@@ -223,7 +234,5 @@ export async function deletePlatformer(request, reply) {
 		if (info.changes === 0) return reply.code(404).send({ error: "Platformer not found" })
 		
 		return reply.send({ success: true, message: "Platformer deleted successfully"})
-	} catch (err) {
-		return reply.code(500).send({ error: err.message })
-	}
+	} catch (err) { return reply.code(500).send({ error: err.message }) }
 }

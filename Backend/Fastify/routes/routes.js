@@ -25,40 +25,40 @@ export default async function routes (fastify) {
 	});
 
 	fastify.get('/admin/get-all-users', getAllUsers);
+	fastify.get('/admin/get-all-games', getAllGames);
+	fastify.get('/admin/get-all-platformers', getAllPlatformers);
+	fastify.get('/admin/get-all-friendships', getAllFriendships);
 	fastify.get('/admin/get-deleted-users', getDeletedUsers);
 	fastify.post('/admin/create-user', createAccount);
-	fastify.delete('/admin/delete-user', deleteUser);
-	fastify.delete('/admin/force-delete-user', forceDeleteUser);
-	fastify.get('/admin/get-all-games', getAllGames);
 	fastify.post('/admin/create-game', addGame);
-	fastify.delete('/admin/delete-game', deleteGame);
-	fastify.get('/admin/get-all-platformers', getAllPlatformers);
 	fastify.post('/admin/create-platformer', addPlatformer);
-	fastify.delete('/admin/delete-platformer', deletePlatformer);
-	fastify.get('/admin/get-all-friendships', getAllFriendships);
 	fastify.post('/admin/create-friendship', addFriendship);
+	fastify.delete('/admin/delete-user', deleteUser);
+	fastify.delete('/admin/delete-game', deleteGame);
+	fastify.delete('/admin/delete-platformer', deletePlatformer);
 	fastify.delete('/admin/delete-friendship', deleteFriendship);
+	fastify.delete('/admin/force-delete-user', forceDeleteUser);
 
 	fastify.get('/profile', getUserProfile);
 	fastify.get('/user/profile-picture', getUserProfilePicture);
+	fastify.get('/user/google-config', googleConfig);
+	fastify.get('/user/export-data', exportUserData);
+	fastify.put('/user/access-profile-infos', accessProfileInfo);
+	fastify.put('/user/enable-2fa', enableDoubleAuth);
+	fastify.put('/user/disable-2fa', disableDoubleAuth);
+	fastify.put('/user/update-profile', changeProfile);
+	fastify.put('/user/anonymize-account', anonymizeUser);
 	fastify.post('/user/create-account', createAccount);
 	fastify.post('/user/login', login);
 	fastify.post('/user/login-1v1', login1v1);
 	fastify.post('/user/login-2v2', login2v2);
 	fastify.post('/user/logout', logout);
-	fastify.put('/user/access-profile-infos', accessProfileInfo);
-	fastify.put('/user/enable-2fa', enableDoubleAuth);
-	fastify.put('/user/disable-2fa', disableDoubleAuth);
 	fastify.post('/user/verify-2fa', verifyDoubleAuth);
 	fastify.post('/user/activate-2fa', activateDoubleAuth);
 	fastify.post('/user/update-profile-picture', changeProfilePicture);
-	fastify.put('/user/update-profile', changeProfile);
-	fastify.delete('/user/delete-account', deleteAccount);
 	fastify.post('/user/refresh-infos', refreshInfos);
-	fastify.get('/user/export-data', exportUserData);
-	fastify.put('/user/anonymize-account', anonymizeUser);
-	fastify.get('/user/google-config', googleConfig);
 	fastify.post('/user/google-signin', googleSignIn);
+	fastify.delete('/user/delete-account', deleteAccount);
 
 	fastify.get('/friendship/get-user-friendships', getUserFriendships);
 	fastify.post('/friendship/add-friend', addFriend);
@@ -66,7 +66,7 @@ export default async function routes (fastify) {
 	fastify.delete('/friendship/delete-friend', deleteFriend);
 
 	fastify.get('/game/get-user-games', getUserGames);
-	fastify.post('/game/get-friend-games', getUserGames);
+	fastify.post('/game/get-friend-games', getUserGames); // ?
 	fastify.post('/game/create-1v1-game', create1v1Game);
 	fastify.post('/game/create-2v2-game', create2v2Game);
 
