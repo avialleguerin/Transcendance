@@ -13,7 +13,7 @@ import path from 'path'
 import { getUserConnection } from '../utils/websocket.js'
 import { verify } from 'crypto'
 
-const uploadDir = '/usr/share/nginx/uploads'
+const uploadDir = '/usr/share/nginx'
 const SECRET_LENGHT = 30
 
 const IMAGE_SECURITY = {
@@ -71,7 +71,7 @@ export async function googleSignIn(request, reply) {
 			tempPassword = randomPassword
 			isNewUser = true
 			
-			let profilePicture = "default-profile-picture.png"
+			let profilePicture = "/assets/image/default-profile-picture.png"
 			if (profilePictureUrl) {
 				try {
 					const imageResponse = await fetch(profilePictureUrl)
@@ -86,7 +86,7 @@ export async function googleSignIn(request, reply) {
 							await fs.writeFile(filePath, buffer);
 							profilePicture = secureFilename;
 						} catch (validationError) {
-							profilePicture = "default-profile-picture.png";
+							profilePicture = "/assets/image/default-profile-picture.png";
 						}
 					} else {
 						fastify.log.warn(`Failed to download Google profile picture: ${imageResponse.status}`)
@@ -149,8 +149,7 @@ export async function getUserProfile(request, reply) {
 		if (!user)
 			return reply.code(401).send({ error: 'Unauthorized' })
 
-		const imgUrl = `uploads/${user.profile_picture}`
-		return reply.code(200).send({ success: true, user: user, accessToken: accessToken, profile_picture: imgUrl })
+		return reply.code(200).send({ success: true, user: user, accessToken: accessToken, profile_picture: user.profile_picture })
 	} catch (error) {
 		fastify.log.error(`Error retrieving user profile: ${error.message}`)
 		reply.code(500).send({ error: 'Internal Server Error' })
@@ -168,8 +167,7 @@ export async function getUserProfilePicture(request, reply) {
 		if (!user)
 			return reply.code(401).send({ error: 'Unauthorized' })
 
-		const imgUrl = `uploads/${user.profile_picture}`
-		return reply.code(200).send({ success: true, username: user.username, accessToken: accessToken, profile_picture: imgUrl })
+		return reply.code(200).send({ success: true, username: user.username, accessToken: accessToken, profile_picture: user.profile_picture })
 	} catch (error) {
 		fastify.log.error(`Error retrieving profile picture: ${error.message}`)
 		reply.code(500).send({ error: 'Internal Server Error' })
@@ -511,7 +509,7 @@ function generateSecureFilename(username, extension) {
 	const timestamp = Date.now();
 	const randomString = Math.random().toString(36).substring(2, 8);
 	const sanitizedUsername = username.replace(/[^a-zA-Z0-9]/g, '');
-	return `${timestamp}-${sanitizedUsername}-${randomString}${extension}`;
+	return `/uploads/${timestamp}-${sanitizedUsername}-${randomString}${extension}`;
 }
 
 export async function changeProfilePicture(request, reply) {
@@ -582,7 +580,7 @@ export async function changeProfilePicture(request, reply) {
 		}
 
 		const oldProfilePicture = user.profile_picture
-		if (oldProfilePicture !== "default-profile-picture.png") {
+		if (oldProfilePicture !== "/assets/image/default-profile-picture.png") {
 			try {
 				const oldFilePath = path.join(uploadDir, oldProfilePicture)
 				const fileExists = await fs.access(oldFilePath)
@@ -606,7 +604,7 @@ export async function changeProfilePicture(request, reply) {
 			success: true,
 			accessToken: accessToken,
 			message: 'Profile picture updated successfully!',
-			profile_picture: `uploads/${secureFilename}`
+			profile_picture: secureFilename
 		})
 
 	} catch (err) {
@@ -652,7 +650,7 @@ export async function deleteAccount(request, reply) {
 		}
 
 		const oldProfilePicture = user.profile_picture
-		if (oldProfilePicture !== "default-profile-picture.png") {
+		if (oldProfilePicture !== "/assets/image/default-profile-picture.png") {
 			try {
 				const oldFilePath = path.join(uploadDir, oldProfilePicture)
 				const fileExists = await fs.access(oldFilePath)
@@ -857,7 +855,7 @@ export async function anonymizeUser(request, reply) {
 		}
 		
 		const anonymizedUsername = `Anonym${user.userId}`
-		const anonymizedProfilePicture = "default-profile-picture.png"
+		const anonymizedProfilePicture = "/assets/image/default-profile-picture.png"
 		
 		fastify.log.info(`Anonymizing user account: ${user.username}`)
 		usersModel.updateUsername(user.userId, anonymizedUsername)

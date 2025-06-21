@@ -4,7 +4,7 @@ import { getCurrentCGUVersion } from "../utils/cgu.js";
 export const CREATE_USERS_TABLE = `
 	CREATE TABLE IF NOT EXISTS users (
 		userId INTEGER PRIMARY KEY AUTOINCREMENT,
-		profile_picture TEXT DEFAULT 'default-profile-picture.png',
+		profile_picture TEXT DEFAULT '/assets/image/default-profile-picture.png',
 		username TEXT UNIQUE NOT NULL CHECK(length(username) >= 3 AND length(username) <= 10),
 		password TEXT NOT NULL CHECK(length(password) <= 255),
 		doubleAuth_status INTEGER DEFAULT 0 CHECK(doubleAuth_status IN (0, 1)),
@@ -60,7 +60,7 @@ const usersModel = {
 	anonymizeUser: (userId) => {
 		const anonymizedUsername = `del_${userId}`;
 		const anonymizedPassword = 'DELETED_ACCOUNT';
-		const defaultProfilePicture = 'default-profile-picture.png';
+		const defaultProfilePicture = '/assets/image/default-profile-picture.png';
 		return db.prepare(`UPDATE users SET username = ?, password = ?, profile_picture = ?, doubleAuth_status = 0, doubleAuth_secret = ?, google_id = NULL, deleted_at = CURRENT_TIMESTAMP WHERE userId = ?`).run(anonymizedUsername, anonymizedPassword, defaultProfilePicture, null, userId);
 	},
 	forceDeleteUser: (userId) => {
