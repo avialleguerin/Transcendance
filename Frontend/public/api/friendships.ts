@@ -105,14 +105,22 @@ export async function fetch_user_friendships(): Promise<void> {
 		friendPhotos.forEach(photo => {
 			(photo as HTMLElement).onclick = function() {
 				if (!gameHistory.classList.contains('active')) {
-					fetch_user_games_big((this as HTMLElement).nextElementSibling.querySelector('.friend_name').textContent);
-					gameHistory.classList.add('active');
-					exit_game_history_btn.style.display = 'none';
-					localStorage.setItem('historyIsVisible', 'true');
-					historyIsActive = true;
-					localStorage.setItem("bool", "true");
-					localStorage.setItem('historyVisible', 'true');
-					friendDeleteBtns.style.display = 'none';
+					const friendName = (this as HTMLElement).nextElementSibling.querySelector('.friend_name').textContent
+					const friendExists = accepted.some(friend => friend.friend_username === friendName);
+					if (!friendExists)
+					{
+						notif(`${friendName} is not your friend`, false);
+						return fetch_user_friendships();
+					}
+					if (fetch_user_games_big(friendName))
+					{
+						gameHistory.classList.add('active');
+						exit_game_history_btn.style.display = 'none';
+						localStorage.setItem('historyIsVisible', 'true');
+						historyIsActive = true;
+						localStorage.setItem("bool", "true");
+						localStorage.setItem('historyVisible', 'true');
+					}	
 				}
 				else if (localStorage.getItem('bool') === "true" && gameHistory.classList.contains('active')) {
 					gameHistory.classList.remove('active');
@@ -120,7 +128,6 @@ export async function fetch_user_friendships(): Promise<void> {
 					localStorage.setItem('historyIsVisible', 'false');
 					historyIsActive = false;
 					localStorage.setItem("bool", "false");
-					friendDeleteBtns.style.display = 'block';
 					localStorage.setItem('historyVisible', 'true');
 				}
 			};
@@ -261,13 +268,24 @@ export async function fetch_user_games(): Promise<void> {
 	}
 }
 
-export async function fetch_user_games_big(username: string): Promise<void> {
+export async function fetch_user_games_big(username: string): Promise<boolean> {
 	try {
-		if (!username)
+		let data: any = {};
+		console.log("Fetching games for user:", username);
+		if (username)
+		{
+			data = await fetchAPI('/request/game/get-friend-games', 'POST', { username }, null, false);
+		}
+		else
+		{
 			username = localStorage.getItem(localStorage.getItem("Player1")) || '';
-		const data = await fetchAPI('/request/game/get-friend-games', 'POST', { username }, null, false);
+			data = await fetchAPI('/request/game/get-user-games', 'GET', null, null, false);
+		}
 		if (!data.success)
-			return notif(data.error, false);
+		{
+			notif(data.error, false);
+			return false;
+		}
 		const user = data.user;
 		const userId = user.userId;
 		const games = data.games;
@@ -370,6 +388,7 @@ export async function fetch_user_games_big(username: string): Promise<void> {
 				<tr><td colspan="4" class="text-center-big">No Games found</td></tr>
 			`;
 		}
+		return true
 	} catch (err) {
 		console.error('Error retrieving games:', err);
 	}
