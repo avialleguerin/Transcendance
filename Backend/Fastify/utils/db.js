@@ -20,7 +20,8 @@ async function setupDatabase() {
 		db.pragma(`key = '${pass}'`)
 		return db
 	} catch (err) {
-		fastify.log.error("Error config of SQLite:", err)
+		// if (fastify) fastify.log.error("Error config of SQLite:", err)
+		console.error("Error config of SQLite:", err)
 		throw err
 	}
 }
@@ -30,7 +31,8 @@ export function initDb() {
 	db.prepare(CREATE_GAMES_TABLE).run();
 	db.prepare(CREATE_FRIENDSHIPS_TABLE).run();
 	db.prepare(CREATE_PLATFORMERS_TABLE).run();
-	fastify.log.info("Database initialized successfully");
+	if (fastify) fastify.log.info("Database initialized successfully");
+	else console.log("Database initialized successfully");
 	
 }
 

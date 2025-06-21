@@ -2,7 +2,7 @@ import Vault from 'node-vault';
 
 const vault = Vault({
 	endopint: 'http://vault:8200',
-	token: 'root' // TODO Replace with AppRole in production
+	token: process.env.VAULT_ROOT_TOKEN || 'root'
 });
 
 // Export vault instance
@@ -18,7 +18,7 @@ export async function getSQLiteCreds() {
 			pass: secret.data.password
 		}
 	} catch (err) {
-		fastify.log.error("Error retrieving Vault secret :\n", err)
+		console.error("Error retrieving Vault secret :\n", err)
 		throw Error("Could not fetch credentials from Vault");
 	}
 }
