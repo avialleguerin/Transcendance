@@ -10,6 +10,7 @@ import speakeasy from 'speakeasy'
 import qrcode from 'qrcode'
 import fs from 'fs/promises'
 import path from 'path'
+import { generateRandomString } from './utils.js'
 import { getUserConnection } from '../utils/websocket.js'
 import { verify } from 'crypto'
 
@@ -639,17 +640,9 @@ export async function deleteAccount(request, reply) {
 	try {
 		const { refreshToken } = request.cookies
 		const infos = await getUserFromToken(request)
-		if (!infos) {
-			fastify.log.warn('Account deletion denied: Unauthorized request')
-			return reply.code(401).send({ success: false, error: 'Unauthorized' })
-		}
-
+		if (!infos || !infos.user || !infos.accessToken) return reply.code(401).send({ success: false, error: 'Unauthorized' })
 		const user = infos.user
-		const accessToken = infos.accessToken
-		if (!user) {
-			fastify.log.warn('Account deletion failed: User not found in token')
-			return reply.code(404).send({ error: 'User not found' })
-		}
+
 
 		if (refreshToken && refreshToken !== undefined && refreshToken !== null) {
 			const decodedRefresh = fastify.jwt.decode(refreshToken)
@@ -661,6 +654,7 @@ export async function deleteAccount(request, reply) {
 			reply.clearCookie('refreshToken', { path: '/' })
 		}
 
+		const accessToken = infos.accessToken
 		if (accessToken && accessToken !== undefined && accessToken !== null) {
 			const decodedAccess = fastify.jwt.decode(accessToken)
 			const expiresInAccess = decodedAccess.exp - Math.floor(Date.now() / 1000)
@@ -689,27 +683,13 @@ export async function deleteAccount(request, reply) {
 			}
 		}
 
-		// Generate anonymous username with retry logic
-		try {
-			const anonymizedUsername = await generateAnonymousUsername(user.userId)
-			fastify.log.info(`Anonymizing user account: ${user.username} -> ${anonymizedUsername}`)
-		} catch (usernameError) {
-			fastify.log.error(`Failed to generate anonymous username: ${usernameError.message}`)
-			return reply.code(500).send({ success: false, error: 'Failed to generate unique username' })
-		}
-
-		// Complete anonymization with other fields
-		const anonymizedPassword = 'DELETED_ACCOUNT'
+		const anonymizedUsername = generateRandomString(9)
+		usersModel.updateUsername(user.userId, anonymizedUsername)
+		const anonymizedPassword = generateRandomString(9)
 		const defaultProfilePicture = 'default-profile-picture.png'
-		
 		const info = usersModel.anonymizeUserData(user.userId, anonymizedPassword, defaultProfilePicture)
-			
-		if (info.changes === 0) {
-			fastify.log.warn(`Account deletion failed: User not found - ${user.userId}`)
-			return reply.code(404).send({ error: "User not found" })
-		}
+		if (info.changes === 0) return reply.code(404).send({ error: "User not found" })
 
-		fastify.log.info(`User ${user.username} (ID: ${user.userId}) has been anonymized`)
 		return reply.send({ success: true, message: "Account anonymized successfully"})
 	} catch (err) {
 		fastify.log.error(`Critical error deleting account: ${err.message}`)
