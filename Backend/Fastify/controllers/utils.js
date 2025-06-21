@@ -120,3 +120,25 @@ export function handleControllerError(err, reply, accessToken = null, context = 
 		accessToken
 	});
 }
+
+export function sanitizeInput(input, type) {
+	if (type === "username") {
+		const regex = /^[A-Za-z0-9._-]{3,10}$/;
+		if (!regex.test(input))
+			return { success: false, error: "Username must contain 3-10 characters and can only contain letters, numbers, dots, underscores, and hyphens" };
+		const sanitizedUsername = input.replace(/[^A-Za-z0-9._-]/g, '')
+		return { success: true, input: sanitizedUsername };
+	} else if (type === "password") {
+		const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!?@&*#])[A-Za-z\d!?@&*#]{8,20}$/;
+		if (!regex.test(input)) {
+			return { success: false, error: "Password must contain 8-20 characters, one lowercase, one uppercase, one number, and one special character (!?@&*#)" };
+		}
+		return { success: true };
+	} else if (type === "score") {
+		const regex = /^[0-9]{1,4}$/;
+		if (!regex.test(input)) {
+			return { success: false, error: "Invalid characters in score" };
+		}
+		return { success: true };
+	}
+}

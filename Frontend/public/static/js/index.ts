@@ -105,7 +105,16 @@ export function setLeaveGameVar(value: boolean): void {
 	leave_game_var = value;
 }
 
+
 //*POPUP COOKIE
+
+// function setCookie(name: string, value: string, days = 365, path = '/') {
+// 	const expires = new Date();
+// 	expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+
+// 	document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires.toUTCString()}; path=${path}`;
+// }
+
 document.addEventListener('DOMContentLoaded', function() {
 	const persistentPopup = document.getElementById("persistent-popup");
 	const necessaryBtn = document.getElementById("necessary-btn");
@@ -113,22 +122,29 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	necessaryBtn?.addEventListener("click", () => {
 		persistentPopup?.classList.remove("active");
-		localStorage.setItem('cookieConsent', 'necessary');
+		// localStorage.setItem('cookieConsent', 'necessary');
+		const expires = new Date();
+		expires.setTime(expires.getTime() + (365 * 24 * 60 * 60 * 1000));
+		document.cookie = `cookieConsent=${encodeURIComponent("necessary")}; expires=${expires.toUTCString()}; path='/'`;
 	});
 	
 	allowAllBtn?.addEventListener("click", () => {
 		persistentPopup?.classList.remove("active");
-		localStorage.setItem('cookieConsent', 'all');
+		// localStorage.setItem('cookieConsent', 'all');
+		const expires = new Date();
+		expires.setTime(expires.getTime() + (365 * 24 * 60 * 60 * 1000));
+		document.cookie = `cookieConsent=${encodeURIComponent("all")}; expires=${expires.toUTCString()}; path='/'`;
 	});
 	
-	const existingConsent = localStorage.getItem('cookieConsent');
-	if (!	existingConsent)
+	// const existingConsent = localStorage.getItem('cookieConsent');
+	const existingConsent = document.cookie.split('; ').find(row => row.startsWith('cookieConsent='));
+	if (!existingConsent)
 		persistentPopup?.classList.add("active");
 	
 	window.showPersistentPopup = function() { persistentPopup?.classList.add("active"); };
 	window.hidePersistentPopup = function() { persistentPopup?.classList.remove("active"); };
 
 	window.getCookieConsent = function() {
-		return localStorage.getItem('cookieConsent') || 'none';
+		return document.cookie.split('; ').find(row => row.startsWith('cookieConsent=')) || 'none';
 	};
 });

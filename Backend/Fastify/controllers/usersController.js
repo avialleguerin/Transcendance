@@ -2,7 +2,7 @@ import { fastify, log } from '../server.js'
 import usersModel from '../models/usersModel.js'
 import { hashPassword, verifyPassword } from '../utils/hashUtils.js'
 import { redisModel } from '../models/redisModel.js'
-import { getUserFromToken } from './utils.js'
+import { getUserFromToken, sanitizeInput } from './utils.js'
 import friendshipsModel from '../models/friendshipsModel.js'
 import sendWelcomeEmail from '../utils/mailer.js'
 import gamesModel from '../models/gamesModel.js'
@@ -180,16 +180,13 @@ export async function createAccount(request, reply) {
 	if (!username || !password)
 		return reply.code(400).send({ error: 'Username and Password are required' })
 
-	const usernameRegex = /^[A-Za-z0-9._-]+$/
-	if (!usernameRegex.test(username))
-		return reply.code(400).send({ error: 'Username can only contain letters, numbers, dots, underscores, and hyphens' })
-	if (username.length < 3 || username.length > 10)
-		return reply.code(400).send({ error: 'Username must be between 3 and 10 characters long' })
-	const sanitizedUsername = username.replace(/[^a-zA-Z0-9._-]/g, '')
+	const sanitizedUsername = sanitizeInput(username, 'username')
+	if (!sanitizedUsername.success)
+		return reply.code(400).send({ error: sanitizedUsername.error })
 	const sameUsername = usersModel.getUserByUsername(sanitizedUsername)
 	if (sameUsername)
 		return reply.code(409).send({ error: "This username is already used" })
-	const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!?@&*#])[A-Za-z\d!?@&*#]{8,20}$/
+	const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!?@&*#])[A-Za-z\d!?@&*#]{8,20}$/;
 	if (!passwordRegex.test(password))
 		return reply.code(400).send({ error: 'Password must contain 8-20 characters, one lowercase, one uppercase, one number, and one special character (!?@&*#)' })
 	try {
@@ -205,8 +202,9 @@ export async function login(request, reply) {
 	const { username, password } = request.body
 	try {
 		fastify.log.info(`Login attempt for username: ${username}`)
+		if (!sanitizeInput(username, 'username').success || !sanitizeInput(password, 'password').success)
+			return reply.code(400).send({ error: "Invalid credentials" })
 		const user = usersModel.getUserByUsername(username)
-		
 		if (!user)
 			return reply.code(401).send({ success: false, error: 'Invalid credentials' })
 		if (getUserConnection(user.userId))
@@ -257,6 +255,8 @@ export async function login(request, reply) {
 export async function login1v1(request, reply) {
 	const { username, password } = request.body
 	try {
+		if (!sanitizeInput(username, 'username').success || !sanitizeInput(password, 'password').success)
+			return reply.code(400).send({ error: "Invalid credentials" })
 		const infos = await getUserFromToken(request)
 		if (!infos)
 			return reply.code(401).send({ success: false, error: 'Unauthorized' })
@@ -284,6 +284,12 @@ export async function login1v1(request, reply) {
 export async function login2v2(request, reply) {
 	const { username2, password2, username3, password3, username4, password4 } = request.body
 	try {
+		if (!sanitizeInput(username2, 'username').success || !sanitizeInput(password2, 'password').success)
+			return reply.code(400).send({ error: "Player 2: Invalid credentials" })
+		if (!sanitizeInput(username3, 'username').success || !sanitizeInput(password3, 'password').success)
+			return reply.code(400).send({ error: "Player 2: Invalid credentials" })
+		if (!sanitizeInput(username4, 'username').success || !sanitizeInput(password4, 'password').success)
+			return reply.code(400).send({ error: "Player 2: Invalid credentials" })
 		const infos = await getUserFromToken(request)
 		if (!infos)
 			return reply.code(401).send({ success: false, message: 'You must be logged in to play 2v2', error: `infos: ${infos}` })
@@ -385,6 +391,8 @@ export async function disableDoubleAuth(request, reply) {
 export async function accessProfileInfo(request, reply) {
 	try {
 		const { password } = request.body
+		if (!sanitizeInput(password, 'password').success)
+			return reply.code(400).send({ error: "Invalid password" })
 		const infos = await getUserFromToken(request)
 		if (!infos)
 			return reply.code(401).send({ success: false, error: 'Unauthorized' })
@@ -412,32 +420,34 @@ export async function changeProfile(request, reply) {
 			return reply.code(401).send({ success: false, error: 'Unauthorized' })
 
 		const user = infos.user
-		const accessToken = infos.accessToken
+		let newAccessToken = infos.accessToken
 		if (!user)
 			return reply.code(404).send({ success: false, error: 'User not found' })
 
 		let updated = false
 		if (newUsername) {
-			
-			if (newUsername.length < 3 || newUsername.length > 10)
-				return reply.code(400).send({ error: 'Username must be between 3 and 10 characters long' })
-			const usernameRegex = /^[A-Za-z0-9._-]+$/
-			if (!usernameRegex.test(newUsername))
-				return reply.code(400).send({ error: 'Username can only contain letters, numbers, dots, underscores, and hyphens' })
-			const sanitizedUsername = newUsername.replace(/[^a-zA-Z0-9._-]/g, '')
-			if (sanitizedUsername.length < 3 || sanitizedUsername.length > 10)
-				return reply.code(400).send({ error: 'Username must be between 3 and 10 characters long' })
-			if (sanitizedUsername === user.username)
+			const sanitizedUsername = sanitizeInput(newUsername, 'username')
+			if (!sanitizedUsername.success)
+				return reply.code(400).send({ error: sanitizedUsername.error })
+			const username = sanitizedUsername.input
+			if (username === user.username)
 				return reply.code(400).send({ error: 'New username cannot be the same as the current username' })
-			const sameUsername = usersModel.getUserByUsername(sanitizedUsername)
+			const sameUsername = usersModel.getUserByUsername(username)
 			if (sameUsername)
 				return reply.code(409).send({ error: "This username is already used" })
-			usersModel.updateUsername(user.userId, sanitizedUsername)
+			usersModel.updateUsername(user.userId, username)
+			newAccessToken = fastify.jwt.sign({ userId: user.userId, username: username }, { expiresIn: '15m' })
+
+			const decoded = fastify.jwt.decode(infos.accessToken)
+			const expiresIn = decoded.exp - Math.floor(Date.now() / 1000)
+			if (expiresIn > 0) {
+				redisModel.addToBlacklist(infos.accessToken, expiresIn)
+			}
 			updated = true
 		} 
 		
 		if (newPassword) {
-			const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!?@&*#])[A-Za-z\d!?@&*#]{8,20}$/
+			const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!?@&*#])[A-Za-z\d!?@&*#]{8,20}$/;
 			if (!passwordRegex.test(newPassword))
 				return reply.code(400).send({ error: 'Password must contain 8-20 characters, one lowercase, one uppercase, one number, and one special character (!?@&*#)' })
 			fastify.log.info(`Updating password for user: ${user.username}`)
@@ -447,7 +457,7 @@ export async function changeProfile(request, reply) {
 		}
 
 		if (updated)
-			return reply.code(200).send({ success: true, accessToken: accessToken, message: 'Profile updated successfully!' })
+			return reply.code(200).send({ success: true, accessToken: newAccessToken, message: 'Profile updated successfully!' })
 		else
 			return reply.code(200).send({ success: true, message: 'No changes made' })
 	} catch (err) {
@@ -491,7 +501,7 @@ async function validateImageFile(buffer, originalFilename) {
 
 	const typeValidation = validateImageType(buffer);
 	if (!typeValidation.isValid)
-		throw new Error('Invalid image format. Only PNG and JPEG files are allowed.');
+		throw new Error('Invalid image format. Only PNG, JPG and JPEG files are allowed.');
 
 	const originalExt = path.extname(originalFilename).toLowerCase();
 	if (!IMAGE_SECURITY.ALLOWED_EXTENSIONS.includes(originalExt))
@@ -537,6 +547,14 @@ export async function changeProfilePicture(request, reply) {
 				success: false, 
 				error: 'User not found' 
 			});
+
+		if (file.size && file.size > IMAGE_SECURITY.MAX_FILE_SIZE) {
+			fastify.log.warn(`Uploaded file too large: ${file.size} bytes`);
+			return reply.code(413).send({ 
+				success: false, 
+				error: `File size too large. Maximum allowed: ${IMAGE_SECURITY.MAX_FILE_SIZE / (1024 * 1024)}MB` 
+			});
+		}
 
 		let fileBuffer;
 		if (file._buf)
@@ -834,7 +852,7 @@ export async function exportUserData(request, reply) {
 		reply.type('application/json')
 		
 		fastify.log.info(`User data export successful for user: ${user.username}`)
-		return reply.code(200).send(JSON.stringify({ success: true, ...exportData }, null, 2))
+		return reply.code(200).send(JSON.stringify({ success: true, ...exportData, accessToken: accessToken }, null, 2))
 	} catch (error) {
 		fastify.log.error(`Error exporting user data: ${error.message}`)
 		return reply.code(500).send({ success: false, error: 'Failed to export user data' })
@@ -850,6 +868,7 @@ export async function anonymizeUser(request, reply) {
 		}
 
 		const user = infos.user
+		let newAccessToken = infos.accessToken
 		if (!user) {
 			fastify.log.warn('Anonymization failed: User not found in token')
 			return reply.code(401).send({ success: false, error: 'User not found' })
@@ -861,9 +880,16 @@ export async function anonymizeUser(request, reply) {
 		fastify.log.info(`Anonymizing user account: ${user.username}`)
 		usersModel.updateUsername(user.userId, anonymizedUsername)
 		usersModel.updateProfilePicture(user.userId, anonymizedProfilePicture)
+		newAccessToken = fastify.jwt.sign({ userId: user.userId, username: anonymizedUsername }, { expiresIn: '15m' })
+
+		const decoded = fastify.jwt.decode(accessToken)
+		const expiresIn = decoded.exp - Math.floor(Date.now() / 1000)
+		if (expiresIn > 0) {
+			redisModel.addToBlacklist(accessToken, expiresIn)
+		}
 		
 		fastify.log.info(`User account anonymized successfully: ${user.username}`)
-		return reply.code(200).send({ success: true, profile_picture: anonymizedProfilePicture, message: 'User account anonymized successfully' })
+		return reply.code(200).send({ success: true, profile_picture: anonymizedProfilePicture, accessToken: newAccessToken, message: 'User account anonymized successfully' })
 	} catch (error) {
 		fastify.log.error(`Error anonymizing user account: ${error.message}`)
 		return reply.code(500).send({ success: false, error: 'Failed to anonymize user account : ' + error.message })

@@ -1,7 +1,7 @@
 import { fastify } from '../server.js'
 import usersModel from '../models/usersModel.js'
 import friendshipsModel from '../models/friendshipsModel.js'
-import { getUserFromToken, handleControllerError } from './utils.js'
+import { getUserFromToken, handleControllerError, sanitizeInput } from './utils.js'
 import { notifyFriend } from '../utils/websocket.js'
 
 export async function getUserFriendships(request, reply) {
@@ -23,6 +23,9 @@ export async function addFriend(request, reply) {
 	let infos;
 	
 	if (!friend || typeof friend !== 'string' || friend.trim() === '') return reply.code(400).send({ error: "Friend username is required" })
+
+	if (!sanitizeInput(friend, 'username').success)
+		return reply.code(400).send({ error: "This friend doesn't exist" })
 	
 	try {
 		infos = await getUserFromToken(request)
