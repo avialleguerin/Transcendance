@@ -5,6 +5,7 @@ import { loadScoreModel, destroy_score } from "../score.js";
 import { reset_player_pos_multi } from "./2v2_game/init_players2v2.js";
 import { init_game } from "../init_game.js";
 import { init_ball } from "../ball.js";
+import { resetBall } from "../ball.js";
 
 let gameStart = false;
 let ball = null;
@@ -42,6 +43,7 @@ export async function init_game_multiplayer(scene) {
         loadScoreModel(0, true);
         loadScoreModel(0, false);
         reset_player_pos_multi(player_1, player_2, player_3, player_4);
+        resetBall(ball);
         return { player_1, player_2, player_3, player_4, ball };
     }
 }
@@ -55,6 +57,9 @@ export function destroy_game_multiplayer(scene) {
 	destroy_all_by_metadata(scene, "isPlayer_paddle_2v2");
 	destroy_all_by_metadata(scene, "isPlayerRepere_2v2");
 	destroy_all_by_metadata(scene, "isPlayer_2v2");
+    localStorage.removeItem("Player2");
+    localStorage.removeItem("Player3");
+    localStorage.removeItem("Player4");
 	destroy_ball(ball);
 	destroy_score();
 	destroy_game(scene);

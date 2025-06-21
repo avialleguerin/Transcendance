@@ -146,11 +146,16 @@ export default class solo_game extends AbstractView {
 				disable_skin_perso_player_first_and_seconde();
 			spacePressed = false;
 			bool = false;
+
 			handleViewTransitions("vue2", "vue4");
-			setTimeout(() => {
-				window.history.back();
-				leave_Game();
-			}, 1500);
+			import('../index.js').then(module => {
+				if (module.navigateTo) {
+					module.navigateTo('/game-menu');
+					setTimeout(() => {
+						leave_Game();
+					}, 100);
+				}
+			});
 		});
 	}
 		
@@ -195,10 +200,7 @@ export default class solo_game extends AbstractView {
 
 	handleKeyPress(event: KeyboardEvent) {
 		const key = event.key;
-		
-		
-		
-		
+
 		if (!(key in this.cooldownTimes)) return;
 		
 		if (this.cooldowns[key]) return;

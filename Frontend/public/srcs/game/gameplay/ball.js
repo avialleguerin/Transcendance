@@ -52,7 +52,7 @@ export function createBall(scene) {
 	});
 }
 
-function resetBall(ball) { 
+export function resetBall(ball) { 
 	ball.position = new BABYLON.Vector3(-7, 300.8, -72.5);
 	ballSpeed = 1;
 	ballDirection = getRandomDirection();

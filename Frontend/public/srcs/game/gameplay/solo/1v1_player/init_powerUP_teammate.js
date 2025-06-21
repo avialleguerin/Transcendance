@@ -118,12 +118,12 @@ export function init_Teammate_player_2(scene) {
 			
 			setTimeout(() => {
 				destroy_metadata_player2_bonus(scene);
-			}, 15000);
+			}, 10000);
 		});
 		
 		setTimeout(() => {
 			canUsePowerUP_player2 = true;
-		}, 25000);
+		}, 20000);
 		return player_bonus2;
 	}
 	return null;

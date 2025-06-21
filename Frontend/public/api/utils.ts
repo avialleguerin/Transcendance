@@ -85,35 +85,26 @@ export function gameMenuView(changeView: boolean, txt: string): void {
 	if (changeView)
 	{
 		handleViewTransitions("vue1", "default");
-		history.pushState({}, '', '/game-menu');
-		setTimeout(() => {
-			import('../static/js/views/game-menu.js').then(module => {
-				const GameMenu = module.default;
-				const gameMenuInstance = new GameMenu();
-				gameMenuInstance.getHtml().then(html => {
-					document.getElementById('app').innerHTML = html;
-					if (gameMenuInstance.game_menu) {
-						gameMenuInstance.game_menu();
-					}
-				});
-			});
-		}, 2000);
+		// Utiliser le router normal au lieu de contourner la navigation
+		import('../static/js/index.js').then(module => {
+			if (module.navigateTo) {
+				module.navigateTo('/game-menu');
+			}
+		});
 	}
 	else 
 	{
 		notif(txt, false);
-		// if (txt === "You are already logged in")
-			history.pushState({}, '', '/game-menu');
-		import('../static/js/views/game-menu.js').then(module => {
-			const GameMenu = module.default;
-			const gameMenuInstance = new GameMenu();
-			gameMenuInstance.getHtml().then(html => {
-				document.getElementById('app').innerHTML = html;
-				if (gameMenuInstance.game_menu) {
-					gameMenuInstance.game_menu();
+		// Pour les messages d'erreur, ne pas changer de page
+		// Sauf pour "You are already logged in" qui nécessite une redirection
+		if (txt === "You are already logged in") {
+			import('../static/js/index.js').then(module => {
+				if (module.navigateTo) {
+					module.navigateTo('/game-menu');
 				}
 			});
-		});
+		}
+		// Pour les autres messages d'erreur, juste afficher la notification
 	}
 }
 

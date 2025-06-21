@@ -1,7 +1,7 @@
 import { c, canvas, gameState, GameState, getSecondeGameFinish, setSecondeGameFinish } from './constants.js';
 
 export default class MapMenu_c {
-	constructor() {
+	constructor({player}) {
 		this.title = "Choose your map";
 		this.options = ["Map 1", "Map 2", "Back"];
 		this.selectedOption = 0;
@@ -24,6 +24,7 @@ export default class MapMenu_c {
 			this.bgImageLoaded = true;
 		}
 
+		this.player = player;
 
 		this.hoveredOption = -1;
 		this.boundMouseMove = this.handleMouseMove.bind(this);
@@ -168,6 +169,7 @@ export default class MapMenu_c {
 		const selected = this.options[this.selectedOption];
 		if (selected === "Map 1")
 		{
+			this.player.reset_Game();
 			this.disableControls();
 			setSecondeGameFinish(false);
 			gameState.previous = gameState.current;

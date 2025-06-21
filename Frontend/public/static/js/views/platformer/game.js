@@ -272,6 +272,7 @@ export function initGame()
 		position: { x: 8, y: 8 },
 		Image_src_prefix: '/srcs/game/assets/City/',
 		player: player,
+		coin: Coins,
 	});
 
 	const end_game = new EndGameFirstGame({
@@ -290,7 +291,10 @@ export function initGame()
 		historyDB: historyDBInstance,
 	});
 	
-	const mapMenu = new MapMenu_c();
+	const mapMenu = new MapMenu_c(
+	{
+		player: player,
+	});
 
 	const end_game2 = new EndGameSecondeGame({
 		gameCanvas: game_canvas,
@@ -306,6 +310,7 @@ export function initGame()
 
 	const menu = new Menu({
 		Game_History : gameHistory,
+		Player: player,
 	});
 
 
@@ -492,7 +497,6 @@ export function initGame()
 	const options = new Option();
 
 	function animate() {
-
 		window.requestAnimationFrame(animate);
 	
 		c.fillStyle = 'rgba(rgb(12, 17, 33))';

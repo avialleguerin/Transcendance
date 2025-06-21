@@ -349,6 +349,7 @@ export default class Player extends Sprite {
 
 	reset_Game()
 	{
+		console.log("Resetting player position and state");
 		this.position.x = 931;
 		this.position.y = 629.16;
 		this.velocity.x = 0;

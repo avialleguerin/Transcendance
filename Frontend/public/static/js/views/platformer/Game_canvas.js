@@ -3,7 +3,7 @@ import Sprite from './Sprite.js';
 import { getIsFirstGame} from './constants.js';
 
 export default class GameCanvas extends Sprite {
-	constructor({position,  Image_src_prefix, player}) {
+	constructor({position,  Image_src_prefix, player, coin}) {
 		super({ position, Image_src: Image_src_prefix + "coin_0.png", scaleX: 0.6, scaleY: 0.6 });
 		this.coin_icon = new Image();
 		this.coin_icon.src = "/srcs/game/assets/City/coin_0.png";
@@ -19,7 +19,7 @@ export default class GameCanvas extends Sprite {
 
 		this.nb_coin = 0;
 		this.nb_coin_text = this.nb_coin + " / 7";
-
+		this.coins = coin;
 
 		this.position = position;
 		this.Image_src_prefix = Image_src_prefix;
@@ -255,6 +255,11 @@ export default class GameCanvas extends Sprite {
 		{
 			this.disableControls();
 			this.resetGame();
+			this.coins.forEach(coin => {
+				if (typeof coin.Reset_coin === "function") {
+					coin.Reset_coin();
+				}
+			});
 			this.player.reset_Game();
 			this.GameIsPaused = false;
 			gameState.previous = gameState.current;

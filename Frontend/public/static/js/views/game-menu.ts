@@ -1565,6 +1565,14 @@ export function getPowerUP_value() {
 	return powerUP_nb;
 }
 
+export function setPowerUP_value(value: number) {
+	powerUP_nb = value;
+}
+
 export function getPowerUP_value_multi() {
 	return powerUP_nb_multi;
+}
+
+export function setPowerUP_value_multi(value: number) {
+	powerUP_nb_multi = value;
 }
