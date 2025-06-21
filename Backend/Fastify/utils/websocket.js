@@ -19,7 +19,7 @@ export function notifyFriend(fromUserId, toUserId, type, message = null) {
 		if (toUserConnection && fromUser)
 			toUserConnection.send(JSON.stringify({ type: type, message: message }));
 	} catch (error) {
-		fastify.log.error('Error notifying friend message:', error);
+		fastify.log.error('Error notifying friend message:' + error.message);
 	}
 }
 
@@ -33,13 +33,13 @@ function notifyFriendsStatus(UID, status) {
 		if (friendships && friendships.length > 0 && user) {
 			friendships.forEach(friendship => {
 				const friendUserId = ((friendship.userId).toString() === UID ? friendship.friendId : friendship.userId);
-				log.debug(`Notifying friends of user ${UID} about status change to ${friendUserId}`);
+				fastify.log.debug(`Notifying friends of user ${UID} about status change to ${friendUserId}`);
 				if (UID !== friendUserId)
 					notifyFriend(UID, friendUserId, 'friend_status_update')
 			});
 		}
-	} catch (error) {
-		fastify.log.error('Error notifying friends of status change:', error);
+	} catch (err) {
+		fastify.log.error('Error notifying friends of status change:' + err.message);
 	}
 }
 
@@ -62,7 +62,7 @@ export default function websocketPlugin(fastify) {
 							connection.send(JSON.stringify({ type: 'pong' }))
 						}
 					} catch (err) {
-						fastify.log.error('Error parsing WebSocket message:', err)
+						fastify.log.error('Error parsing WebSocket message:' + err.message)
 					}
 				})
 
@@ -75,7 +75,7 @@ export default function websocketPlugin(fastify) {
 						notifyFriendsStatus(userId, 0)
 				})
 				connection.on('error', (error) => {
-					fastify.log.error(`WebSocket error for user ${userId}:`, error)
+					fastify.log.error(`WebSocket error for user ${userId}:` + error)
 					activeConnections.delete(userId)
 					notifyFriendsStatus(userId, 0)
 				})

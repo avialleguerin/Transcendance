@@ -77,13 +77,12 @@ export default async function sendWelcomeEmail(to, username, tempPassword) {
 				<p>For your security, we strongly recommend that you:</p>
 				<ul>
 					<li>Login and change this temporary password</li>
-					<li>Enable two-factor authentication (2FA)</li>
 					<li>Do not share these credentials</li>
 				</ul>
 				</div>
 				
 				<p style="margin-top: 20px;">
-				<a href="${process.env.FRONTEND_URL || 'https://localhost:8443'}" 
+				<a href="${process.env.WEBSITE_PORT || 'https://localhost:8443'}" 
 					style="background: #667eea; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; display: inline-block;">
 					Access Transcendance
 				</a>
@@ -107,7 +106,7 @@ export default async function sendWelcomeEmail(to, username, tempPassword) {
 		
 		Please login and change this password as soon as possible for your security.
 		
-		Link: ${process.env.FRONTEND_URL || 'https://localhost:8443'}
+		Link: ${process.env.WEBSITE_PORT || 'https://localhost:8443'}
 		`
 	};
 

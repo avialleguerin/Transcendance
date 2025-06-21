@@ -20,7 +20,6 @@ services:
       - .env
     environment:
       - REDIS_URL="redis://redis:6379"
-      - VAULT_DEV_ROOT_TOKEN_ID=root
       - VAULT_ADDR=http://vault:8200
     depends_on:
       - redis
@@ -90,9 +89,8 @@ services:
       - "8200:8200"
     env_file:
       - .env
-    # environment:
-    #   - VAULT_ADDR=http://127.0.0.1:8200
-    #   - VAULT_DEV_ROOT_TOKEN_ID=root
+    environment:
+      - VAULT_ADDR=http://127.0.0.1:8200
     volumes:
       - ./Data/vault_data:/vault/data
       - ./Security/Vault/scripts:/vault/scripts

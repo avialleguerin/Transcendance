@@ -11,12 +11,10 @@ set -e
 
 echo -e "\n\n${GREEN}🚀 Démarrage de Vault en mode Dev...${RESET}"
 
-export VAULT_ADDR="http://127.0.0.1:8200"
-export VAULT_API_ADDR="http://127.0.0.1:8200"
-export root_token="${VAULT_ROOT_TOKEN}"
+export root_token="${VAULT_DEV_ROOT_TOKEN_ID}"
 
 if [ -z "$root_token" ]; then
-    echo -e "\033[31mErreur: VAULT_ROOT_TOKEN n'est pas défini dans le .env\033[0m"
+    echo -e "\033[31mErreur: VAULT_DEV_ROOT_TOKEN_ID n'est pas défini dans le .env\033[0m"
     exit 1
 fi
 
@@ -36,8 +34,7 @@ export VAULT_TOKEN=$root_token
 if vault kv get secret/sqlite >/dev/null 2>&1; then
 	echo -e "${YELLOW} Le secret SQLite existe déjà. Pas besoin de l'écraser.${RESET}"
 else
-	echo -e "\n${GREEN}Ajout du secret SQLite...${RESET}"
-	vault kv put secret/sqlite username="fastify_user" password="secure_password"
+	vault kv put secret/sqlite username="${DB_USERNAME}" password="${DB_PASSWORD}"
 	echo -e "${GREEN}Secret SQLite ajouté !${RESET}"
 fi
 
@@ -47,8 +44,7 @@ fi
 if vault kv get secret/nginx >/dev/null 2>&1; then
 	echo -e "${YELLOW} Le secret Nginx existe déjà. Pas besoin de l'écraser.${RESET}"          
 else
-	echo -e "\n${GREEN}Ajout du secret Nginx...${RESET}"
-	vault kv put secret/nginx username="tr_iao_8143" password="Qwe123!@"
+	vault kv put secret/nginx username="${NGINX_USERNAME}" password="${NGINX_PASSWORD}"
 	echo -e "${GREEN}Secret Nginx ajouté !${RESET}"
 fi
 
@@ -65,6 +61,18 @@ HTPASSWD_FILE="$NGINX_DIR/.htpasswd"
 mkdir -p "$(dirname "$NGINX_DIR")"
 htpasswd -cb "$HTPASSWD_FILE" "$nginx_user" "$nginx_pass"
 echo -e "${GREEN}Fichier .htpasswd généré à : $HTPASSWD_FILE${RESET}"
+
+###################
+#       JWT
+###################
+if vault kv get secret/jwt >/dev/null 2>&1; then
+    echo -e "${YELLOW} Le secret JWT existe déjà. Pas besoin de l'écraser.${RESET}"
+else
+    # Générer un secret JWT sécurisé
+    JWT_SECRET=$(openssl rand -base64 64)
+    vault kv put secret/jwt secret="${JWT_SECRET}"
+    echo -e "${GREEN}Secret JWT ajouté !${RESET}"
+fi
 
 
 echo -e "\n${GREEN}Script terminé avec succès en mode Dev !${RESET}"
