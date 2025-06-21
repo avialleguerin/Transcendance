@@ -10,7 +10,7 @@ import speakeasy from 'speakeasy'
 import qrcode from 'qrcode'
 import fs from 'fs/promises'
 import path from 'path'
-import { getUserConnection } from '../utils/websocket.js'
+import { getUserConnection, notifyAllFriends } from '../utils/websocket.js'
 import { verify } from 'crypto'
 
 const uploadDir = '/usr/share/nginx'
@@ -668,13 +668,14 @@ export async function deleteAccount(request, reply) {
 			}
 		}
 
+		notifyAllFriends(infos.user.userId, "account_deleted");
+		friendshipsModel.deleteAllUserFriendships(user.userId)
 		const info = usersModel.anonymizeUser(user.userId)
-			
+		
 		if (info.changes === 0) {
 			fastify.log.warn(`Account deletion failed: User not found - ${user.userId}`)
 			return reply.code(404).send({ error: "User not found" })
 		}
-
 		fastify.log.info(`User ${user.username} (ID: ${user.userId}) has been anonymized`)
 		return reply.send({ success: true, message: "Account anonymized successfully"})
 	} catch (err) {

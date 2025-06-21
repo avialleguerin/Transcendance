@@ -33,9 +33,7 @@ export class WebSocketManager {
 			const data = JSON.parse(event.data)
 			if (data.type === 'friend_request')
 				this.handleFriendRequest(data.message)
-			else if (data.type === 'friend_deleted')
-				this.handleFriendRequest("null")
-			else if (data.type === 'friend_status_update')
+			else if (data.type === 'friend_deleted' || data.type === 'account_deleted' || data.type === 'friend_status_update')
 				this.handleFriendRequest("null")
 		}
 		

@@ -126,7 +126,7 @@ export async function login_tournament(event: Event): Promise<void> {
 		const data = await fetchAPI('/request/user/login-2v2', 'POST', { username2, password2, username3, password3, username4, password4 }, true, false);		
 
 		if (data.success) {
-			setLocalStorage({"Player2": data.player2.username, "Player3": data.player3.username, "Player4": data.player4.username });
+			setLocalStorage({"Player2": username2, "Player3": username3, "Player4": username4 });
 			updateUI({ setContent: { "Player1": localStorage.getItem("Player1"), "Player2": localStorage.getItem("Player2"), "Player3": localStorage.getItem("Player3"), "Player4": localStorage.getItem("Player4") }});
 			setLocalStorage({"current_player1": localStorage.getItem("Player1"), "current_player2": localStorage.getItem("Player2") });
 			const tournamentStarted = true;

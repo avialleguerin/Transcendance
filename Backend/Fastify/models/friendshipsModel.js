@@ -24,6 +24,7 @@ const friendshipsModel = {
 	getFriendshipsList: (userId) => { return db.prepare(`SELECT user.userId, user.username, user.profile_picture, friend.status FROM users user JOIN friendships friend ON user.userId = friend.friendId WHERE friend.userId = ? AND friend.status = 'accepted'`).all(userId) },
 	getFriendRequests: (userId) => { return db.prepare(`SELECT user.userId, user.username, user.profile_picture FROM users user JOIN friendships friend ON user.userId = friend.userId WHERE friend.friendId = ? AND friend.status = 'pending'`).all(userId)},
 	deleteFriendship: (userId, friendId) => { return db.prepare(`DELETE FROM friendships WHERE (userId = ? AND friendId = ?) OR (userId = ? AND friendId = ?)`).run(userId, friendId, friendId, userId) },
+	deleteAllUserFriendships: (userId) => { return db.prepare(`DELETE FROM friendships WHERE userId = ? OR friendId = ?`).run(userId, userId) },
 	checkFriendshipStatus: (userId, friendId) => {
 		const requestSent = db.prepare(` SELECT status FROM friendships WHERE userId = ? AND friendId = ?`).get(userId, friendId);
 		const requestReceived = db.prepare(`SELECT status FROM friendships WHERE userId = ? AND friendId = ?`).get(friendId, userId);
