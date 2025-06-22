@@ -6,6 +6,7 @@ import { reset_player_pos_multi } from "./2v2_game/init_players2v2.js";
 import { init_game } from "../init_game.js";
 import { init_ball } from "../ball.js";
 import { resetBall } from "../ball.js";
+import { StorageKeys } from "../../../../api/utils.js";
 
 let gameStart = false;
 let ball = null;
@@ -18,34 +19,34 @@ let player_4 = null;
 
 export async function init_game_multiplayer(scene) {
 
-    if (!is_init) {
-        create_game(scene);
-        
-        // Assignez les joueurs aux variables du module
-        let players = init_2v2_Players(scene);
-        player_1 = players[0];
-        player_2 = players[1];
-        player_3 = players[2];
-        player_4 = players[3];
-    
-        ball = await createBall(scene).catch(error => {
-            console.error(error);
-            return null;
-        });
-    
-        loadScoreModel(0, true);
-        loadScoreModel(0, false);
-        is_init = true;
-        return { player_1, player_2, player_3, player_4, ball };
-    }
-    else {
-        already_init();
-        loadScoreModel(0, true);
-        loadScoreModel(0, false);
-        reset_player_pos_multi(player_1, player_2, player_3, player_4);
-        resetBall(ball);
-        return { player_1, player_2, player_3, player_4, ball };
-    }
+	if (!is_init) {
+		create_game(scene);
+		
+		// Assignez les joueurs aux variables du module
+		let players = init_2v2_Players(scene);
+		player_1 = players[0];
+		player_2 = players[1];
+		player_3 = players[2];
+		player_4 = players[3];
+	
+		ball = await createBall(scene).catch(error => {
+			console.error(error);
+			return null;
+		});
+	
+		loadScoreModel(0, true);
+		loadScoreModel(0, false);
+		is_init = true;
+		return { player_1, player_2, player_3, player_4, ball };
+	}
+	else {
+		already_init();
+		loadScoreModel(0, true);
+		loadScoreModel(0, false);
+		reset_player_pos_multi(player_1, player_2, player_3, player_4);
+		resetBall(ball);
+		return { player_1, player_2, player_3, player_4, ball };
+	}
 }
 
 export function start_game_multiplayer(scene) {
@@ -57,9 +58,10 @@ export function destroy_game_multiplayer(scene) {
 	destroy_all_by_metadata(scene, "isPlayer_paddle_2v2");
 	destroy_all_by_metadata(scene, "isPlayerRepere_2v2");
 	destroy_all_by_metadata(scene, "isPlayer_2v2");
-    localStorage.removeItem("Player2");
-    localStorage.removeItem("Player3");
-    localStorage.removeItem("Player4");
+
+	StorageKeys.PLAYER2 = null;
+	StorageKeys.PLAYER3 = null;
+	StorageKeys.PLAYER4 = null;
 	destroy_ball(ball);
 	destroy_score();
 	destroy_game(scene);
@@ -76,9 +78,9 @@ function already_init()
 }
 
 function enable_all_by_metadata(scene, metadataKey) {
-    scene.meshes
-        .filter(mesh => mesh.metadata && mesh.metadata[metadataKey])
-        .forEach(mesh => mesh.setEnabled(true));
+	scene.meshes
+		.filter(mesh => mesh.metadata && mesh.metadata[metadataKey])
+		.forEach(mesh => mesh.setEnabled(true));
 }
 
 

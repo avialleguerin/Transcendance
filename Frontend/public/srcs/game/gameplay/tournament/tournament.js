@@ -69,11 +69,7 @@ export async function destroy_game_solo_tournament(scene)
 	destroy_all_by_metadata(scene, "isPlayerRepere");
 	destroy_all_by_metadata(scene, "isPlayer_paddle");
 	destroy_all_by_metadata(scene, "isPlayer");
-	// localStorage.setItem("canPlay", "false");
 	StorageKeys.CAN_PLAY = false;
-	console.log("localStorage canPlay set to false");
-	// if (localStorage.getItem("tournamentStarted") !== "true")
-	// 	localStorage.removeItem("Player2");
 	destroy_game(scene);
 	destroy_ball(ball);
 	destroy_score();

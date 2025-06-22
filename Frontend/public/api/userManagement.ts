@@ -1,4 +1,4 @@
-import { notif, fetchAPI, $, $input, $form, updateUI, gameMenuView, homeView } from './utils.js';
+import { notif, fetchAPI, $, $input, $form, updateUI, gameMenuView, homeView, StorageKeys } from './utils.js';
 import { disconnectWebSocket } from './websocket.js';
 
 if (typeof window !== 'undefined') {
@@ -35,7 +35,7 @@ export async function changeProfilePicture(event: Event): Promise<void> {
 		if (data.success) {
 			$form("uploadForm").reset();
 			fetchProfile();
-			localStorage.setItem("profile_picture", data.profile_picture);
+			StorageKeys.PROFILE_PICTURE = data.profile_picture;
 			document.getElementById("profile_photo_circle_nav_bar").innerHTML = `
 			<img src="${data.profile_picture}" alt="Profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
 			`;
@@ -148,9 +148,9 @@ export async function fetchProfile(): Promise<void> {
 			const user = data.user;
 			document.getElementById("profile_photo_circle").innerHTML = `<img src="${data.profile_picture}" alt="${user.username} profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
 			$("player_name").textContent = user.username;
-			localStorage.setItem("Player1", user.username);
+			StorageKeys.PLAYER1 = user.username;
 			const username = $input("change_username");
-			username.placeholder = user.username;
+			username.placeholder = StorageKeys.PLAYER1;
 			const doubleAuth = $input("active_fa");
 			if (user.google_id) {
 				$("fa_selector").style.display = "none";

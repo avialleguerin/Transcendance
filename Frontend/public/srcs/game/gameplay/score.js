@@ -5,6 +5,7 @@ import { enable_skin_multi_podium } from "./multiplayer/init_teamPlayer_podium.j
 import { enable_skin_perso_player_first_and_second_default } from "./solo/skin/init_skin_player_default.js";
 import { get_skin_is_init } from "./solo/skin/init_skin_utils.js";
 import { enable_skin_multi_podium_default } from "./multiplayer/init_teamPlayer_podium_default.js";
+import { StorageKeys } from "../../../api/utils.js";
 
 let scoreLeft = 0;
 let scoreRight = 0;
@@ -169,8 +170,9 @@ export function updateScore(side)
 			}
 		}
 	}
-	localStorage.setItem("score_left", scoreLeft);
-	localStorage.setItem("score_right", scoreRight);
+
+	StorageKeys.SCORE_LEFT = scoreLeft;
+	StorageKeys.SCORE_RIGHT = scoreRight;
 }
 
 export function resetScore() {

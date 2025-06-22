@@ -1,4 +1,4 @@
-import { notif, fetchAPI, homeView, gameMenuView, platformerView, setLocalStorage, updateUI, $, $input, $form } from './utils.js';
+import { notif, fetchAPI, homeView, gameMenuView, platformerView, setLocalStorage, updateUI, $, $input, $form, StorageKeys } from './utils.js';
 import { ApiResponse, LoginRequest, RegisterRequest, User, GoogleTokenClient, GoogleSignInResponse,  } from './types.js';
 import { connectWebSocket, disconnectWebSocket } from './websocket.js';
 
@@ -38,7 +38,9 @@ export async function login(event: Event): Promise<void> {
 			updateUI({ removeClass: [{ id:"doubleAuthForm", className: "hidden" }], addClass: ["loginForm", "doubleAuthForm"] });
 			$input("login-title").textContent = "Double Authentication";
 		} else if (data.success && data.connection_status === "connected") {
-			setLocalStorage({ "Player1": data.username, "profile_picture": data.profile_picture });
+			// setLocalStorage({ "Player1": data.username, "profile_picture": data.profile_picture });
+			StorageKeys.PLAYER1 = data.username
+			StorageKeys.PROFILE_PICTURE = data.profile_picture
 			connectWebSocket()
 			gameMenuView(true, null);
 			$form("loginForm").reset();
@@ -57,17 +59,18 @@ export async function login_1v1(event: Event) {
 	const username = $input("1v1-username2").value;
 	const password = $input("1v1-password2").value;
 	if (!username || !password)	return notif("Please fill in all fields", false);
-	if (username === localStorage.getItem("Player1")) return notif("You cannot play against yourself", false);
+	if (username === StorageKeys.PLAYER1) return notif("You cannot play against yourself", false);
 
 	try {
 		const data: ApiResponse  = await fetchAPI('/request/user/login-1v1', 'POST', { username, password }, true, false);
 
 		if (data.success) {
-			setLocalStorage({ "Player2": data.player2.username });
+			// setLocalStorage({ "Player2": data.player2.username });
+			StorageKeys.PLAYER2 = username
 			updateUI({
 				removeClass: ["choose_your_opponent_1v1_form", "container"],
 				addClass: ["back_to_select_mode_view6", "view6"],
-				setContent: {"1v1-oponent-username1": localStorage.getItem("Player1"), "1v1-oponent-username2": localStorage.getItem("Player2")}
+				setContent: {"1v1-oponent-username1": StorageKeys.PLAYER1, "1v1-oponent-username2": StorageKeys.PLAYER2 }
 			});
 		}
 	} catch (err) { notif("Connexion to 1v1 failed", false); }
@@ -80,7 +83,7 @@ export async function login_1v1(event: Event) {
  */
 export async function login_2v2(event: Event): Promise<void> {
 	event.preventDefault();
-	const username1 = localStorage.getItem("Player1");
+	const username1 = StorageKeys.PLAYER1;
 	const username2 = $input("2v2-username2").value, password2 = $input("2v2-password2").value;
 	const username3 = $input("2v2-username3").value, password3 = $input("2v2-password3").value;
 	const username4 = $input("2v2-username4").value, password4 = $input("2v2-password4").value;
@@ -92,15 +95,18 @@ export async function login_2v2(event: Event): Promise<void> {
 		const data: ApiResponse = await fetchAPI('/request/user/login-2v2', 'POST', { username2, password2, username3, password3, username4, password4 }, true, false);
 
 		if (data.success) {
-			setLocalStorage({"Player2": username2, "Player3": username3, "Player4": username4 });
+			// setLocalStorage({"Player2": username2, "Player3": username3, "Player4": username4 });
+			StorageKeys.PLAYER2 = username2;
+			StorageKeys.PLAYER3 = username3;
+			StorageKeys.PLAYER4 = username4
 			updateUI({
 				removeClass: ["choose_your_opponent_multi_form", "container"],
 				addClass: ["back_to_select_mode_view8", "view8"],
 				setContent: {
-					"2v2-oponent-username1": localStorage.getItem("Player1"),
-					"2v2-oponent-username2": localStorage.getItem("Player2"),
-					"2v2-oponent-username3": localStorage.getItem("Player3"),
-					"2v2-oponent-username4": localStorage.getItem("Player4")
+					"2v2-oponent-username1": StorageKeys.PLAYER1,
+					"2v2-oponent-username2": StorageKeys.PLAYER2,
+					"2v2-oponent-username3": StorageKeys.PLAYER3,
+					"2v2-oponent-username4": StorageKeys.PLAYER4
 				}
 			});
 			$form("choose_your_opponent_multi_form").reset();
@@ -114,7 +120,7 @@ export async function login_2v2(event: Event): Promise<void> {
  */
 export async function login_tournament(event: Event): Promise<void> {
 	event.preventDefault();
-	const username1 = localStorage.getItem("Player1");
+	const username1 = StorageKeys.PLAYER1;
 	const username2 = $input("tournament-username2").value, password2 = $input("tournament-password2").value;
 	const username3 = $input("tournament-username3").value, password3 = $input("tournament-password3").value;
 	const username4 = $input("tournament-username4").value, password4 = $input("tournament-password4").value;
@@ -126,9 +132,18 @@ export async function login_tournament(event: Event): Promise<void> {
 		const data = await fetchAPI('/request/user/login-2v2', 'POST', { username2, password2, username3, password3, username4, password4 }, true, false);		
 
 		if (data.success) {
-			setLocalStorage({"Player2": username2, "Player3": username3, "Player4": username4 });
-			updateUI({ setContent: { "Player1": localStorage.getItem("Player1"), "Player2": localStorage.getItem("Player2"), "Player3": localStorage.getItem("Player3"), "Player4": localStorage.getItem("Player4") }});
-			setLocalStorage({"current_player1": localStorage.getItem("Player1"), "current_player2": localStorage.getItem("Player2") });
+			console.log("Connexion to tournament successful");
+			console.log(username2);
+			console.log(username3);
+			console.log(username4);
+			StorageKeys.PLAYER2 = username2;
+			StorageKeys.PLAYER3 = username3;
+			StorageKeys.PLAYER4 = username4;
+			StorageKeys.CURRENT_PLAYER1 = username1;
+			StorageKeys.CURRENT_PLAYER2 = username2;
+			document.getElementById("Player2").textContent = StorageKeys.PLAYER2;
+			document.getElementById("Player3").textContent = StorageKeys.PLAYER3;
+			document.getElementById("Player4").textContent = StorageKeys.PLAYER4;
 			const tournamentStarted = true;
 			localStorage.setItem('tournamentStarted', tournamentStarted.toString());
 			updateUI({ addClass: [{ id: "tournament_graphic_id", className: "active" }, { id: "container_name_player", className: "hidden"}] });
@@ -148,13 +163,14 @@ export async function login_platformer(event: Event) {
 	const username = $input("platformer-username2").value;
 	const password = $input("platformer-password2").value;
 	if (!username || !password)	return notif("Please fill in all fields", false);
-	if (username === localStorage.getItem("Player1")) return notif("You cannot play against yourself", false);
+	if (username === StorageKeys.PLAYER1) return notif("You cannot play against yourself", false);
 
 	try {
 		const data = await fetchAPI('/request/user/login-1v1', 'POST', { username, password }, true, false);
 
 		if (data.success) {
-			setLocalStorage({"Player1": localStorage.getItem("Player1"), "Player2": data.player2.username, "platformer_view": true });
+			// setLocalStorage({"Player1": localStorage.getItem("Player1"), "Player2": data.player2.username, "platformer_view": true });
+			StorageKeys.PLAYER2 = username;
 			$("start-platformer").click();
 			// PlatformerView(); //TODO
 		}
@@ -190,7 +206,9 @@ export async function verify2FA(event: Event) {
 
 		if (data.success) {
 			sessionStorage.removeItem("authTicket")
-			setLocalStorage({"Player1": data.username, "profile_picture": data.profile_picture});
+			// setLocalStorage({"Player1": data.username, "profile_picture": data.profile_picture});
+			StorageKeys.PLAYER1 = data.username;
+			StorageKeys.PROFILE_PICTURE = data.profile_picture;
 			connectWebSocket()
 			gameMenuView(true, null);
 		}
@@ -231,7 +249,10 @@ export async function refreshInfos() { //REVIEW - maybe put in utils
 			homeView();
 			
 		} else if (sessionStorage.getItem("accessToken") && sessionStorage.getItem("accessToken") !== "undefined") {
-			setLocalStorage({"Player1": data.user.username, "profile_picture": data.user.profile_picture});
+			// setLocalStorage({"Player1": data.user.username, "profile_picture": data.user.profile_picture});
+			StorageKeys.PLAYER1 = data.user.username;
+			StorageKeys.PROFILE_PICTURE = data.user.profile_picture;
+			console.log(StorageKeys.PLAYER1, StorageKeys.PROFILE_PICTURE);
 			connectWebSocket();
 			gameMenuView(true, null);
 		}
@@ -273,9 +294,10 @@ export async function handleGoogleSignIn(response: { access_token: string }) {
 
 		if (data.success) {
 			sessionStorage.setItem("accessToken", data.accessToken);
-			localStorage.setItem("Player1", data.name);
+			StorageKeys.ACCESS_TOKEN = data.accessToken;
+			StorageKeys.PLAYER1 = data.name;
 			if (data.avatar)
-				localStorage.setItem("profile_picture", data.avatar);
+				StorageKeys.PROFILE_PICTURE = data.avatar;
 			notif("Connexion Google réussie !", true);
 			gameMenuView(true, null);
 		} else

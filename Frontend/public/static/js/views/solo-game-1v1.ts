@@ -10,6 +10,7 @@ import { disable_skin_perso_player_first_and_seconde_default } from "../../../sr
 import { get_skin_is_init } from "../../../srcs/game/gameplay/solo/skin/init_skin_utils.js";
 import { homeView } from "../../../api/utils.js";
 import { getIsloading } from "../../../srcs/game/gameplay/views/loading_screen.js";
+import { StorageKeys } from "../../../api/utils.js";
 
 let spacePressed = false;
 let bool = false;
@@ -65,7 +66,7 @@ export default class solo_game extends AbstractView {
 				</div>
 
 				<div class="container-Player1" id="container-player1_id">
-					<h1 id="player1-username" >${localStorage.getItem('Player1')}</h1>
+					<h1 id="player1-username" >${StorageKeys.PLAYER1}</h1>
 					<div class="container-item_player1">
 						<p id="nb-item-grenade-1"></p>
 						<p class="touch_player1">Z</p>
@@ -91,7 +92,7 @@ export default class solo_game extends AbstractView {
 					</div>
 				</div>
 				<div class="container-Player2" id="container-player2_id">
-					<h1 id="player1-username" >${localStorage.getItem('Player2')}</h1>
+					<h1 id="player2-username" >${StorageKeys.PLAYER2}</h1>
 					<div class="container-item_player2">
 						<p id="nb-item-grenade-2"></p>
 						<p class="touch_player2">1</p>
@@ -125,7 +126,7 @@ export default class solo_game extends AbstractView {
 							<h1 id="looser_id"></h1>
 						</div>
 					</div>
-					<button class="leave_game_2" id="leave_game_2_id" onclick="window.create_1v1_game(event, '${localStorage.getItem('Player1')}', '${localStorage.getItem('Player2')}')">Leave Game</button>
+					<button class="leave_game_2" id="leave_game_2_id" onclick="window.create_1v1_game(event, '${StorageKeys.PLAYER1}', '${StorageKeys.PLAYER2}')">Leave Game</button>
 				</div>
 			</div>
 		`;
@@ -327,13 +328,13 @@ export default class solo_game extends AbstractView {
 			clearInterval(this.gameLoop);
 			if (player_1_win)
 			{
-				document.getElementById("winner_id").innerHTML = `${localStorage.getItem("Player1")}`;
-				document.getElementById("looser_id").innerHTML = `${localStorage.getItem("Player2")}`;
+				document.getElementById("winner_id").innerHTML = `${StorageKeys.PLAYER1}`;
+				document.getElementById("looser_id").innerHTML = `${StorageKeys.PLAYER2}`;
 			}
 			else if (player_2_win)
 			{
-				document.getElementById("winner_id").innerHTML = `${localStorage.getItem("Player2")}`;
-				document.getElementById("looser_id").innerHTML = `${localStorage.getItem("Player1")}`;
+				document.getElementById("winner_id").innerHTML = `${StorageKeys.PLAYER2}`;
+				document.getElementById("looser_id").innerHTML = `${StorageKeys.PLAYER1}`;
 			}
 			if (container_player1.classList.contains("active"))
 				container_player1.classList.remove("active");

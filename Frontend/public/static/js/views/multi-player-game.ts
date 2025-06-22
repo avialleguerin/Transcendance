@@ -10,6 +10,7 @@ import { disable_skin_multi_podium_default } from "../../../srcs/game/gameplay/m
 import { get_skin_is_init } from "../../../srcs/game/gameplay/solo/skin/init_skin_utils.js";
 import { homeView } from "../../../api/utils.js";
 import { getIsloading } from "../../../srcs/game/gameplay/views/loading_screen.js";
+import { StorageKeys } from "../../../api/utils.js";
 
 let space_pressed = false;
 let bool = false;
@@ -62,7 +63,7 @@ export default class extends AbstractView {
 					<h1 id="press_space_id">Press SPACE to Start</h1>
 				</div>
 				<div class="container-Player1" id="container-player1-id">
-					<h1>${localStorage.getItem("Player1")} - ${localStorage.getItem("Player2")}</h1>
+					<h1>${StorageKeys.PLAYER1} - ${StorageKeys.PLAYER2}</h1>
 					<div class="container-item_player1">
 						<p id="nb-item-grenade-1"></p>
 						<p class="touch_player1">Z</p>
@@ -81,7 +82,7 @@ export default class extends AbstractView {
 					</div>
 				</div>
 				<div class="container-Player2" id="container-player2-id">
-					<h1>${localStorage.getItem("Player3")} - ${localStorage.getItem("Player4")}</h1>
+					<h1>${StorageKeys.PLAYER3} - ${StorageKeys.PLAYER4}</h1>
 					<div class="container-item_player2">
 						<p id="nb-item-grenade-2"></p>
 						<p class="touch_player2">1</p>
@@ -290,12 +291,12 @@ export default class extends AbstractView {
 			winnerContainer.classList.add("active");
 			clearInterval(this.gameLoop);
 			if (team_player1_win) {
-				document.getElementById("Winner_id").innerHTML = localStorage.getItem("Player1") + " - " + localStorage.getItem("Player2");
-				document.getElementById("looser_id").innerHTML = localStorage.getItem("Player3") + " - " + localStorage.getItem("Player4");
+				document.getElementById("Winner_id").innerHTML = StorageKeys.PLAYER1 + " - " + StorageKeys.PLAYER2;
+				document.getElementById("looser_id").innerHTML = StorageKeys.PLAYER3 + " - " + StorageKeys.PLAYER4;
 			}
 			else if (team_player2_win) {
-				document.getElementById("Winner_id").innerHTML = localStorage.getItem("Player3") + " - " + localStorage.getItem("Player4");
-				document.getElementById("looser_id").innerHTML = localStorage.getItem("Player1") + " - " + localStorage.getItem("Player2");
+				document.getElementById("Winner_id").innerHTML = StorageKeys.PLAYER3 + " - " + StorageKeys.PLAYER4;
+				document.getElementById("looser_id").innerHTML = StorageKeys.PLAYER1 + " - " + StorageKeys.PLAYER2;
 			}
 			container_player1.style.visibility = "hidden";
 			container_player2.style.visibility = "hidden";

@@ -56,7 +56,7 @@ export async function create1v1Game(request, reply) {
 	const { player1, player2, score_left, score_right } = request.body
 
 	if (!sanitizeInput(player1, 'username').success || !sanitizeInput(player2, 'username').success ||
-		!sanitizeInput(score_player1, 'score').success || !sanitizeInput(score_player2, 'score').success)
+		!sanitizeInput(score_left, 'score').success || !sanitizeInput(score_right, 'score').success)
 			return reply.code(400).send({ error: "Invalid inputs" })
 
 	let infos;

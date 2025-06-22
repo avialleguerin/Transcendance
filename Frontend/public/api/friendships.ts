@@ -1,4 +1,4 @@
-import { notif, fetchAPI, $, $input, $form, sanitizeInput } from './utils.js';
+import { notif, fetchAPI, $, $input, $form, sanitizeInput, StorageKeys } from './utils.js';
 import { Friendship, GameScore } from './types.js';
 
 let historyIsActive = localStorage.getItem('historyIsVisible') === 'true';
@@ -283,7 +283,8 @@ export async function fetch_user_games_big(username: string): Promise<boolean> {
 		}
 		else
 		{
-			username = localStorage.getItem(localStorage.getItem("Player1")) || '';
+			// username = localStorage.getItem(localStorage.getItem("Player1")) || '';
+			username = StorageKeys.PLAYER1;
 			data = await fetchAPI('/request/game/get-user-games', 'GET', null, null, false);
 		}
 		if (!data.success)

@@ -6,6 +6,7 @@ import { createBall, destroy_ball, init_ball } from "../../ball.js";
 import { init_game } from "../../init_game.js";
 import { reset_player_position } from "../../player.js";
 import { resetBall } from "../../ball.js";
+import { StorageKeys } from "../../../../../api/utils.js";
 
 let gameStart = false;
 let ball = null;
@@ -68,7 +69,7 @@ export async function destroy_game_solo(scene)
 	destroy_all_by_metadata(scene, "isPlayerRepere_1v1");
 	destroy_all_by_metadata(scene, "isPlayer_paddle_1v1");
 	destroy_all_by_metadata(scene, "isPlayer_1v1");
-	localStorage.removeItem("Player2");
+	StorageKeys.PLAYER2 = null;
 	destroy_game(scene);
 	destroy_ball(ball);
 	destroy_score();

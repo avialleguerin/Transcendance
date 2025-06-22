@@ -72,10 +72,10 @@ export default class extends AbstractView {
 				<div class="tournament_graphic" id="tournament_graphic_id">
 					<p class="winnerBracket" id="winnerBracket_id">Winner Bracket</p>
 					<p class="loserBracket" id="loserBracket_id">Loser Bracket</p>
-					<p class="joueur1" id="Player1">${localStorage.getItem('Player1')}</p>
-					<p class="joueur2" id="Player2">${localStorage.getItem('Player2')}</p>
-					<p class="joueur3" id="Player3">${localStorage.getItem('Player3')}</p>
-					<p class="joueur4" id="Player4">${localStorage.getItem('Player4')}</p>
+					<p class="joueur1" id="Player1">${StorageKeys.PLAYER1}</p>
+					<p class="joueur2" id="Player2">${StorageKeys.PLAYER2}</p>
+					<p class="joueur3" id="Player3">${StorageKeys.PLAYER3}</p>
+					<p class="joueur4" id="Player4">${StorageKeys.PLAYER4}</p>
 					<img src="../../../srcs/game/assets/image/tournament_with_bracket.svg" alt="tournament">
 					<a id="start_game" class="btn_start_game" href="/tournament-game" data-link>JOUER</a>
 					<button id="leave_tournament" class="btn_leave_tournament">X</button>
@@ -219,11 +219,11 @@ export default class extends AbstractView {
 
 		finish_tournament.addEventListener('click', () => {
 			tournament_graphic_id.classList.remove('active');
-			const player1 = localStorage.getItem('Player1');
-			const profile_picture = localStorage.getItem('profile_picture');
-			localStorage.clear()
-			localStorage.setItem('Player1', player1);
-			localStorage.setItem('profile_picture', profile_picture);
+			// const player1 = localStorage.getItem('Player1');
+			// const profile_picture = localStorage.getItem('profile_picture');
+			// localStorage.clear()
+			// localStorage.setItem('Player1', player1);
+			// localStorage.setItem('profile_picture', profile_picture);
 			container_name_player.classList.remove('hidden');
 			const container_endTournament = document.getElementById('container_endTournament');
 			container_endTournament.classList.remove('active');
@@ -390,8 +390,8 @@ function updateTournamentState(
 		});
 
 		highlightNextPlayers(Player1, Player2);
-		localStorage.setItem("current_player1", Player1.textContent);
-		localStorage.setItem("current_player2", Player2.textContent);
+		StorageKeys.CURRENT_PLAYER1 = Player1.textContent || '';
+		StorageKeys.CURRENT_PLAYER2 = Player2.textContent || '';
 	}
 
 	if (count >= 1) {
@@ -419,8 +419,8 @@ function updateTournamentState(
 			match1_loser.style.top = POSITIONS.quart_winner.loser1_2.top;
 			match1_loser.style.left = POSITIONS.quart_winner.loser1_2.left;
 			highlightNextPlayers(Player3, Player4);
-			localStorage.setItem("current_player1", Player3.textContent);
-			localStorage.setItem("current_player2", Player4.textContent);
+			StorageKeys.CURRENT_PLAYER1 = Player3.textContent || '';
+			StorageKeys.CURRENT_PLAYER2 = Player4.textContent || '';
 		}
 	}
 
@@ -450,8 +450,8 @@ function updateTournamentState(
 			match2_loser.style.left = POSITIONS.quart_winner.loser3_4.left;
 
 			highlightNextPlayers(match1_loser, match2_loser);
-			localStorage.setItem("current_player1", match1_loser.textContent);
-			localStorage.setItem("current_player2", match2_loser.textContent);
+			StorageKeys.CURRENT_PLAYER1 = match1_loser.textContent || '';
+			StorageKeys.CURRENT_PLAYER2 = match2_loser.textContent || '';
 		}
 	}
 
@@ -479,8 +479,8 @@ function updateTournamentState(
 			match3_winner.style.left = POSITIONS.quart_loser.winner.left;
 			match3_loser.style.color = 'red';
 			highlightNextPlayers(match1_winner, match2_winner);
-			localStorage.setItem("current_player1", match1_winner.textContent);
-			localStorage.setItem("current_player2", match2_winner.textContent);
+			StorageKeys.CURRENT_PLAYER1 = match1_winner.textContent || '';
+			StorageKeys.CURRENT_PLAYER2 = match2_winner.textContent || '';
 		}
 	}
 
@@ -511,8 +511,8 @@ function updateTournamentState(
 			match4_loser.style.left = POSITIONS.demi_winer.loser.left;
 
 			highlightNextPlayers(match3_winner, match4_loser);
-			localStorage.setItem("current_player1", match3_winner.textContent);
-			localStorage.setItem("current_player2", match4_loser.textContent);
+			StorageKeys.CURRENT_PLAYER1 = match3_winner.textContent || '';
+			StorageKeys.CURRENT_PLAYER2 = match4_loser.textContent || '';
 		}
 	}
 
@@ -541,8 +541,8 @@ function updateTournamentState(
 
 			match5_loser.style.color = 'red';
 			highlightNextPlayers(match4_winner, match5_winner);
-			localStorage.setItem("current_player1", match4_winner.textContent);
-			localStorage.setItem("current_player2", match5_winner.textContent);
+			StorageKeys.CURRENT_PLAYER1 = match4_winner.textContent || '';
+			StorageKeys.CURRENT_PLAYER2 = match5_winner.textContent || '';
 		}
 	}
 

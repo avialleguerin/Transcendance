@@ -11,7 +11,7 @@ import { getValue_leave_game, setLeaveGameVar } from "../index.js";
 import { enable_skin_perso_player_solo, disable_skin_perso_player_solo, disable_skin_perso_player_solo_and_save, switch_skin_perso_player1_left, switch_skin_perso_player1_right, switch_skin_perso_player2_left, switch_skin_perso_player2_right } from "../../../srcs/game/gameplay/solo/skin/init_skin_perso.js";
 import { enable_skin_multi, disable_skin_and_save_multi, disable_skin_multi, switch_skin_perso_player1_right_multi, switch_skin_perso_player1_left_multi, switch_skin_perso_player2_left_multi, switch_skin_perso_player2_right_multi, switch_skin_perso_player3_left_multi, switch_skin_perso_player3_right_multi, switch_skin_perso_player4_left_multi, switch_skin_perso_player4_right_multi } from "../../../srcs/game/gameplay/multiplayer/init_skin_perso_multi.js";
 import { get_skin_is_init } from "../../../srcs/game/gameplay/solo/skin/init_skin_utils.js";
-import { homeView } from "../../../api/utils.js";
+import { homeView, StorageKeys } from "../../../api/utils.js";
 
 let powerUP_nb = 0;
 let powerUP_nb_multi = 0;
@@ -33,8 +33,8 @@ export default class Game_menu extends AbstractView {
 		<link rel="stylesheet" href="./static/js/css/game-menu.css">
 		<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 		<div class="navbar_menu">
-			<div class="profile_photo_circle_nav_bar" id="profile_photo_circle_nav_bar"><img src="${localStorage.getItem('profile_picture')}" alt="profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;"></div>
-			<h1 id="player_name" class="player_name">${localStorage.getItem('Player1')}</h1>
+			<div class="profile_photo_circle_nav_bar" id="profile_photo_circle_nav_bar"><img src="${StorageKeys.PROFILE_PICTURE}" alt="profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;"></div>
+			<h1 id="player_name" class="player_name">${StorageKeys.PLAYER1}</h1>
 			<button class="option_navBar" id="option_btn_navBar" onclick="togglePanel(event)">
 				<img src="../../../srcs/game/assets/image/menu.svg" alt="menu">
 			</button>
@@ -615,12 +615,12 @@ export default class Game_menu extends AbstractView {
 				<div class="player1">
 					<button class="switch_skin_left" id="switch_skn_left_id1"></button>
 					<button class="switch_skin_right" id="switch_skn_right_id1"></button>
-					<p id="1v1-oponent-username1">${localStorage.getItem('Player1')}</p>
+					<p id="1v1-oponent-username1">${StorageKeys.PLAYER1}</p>
 				</div>
 				<div class="player2">
 					<button class="switch_skin_left" id="switch_skn_left_id2"></button>
 					<button class="switch_skin_right" id="switch_skn_right_id2"></button>
-					<p id="1v1-oponent-username2">${localStorage.getItem('Player2')}</p>
+					<p id="1v1-oponent-username2">${StorageKeys.PLAYER2}</p>
 				</div>
 				<button id="valide_ton_skin" class="btn">Confirm</button>
 			</div>
@@ -630,22 +630,22 @@ export default class Game_menu extends AbstractView {
 				<div class="player1_game_multi">
 					<button class="switch_skin_left" id="switch_skn_left_id1_game_multi"></button>
 					<button class="switch_skin_right" id="switch_skn_right_id1_game_multi"></button>
-					<p id="2v2-oponent-username1">${localStorage.getItem('Player1')}</p>
+					<p id="2v2-oponent-username1">${StorageKeys.PLAYER1}</p>
 				</div>
 				<div class="player2_game_multi">
 					<button class="switch_skin_left" id="switch_skn_left_id2_game_multi"></button>
 					<button class="switch_skin_right" id="switch_skn_right_id2_game_multi"></button>
-					<p id="2v2-oponent-username2">${localStorage.getItem('Player2')}</p>
+					<p id="2v2-oponent-username2">${StorageKeys.PLAYER2}</p>
 				</div>
 				<div class="player3_game_multi">
 					<button class="switch_skin_left" id="switch_skn_left_id3_game_multi"></button>
 					<button class="switch_skin_right" id="switch_skn_right_id3_game_multi"></button>
-					<p id="2v2-oponent-username3">${localStorage.getItem('Player3')}</p>
+					<p id="2v2-oponent-username3">${StorageKeys.PLAYER3}</p>
 				</div>
 				<div class="player4_game_multi">
 					<button class="switch_skin_left" id="switch_skn_left_id4_game_multi"></button>
 					<button class="switch_skin_right" id="switch_skn_right_id4_game_multi"></button>
-					<p id="2v2-oponent-username4">${localStorage.getItem('Player4')}</p>
+					<p id="2v2-oponent-username4">${StorageKeys.PLAYER4}</p>
 				</div>
 				<button id="valide_ton_skin_game_multi" class="btn">Confirm</button>
 			</div>

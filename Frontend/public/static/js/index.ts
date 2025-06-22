@@ -36,18 +36,18 @@ const navigateTo = (url: string): void => {
 	canNavigate = true;
 	let blockMessage = "";
 	
-	if (nextPage === "/solo-game-1v1" && !localStorage.getItem("Player2")) {
+	if (nextPage === "/solo-game-1v1" && !StorageKeys.PLAYER2) {
 		canNavigate = false;
 		blockMessage = "You don't have opponents to play with";
 
 	}
 	
-	if (nextPage === "/multi-player-game" && !localStorage.getItem("Player2") && !localStorage.getItem("Player3") && !localStorage.getItem("Player4")) {
+	if (nextPage === "/multi-player-game" && !StorageKeys.PLAYER2 && !StorageKeys.PLAYER3 && !StorageKeys.PLAYER4) {
 		canNavigate = false;
 		blockMessage = "You don't have opponents to play with";
 	}
 
-	else if (nextPage === "/platformer" && !localStorage.getItem("Player2")) {
+	else if (nextPage === "/platformer" && !StorageKeys.PLAYER2) {
 		canNavigate = false;
 		blockMessage = "You don't have opponents to play with";
 	}
@@ -88,24 +88,24 @@ const logPageTransition = (from: string, to: string): void => {
 		{
 			console.log("🏠 Transition: Menu de jeu → Accueil");
 		}
-		else if (to === "/solo-game-1v1" && localStorage.getItem("Player2"))
+		else if (to === "/solo-game-1v1" && StorageKeys.PLAYER2)
 		{
 			handleViewTransitions("vue2", "vue3");
 			canTransition = true;
 		}
-		else if (to === "/solo-game-1v1" && !localStorage.getItem("Player2"))
+		else if (to === "/solo-game-1v1" && !StorageKeys.PLAYER2)
 		{
 			gameMenuView(false, "You dont have oponents to play with");
 			canTransition = false;
 		}
 
-		else if (to === "/multi-player-game" && (localStorage.getItem("Player2") && localStorage.getItem("Player3") && localStorage.getItem("Player4")))
+		else if (to === "/multi-player-game" && (StorageKeys.PLAYER2 && StorageKeys.PLAYER3 && StorageKeys.PLAYER4))
 		{
 			handleViewTransitions("vue2", "vue3");
 			canTransition = true;
 		}
 
-		else if (to === "/multi-player-game" && (!localStorage.getItem("Player2") && !localStorage.getItem("Player3") && !localStorage.getItem("Player4")))
+		else if (to === "/multi-player-game" && (!StorageKeys.PLAYER2 && !StorageKeys.PLAYER3 && !StorageKeys.PLAYER4))
 		{
 			gameMenuView(false, "You dont have oponents to play with");
 			canTransition = false;
@@ -117,12 +117,12 @@ const logPageTransition = (from: string, to: string): void => {
 			handleViewTransitions("tournament", "vue2");
 			canTransition = true;
 		}
-		else if (to === "/platformer" && localStorage.getItem("Player2"))
+		else if (to === "/platformer" && StorageKeys.PLAYER2)
 		{
 			handleViewTransitions("platformer", "vue2");
 			canTransition = true;
 		}
-		else if (to === "/platformer" && !localStorage.getItem("Player2"))
+		else if (to === "/platformer" && !StorageKeys.PLAYER2)
 		{
 			gameMenuView(false, "You dont have oponents to play with");
 			canTransition = false;
@@ -211,7 +211,7 @@ const logPageTransition = (from: string, to: string): void => {
 	else if (from === "/platformer" ) {
 		if (to === "/game-menu") {
 			handleViewTransitions("vue2", "platformer");
-			localStorage.removeItem("Player2");
+			StorageKeys.PLAYER2 = null;
 			gameState.previous = GameState.Menu;
 			gameState.current = GameState.Menu;
 		}
@@ -341,17 +341,17 @@ window.addEventListener("popstate", (e) => {
 	let blockNavigation = false;
 	let blockMessage = "";
 
-	if (targetPath === "/solo-game-1v1" && !localStorage.getItem("Player2")) {
+	if (targetPath === "/solo-game-1v1" && !StorageKeys.PLAYER2) {
 		blockNavigation = true;
 		blockMessage = "You don't have opponents to play with";
 	}
 
-	if (targetPath === "/multi-player-game" && !localStorage.getItem("Player2") && !localStorage.getItem("Player3") && !localStorage.getItem("Player4")) {
+	if (targetPath === "/multi-player-game" && !StorageKeys.PLAYER2 && !StorageKeys.PLAYER3 && !StorageKeys.PLAYER4) {
 		blockNavigation = true;
 		blockMessage = "You don't have opponents to play with";
 	}
 
-	if (targetPath === "/platformer" && !localStorage.getItem("Player2")) {
+	if (targetPath === "/platformer" && !StorageKeys.PLAYER2) {
 		blockNavigation = true;
 		blockMessage = "You don't have opponents to play with";
 	}
@@ -402,7 +402,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	necessaryBtn.addEventListener("click", () => {
 		persistentPopup?.classList.remove("active");
-		// localStorage.setItem('cookieConsent', 'necessary');
 		const expires = new Date();
 		expires.setTime(expires.getTime() + (365 * 24 * 60 * 60 * 1000));
 		document.cookie = `cookieConsent=${encodeURIComponent("necessary")}; expires=${expires.toUTCString()}; path='/'`;
@@ -410,13 +409,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	allowAllBtn?.addEventListener("click", () => {
 		persistentPopup?.classList.remove("active");
-		// localStorage.setItem('cookieConsent', 'all');
 		const expires = new Date();
 		expires.setTime(expires.getTime() + (365 * 24 * 60 * 60 * 1000));
 		document.cookie = `cookieConsent=${encodeURIComponent("all")}; expires=${expires.toUTCString()}; path='/'`;
 	});
-	
-	// const existingConsent = localStorage.getItem('cookieConsent');
+
 	const existingConsent = document.cookie.split('; ').find(row => row.startsWith('cookieConsent='));
 	if (!existingConsent)
 		persistentPopup?.classList.add("active");

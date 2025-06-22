@@ -1,5 +1,6 @@
 import { c, canvas } from "./constants.js";
 import { gameState, GameState, setIsFirstGame, getIsFirstGame } from "./constants.js";
+import { StorageKeys } from "../../../../api/utils.js";
 
 export default class EndGameFirstGame {
 	constructor ({position, width, height, gameCanvas, player, coins}) {
@@ -21,7 +22,7 @@ export default class EndGameFirstGame {
 		this.optionFont = "20px 'Press Start 2P', Black Ops One";
 		this.optionSpacing = 60;
 		this.time_endGame = 0;
-		this.option1 = `${localStorage.getItem("Player2")}, Your Time Has Come – Press ENTER`;
+		this.option1 = `${StorageKeys.PLAYER2}, Your Time Has Come – Press ENTER`;
 		this.option2 = "Game Stats : "
 		this.gameCanvasFont = "20px 'Press Start 2P', Black Ops One";
 		this.option3 = "Score : ";

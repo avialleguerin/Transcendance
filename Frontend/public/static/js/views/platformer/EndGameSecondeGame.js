@@ -1,5 +1,6 @@
 import { c, canvas } from "./constants.js";
 import { gameState, GameState, setIsFirstGame, setSecondeGameFinish, getSecondeGameFinish } from "./constants.js";
+import { StorageKeys } from "../../../../api/utils.js";
 
 export default class EndGameSecondeGame {
 	constructor({gameCanvas, player, coins, EndGame_FirstGame, historyGame, MapMenu}) {
@@ -109,14 +110,18 @@ export default class EndGameSecondeGame {
 			if (this.Score > this.EndGame_FirstGame.Score)
 			{
 				this.WinnerScore = this.Score;
-				localStorage.setItem("score_player1", this.Score);
-				localStorage.setItem("score_player2", this.EndGame_FirstGame.Score);
+				// localStorage.setItem("score_player1", this.Score);
+				StorageKeys.SCORE_PLAYER1 = this.Score;
+				// localStorage.setItem("score_player2", this.EndGame_FirstGame.Score);
+				StorageKeys.SCORE_PLAYER2 = this.EndGame_FirstGame.Score;
 			}
 			else
 			{
 				this.WinnerScore = this.EndGame_FirstGame.Score;
-				localStorage.setItem("score_player1", this.EndGame_FirstGame.Score);
-				localStorage.setItem("score_player2", this.Score);
+				StorageKeys.SCORE_PLAYER1 = this.EndGame_FirstGame.Score;
+				StorageKeys.SCORE_PLAYER2 = this.Score;
+				// localStorage.setItem("score_player1", this.EndGame_FirstGame.Score);
+				// localStorage.setItem("score_player2", this.Score);
 			}
 			console.log("window.create_platformer");
 			window.create_platformer();
@@ -173,16 +178,16 @@ export default class EndGameSecondeGame {
 		this.time_endGame = "Time : " + this.gameCanvas.timer + " seconds";
 		this.Score = (300 - this.gameCanvas.timer) + this.gameCanvas.nb_coin * 100;
 		this.ScoreText = this.Score;
-		this.option5 = `${localStorage.getItem("Player1")} has finished the game with : ` + this.EndGame_FirstGame.Score + " score";
-		this.option6 = `${localStorage.getItem("Player2")} has finished the game with : ` + this.Score + " score";
+		this.option5 = `${StorageKeys.PLAYER1} has finished the game with : ` + this.EndGame_FirstGame.Score + " score";
+		this.option6 = `${StorageKeys.PLAYER2} has finished the game with : ` + this.Score + " score";
 
 		if (this.EndGame_FirstGame.Score > this.Score)
 		{
-			this.winner = `${localStorage.getItem("Player1")}`;
+			this.winner = `${StorageKeys.PLAYER1}`;
 		}
 		else if (this.EndGame_FirstGame.Score < this.Score)
 		{
-			this.winner = `${localStorage.getItem("Player2")}`;
+			this.winner = `${StorageKeys.PLAYER2}`;
 		}
 		this.option7 = this.winner;
 
