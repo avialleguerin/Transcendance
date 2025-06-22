@@ -18,6 +18,7 @@ import { disable_skin_perso_player_first_and_seconde_default } from "../../srcs/
 import { setPowerUP_value, setPowerUP_value_multi } from "./views/game-menu.js";
 import { disable_skin_multi_podium_default } from "../../srcs/game/gameplay/multiplayer/init_teamPlayer_podium_default.js";
 import { disable_skin_multi_podium } from "../../srcs/game/gameplay/multiplayer/init_teamPlayer_podium.js";
+import { StorageKeys } from "../../api/utils.js";
 
 let canTransition: boolean = true;
 let leave_game_var: boolean = false;
@@ -51,7 +52,7 @@ const navigateTo = (url: string): void => {
 		blockMessage = "You don't have opponents to play with";
 	}
 
-	else if (nextPage === "/tournament-game" && localStorage.getItem("canPlay") === "false") {
+	else if (nextPage === "/tournament-game" && !StorageKeys.CAN_PLAY) {
 		canNavigate = false;
 		blockMessage = "You don't have opponents to play with";
 	}
@@ -185,13 +186,13 @@ const logPageTransition = (from: string, to: string): void => {
 			handleViewTransitions("vue2", "tournament");
 		}
 
-		else if (to === "/tournament-game" && localStorage.getItem("canPlay") === "true")
+		else if (to === "/tournament-game" && StorageKeys.CAN_PLAY)
 		{
 			handleViewTransitions("tournament", "vue3");
 			canTransition = true;
 
 		}
-		else if (to === "/tournament-game" && localStorage.getItem("canPlay") === "false")
+		else if (to === "/tournament-game" && !StorageKeys.CAN_PLAY)
 		{
 			gameMenuView(false, "You dont have oponents to play with");
 			canTransition = false;
@@ -355,7 +356,7 @@ window.addEventListener("popstate", (e) => {
 		blockMessage = "You don't have opponents to play with";
 	}
 
-	if (targetPath === "/tournament-game" && localStorage.getItem("canPlay") === "false") {
+	if (targetPath === "/tournament-game" && !StorageKeys.CAN_PLAY) {
 		blockNavigation = true;
 		blockMessage = "You don't have opponents to play with";
 	}

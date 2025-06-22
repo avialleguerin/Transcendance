@@ -3,6 +3,7 @@ import AbstractView from "./AbstractView.js";
 import { startTournamentGame } from "../../../srcs/game/gameplay/babylon.js";
 import { getPlayer_1_win } from "../../../srcs/game/gameplay/score.js";
 import { homeView } from "../../../api/utils.js";
+import { StorageKeys } from "../../../api/utils.js";
 
 let count = 0;
 let tournamentStarted = false;
@@ -119,7 +120,8 @@ export default class extends AbstractView {
 			startTournamentGame();
 			count = parseInt(localStorage.getItem('tournamentCount')) || 0;
 			localStorage.setItem('tournamentCount', count.toString());
-			localStorage.setItem("canPlay", "true");
+			// localStorage.setItem("canPlay", "true");
+			StorageKeys.CAN_PLAY = true;
 			console.log("canPlay set to true");
 
 			const Player1 = document.getElementById('Player1');
