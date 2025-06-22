@@ -490,33 +490,6 @@ window.addEventListener('DOMContentLoaded', () => {
 	fetch_deleted_users();
 });
 
-window.addEventListener('DOMContentLoaded', () => {
-	if (typeof window !== 'undefined') {
-		// functions to be accessible globally
-		window.fetchAPI = fetchAPI;
-		window.fetch_users = fetch_users;
-		window.fetch_games = fetch_games;
-		window.fetch_platformers = fetch_platformers;
-		window.fetch_friendships = fetch_friendships;
-		window.fetch_deleted_users = fetch_deleted_users;
-		window.notif = notif;
-		window.create_user = create_user;
-		window.create_game = create_game;
-		window.create_platformer = create_platformer;
-		window.create_friendship = create_friendship;
-		window.delete_user = delete_user;
-		window.force_delete_user = force_delete_user;
-		window.delete_game = delete_game;
-		window.delete_platformer = delete_platformer;
-		window.delete_friendship = delete_friendship;
-		//modal functions
-		window.add_user_modal = add_user_modal;
-		window.add_game_modal = add_game_modal;
-		window.add_platformer_modal = add_platformer_modal;
-		window.add_friendship_modal = add_friendship_modal;
-		window.close_user_modal = close_user_modal;
-		window.close_game_modal = close_game_modal;
-		window.close_platformer_modal = close_platformer_modal;
-		window.close_friendship_modal = close_friendship_modal;
-	}
-});
+// Module admin.ts exporte toutes les fonctions nécessaires pour être utilisées dans le HTML
+// Lorsque ce fichier est importé comme module, les fonctions sont disponibles
+// sans être attachées à l'objet window global

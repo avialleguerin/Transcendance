@@ -91,7 +91,7 @@
 						</tbody>
 					</table>
 				</div>
-				<button class="bg-violet-500 text-white font-bold py-2 px-4 m-6 mx-auto block w-auto rounded-lg hover:bg-violet-600 transition" onclick="add_user_modal()">Add User</button>
+				<button class="bg-violet-500 text-white font-bold py-2 px-4 m-6 mx-auto block w-auto rounded-lg hover:bg-violet-600 transition" data-action="add_user_modal">Add User</button>
 			</div>
 		</div>
 
@@ -111,7 +111,7 @@
 					<input type="password" id="addUser-confirm-password" name="password" placeholder="Password" autocomplete="new-password" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
 				</div>
 				<button type="submit" class="w-full bg-violet-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-violet-600 transition">Add</button>
-				<button type="button" class="mt-4 w-full border border-violet-500 text-violet-500 font-bold py-2 px-4 rounded-lg hover:bg-violet-500 hover:text-white transition" onclick="close_user_modal()">Cancel</button>
+				<button type="button" class="mt-4 w-full border border-violet-500 text-violet-500 font-bold py-2 px-4 rounded-lg hover:bg-violet-500 hover:text-white transition" data-action="close_user_modal">Cancel</button>
 			</form>
 		</div>
 
@@ -135,7 +135,7 @@
 						</tbody>
 					</table>
 				</div>
-				<button class="bg-violet-500 text-white font-bold py-2 px-4 m-6 mx-auto block w-auto rounded-lg hover:bg-violet-600 transition" onclick="add_friendship_modal()">Add Friendship</button>
+				<button class="bg-violet-500 text-white font-bold py-2 px-4 m-6 mx-auto block w-auto rounded-lg hover:bg-violet-600 transition" data-action="add_friendship_modal">Add Friendship</button>
 			</div>
 		</div>
 
@@ -151,7 +151,7 @@
 					<input type="text" id="addFriendship-friend" name="friendname" placeholder="friendname" autocomplete="friendname" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
 				</div>
 				<button type="submit" class="w-full bg-violet-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-violet-600 transition">Add</button>
-				<button type="button" class="mt-4 w-full border border-violet-500 text-violet-500 font-bold py-2 px-4 rounded-lg hover:bg-violet-500 hover:text-white transition" onclick="close_friendship_modal()">Cancel</button>
+				<button type="button" class="mt-4 w-full border border-violet-500 text-violet-500 font-bold py-2 px-4 rounded-lg hover:bg-violet-500 hover:text-white transition" data-action="close_friendship_modal">Cancel</button>
 			</form>
 		</div>
 
@@ -176,7 +176,7 @@
 						</tbody>
 					</table>
 				</div>
-				<button class="bg-violet-500 text-white font-bold py-2 px-4 m-6 mx-auto block w-auto rounded-lg hover:bg-violet-600 transition" onclick="add_game_modal()">Add Game</button>
+				<button class="bg-violet-500 text-white font-bold py-2 px-4 m-6 mx-auto block w-auto rounded-lg hover:bg-violet-600 transition" data-action="add_game_modal">Add Game</button>
 			</div>
 		</div>
 		
@@ -200,7 +200,7 @@
 					<input type="text" id="addGame-user4" name="username" placeholder="Username" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500">
 				</div>
 				<button type="submit" class="w-full bg-violet-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-violet-600 transition">Add</button>
-				<button type="button" class="mt-4 w-full border border-violet-500 text-violet-500 font-bold py-2 px-4 rounded-lg hover:bg-violet-500 hover:text-white transition" onclick="close_game_modal()">Cancel</button>
+				<button type="button" class="mt-4 w-full border border-violet-500 text-violet-500 font-bold py-2 px-4 rounded-lg hover:bg-violet-500 hover:text-white transition" data-action="close_game_modal">Cancel</button>
 			</form>
 		</div>
 
@@ -224,7 +224,7 @@
 						</tbody>
 					</table>
 				</div>
-				<button class="bg-violet-500 text-white font-bold py-2 px-4 m-6 mx-auto block w-auto rounded-lg hover:bg-violet-600 transition" onclick="add_platformer_modal()">Add Platformer</button>
+				<button class="bg-violet-500 text-white font-bold py-2 px-4 m-6 mx-auto block w-auto rounded-lg hover:bg-violet-600 transition" data-action="add_platformer_modal">Add Platformer</button>
 			</div>
 		</div>
 		
@@ -248,7 +248,7 @@
 					<input type="number" id="addPlatformer-score2" name="score2" placeholder="Score player 1" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500" required>
 				</div>
 				<button type="submit" class="w-full bg-violet-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-violet-600 transition">Add</button>
-				<button type="button" class="mt-4 w-full border border-violet-500 text-violet-500 font-bold py-2 px-4 rounded-lg hover:bg-violet-500 hover:text-white transition" onclick="close_platformer_modal()">Cancel</button>
+				<button type="button" class="mt-4 w-full border border-violet-500 text-violet-500 font-bold py-2 px-4 rounded-lg hover:bg-violet-500 hover:text-white transition" data-action="close_platformer_modal">Cancel</button>
 			</form>
 		</div>
 
@@ -464,8 +464,17 @@
 		</div>
 
 	</main>
-	<script type="module" src="./api/admin.js"></script>
-	<script>
+	<script type="module">
+		import { 
+			fetch_users, fetch_games, fetch_platformers, fetch_friendships, 
+			fetch_deleted_users, create_user, create_game, create_platformer, 
+			create_friendship, delete_user, force_delete_user, delete_game, 
+			delete_platformer, delete_friendship, add_user_modal, add_game_modal,
+			add_platformer_modal, add_friendship_modal, close_user_modal,
+			close_game_modal, close_platformer_modal, close_friendship_modal
+		} from './api/admin.js';
+		
+		// Fonction de gestion des onglets
 		function showTab(tabId) {
 			const tabNames = {
 				'users-tab': 'Users',
@@ -495,11 +504,103 @@
 				icon.classList.toggle('text-gray-700', !isActive);
 			});
 		}
-	
-		window.onload = () => {
+		
+		// Configuration des gestionnaires d'événements
+		document.addEventListener('DOMContentLoaded', () => {
+			// Associer les gestionnaires d'événements aux boutons
+			const tabButtons = document.querySelectorAll('[onclick^="showTab"]');
+			tabButtons.forEach(button => {
+				const tabId = button.getAttribute('onclick').match(/'([^']+)'/)[1];
+				button.removeAttribute('onclick');
+				button.addEventListener('click', () => showTab(tabId));
+			});
+			
+			// Configurer les gestionnaires d'événements pour les formulaires
+			if (document.getElementById('addUserForm')) {
+				document.getElementById('addUserForm').addEventListener('submit', create_user);
+			}
+			if (document.getElementById('addGameForm')) {
+				document.getElementById('addGameForm').addEventListener('submit', create_game);
+			}
+			if (document.getElementById('addPlatformerForm')) {
+				document.getElementById('addPlatformerForm').addEventListener('submit', create_platformer);
+			}
+			if (document.getElementById('addFriendshipForm')) {
+				document.getElementById('addFriendshipForm').addEventListener('submit', create_friendship);
+			}
+			
+			// Configurer les gestionnaires pour les boutons d'ajout et de fermeture avec data-action
+			document.querySelectorAll('[data-action]').forEach(elem => {
+				elem.addEventListener('click', event => {
+					const action = elem.getAttribute('data-action');
+					switch (action) {
+						case 'add_user_modal': add_user_modal(); break;
+						case 'add_game_modal': add_game_modal(); break;
+						case 'add_platformer_modal': add_platformer_modal(); break;
+						case 'add_friendship_modal': add_friendship_modal(); break;
+						case 'close_user_modal': close_user_modal(); break;
+						case 'close_game_modal': close_game_modal(); break;
+						case 'close_platformer_modal': close_platformer_modal(); break;
+						case 'close_friendship_modal': close_friendship_modal(); break;
+					}
+				});
+			});
+			
+			// Remplacer les éléments qui ont encore des onclick
+			document.querySelectorAll('[onclick]').forEach(elem => {
+				const onclickAttr = elem.getAttribute('onclick');
+				
+				// Gérer showTab séparément
+				if (onclickAttr && onclickAttr.startsWith('showTab')) {
+					const tabId = onclickAttr.match(/'([^']+)'/)[1];
+					elem.removeAttribute('onclick');
+					elem.addEventListener('click', () => showTab(tabId));
+				}
+			});
+			
+			// Initialiser avec le dernier onglet actif
 			const lastActiveTab = localStorage.getItem('transcendance_admin_active_tab') || 'users-tab';
 			showTab(lastActiveTab);
-		}
+			
+			// Remplacer les gestionnaires d'événements pour les tables
+			const tables = document.querySelectorAll('tbody');
+			tables.forEach(table => {
+				table.addEventListener('click', event => {
+					const target = event.target;
+					if (target.tagName === 'BUTTON') {
+						const action = target.getAttribute('onclick');
+						if (action) {
+							event.preventDefault();
+							const match = action.match(/^([a-z_]+)\(([^)]+)\)/);
+							if (match) {
+								const functionName = match[1];
+								const args = match[2].split(',').map(arg => arg.trim());
+								
+								switch (functionName) {
+									case 'delete_user':
+										delete_user(args[0]);
+										break;
+									case 'force_delete_user':
+										force_delete_user(args[0]);
+										break;
+									case 'delete_game':
+										delete_game(args[0]);
+										break;
+									case 'delete_platformer':
+										delete_platformer(args[0]);
+										break;
+									case 'delete_friendship':
+										delete_friendship(args[0]);
+										break;
+								}
+								
+								target.removeAttribute('onclick');
+							}
+						}
+					}
+				});
+			});
+		});
 	</script>
 </body>
 </html>
