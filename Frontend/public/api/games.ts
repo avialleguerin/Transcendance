@@ -1,4 +1,5 @@
 import { notif, fetchAPI } from './utils.js';
+import { StorageKeys } from './utils.js';
 
 if (typeof window !== 'undefined') {
 	window.create_1v1_game = create_1v1_game;
@@ -16,10 +17,10 @@ export async function create_1v1_game(event: Event, player1: string, player2: st
 
 	const data = await fetchAPI('/request/game/create-1v1-game', 'POST', { player1, player2, score_left, score_right }, false);
 	if (!data.success) return notif(data.error, false);
-	if (localStorage.getItem("tournamentStarted") !== "true")
+	if (StorageKeys.TOURNAMENT_STARTED === false)
 		localStorage.removeItem("Player2");
 	else
-		localStorage.setItem("tournamentCount", (parseInt(localStorage.getItem("tournamentCount")) + 1).toString());
+		StorageKeys.TOURNAMENT_COUNT = StorageKeys.TOURNAMENT_COUNT + 1;
 	localStorage.removeItem("score_left");
 	localStorage.removeItem("score_right");
 };

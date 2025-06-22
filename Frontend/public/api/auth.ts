@@ -1,6 +1,7 @@
 import { notif, fetchAPI, homeView, gameMenuView, platformerView, setLocalStorage, updateUI, $, $input, $form } from './utils.js';
 import { ApiResponse, LoginRequest, RegisterRequest, User, GoogleTokenClient, GoogleSignInResponse,  } from './types.js';
 import { connectWebSocket, disconnectWebSocket } from './websocket.js';
+import { StorageKeys } from './utils.js';
 
 export let tokenClient: GoogleTokenClient | null = null;
 
@@ -128,9 +129,9 @@ export async function login_tournament(event: Event): Promise<void> {
 		if (data.success) {
 			setLocalStorage({"Player2": username2, "Player3": username3, "Player4": username4 });
 			updateUI({ setContent: { "Player1": localStorage.getItem("Player1"), "Player2": localStorage.getItem("Player2"), "Player3": localStorage.getItem("Player3"), "Player4": localStorage.getItem("Player4") }});
-			setLocalStorage({"current_player1": localStorage.getItem("Player1"), "current_player2": localStorage.getItem("Player2") });
-			const tournamentStarted = true;
-			localStorage.setItem('tournamentStarted', tournamentStarted.toString());
+			StorageKeys.CURRENT_PLAYER1 = localStorage.getItem("Player1");
+			StorageKeys.CURRENT_PLAYER2 = localStorage.getItem("Player2");
+			StorageKeys.TOURNAMENT_STARTED = true;
 			updateUI({ addClass: [{ id: "tournament_graphic_id", className: "active" }, { id: "container_name_player", className: "hidden"}] });
 			$("start_tournament").style.display = 'none';
 			$("back_to_menu_view_tournament").style.display = 'none';

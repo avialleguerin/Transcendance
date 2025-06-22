@@ -118,9 +118,8 @@ export default class extends AbstractView {
 		document.getElementById('start_game').addEventListener('click', () => {
 			handleViewTransitions('tournament_game_start', 'tournament');
 			startTournamentGame();
-			count = parseInt(localStorage.getItem('tournamentCount')) || 0;
-			localStorage.setItem('tournamentCount', count.toString());
-			// localStorage.setItem("canPlay", "true");
+			count = StorageKeys.TOURNAMENT_COUNT;
+			StorageKeys.TOURNAMENT_COUNT = count;
 			StorageKeys.CAN_PLAY = true;
 			console.log("canPlay set to true");
 
@@ -131,14 +130,15 @@ export default class extends AbstractView {
 			
 			updateTournamentState(count, Player1, Player2, Player3, Player4);
 			
-			secondeChance = localStorage.getItem('secondChance') === 'true';
+			StorageKeys.SECOND_CHANCE = true;
 			
-			const tournamentFinishedFlag = localStorage.getItem('tournament_finished') === 'true';
+			const tournamentFinishedFlag = StorageKeys.TOURNAMENT_FINISHED === true;
+
 			
 			if (tournamentFinishedFlag) {
 				document.getElementById('finiched_game').style.display = 'block';
 				tournament_finished = true;
-				localStorage.removeItem('secondChance');
+				StorageKeys.SECOND_CHANCE = false;
 				secondeChance = false;
 			}
 		});
@@ -150,8 +150,8 @@ export default class extends AbstractView {
 		const Player3 = document.getElementById('Player3');
 		const Player4 = document.getElementById('Player4');
 
-		secondeChance = localStorage.getItem('secondChance') === 'true';
-		count = parseInt(localStorage.getItem('tournamentCount')) || 0;
+		StorageKeys.SECOND_CHANCE = true;
+		count = StorageKeys.TOURNAMENT_COUNT;
 		
 		updateTournamentState(count, Player1, Player2, Player3, Player4);
 		
@@ -165,7 +165,7 @@ export default class extends AbstractView {
 				graphic.classList.remove('active');
 			}
 			tournament_finished = true;
-			localStorage.setItem('tournament_finished', 'true');
+			StorageKeys.TOURNAMENT_FINISHED = tournament_finished;
 		}
 	}
 
@@ -207,14 +207,14 @@ export default class extends AbstractView {
 			tournament_graphic_id.classList.remove('active');
 			container_name_player.classList.remove('hidden');
 			tournamentStarted = false;
-			localStorage.setItem('tournamentStarted', tournamentStarted.toString());
+			StorageKeys.TOURNAMENT_STARTED = false;
 			resetHighlight([Player1, Player2, Player3, Player4]);
 
 			resetTournamentState(Player1, Player2, Player3, Player4);
 			back_to_menu_view_tournament.style.display = 'block';
 			start_tournament.style.display = 'block';
 			count = 0;
-			localStorage.setItem('tournamentCount', count.toString());
+			StorageKeys.TOURNAMENT_COUNT = count;
 		});
 
 		finish_tournament.addEventListener('click', () => {
@@ -230,7 +230,7 @@ export default class extends AbstractView {
 			tournamentStarted = false;
 			tournament_finished = false;
 			tournament_leave = true;
-			localStorage.setItem('tournamentStarted', tournamentStarted.toString());
+			StorageKeys.TOURNAMENT_STARTED = false;
 
 			resetHighlight([Player1, Player2, Player3, Player4]);
 			resetTournamentState(Player1, Player2, Player3, Player4);
@@ -255,7 +255,7 @@ export default class extends AbstractView {
 				return;
 			}
 			
-			if (localStorage.getItem("tournamentStarted") == 'true' && tournament_finished == false) {
+			if (StorageKeys.TOURNAMENT_STARTED == true && tournament_finished == false) {
 				container_name_player.classList.add('hidden');
 				tournament_graphic_id.classList.add('active');
 				start_tournament.style.display = 'none';
@@ -279,6 +279,7 @@ export default class extends AbstractView {
 				}
 			}
 		}
+		console.log("Checking tournament start... Count: " + count + ", Tournament Started: " + StorageKeys.TOURNAMENT_STARTED + ", Tournament Finished: " + StorageKeys.TOURNAMENT_FINISHED);
 	}
 }
 
@@ -328,18 +329,18 @@ interface TournamentPlayerState {
 export function resetTournamentState(Player1: PlayerElement, Player2: PlayerElement, Player3: PlayerElement, Player4: PlayerElement): void {    
 	const joueurs: PlayerElement[] = [Player1, Player2, Player3, Player4];
 
-	localStorage.removeItem("match1_result");
-	localStorage.removeItem("match2_result");
-	localStorage.removeItem("match3_result");
-	localStorage.removeItem("match4_result");
-	localStorage.removeItem("match5_result");
-	localStorage.removeItem("match6_result");
+	StorageKeys.MATCH_RESULT1 = null;
+	StorageKeys.MATCH_RESULT2 = null;
+	StorageKeys.MATCH_RESULT3 = null;
+	StorageKeys.MATCH_RESULT4 = null;
+	StorageKeys.MATCH_RESULT5 = null;
+	StorageKeys.MATCH_RESULT6 = null;
 
-	localStorage.removeItem("tournamentCount");
 
-	localStorage.removeItem("tournamentStarted");
-	localStorage.removeItem("tournament_finished");
-	localStorage.removeItem("secondChance");
+	StorageKeys.TOURNAMENT_COUNT = 0;
+	StorageKeys.TOURNAMENT_STARTED = false;
+	StorageKeys.TOURNAMENT_FINISHED = false;
+	StorageKeys.SECOND_CHANCE = false;
 
 	joueurs.forEach(joueur => {
 		joueur.style.top = '';
@@ -390,16 +391,19 @@ function updateTournamentState(
 		});
 
 		highlightNextPlayers(Player1, Player2);
-		localStorage.setItem("current_player1", Player1.textContent);
-		localStorage.setItem("current_player2", Player2.textContent);
+		StorageKeys.CURRENT_PLAYER1 = Player1.textContent;
+		StorageKeys.CURRENT_PLAYER2 = Player2.textContent;
 	}
 
 	if (count >= 1) {
 		resetHighlight([Player1, Player2]);
-		const match1_result = localStorage.getItem("match1_result");
+
+		const match1_result = StorageKeys.MATCH_RESULT1;
+
 
 		if (match1_result) {
 			const { winner, loser } = JSON.parse(match1_result);
+			
 			match1_winner = document.getElementById(winner) as PlayerElement;
 			match1_loser = document.getElementById(loser) as PlayerElement;
 		} else {
@@ -407,10 +411,10 @@ function updateTournamentState(
 			match1_winner = player1_wins ? Player1 : Player2;
 			match1_loser = player1_wins ? Player2 : Player1;
 
-			localStorage.setItem("match1_result", JSON.stringify({
+			StorageKeys.MATCH_RESULT1 = JSON.stringify({
 				winner: match1_winner.id,
 				loser: match1_loser.id
-			}));
+			});
 		}
 
 		if (match1_winner && match1_loser) {
@@ -419,14 +423,14 @@ function updateTournamentState(
 			match1_loser.style.top = POSITIONS.quart_winner.loser1_2.top;
 			match1_loser.style.left = POSITIONS.quart_winner.loser1_2.left;
 			highlightNextPlayers(Player3, Player4);
-			localStorage.setItem("current_player1", Player3.textContent);
-			localStorage.setItem("current_player2", Player4.textContent);
+			StorageKeys.CURRENT_PLAYER1 = Player3.textContent;
+			StorageKeys.CURRENT_PLAYER2 = Player4.textContent;
 		}
 	}
 
 	if (count >= 2) {
 		resetHighlight([Player3, Player4]);
-		const match2_result = localStorage.getItem("match2_result");
+		const match2_result = StorageKeys.MATCH_RESULT2;
 
 		if (match2_result) {
 			const { winner, loser } = JSON.parse(match2_result);
@@ -437,10 +441,10 @@ function updateTournamentState(
 			match2_winner = player1_wins ? Player3 : Player4;
 			match2_loser = player1_wins ? Player4 : Player3;
 
-			localStorage.setItem("match2_result", JSON.stringify({
+			StorageKeys.MATCH_RESULT2 = JSON.stringify({
 				winner: match2_winner.id,
 				loser: match2_loser.id
-			}));
+			});
 		}
 
 		if (match2_winner && match2_loser) {
@@ -450,14 +454,14 @@ function updateTournamentState(
 			match2_loser.style.left = POSITIONS.quart_winner.loser3_4.left;
 
 			highlightNextPlayers(match1_loser, match2_loser);
-			localStorage.setItem("current_player1", match1_loser.textContent);
-			localStorage.setItem("current_player2", match2_loser.textContent);
+			StorageKeys.CURRENT_PLAYER1 = match1_loser.textContent;
+			StorageKeys.CURRENT_PLAYER2 = match2_loser.textContent;
 		}
 	}
 
 	if (count >= 3 && match1_loser && match2_loser) {
 		resetHighlight([match1_loser, match2_loser]);
-		const match3_result = localStorage.getItem("match3_result");
+		const match3_result = StorageKeys.MATCH_RESULT3;
 
 		if (match3_result) {
 			const { winner, loser } = JSON.parse(match3_result);
@@ -468,10 +472,10 @@ function updateTournamentState(
 			match3_winner = winnerIsFirst ? match1_loser : match2_loser;
 			match3_loser = winnerIsFirst ? match2_loser : match1_loser;
 
-			localStorage.setItem("match3_result", JSON.stringify({
+			StorageKeys.MATCH_RESULT3 = JSON.stringify({
 				winner: match3_winner.id,
 				loser: match3_loser.id
-			}));
+			});
 		}
 
 		if (match3_winner && match3_loser) {
@@ -479,14 +483,14 @@ function updateTournamentState(
 			match3_winner.style.left = POSITIONS.quart_loser.winner.left;
 			match3_loser.style.color = 'red';
 			highlightNextPlayers(match1_winner, match2_winner);
-			localStorage.setItem("current_player1", match1_winner.textContent);
-			localStorage.setItem("current_player2", match2_winner.textContent);
+			StorageKeys.CURRENT_PLAYER1 = match1_winner.textContent;
+			StorageKeys.CURRENT_PLAYER2 = match2_winner.textContent;
 		}
 	}
 
 	if (count >= 4 && match1_winner && match2_winner) {
 		resetHighlight([match1_winner, match2_winner]);
-		const match4_result = localStorage.getItem("match4_result");
+		const match4_result = StorageKeys.MATCH_RESULT4;
 
 		if (match4_result) {
 			const { winner, loser } = JSON.parse(match4_result);
@@ -497,10 +501,10 @@ function updateTournamentState(
 			match4_winner = winnerIsFirst ? match1_winner : match2_winner;
 			match4_loser = winnerIsFirst ? match2_winner : match1_winner;
 
-			localStorage.setItem("match4_result", JSON.stringify({
+			StorageKeys.MATCH_RESULT4 = JSON.stringify({
 				winner: match4_winner.id,
 				loser: match4_loser.id
-			}));
+			});
 		}
 
 		if (match4_winner && match4_loser) {
@@ -511,14 +515,14 @@ function updateTournamentState(
 			match4_loser.style.left = POSITIONS.demi_winer.loser.left;
 
 			highlightNextPlayers(match3_winner, match4_loser);
-			localStorage.setItem("current_player1", match3_winner.textContent);
-			localStorage.setItem("current_player2", match4_loser.textContent);
+			StorageKeys.CURRENT_PLAYER1 = match3_winner.textContent;
+			StorageKeys.CURRENT_PLAYER2 = match4_loser.textContent;
 		}
 	}
 
 	if (count >= 5 && match3_winner && match4_loser) {
 		resetHighlight([match3_winner, match4_loser]);
-		const match5_result = localStorage.getItem("match5_result");
+		const match5_result = StorageKeys.MATCH_RESULT5;
 
 		if (match5_result) {
 			const { winner, loser } = JSON.parse(match5_result);
@@ -529,10 +533,10 @@ function updateTournamentState(
 			match5_winner = winnerIsFirst ? match3_winner : match4_loser;
 			match5_loser = winnerIsFirst ? match4_loser : match3_winner;
 
-			localStorage.setItem("match5_result", JSON.stringify({
+			StorageKeys.MATCH_RESULT5 = JSON.stringify({
 				winner: match5_winner.id,
 				loser: match5_loser.id
-			}));
+			});
 		}
 
 		if (match5_winner && match5_loser) {
@@ -541,14 +545,14 @@ function updateTournamentState(
 
 			match5_loser.style.color = 'red';
 			highlightNextPlayers(match4_winner, match5_winner);
-			localStorage.setItem("current_player1", match4_winner.textContent);
-			localStorage.setItem("current_player2", match5_winner.textContent);
+			StorageKeys.CURRENT_PLAYER1 = match4_winner.textContent;
+			StorageKeys.CURRENT_PLAYER2 = match5_winner.textContent;
 		}
 	}
 
 	if (count >= 6 && match4_winner && match5_winner) {
 		resetHighlight([match4_winner, match5_winner]);
-		const match6_result = localStorage.getItem("match6_result");
+		const match6_result = StorageKeys.MATCH_RESULT6;
 
 		if (match6_result) {
 			const { winner, loser } = JSON.parse(match6_result);
@@ -559,17 +563,18 @@ function updateTournamentState(
 			match6_winner = winnerIsFirst ? match4_winner : match5_winner;
 			match6_loser = winnerIsFirst ? match5_winner : match4_winner;
 
-			localStorage.setItem("match6_result", JSON.stringify({
+			StorageKeys.MATCH_RESULT6 = JSON.stringify({
 				winner: match6_winner.id,
 				loser: match6_loser.id
-			}));
+			});
 		}
 
 		if (match6_winner && match6_loser) {
 			if (match6_winner.id === match5_winner.id) {
 				secondeChance = true;
-				localStorage.setItem('secondChance', 'true');
-				localStorage.removeItem('tournament_finished');
+				
+				StorageKeys.SECOND_CHANCE = true;
+				StorageKeys.TOURNAMENT_FINISHED = false;
 				tournament_finished = false;
 
 				match6_winner.style.top = POSITIONS.demi_loser.winner.top;
@@ -585,9 +590,9 @@ function updateTournamentState(
 				match6_loser.style.color = 'red';
 				
 				tournament_finished = true;
-				localStorage.setItem('tournament_finished', 'true');
+				StorageKeys.TOURNAMENT_FINISHED = tournament_finished;
 				secondeChance = false;
-				localStorage.removeItem('secondChance');
+				StorageKeys.SECOND_CHANCE = false;
 
 				document.getElementById('first_place_name_id')!.textContent = localStorage.getItem(match6_winner.id);
 				document.getElementById('second_place_name_id')!.textContent = localStorage.getItem(match6_loser.id);
@@ -597,8 +602,8 @@ function updateTournamentState(
 	}
 
 	if (count >= 7 && secondeChance && match4_winner && match5_winner) {
-		const match4_result = localStorage.getItem("match4_result");
-		const match5_result = localStorage.getItem("match5_result");
+		const match4_result = StorageKeys.MATCH_RESULT4;
+		const match5_result = StorageKeys.MATCH_RESULT5;
 		
 		if (match4_result && match5_result) {
 			const match4_data = JSON.parse(match4_result);
@@ -609,7 +614,7 @@ function updateTournamentState(
 			
 			resetHighlight([finalMatch4Winner, finalMatch5Winner]);
 			
-			const match7_result = localStorage.getItem("match7_result");
+			const match7_result = StorageKeys.MATCH_RESULT7;
 
 			if (match7_result) {
 				const { winner, loser } = JSON.parse(match7_result);
@@ -620,10 +625,10 @@ function updateTournamentState(
 				match7_winner = winnerIsFirst ? finalMatch4Winner : finalMatch5Winner;
 				match7_loser = winnerIsFirst ? finalMatch5Winner : finalMatch4Winner;
 
-				localStorage.setItem("match7_result", JSON.stringify({
+				StorageKeys.MATCH_RESULT7 = JSON.stringify({
 					winner: match7_winner.id,
 					loser: match7_loser.id
-				}));
+				});
 			}
 
 			if (match7_winner && match7_loser) {
@@ -632,9 +637,9 @@ function updateTournamentState(
 				match7_loser.style.color = 'red';
 				
 				tournament_finished = true;
-				localStorage.setItem('tournament_finished', 'true');
+				StorageKeys.TOURNAMENT_FINISHED = tournament_finished;
 				secondeChance = false;
-				localStorage.removeItem('secondChance');
+				StorageKeys.SECOND_CHANCE = false;
 				
 				document.getElementById('first_place_name_id')!.textContent = localStorage.getItem(match7_winner.id);
 				document.getElementById('second_place_name_id')!.textContent = localStorage.getItem(match7_loser.id);

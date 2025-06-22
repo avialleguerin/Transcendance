@@ -165,21 +165,17 @@ const logPageTransition = (from: string, to: string): void => {
 	{
 		if (to === "/game-menu")
 		{
-			// AJOUTER: Reset complet du tournoi comme dans confirm_leave_tournament
-			localStorage.setItem("tournamentStarted", "false");
-			
-			// Reset de tous les localStorage du tournoi
-			localStorage.removeItem("match1_result");
-			localStorage.removeItem("match2_result");
-			localStorage.removeItem("match3_result");
-			localStorage.removeItem("match4_result");
-			localStorage.removeItem("match5_result");
-			localStorage.removeItem("match6_result");
-			localStorage.removeItem("match7_result");
-			localStorage.removeItem("tournamentCount");
-			localStorage.removeItem("tournament_finished");
-			localStorage.removeItem("secondChance");
-			localStorage.setItem("tournamentCount", "0");
+			StorageKeys.TOURNAMENT_STARTED = false;
+			StorageKeys.TOURNAMENT_COUNT = 0;
+			StorageKeys.TOURNAMENT_FINISHED = false;
+			StorageKeys.SECOND_CHANCE = false;
+			StorageKeys.MATCH_RESULT1 = null;
+			StorageKeys.MATCH_RESULT2 = null;
+			StorageKeys.MATCH_RESULT3 = null;
+			StorageKeys.MATCH_RESULT4 = null;
+			StorageKeys.MATCH_RESULT5 = null;
+			StorageKeys.MATCH_RESULT6 = null;
+			StorageKeys.MATCH_RESULT7 = null;
 			
 			console.log("🏆 Tournoi réinitialisé - Retour au menu");
 			

@@ -194,22 +194,26 @@ export function onSubmit(formId: string, handler: (event: Event) => void) {
 
 
 export const StorageKeys = {
-	TOURNAMENT_COUNT: false as boolean || false,
-	TOURNAMENT_STARTED: false as boolean || false, 
-	TOURNAMENT_FINISHED: false as boolean || false,
-	SECOND_CHANCE: false as boolean || false,
-	CAN_PLAY: false as boolean || false,
-	SCORE_LEFT: false as boolean || false,
-	SCORE_RIGHT: false as boolean || false,
-	MATCH_RESULT: ['match1_result', 'match2_result', 'match3_result', 'match4_result', 'match5_result', 'match6_result'] as string	[],
-	ADMIN_ACTIVE_TAB: 'transcendance_admin_active_tab' as string,
-	PLAYER1: null as string,
-	PLAYER2: null as string,
-	PLAYER3: null as string,
-	PLAYER4: null as string,
-	CURRENT_PLAYER1: null as string,
-	CURRENT_PLAYER2: null as string,
-	PROFILE_PICTURE: null as string,
-	SCORE_PLAYER1: null as string,
-	SCORE_PLAYER2: null as string
+	TOURNAMENT_COUNT: 0 as number || 0, //
+	TOURNAMENT_STARTED: false as boolean || false, // 
+	TOURNAMENT_FINISHED: false as boolean || false, // 
+	SECOND_CHANCE: false as boolean || false, //
+	CAN_PLAY: false as boolean || false, //
+	SCORE_LEFT: false as boolean || false, //
+	SCORE_RIGHT: false as boolean || false, //
+	MATCH_RESULT1: null as string, // 
+	MATCH_RESULT2: null as string, //
+	MATCH_RESULT3: null as string, // 
+	MATCH_RESULT4: null as string, //
+	MATCH_RESULT5: null as string, //
+	MATCH_RESULT6: null as string, //
+	MATCH_RESULT7: null as string, //
+	PLAYER1: null as string, //
+	PLAYER2: null as string, //
+	PLAYER3: null as string, //
+	PLAYER4: null as string, //
+	CURRENT_PLAYER1: null as string, //
+	CURRENT_PLAYER2: null as string, //
+	PROFILE_PICTURE: null as string, //
+
 };

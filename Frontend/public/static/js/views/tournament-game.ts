@@ -2,7 +2,7 @@ import AbstractView from "./AbstractView.js";
 import { getPlayer_1_win, getPlayer_2_win, isGameFinished } from "../../../srcs/game/gameplay/score.js";
 import { leave_tournament_game } from "../../../srcs/game/gameplay/babylon.js";
 import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.js";
-import { homeView } from "../../../api/utils.js";
+import { homeView, StorageKeys } from "../../../api/utils.js";
 import { getIsloading } from "../../../srcs/game/gameplay/views/loading_screen.js";
 
 export default class extends AbstractView {
@@ -42,7 +42,7 @@ export default class extends AbstractView {
 			<div class="winner">
 				<h1 id="winner_id"></h1>
 			</div>
-			<button class="leave_game_2" id="leave_game_2_id" onclick="create_1v1_game(event, '${localStorage.getItem('current_player1')}', '${localStorage.getItem('current_player2')}')">Leave Game</button>
+			<button class="leave_game_2" id="leave_game_2_id" onclick="create_1v1_game(event, '${StorageKeys.CURRENT_PLAYER1}', '${StorageKeys.CURRENT_PLAYER2}')">Leave Game</button>
 		</div>
 	`;
 	}
@@ -78,9 +78,9 @@ export default class extends AbstractView {
 			winnerContainer.classList.add("active");
 			clearInterval(this.gameLoop);
 			if (player_1_win)
-				document.getElementById("winner_id").innerHTML = localStorage.getItem("current_player1") + " won !";
+				document.getElementById("winner_id").innerHTML = StorageKeys.CURRENT_PLAYER1 + " won !";
 			else if (player_2_win)
-				document.getElementById("winner_id").innerHTML = localStorage.getItem("current_player2") + " won !";
+				document.getElementById("winner_id").innerHTML = StorageKeys.CURRENT_PLAYER2 + " won !";
 		}
 		else 
 		{
