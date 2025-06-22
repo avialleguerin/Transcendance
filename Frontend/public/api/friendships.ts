@@ -1,4 +1,4 @@
-import { notif, fetchAPI, $, $input, $form } from './utils.js';
+import { notif, fetchAPI, $, $input, $form, sanitizeInput } from './utils.js';
 import { Friendship, GameScore } from './types.js';
 
 let historyIsActive = localStorage.getItem('historyIsVisible') === 'true';
@@ -106,6 +106,11 @@ export async function fetch_user_friendships(): Promise<void> {
 			(photo as HTMLElement).onclick = function() {
 				if (!gameHistory.classList.contains('active')) {
 					const friendName = (this as HTMLElement).nextElementSibling.querySelector('.friend_name').textContent
+					if (!sanitizeInput(friendName, 'username').success)
+					{
+						notif("Invalid username", false);
+						return fetch_user_friendships()
+					}
 					const friendExists = accepted.some(friend => friend.friend_username === friendName);
 					if (!friendExists)
 					{
