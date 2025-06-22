@@ -12,7 +12,7 @@ import { enable_skin_perso_player_solo, disable_skin_perso_player_solo, disable_
 import { enable_skin_multi, disable_skin_and_save_multi, disable_skin_multi, switch_skin_perso_player1_right_multi, switch_skin_perso_player1_left_multi, switch_skin_perso_player2_left_multi, switch_skin_perso_player2_right_multi, switch_skin_perso_player3_left_multi, switch_skin_perso_player3_right_multi, switch_skin_perso_player4_left_multi, switch_skin_perso_player4_right_multi } from "../../../srcs/game/gameplay/multiplayer/init_skin_perso_multi.js";
 import { get_skin_is_init } from "../../../srcs/game/gameplay/solo/skin/init_skin_utils.js";
 import { homeView } from "../../../api/utils.js";
-import { delete_account, anonymize_user } from "../../../api/userManagement.js";
+import { accessProfileInfo, changeProfilePicture, delete_account, anonymize_user, export_data, enable_doubleAuth, disable_doubleAuth, activate2FA, updateProfileInfo } from "../../../api/userManagement.js";
 
 let powerUP_nb = 0;
 let powerUP_nb_multi = 0;
@@ -349,7 +349,7 @@ export default class Game_menu extends AbstractView {
 				<div class="parrametres_profile" id="parametres_profile">
 					<div class="parametres_profile_content">
 						<h1>PROFILE SETTINGS</h1>
-						<form id="modif_profile" class="modif_profile" onsubmit="accessProfileInfo(event)">
+						<form id="modif_profile" class="modif_profile"> <!-- onsubmit="accessProfileInfo(event)"-->
 							<label for="mdp">Password</label>
 							<input type="password" id="password" name="password" placeholder="Password" required>
 							<button type="submit" class="btn_valider_mdp">Validate</button>
@@ -358,7 +358,7 @@ export default class Game_menu extends AbstractView {
 							<div class="photo_profile">
 								<div class="profile_photo_container">
 									<div class="profile_photo_circle" id="profile_photo_circle"></div>
-									<form id="uploadForm" enctype="multipart/form-data" onsubmit="changeProfilePicture(event)">
+									<form id="uploadForm" enctype="multipart/form-data"> <!-- onsubmit="changeProfilePicture(event)"-->
 										<input type="file" name="image" id="profile_photo_input" accept="image/*" />
 										<button type="button" onclick="document.getElementById('profile_photo_input').click()">
 											Choose File
@@ -368,7 +368,7 @@ export default class Game_menu extends AbstractView {
 									</form>
 								</div>
 							</div>
-							<form id="updateProfileForm" onsubmit="updateProfileInfo(event)">
+							<form id="updateProfileForm"> <!-- onsubmit="updateProfileInfo(event)"-->
 								<div class="input_container">
 									<label for="username">Change username</label>
 									<input type="text" id="change_username" name="username">
@@ -382,7 +382,7 @@ export default class Game_menu extends AbstractView {
 									<input type="password" id="confirm_change_password" name="confirm_password" placeholder="******">
 								</div>
 								<div id="fa_selector" class="fa_selector">
-									<p>2FA :<input type="checkbox" id="active_fa" class="active_fa" onchange="this.checked ? enable_doubleAuth() : disable_doubleAuth()" /></p>
+									<p>2FA :<input type="checkbox" id="active_fa" class="active_fa" /></p> <!--onchange="this.checked ? enable_doubleAuth() : disable_doubleAuth()"-->
 								</div>
 								<button type="submit" id="valid_profile_info" class="valid_profile_info_btn">Valider</button>
 							</form>
@@ -393,7 +393,7 @@ export default class Game_menu extends AbstractView {
 								<button id="delete_btn" class="btn_delete_btn" >Delete account</button> <!--onclick="delete_account()"-->
 							</div>
 							<div class="export_btn">
-								<button id="export_btn" class="btn_export_btn" onclick="export_data()">Export data</button>
+								<button id="export_btn" class="btn_export_btn">Export data</button> <!--onclick="export_data()"-->
 							</div>
 							<div class="anonymize_btn">
 								<button id="anonymize_btn" class="btn_anonymize_btn">Anonymize Account</button> <!-- onclick="anonymize_user()" -->
@@ -548,7 +548,7 @@ export default class Game_menu extends AbstractView {
 				</div>
 			</div>
 
-			<form id="code_validation_id" class="code_validation hidden" onsubmit="activate2FA(event)">
+			<form id="code_validation_id" class="code_validation hidden"> <!-- onsubmit="activate2FA(event)"-->
 				<img id="qrCode" src="../../../srcs/game/assets/image/timer-reset.svg" style="width:auto" alt="delay">
 				<label for="code">code</label>
 				<input type="code" id="activate-2fa-code" name="code" placeholder="code" required>
@@ -1433,12 +1433,16 @@ export default class Game_menu extends AbstractView {
 
 		active_fa.addEventListener('change', () => {
 			if (active_fa.checked) {
+				enable_doubleAuth();
 				code_validation_id.classList.add('active');
 				fa_selector.classList.remove('hidden');
 			}
-			else
+			else {
+				disable_doubleAuth();
 				fa_selector.classList.add('hidden');
+			}
 		});
+		
 
 		cancel_fa.addEventListener('click', () => {
 			code_validation_id.classList.remove('active');
@@ -1563,11 +1567,22 @@ export default class Game_menu extends AbstractView {
 		/***********************************************************************/
 
 		//* Delete account button */
-        const deleteBtn = document.getElementById('delete_btn');
+		const accessProfileBtn = document.getElementById('modif_profile');
+		const changeAvatarBtn = document.getElementById('uploadForm');
+		const deleteBtn = document.getElementById('delete_btn');
 		const anonymizeBtn = document.getElementById('anonymize_btn');
-		
-        deleteBtn.addEventListener('click', () => { delete_account(); });
+		const exportBtn = document.getElementById('export_btn');
+		const updateProfileBtn = document.getElementById('updateProfileForm');
+
+
+		accessProfileBtn.addEventListener('submit', (event) => { accessProfileInfo(event); });
+		changeAvatarBtn.addEventListener('submit', (event) => { changeProfilePicture(event); });
+		deleteBtn.addEventListener('click', () => { delete_account(); });
 		anonymizeBtn.addEventListener('click', () => { anonymize_user(); });
+		exportBtn.addEventListener('click', () => { export_data(); });
+		code_validation_id.addEventListener('submit', (event) => { activate2FA(event); });
+		updateProfileBtn.addEventListener('submit', (event) => { updateProfileInfo(event); });
+
 	}
 }
 
