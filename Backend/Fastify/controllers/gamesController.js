@@ -1,13 +1,31 @@
 import { fastify } from '../server.js'
 import usersModel from '../models/usersModel.js'
 import gamesModel from '../models/gamesModel.js'
-import { getUserFromToken } from './utils.js'
+import { getUserFromToken, sanitizeInput } from './utils.js'
+import friendshipsModel from '../models/friendshipsModel.js'
 
 export async function getUserGames(request, reply) {
+	try {
+		const infos = await getUserFromToken(request)
+		if (!infos) return reply.code(401).send({ error: "Unauthorized" })
+
+		let user = infos.user
+		if (!user) return reply.code(401).send({ error: "User not found" })
+		if (!infos.accessToken) return reply.code(401).send({ error: "Unauthorized" })
+
+		const games = gamesModel.getUserGames(user.userId)
+		return reply.send({ success: true, user: user, games: games, accessToken: infos.accessToken })
+	} catch (err) {
+		return reply.code(500).send({ error: "Internal server error", accessToken: infos?.accessToken })
+	}
+}
+
+export async function getFriendGames(request, reply) {
 	let username = null
 	
 	if (request.body) username = request.body.username
-
+	if (!sanitizeInput(username, 'username').success)
+			return reply.code(400).send({ error: "This user doesn't exist" })
 	try {
 		const infos = await getUserFromToken(request)
 		if (!infos) return reply.code(401).send({ error: "Unauthorized" })
@@ -18,13 +36,17 @@ export async function getUserGames(request, reply) {
 		
 		if (username) {
 			if (typeof username !== 'string' || username.trim() === '') return reply.code(400).send({ error: "Invalid username", accessToken: infos.accessToken })
-			
-			user = usersModel.getUserByUsername(username)
-			if (!user || user.anonymized_at) return reply.code(404).send({ error: "User not found", accessToken: infos.accessToken })
-		}
-		
-		const games = gamesModel.getUserGames(user.userId)
-		return reply.send({ success: true, user: user, games: games, accessToken: infos.accessToken })
+				
+			const friend = usersModel.getUserByUsername(username)
+			if (!friend || friend.anonymized_at) return reply.code(404).send({ error: `Friend '${username}' not found`, accessToken: infos.accessToken })
+				const friendship = friendshipsModel.getFriendship(user.userId, friend.userId)
+			if (!friendship) return reply.code(404).send({ success: false, error: `Friendship with '${username}' not found`, accessToken: infos.accessToken })
+				const isFriendId = user.userId === friendship.userId ? friendship.userId : friendship.friendId
+			console.log(`Fetching games for : ${isFriendId}`)
+			const games = gamesModel.getUserGames(isFriendId)
+			return reply.send({ success: true, user: friend, games: games, accessToken: infos.accessToken })
+		} else 
+			return reply.code(400).send({ error: "Username is required", accessToken: infos.accessToken })
 	} catch (err) {
 		return reply.code(500).send({ error: "Internal server error", accessToken: infos?.accessToken })
 	}
@@ -32,6 +54,11 @@ export async function getUserGames(request, reply) {
 
 export async function create1v1Game(request, reply) {
 	const { player1, player2, score_left, score_right } = request.body
+
+	if (!sanitizeInput(player1, 'username').success || !sanitizeInput(player2, 'username').success ||
+		!sanitizeInput(score_player1, 'score').success || !sanitizeInput(score_player2, 'score').success)
+			return reply.code(400).send({ error: "Invalid inputs" })
+
 	let infos;
 
 	if (!player1 || !player2 || score_left === undefined || score_right === undefined) return reply.code(400).send({ success: false, error: "Missing parameters" })
@@ -74,6 +101,11 @@ export async function create1v1Game(request, reply) {
 
 export async function create2v2Game(request, reply) {
 	const { player1, player2, player3, player4, score_left, score_right } = request.body
+
+	if (!sanitizeInput(player1, 'username').success || !sanitizeInput(player2, 'username').success ||
+		!sanitizeInput(player3, 'username').success || !sanitizeInput(player4, 'username').success ||
+		!sanitizeInput(score_left, 'score').success || !sanitizeInput(score_right, 'score').success)
+			return reply.code(400).send({ error: "Invalid input" })
 	let infos;
 
 	if (!player1 || !player2 || !player3 || !player4 || score_left === undefined || score_right === undefined)

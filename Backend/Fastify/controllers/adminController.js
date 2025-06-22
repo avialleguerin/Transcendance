@@ -7,6 +7,7 @@ import { generateRandomString } from './utils.js'
 import fs from 'fs/promises'
 import path from 'path'
 import { send } from 'process'
+import { sanitizeInput } from './utils.js'
 
 const uploadDir = '/usr/share/nginx/uploads'
 
@@ -42,7 +43,7 @@ export async function deleteUser(request, reply) {
 		if (!user) return reply.code(404).send({ error: 'User not found' })
 
 		const oldProfilePicture = user.profile_picture;
-		if (oldProfilePicture !== "default-profile-picture.png") {
+		if (oldProfilePicture !== "/assets/image/default-profile-picture.png") {
 			try {
 				const oldFilePath = path.join(uploadDir, oldProfilePicture);
 				const fileExists = await fs.access(oldFilePath)
@@ -74,7 +75,7 @@ export async function forceDeleteUser(request, reply) {
 		if (!user) return reply.code(404).send({ error: 'User not found' })
 
 		const oldProfilePicture = user.profile_picture;
-		if (oldProfilePicture !== "default-profile-picture.png") {
+		if (oldProfilePicture !== "/assets/image/default-profile-picture.png") {
 			try {
 				const oldFilePath = path.join(uploadDir, oldProfilePicture);
 				const fileExists = await fs.access(oldFilePath)
@@ -105,6 +106,9 @@ export async function getAllGames(request, reply) {
 
 export async function addGame(request, reply) {
 	const { user1, user2, user3, user4 } = request.body
+	if (!sanitizeInput(user1, 'username').success || !sanitizeInput(user2, 'username').success ||
+		(user3 && !sanitizeInput(user3, 'username').success) || (user4 && !sanitizeInput(user4, 'username').success))
+		return reply.code(400).send({ error: "Invalid input" })
 	
 	try {
 		const user1Exists = usersModel.getUserByUsername(user1) 
@@ -163,7 +167,8 @@ export async function getAllFriendships(request, reply) {
 
 export async function addFriendship(request, reply) {
 	const { user_username, friend_username } = request.body
-	
+	if (!sanitizeInput(user_username, 'username').success || !sanitizeInput(friend_username, 'username').success)
+		return reply.code(400).send({ error: "Invalid input" })
 	try {
 		if (usersModel.getDelByUsername(user_username).length > 0 || usersModel.getDelByUsername(friend_username).length > 0) return reply.code(400).send({ success: false, error: "Cannot create a friendship with a deleted user" })
 		const user = usersModel.getUserByUsername(user_username)
@@ -208,7 +213,9 @@ export async function getAllPlatformers(request, reply) {
 export async function addPlatformer(request, reply) {
 	const { username1, username2, score_player1, score_player2 } = request.body
 	if (!username1 || !username2 || score_player1 === undefined || score_player2 === undefined) return reply.code(400).send({ success: false, error: "Missing parameters" })
-
+	if (!sanitizeInput(username1, 'username').success || !sanitizeInput(username2, 'username').success
+		|| !sanitizeInput(score_player1, 'score').success || !sanitizeInput(score_player2, 'score').success)
+		return reply.code(400).send({ error: "Invalid input" })
 	try {
 		if (usersModel.getDelByUsername(username1).length > 0 || usersModel.getDelByUsername(username2).length > 0) return reply.code(400).send({ success: false, error: "Cannot create a game with a deleted user" })
 		const player1 = usersModel.getUserByUsername(username1)

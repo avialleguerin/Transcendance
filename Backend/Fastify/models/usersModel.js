@@ -5,7 +5,7 @@ import { getDeletedUsers } from "../controllers/adminController.js";
 export const CREATE_USERS_TABLE = `
 	CREATE TABLE IF NOT EXISTS users (
 		userId INTEGER PRIMARY KEY AUTOINCREMENT,
-		profile_picture TEXT DEFAULT 'default-profile-picture.png',
+		profile_picture TEXT DEFAULT '/assets/image/default-profile-picture.png',
 		username TEXT UNIQUE NOT NULL CHECK(length(username) >= 3 AND length(username) <= 10),
 		password TEXT NOT NULL CHECK(length(password) <= 255),
 		doubleAuth_status INTEGER DEFAULT 0 CHECK(doubleAuth_status IN (0, 1)),
@@ -61,7 +61,7 @@ const usersModel = {
 	//* Delete
 	delete: (userId) => { return db.prepare("DELETE FROM users WHERE userId = ?").run(userId) },
 	deleteInactiveUsers: () => { return db.prepare("DELETE FROM users WHERE last_activity <= date('now', '-3 years')").run() },
-	anonymizeUserData: (userId, anonymizedPassword, defaultProfilePicture) => {return db.prepare(`UPDATE users SET password = ?, profile_picture = ?, doubleAuth_status = 0, doubleAuth_secret = ?, google_id = NULL, deleted_at = CURRENT_TIMESTAMP WHERE userId = ?`).run(anonymizedPassword, defaultProfilePicture, null, userId); },
+	anonymizeUserData: (userId, anonymizedPassword, defaultProfilePicture) => {const defaultProfilePicture = '/assets/image/default-profile-picture.png'; return db.prepare(`UPDATE users SET password = ?, profile_picture = ?, doubleAuth_status = 0, doubleAuth_secret = ?, google_id = NULL, deleted_at = CURRENT_TIMESTAMP WHERE userId = ?`).run(anonymizedPassword, defaultProfilePicture, null, userId); },
 	forceDeleteUser: (userId) => {
 		const transaction = db.transaction(() => {
 			db.prepare("DELETE FROM games WHERE user1_id = ? OR user2_id = ? OR user3_id = ? OR user4_id = ?").run(userId, userId, userId, userId);

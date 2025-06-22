@@ -57,8 +57,6 @@ export default class extends AbstractView {
 			if (press_space) {
 				press_space.style.visibility = "hidden";
 				press_space.style.animation = "none";
-			} else {
-				console.error("press_space_id introuvable !");
 			}
 		}
 	}

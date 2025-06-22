@@ -64,12 +64,12 @@ export async function fetch_user_friendships(): Promise<void> {
 		const renderFriend = (friendship: Friendship, showActions: boolean): string => {
 			let statusClass: string = `${friendship.friendOnlineStatus ? 'friend_online_status online' : 'friend_online_status offline'}`;
 			let statusTitle: string = `${friendship.friendOnlineStatus ? 'Online' : 'Offline'}`;
-			let friendshipProfilePicture: string = friendship.status === 'accepted' ? friendship.friendProfilePicture : 'default-profile-picture.png';
+			let friendshipProfilePicture: string = friendship.status === 'accepted' ? friendship.friendProfilePicture : '/assets/image/default-profile-picture.png';
 			return `
 				<div id="friendId-${friendship.friendId}" class="friend">
 					<div class="friend-info">
 						<div id="friendStatus-${friendship.friendId}" class="${friendship.status === 'accepted' ? statusClass : ''}" title="${statusTitle}"></div>
-						<img src="/uploads/${friendshipProfilePicture}" class="friend_photo" alt="Profile">
+						<img src="${friendshipProfilePicture}" class="friend_photo" alt="Profile">
 						<div class="friend-details">
 							<p class="friend_name">${friendship.friend_username}</p>
 							<div class="friend-status-actions">
@@ -105,14 +105,22 @@ export async function fetch_user_friendships(): Promise<void> {
 		friendPhotos.forEach(photo => {
 			(photo as HTMLElement).onclick = function() {
 				if (!gameHistory.classList.contains('active')) {
-					fetch_user_games_big((this as HTMLElement).nextElementSibling.querySelector('.friend_name').textContent);
-					gameHistory.classList.add('active');
-					exit_game_history_btn.style.display = 'none';
-					localStorage.setItem('historyIsVisible', 'true');
-					historyIsActive = true;
-					localStorage.setItem("bool", "true");
-					localStorage.setItem('historyVisible', 'true');
-					friendDeleteBtns.style.display = 'none';
+					const friendName = (this as HTMLElement).nextElementSibling.querySelector('.friend_name').textContent
+					const friendExists = accepted.some(friend => friend.friend_username === friendName);
+					if (!friendExists)
+					{
+						notif(`${friendName} is not your friend`, false);
+						return fetch_user_friendships();
+					}
+					if (fetch_user_games_big(friendName))
+					{
+						gameHistory.classList.add('active');
+						exit_game_history_btn.style.display = 'none';
+						localStorage.setItem('historyIsVisible', 'true');
+						historyIsActive = true;
+						localStorage.setItem("bool", "true");
+						localStorage.setItem('historyVisible', 'true');
+					}	
 				}
 				else if (localStorage.getItem('bool') === "true" && gameHistory.classList.contains('active')) {
 					gameHistory.classList.remove('active');
@@ -120,7 +128,6 @@ export async function fetch_user_friendships(): Promise<void> {
 					localStorage.setItem('historyIsVisible', 'false');
 					historyIsActive = false;
 					localStorage.setItem("bool", "false");
-					friendDeleteBtns.style.display = 'block';
 					localStorage.setItem('historyVisible', 'true');
 				}
 			};
@@ -198,8 +205,8 @@ export async function fetch_user_games(): Promise<void> {
 					  <tr class="game_card_navBar ${result2v2}">
 						<td class="profile_navBar_team">
 						  <div class="team-player">
-							<img src="/uploads/${leftTeam[0].profilePicture}" alt="profile" />
-							<img src="/uploads/${leftTeam[1].profilePicture}" alt="profile" />
+							<img src="${leftTeam[0].profilePicture}" alt="profile" />
+							<img src="${leftTeam[1].profilePicture}" alt="profile" />
 						  </div>
 						  <div class="team-player">
 							<p class="username_navBar">${leftTeam[0].username}</p>
@@ -215,8 +222,8 @@ export async function fetch_user_games(): Promise<void> {
 							<p class="username_navBar">${rightTeam[1].username}</p>
 						  </div>
 						  <div class="team-player">
-							<img src="/uploads/${rightTeam[0].profilePicture}" alt="profile" />
-							<img src="/uploads/${rightTeam[1].profilePicture}" alt="profile" />
+							<img src="${rightTeam[0].profilePicture}" alt="profile" />
+							<img src="${rightTeam[1].profilePicture}" alt="profile" />
 						  </div>
 						</td>
 					  </tr>
@@ -237,7 +244,7 @@ export async function fetch_user_games(): Promise<void> {
 					return /*html*/`
 					  <tr class="game_card_navBar ${result1v1}">
 						<td class="profile_navBar">
-						  <img src="/uploads/${leftPlayer.profilePicture}" alt="profile" />
+						  <img src="${leftPlayer.profilePicture}" alt="profile" />
 						  <p class="username_navBar">${leftPlayer.username}</p>
 						</td>
 						<td class="vs_info_navBar">
@@ -245,7 +252,7 @@ export async function fetch_user_games(): Promise<void> {
 						</td>
 						<td class="opponent_navBar">
 						  <p class="username_navBar">${rightPlayer.username}</p>
-						  <img src="/uploads/${rightPlayer.profilePicture}" alt="profile" />
+						  <img src="${rightPlayer.profilePicture}" alt="profile" />
 						</td>
 					  </tr>
 					`;
@@ -261,17 +268,28 @@ export async function fetch_user_games(): Promise<void> {
 	}
 }
 
-export async function fetch_user_games_big(username: string): Promise<void> {
+export async function fetch_user_games_big(username: string): Promise<boolean> {
 	try {
-		if (!username)
+		let data: any = {};
+		console.log("Fetching games for user:", username);
+		if (username)
+		{
+			data = await fetchAPI('/request/game/get-friend-games', 'POST', { username }, null, false);
+		}
+		else
+		{
 			username = localStorage.getItem(localStorage.getItem("Player1")) || '';
-		const data = await fetchAPI('/request/game/get-friend-games', 'POST', { username }, null, false);
+			data = await fetchAPI('/request/game/get-user-games', 'GET', null, null, false);
+		}
 		if (!data.success)
-			return notif(data.error, false);
+		{
+			notif(data.error, false);
+			return false;
+		}
 		const user = data.user;
 		const userId = user.userId;
 		const games = data.games;
-		document.getElementById("profile_photo_circle_Game_History").innerHTML = `<img src="/uploads/${data.user.profile_picture}" alt="${data.username} profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;	
+		document.getElementById("profile_photo_circle_Game_History").innerHTML = `<img src="${data.user.profile_picture}" alt="${data.username} profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;	
 		document.getElementById("game_history_username").innerHTML = `${data.user.username}`;
 		document.getElementById("games_won_history").innerHTML = `${user.games_won}`;
 		document.getElementById("games_lost_history").innerHTML = `${user.games_lost}`;
@@ -310,8 +328,8 @@ export async function fetch_user_games_big(username: string): Promise<void> {
 					<tr class="game_card_navBar team ${result2v2}">
 						<td class="profile_navBar_team">
 							<div class="team-player">
-								<img src="/uploads/${leftTeam[0].profilePicture}" alt="profile" />
-								<img src="/uploads/${leftTeam[1].profilePicture}" alt="profile" />
+								<img src="${leftTeam[0].profilePicture}" alt="profile" />
+								<img src="${leftTeam[1].profilePicture}" alt="profile" />
 							</div>
 							<div class="team-player">
 								<p class="username_navBar">${leftTeam[0].username}</p>
@@ -328,8 +346,8 @@ export async function fetch_user_games_big(username: string): Promise<void> {
 								<p class="username_navBar">${rightTeam[1].username}</p>
 							</div>
 							<div class="team-player">
-								<img src="/uploads/${rightTeam[0].profilePicture}" alt="profile" />
-								<img src="/uploads/${rightTeam[1].profilePicture}" alt="profile" />
+								<img src="${rightTeam[0].profilePicture}" alt="profile" />
+								<img src="${rightTeam[1].profilePicture}" alt="profile" />
 							</div>
 						</td>
 					</tr>
@@ -350,7 +368,7 @@ export async function fetch_user_games_big(username: string): Promise<void> {
 					return /*html*/`
 					<tr class="game_card_navBar ${result1v1}">
 						<td class="profile_navBar">
-							<img src="/uploads/${leftPlayer.profilePicture}" alt="profile" />
+							<img src="${leftPlayer.profilePicture}" alt="profile" />
 							<p class="username_navBar">${leftPlayer.username}</p>
 						</td>
 						<td class="vs_info_navBar">
@@ -359,7 +377,7 @@ export async function fetch_user_games_big(username: string): Promise<void> {
 						</td>
 						<td class="opponent_navBar">
 							<p class="username_navBar">${rightPlayer.username}</p>
-							<img src="/uploads/${rightPlayer.profilePicture}" alt="profile" />
+							<img src="${rightPlayer.profilePicture}" alt="profile" />
 						</td>
 					</tr>
 					`;
@@ -370,6 +388,7 @@ export async function fetch_user_games_big(username: string): Promise<void> {
 				<tr><td colspan="4" class="text-center-big">No Games found</td></tr>
 			`;
 		}
+		return true
 	} catch (err) {
 		console.error('Error retrieving games:', err);
 	}

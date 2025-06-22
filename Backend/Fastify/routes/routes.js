@@ -1,5 +1,5 @@
 import { getUserProfilePicture, createAccount , deleteAccount, login, login1v1, login2v2, logout, enableDoubleAuth, disableDoubleAuth, accessProfileInfo, changeProfilePicture, changeProfile, getUserProfile, verifyDoubleAuth, activateDoubleAuth, exportUserData, anonymizeUser, googleSignIn, googleConfig } from '../controllers/usersController.js';
-import { getUserGames, create1v1Game, create2v2Game } from '../controllers/gamesController.js';
+import { getUserGames, getFriendGames, create1v1Game, create2v2Game } from '../controllers/gamesController.js';
 import { getUserPlatformer, createPlatformer } from '../controllers/platformerController.js';
 import { getUserFriendships, addFriend, acceptFriend, deleteFriend } from '../controllers/friendshipsController.js';
 import { getAllUsers, getDeletedUsers, deleteUser, forceDeleteUser, getAllGames, addGame, deleteGame, getAllPlatformers, addPlatformer, deletePlatformer, getAllFriendships, addFriendship, deleteFriendship } from '../controllers/adminController.js';
@@ -66,7 +66,7 @@ export default async function routes (fastify) {
 	fastify.delete('/friendship/delete-friend', deleteFriend);
 
 	fastify.get('/game/get-user-games', getUserGames);
-	fastify.post('/game/get-friend-games', getUserGames); // ?
+	fastify.post('/game/get-friend-games', getFriendGames);
 	fastify.post('/game/create-1v1-game', create1v1Game);
 	fastify.post('/game/create-2v2-game', create2v2Game);
 
