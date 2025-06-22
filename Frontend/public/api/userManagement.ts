@@ -8,8 +8,8 @@ if (typeof window !== 'undefined') {
 	window.enable_doubleAuth = enable_doubleAuth;
 	window.disable_doubleAuth = disable_doubleAuth;
 	window.export_data = export_data;
-	window.anonymize_user = anonymize_user;
-	window.delete_account = delete_account;
+	// window.anonymize_user = anonymize_user;
+	// window.delete_account = delete_account;
 	window.fetchProfile = fetchProfile;
 	window.updateProfileInfo = updateProfileInfo;
 }

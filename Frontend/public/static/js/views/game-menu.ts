@@ -12,6 +12,7 @@ import { enable_skin_perso_player_solo, disable_skin_perso_player_solo, disable_
 import { enable_skin_multi, disable_skin_and_save_multi, disable_skin_multi, switch_skin_perso_player1_right_multi, switch_skin_perso_player1_left_multi, switch_skin_perso_player2_left_multi, switch_skin_perso_player2_right_multi, switch_skin_perso_player3_left_multi, switch_skin_perso_player3_right_multi, switch_skin_perso_player4_left_multi, switch_skin_perso_player4_right_multi } from "../../../srcs/game/gameplay/multiplayer/init_skin_perso_multi.js";
 import { get_skin_is_init } from "../../../srcs/game/gameplay/solo/skin/init_skin_utils.js";
 import { homeView } from "../../../api/utils.js";
+import { delete_account, anonymize_user } from "../../../api/userManagement.js";
 
 let powerUP_nb = 0;
 let powerUP_nb_multi = 0;
@@ -389,13 +390,13 @@ export default class Game_menu extends AbstractView {
 								<button id="deconnect_btn" class="btn_deconnect_btn" onclick="logout()">Disconnect</button>
 							</div>
 							<div class="btn_delete">
-								<button id="delete_btn" class="btn_delete_btn" onclick="delete_account()">Delete account</button>
+								<button id="delete_btn" class="btn_delete_btn" >Delete account</button> <!--onclick="delete_account()"-->
 							</div>
 							<div class="export_btn">
 								<button id="export_btn" class="btn_export_btn" onclick="export_data()">Export data</button>
 							</div>
 							<div class="anonymize_btn">
-								<button id="anonymize_btn" class="btn_anonymize_btn" onclick="anonymize_user()">Anonymize Account</button>
+								<button id="anonymize_btn" class="btn_anonymize_btn">Anonymize Account</button> <!-- onclick="anonymize_user()" -->
 							</div>
 							<div class="cgu-container">
 								<label for="accept-cgu"><a href="#" id="show-cgu" class="cgu-link">Terms of Service</a></label>
@@ -1555,6 +1556,18 @@ export default class Game_menu extends AbstractView {
 		document.getElementById("start-platformer").addEventListener('click', () => {
 			handleViewTransitions("platformer", "vue2");
 		});
+
+
+		/***********************************************************************/
+		/*************************UserManagement*******************************/
+		/***********************************************************************/
+
+		//* Delete account button */
+        const deleteBtn = document.getElementById('delete_btn');
+		const anonymizeBtn = document.getElementById('anonymize_btn');
+		
+        deleteBtn.addEventListener('click', () => { delete_account(); });
+		anonymizeBtn.addEventListener('click', () => { anonymize_user(); });
 	}
 }
 
