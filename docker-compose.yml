@@ -15,6 +15,7 @@ services:
       dockerfile: Fastify/Dockerfile
     ports:
       - "3000:3000"
+      - "3443:3443"
     restart: always
     env_file:
       - .env
@@ -30,6 +31,7 @@ services:
       - ./Data/vault_data:/app/vault/data
       - ./Data/sqlite_data:/app/Data/db
       - ./Data/uploads:/usr/share/nginx/uploads
+      - ./Security/Nginx/ssl:/etc/fastify/ssl
 
   nginx:
     container_name: nginx
@@ -49,6 +51,7 @@ services:
     volumes:
       - ./Security/Nginx/conf.d:/etc/nginx/conf.d
       - ./Security/Nginx/passwd:/etc/nginx/passwd
+      - ./Security/Nginx/ssl:/etc/nginx/ssl
       - ./Security/ModSecurity:/etc/modsecurity
       - ./Frontend/public:/usr/share/nginx/html:ro
       - ./Frontend/public/srcs:/usr/share/nginx/dist/srcs:ro 

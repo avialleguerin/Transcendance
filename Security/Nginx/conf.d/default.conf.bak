@@ -19,8 +19,8 @@ server {
 	# Allow larger file uploads (5MB for profile pictures)
 	client_max_body_size 5M;
 
-	ssl_certificate /etc/nginx/conf/server.crt;
-	ssl_certificate_key /etc/nginx/conf/server.key;
+	ssl_certificate /etc/nginx/ssl/server.crt;
+	ssl_certificate_key /etc/nginx/ssl/server.key;
 
 	ssl_session_timeout 1d;
 	ssl_session_cache shared:MozSSL:10m;
@@ -69,7 +69,8 @@ server {
 		modsecurity on;
 		modsecurity_rules_file /etc/modsecurity/modsecurity.conf;
 
-		proxy_pass http://fastify:3000;
+		proxy_pass https://fastify:3443;
+		proxy_ssl_verify off;
 		proxy_set_header Host $host;
 		proxy_set_header X-Real-IP $remote_addr;
 		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -77,7 +78,8 @@ server {
 	}
 
 	location /ws {
-		proxy_pass http://fastify:3000/ws;
+		proxy_pass https://fastify:3443/ws;
+		proxy_ssl_verify off;
 		proxy_http_version 1.1;
 		proxy_set_header Upgrade $http_upgrade;
 		proxy_set_header Connection "upgrade";
@@ -96,8 +98,8 @@ server {
 	# Allow larger file uploads (5MB for profile pictures)
 	client_max_body_size 5M;
 
-	ssl_certificate /etc/nginx/conf/server.crt;
-	ssl_certificate_key /etc/nginx/conf/server.key;
+	ssl_certificate /etc/nginx/ssl/server.crt;
+	ssl_certificate_key /etc/nginx/ssl/server.key;
 
 	ssl_session_timeout 1d;
 	ssl_session_cache shared:MozSSL:10m;
@@ -146,7 +148,8 @@ server {
 		modsecurity on;
 		modsecurity_rules_file /etc/modsecurity/modsecurity.conf;
 
-		proxy_pass http://fastify:3000;
+		proxy_pass https://fastify:3443;
+		proxy_ssl_verify off;
 		proxy_set_header Host $host;
 		proxy_set_header X-Real-IP $remote_addr;
 		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;

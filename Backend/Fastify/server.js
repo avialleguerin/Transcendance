@@ -12,6 +12,8 @@ import colorLoggerPlugin from './utils/logger.js'
 import websocket from '@fastify/websocket'
 import { checkEmailConfig } from './utils/mailer.js'
 import { getJwtSecret } from './utils/vault.js'
+import fs from 'fs'
+import path from 'path'
 
 export const fastify = Fastify({
 	logger: process.env.LOG_ACTIVE === 'true' ? {
@@ -25,7 +27,11 @@ export const fastify = Fastify({
 			}
 		}
 	} : false,
-	disableRequestLogging: true
+	disableRequestLogging: true,
+	https: {
+		key: fs.readFileSync('/etc/fastify/ssl/server.key'),
+		cert: fs.readFileSync('/etc/fastify/ssl/server.crt')
+	}
 })
 
 export const log = fastify.logger;
@@ -75,7 +81,7 @@ const start = async () => {
 		checkEmailConfig();
 		
 		// 10. Start server
-		await fastify.listen({ port: 3000, host: '0.0.0.0' })
+		await fastify.listen({ port: 3443, host: '0.0.0.0' })
 		
 	} catch (err) {
 		fastify.log.error('Failed to start server: ' + err.message)
