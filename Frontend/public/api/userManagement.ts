@@ -25,13 +25,13 @@ export async function changeProfilePicture(event: Event): Promise<void> {
 		return notif('File size exceeds 5MB limit.', false);
 
 	if (!ALLOWED_TYPES.includes(input.files[0].type))
-		return notif('Invalid file type. Only PNG, JPG and JPEG files are allowed.');
+		return notif('Invalid file type. Only PNG, JPG and JPEG files are allowed.', false);
 	formData.append('profile-picture', input.files[0]);
 	
 	try {
-		
 		const data = await fetchAPI('/request/user/update-profile-picture', 'POST', null, true, formData);
-
+		if (!data)
+			return notif("Failed to upload image", false);
 		if (data.success) {
 			$form("uploadForm").reset();
 			fetchProfile();
