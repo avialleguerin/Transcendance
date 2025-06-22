@@ -14,12 +14,13 @@ import { get_skin_is_init } from "../../../srcs/game/gameplay/solo/skin/init_ski
 import { homeView } from "../../../api/utils.js";
 import { accessProfileInfo, changeProfilePicture, delete_account, anonymize_user, export_data, enable_doubleAuth, disable_doubleAuth, activate2FA, updateProfileInfo } from "../../../api/userManagement.js";
 import { logout, login_1v1, login_2v2, login_platformer } from "../../../api/auth.js";
+import { addFriend, fetch_user_games_big, togglePanel } from "../../../api/friendships.js";
 
 let powerUP_nb = 0;
 let powerUP_nb_multi = 0;
 
 if (localStorage.getItem('historyIsVisible') === null)
-	localStorage.setItem('historyIsVisible', 'false');
+	localStorage.setItem('historyIsVisible', 'false'); 
 
 export default class Game_menu extends AbstractView {
 	constructor() {
@@ -37,7 +38,7 @@ export default class Game_menu extends AbstractView {
 		<div class="navbar_menu">
 			<div class="profile_photo_circle_nav_bar" id="profile_photo_circle_nav_bar"><img src="${localStorage.getItem('profile_picture')}" alt="profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;"></div>
 			<h1 id="player_name" class="player_name">${localStorage.getItem('Player1')}</h1>
-			<button class="option_navBar" id="option_btn_navBar" onclick="togglePanel(event)">
+			<button class="option_navBar" id="option_btn_navBar"> <!-- onclick="togglePanel(event)"-->
 				<img src="../../../srcs/game/assets/image/menu.svg" alt="menu">
 			</button>
 			
@@ -214,7 +215,7 @@ export default class Game_menu extends AbstractView {
 					</div>
 				</div>
 
-				<form class="add_friend_section" onsubmit="addFriend(event)">
+				<form class="add_friend_section" id="add_friend_section">
 					<input type="text" id="friend_name_input" placeholder="Username..." />
 					<button type="submit" id="add_friend_btn">Add</button>
 				</form>
@@ -1482,13 +1483,15 @@ export default class Game_menu extends AbstractView {
 		const option_btn_navBar = document.getElementById('option_btn_navBar');
 		const panel_option_navbar = document.getElementById('panel_option_navbar');
 		const option_btn_remove = document.getElementById('option_btn_remove');
-		// const gameHistory = document.getElementById('game_history');
+		
+		const gameHistory = document.getElementById('game_history');
 
-		option_btn_navBar.addEventListener('click', () => {
+		option_btn_navBar.addEventListener('click', (event) => {
 			panel_option_navbar.classList.remove('remove'); // retire l'animation de fermeture
 			void panel_option_navbar.offsetWidth; // force le reflow pour relancer l'animation si besoin
 			panel_option_navbar.classList.add('active');
 			option_btn_navBar.style.display = 'none';
+			togglePanel(event);
 		});
 
 		option_btn_remove.addEventListener('click', () => {
@@ -1514,6 +1517,7 @@ export default class Game_menu extends AbstractView {
 			btn_back_home.classList.remove('active');
 			view5.classList.remove('active');
 			localStorage.setItem("historyIsVisible", "true");
+			fetch_user_games_big(null);
 		});
 
 		exit_game_history_btn.addEventListener('click', () => {
@@ -1567,21 +1571,17 @@ export default class Game_menu extends AbstractView {
 		/*************************UserManagement*******************************/
 		/***********************************************************************/
 
-		//* Delete account button */
 		const accessProfileBtn = document.getElementById('modif_profile');
 		const changeAvatarBtn = document.getElementById('uploadForm');
 		const deleteBtn = document.getElementById('delete_btn');
 		const anonymizeBtn = document.getElementById('anonymize_btn');
 		const exportBtn = document.getElementById('export_btn');
 		const updateProfileBtn = document.getElementById('updateProfileForm');
-
 		const deconnect_btn_navBar = document.getElementById('deconnect_btn_navBar');
 		const deconnect_btn = document.getElementById('deconnect_btn');
 		const login1v1Btn = document.getElementById('choose_your_opponent_1v1_form');
 		const login2v2Btn = document.getElementById('choose_your_opponent_multi_form');
-		
-		
-
+		const add_friend_section = document.getElementById('add_friend_section');
 
 		accessProfileBtn.addEventListener('submit', (event) => { accessProfileInfo(event); });
 		changeAvatarBtn.addEventListener('submit', (event) => { changeProfilePicture(event); });
@@ -1590,12 +1590,12 @@ export default class Game_menu extends AbstractView {
 		exportBtn.addEventListener('click', () => { export_data(); });
 		code_validation_id.addEventListener('submit', (event) => { activate2FA(event); });
 		updateProfileBtn.addEventListener('submit', (event) => { updateProfileInfo(event); });
-
 		deconnect_btn_navBar?.addEventListener('click', async () => { await logout(); });
 		deconnect_btn?.addEventListener('click', async () => { await logout(); });
 		login1v1Btn?.addEventListener('submit', async (event) => { await login_1v1(event); });
 		login2v2Btn?.addEventListener('submit', async (event) => { await login_2v2(event); });
 		choose_your_opponent_platformer_form?.addEventListener('submit', async (event) => { await login_platformer(event); });
+		add_friend_section.addEventListener('submit', (event) => { addFriend(event); });
 
 	}
 }
