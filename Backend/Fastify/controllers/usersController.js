@@ -173,11 +173,10 @@ export async function createAccount(request, reply) {
 
 	if (!username || !password)
 		return reply.code(400).send({ error: 'Username and Password are required' })
-
 	const sanitizedUsername = sanitizeInput(username, 'username')
 	if (!sanitizedUsername.success)
 		return reply.code(400).send({ error: sanitizedUsername.error })
-	const sameUsername = usersModel.getUserByUsername(sanitizedUsername)
+	const sameUsername = usersModel.getUserByUsername(sanitizedUsername.input)
 	if (sameUsername)
 		return reply.code(409).send({ error: "This username is already used" })
 	const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!?@&*#])[A-Za-z\d!?@&*#]{8,20}$/;
@@ -699,7 +698,7 @@ export async function deleteAccount(request, reply) {
 		const anonymizedUsername = generateRandomString(9)
 		usersModel.updateUsername(user.userId, anonymizedUsername)
 		const anonymizedPassword = generateRandomString(9)
-		const defaultProfilePicture = 'default-profile-picture.png'
+		const defaultProfilePicture = '/assets/image/default-profile-picture.png';
 		const info = usersModel.anonymizeUserData(user.userId, anonymizedPassword, defaultProfilePicture)
 		if (info.changes === 0) return reply.code(404).send({ error: "User not found" })
 

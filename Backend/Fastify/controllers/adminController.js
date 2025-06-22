@@ -56,7 +56,7 @@ export async function deleteUser(request, reply) {
 
 		const anonymizedUsername = generateRandomString(9)
 		const anonymizedPassword = generateRandomString(9)
-		const defaultProfilePicture = 'default-profile-picture.png'
+		const defaultProfilePicture = '/assets/image/default-profile-picture.png'
 		usersModel.updateUsername(userId, anonymizedUsername)
 		const info = usersModel.anonymizeUserData(userId, anonymizedPassword, defaultProfilePicture)
 		if (info.changes === 0) return reply.code(404).send({ error: "User not found" })

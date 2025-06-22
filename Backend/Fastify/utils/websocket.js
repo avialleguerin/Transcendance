@@ -32,26 +32,6 @@ export function notifyAllFriends(UID, type)
 		if (friendships && friendships.length > 0 && user) {
 			friendships.forEach(friendship => {
 				const friendUserId = ((friendship.userId).toString() === UID.toString() ? friendship.friendId : friendship.userId);
-				log.debug(`Notifying friends ${friendUserId} account deletion of ${UID}`);
-				if (UID !== friendUserId)
-					notifyFriend(UID, friendUserId, type)
-			});
-		}
-	} catch (error) {
-		fastify.log.error('Error notifying friends account deletion:', error);
-	}
-}
-
-export function notifyAllFriends(UID, type)
-{
-	try {
-		const friendships = friendshipsModel.getUserFriendships(UID);
-		const user = usersModel.getUserById(UID);
-
-		if (friendships && friendships.length > 0 && user) {
-			friendships.forEach(friendship => {
-				const friendUserId = ((friendship.userId).toString() === UID.toString() ? friendship.friendId : friendship.userId);
-				log.debug(`Notifying friends ${friendUserId} account deletion of ${UID}`);
 				if (UID !== friendUserId)
 					notifyFriend(UID, friendUserId, type)
 			});
