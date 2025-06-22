@@ -16,8 +16,8 @@ import { homeView, StorageKeys } from "../../../api/utils.js";
 let powerUP_nb = 0;
 let powerUP_nb_multi = 0;
 
-if (localStorage.getItem('historyIsVisible') === null)
-	localStorage.setItem('historyIsVisible', 'false');
+// if (localStorage.getItem('historyIsVisible') === null)
+// 	localStorage.setItem('historyIsVisible', 'false');
 
 export default class Game_menu extends AbstractView {
 	constructor() {
@@ -1507,7 +1507,7 @@ export default class Game_menu extends AbstractView {
 			view1.classList.remove('active');
 			btn_back_home.classList.remove('active');
 			view5.classList.remove('active');
-			localStorage.setItem("historyIsVisible", "true");
+			StorageKeys.HISTORY_IS_VISIBLE = true;
 		});
 
 		exit_game_history_btn.addEventListener('click', () => {
@@ -1515,7 +1515,8 @@ export default class Game_menu extends AbstractView {
 			view1.classList.add('active');
 			btn_back_home.classList.add('active');
 			view5.classList.add('active');
-			localStorage.setItem("historyIsVisible", "false");
+			StorageKeys.HISTORY_IS_VISIBLE = false;
+
 		});
 
 		document.getElementById("solo_1v1_btn").addEventListener("click", () => {

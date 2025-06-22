@@ -1,7 +1,7 @@
 import { notif, fetchAPI, $, $input, $form, sanitizeInput, StorageKeys } from './utils.js';
 import { Friendship, GameScore } from './types.js';
 
-let historyIsActive = localStorage.getItem('historyIsVisible') === 'true';
+let historyIsActive = StorageKeys.HISTORY_IS_VISIBLE = true;
 
 
 if (typeof window !== 'undefined') {
@@ -121,19 +121,19 @@ export async function fetch_user_friendships(): Promise<void> {
 					{
 						gameHistory.classList.add('active');
 						exit_game_history_btn.style.display = 'none';
-						localStorage.setItem('historyIsVisible', 'true');
+						StorageKeys.HISTORY_IS_VISIBLE = true;
 						historyIsActive = true;
-						localStorage.setItem("bool", "true");
-						localStorage.setItem('historyVisible', 'true');
+						StorageKeys.BOOL = true;
+						StorageKeys.HISTORY_VISIBLE = true;
 					}	
 				}
-				else if (localStorage.getItem('bool') === "true" && gameHistory.classList.contains('active')) {
+				else if (StorageKeys.BOOL === true && gameHistory.classList.contains('active')) {
 					gameHistory.classList.remove('active');
 					exit_game_history_btn.style.display = 'block';
-					localStorage.setItem('historyIsVisible', 'false');
+					StorageKeys.HISTORY_IS_VISIBLE = false;
 					historyIsActive = false;
-					localStorage.setItem("bool", "false");
-					localStorage.setItem('historyVisible', 'true');
+					StorageKeys.BOOL = false;
+					StorageKeys.HISTORY_VISIBLE = true;
 				}
 			};
 		});
@@ -147,8 +147,8 @@ export async function fetch_user_friendships(): Promise<void> {
 					if (gameHistory.classList.contains('active')) {
 						gameHistory.classList.remove('active');
 						exit_game_history_btn.style.display = 'block';
-						localStorage.setItem('historyIsVisible', 'false');
-						localStorage.setItem('bool', 'false');
+						StorageKeys.HISTORY_IS_VISIBLE = false;
+						StorageKeys.BOOL = false;
 						historyIsActive = false;
 						document.querySelectorAll('.delete-btn').forEach(btn => {
 							(btn as HTMLElement).style.display = 'block';
@@ -283,7 +283,6 @@ export async function fetch_user_games_big(username: string): Promise<boolean> {
 		}
 		else
 		{
-			// username = localStorage.getItem(localStorage.getItem("Player1")) || '';
 			username = StorageKeys.PLAYER1;
 			data = await fetchAPI('/request/game/get-user-games', 'GET', null, null, false);
 		}

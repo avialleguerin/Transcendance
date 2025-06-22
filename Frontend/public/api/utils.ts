@@ -261,4 +261,11 @@ export const StorageKeys = {
 	MATCH5_LOSER: null as string,
 	MATCH6_LOSER: null as string,
 	MATCH7_LOSER: null as string,
+	HISTORY_VISIBLE: false as boolean,
+	HISTORY_IS_VISIBLE: false as boolean,
+	BOOL: false as boolean,
+	TOURNAMENT_FIRST_PLACE: null as string,
+	TOURNAMENT_SECOND_PLACE: null as string,
+	TOURNAMENT_THIRD_PLACE: null as string,
+	TOURNAMENT_FOURTH_PLACE: null as string,
 };
