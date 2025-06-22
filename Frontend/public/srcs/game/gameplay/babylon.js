@@ -304,6 +304,11 @@ export function startMultiGame() {
 	Solo_gameStart = false;
 	tournament_game = false;
 	SetIsGameFinished(false);
+
+	canPressSpace = false;
+	setTimeout(() => {
+		canPressSpace = true;
+	}, 5000);
 }
 
 export function startAI_Game() {	Solo_gameStart = false;
@@ -317,6 +322,11 @@ export function startTournamentGame() {
 	Solo_gameStart = false;
 	Multi_gameStart = false;
 	SetIsGameFinished(false);
+
+	canPressSpace = false;
+	setTimeout(() => {
+		canPressSpace = true;
+	}, 5000);
 }
 
 /*************************************************************/
@@ -435,7 +445,11 @@ engine.runRenderLoop(() => {
 			if (initialized)
 			{
 				if (scene.inputStates.space && !play)
+				{
+					if (!canPressSpace)
+						return;
 					play = true;
+				}
 				if (play)
 				{
 					UpdatePLayerPoseMulti(player_1, player_2, player_3, player_4);
@@ -454,7 +468,11 @@ engine.runRenderLoop(() => {
 			if (initialized)
 			{
 				if (scene.inputStates.space && !play)
+				{
+					if (!canPressSpace)
+						return;
 					play = true;
+				}
 				if (play)
 				{
 					move_player_tournament(player_1_tournament, player_2_tournament);

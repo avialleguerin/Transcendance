@@ -3,6 +3,7 @@ import AbstractView from "./AbstractView.js";
 import { startTournamentGame } from "../../../srcs/game/gameplay/babylon.js";
 import { getPlayer_1_win } from "../../../srcs/game/gameplay/score.js";
 import { homeView } from "../../../api/utils.js";
+import { StorageKeys } from "../../../api/utils.js";
 
 let count = 0;
 let tournamentStarted = false;
@@ -119,7 +120,8 @@ export default class extends AbstractView {
 			startTournamentGame();
 			count = parseInt(localStorage.getItem('tournamentCount')) || 0;
 			localStorage.setItem('tournamentCount', count.toString());
-			localStorage.setItem("canPlay", "true");
+			// localStorage.setItem("canPlay", "true");
+			StorageKeys.CAN_PLAY = true;
 			console.log("canPlay set to true");
 
 			const Player1 = document.getElementById('Player1');
@@ -152,6 +154,7 @@ export default class extends AbstractView {
 		count = parseInt(localStorage.getItem('tournamentCount')) || 0;
 		
 		updateTournamentState(count, Player1, Player2, Player3, Player4);
+		
 
 		const maxCount = secondeChance ? 7 : 6;
 		if (count >= maxCount) {
@@ -230,15 +233,16 @@ export default class extends AbstractView {
 			localStorage.setItem('tournamentStarted', tournamentStarted.toString());
 
 			resetHighlight([Player1, Player2, Player3, Player4]);
-
 			resetTournamentState(Player1, Player2, Player3, Player4);
+
 			back_to_menu_view_tournament.style.display = 'block';
 			start_tournament.style.display = 'block';
 			count = 0;
 		});
 	}
 
-	checktournamentstart() {
+	checktournamentstart()
+	{
 		if (window.location.pathname === "/tournament")
 		{
 			const container_name_player = document.getElementById('container_name_player');

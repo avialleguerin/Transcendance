@@ -5,6 +5,7 @@ import { init_players_tournament } from "./init_player_tournament.js";
 import { reset_player_position } from "../player.js";
 import { init_game } from "../init_game.js";
 import { init_ball, resetBall } from "../ball.js";
+import { StorageKeys } from "../../../../api/utils.js";
 
 let ball = null;
 let player_1_tournament, player_2_tournament;
@@ -62,12 +63,14 @@ function enable_all_by_metadata(scene, metadataKey) {
 }
 
 
+
 export async function destroy_game_solo_tournament(scene)
 {
 	destroy_all_by_metadata(scene, "isPlayerRepere");
 	destroy_all_by_metadata(scene, "isPlayer_paddle");
 	destroy_all_by_metadata(scene, "isPlayer");
-	localStorage.setItem("canPlay", "false");
+	// localStorage.setItem("canPlay", "false");
+	StorageKeys.CAN_PLAY = false;
 	console.log("localStorage canPlay set to false");
 	// if (localStorage.getItem("tournamentStarted") !== "true")
 	// 	localStorage.removeItem("Player2");
@@ -81,6 +84,4 @@ function destroy_all_by_metadata(scene, metadataKey) {
 		.filter(mesh => mesh.metadata && mesh.metadata[metadataKey])
 		.forEach(mesh => mesh.setEnabled(false));
 }
-
-
 

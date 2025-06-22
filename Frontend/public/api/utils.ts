@@ -221,3 +221,24 @@ export function sanitizeInput(input: string, type: string) : { success: boolean,
 		return { success: true };
 	}
 }
+
+export const StorageKeys = {
+	TOURNAMENT_COUNT: false as boolean || false,
+	TOURNAMENT_STARTED: false as boolean || false, 
+	TOURNAMENT_FINISHED: false as boolean || false,
+	SECOND_CHANCE: false as boolean || false,
+	CAN_PLAY: false as boolean || false,
+	SCORE_LEFT: false as boolean || false,
+	SCORE_RIGHT: false as boolean || false,
+	MATCH_RESULT: ['match1_result', 'match2_result', 'match3_result', 'match4_result', 'match5_result', 'match6_result'] as string	[],
+	ADMIN_ACTIVE_TAB: 'transcendance_admin_active_tab' as string,
+	PLAYER1: null as string,
+	PLAYER2: null as string,
+	PLAYER3: null as string,
+	PLAYER4: null as string,
+	CURRENT_PLAYER1: null as string,
+	CURRENT_PLAYER2: null as string,
+	PROFILE_PICTURE: null as string,
+	SCORE_PLAYER1: null as string,
+	SCORE_PLAYER2: null as string
+};

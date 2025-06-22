@@ -9,6 +9,7 @@ import { getIsTeam1Win, getIsTeam2Win } from "../../../srcs/game/gameplay/score.
 import { disable_skin_multi_podium_default } from "../../../srcs/game/gameplay/multiplayer/init_teamPlayer_podium_default.js";
 import { get_skin_is_init } from "../../../srcs/game/gameplay/solo/skin/init_skin_utils.js";
 import { homeView } from "../../../api/utils.js";
+import { getIsloading } from "../../../srcs/game/gameplay/views/loading_screen.js";
 
 let space_pressed = false;
 let bool = false;
@@ -128,8 +129,7 @@ export default class extends AbstractView {
 			space_pressed = false;
 			bool = false;
 			handleViewTransitions("vue2", "vue4");
-			
-			// Utiliser navigateTo au lieu de window.history.back()
+
 			import('../index.js').then(module => {
 				if (module.navigateTo) {
 					setTimeout(() => {
@@ -179,13 +179,15 @@ export default class extends AbstractView {
 
 		if (this.cooldowns[key]) return;
 
-		if (key === " ") {
-			const press_space = document.getElementById("press_space_id");
-			if (press_space) {
-				press_space.style.visibility = "hidden";
-				press_space.style.animation = "none";
+		if (getIsloading() === false) {
+			if (key === " ") {
+				const press_space = document.getElementById("press_space_id");
+				if (press_space) {
+					press_space.style.visibility = "hidden";
+					press_space.style.animation = "none";
+				}
+				space_pressed = true;
 			}
-			space_pressed = true;
 		}
 
 		if (space_pressed)
