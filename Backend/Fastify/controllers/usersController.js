@@ -386,7 +386,6 @@ export async function accessProfileInfo(request, reply) {
 		const { password } = request.body
 		if (!sanitizeInput(password, 'password').success)
 			return reply.code(400).send({ error: "Invalid password" })
-		console.log(`Accessing profile info with password: ${password}`)
 		const infos = await getUserFromToken(request)
 		if (!infos)
 			return reply.code(401).send({ success: false, error: 'Unauthorized' })

@@ -8,9 +8,8 @@ import { disable_skin_perso_player_first_and_seconde } from "../../../srcs/game/
 import { getPlayer_1_win, getPlayer_2_win } from "../../../srcs/game/gameplay/score.js";
 import { disable_skin_perso_player_first_and_seconde_default } from "../../../srcs/game/gameplay/solo/skin/init_skin_player_default.js";
 import { get_skin_is_init } from "../../../srcs/game/gameplay/solo/skin/init_skin_utils.js";
-import { homeView } from "../../../api/utils.js";
+import { homeView, StorageKeys } from "../../../api/utils.js";
 import { getIsloading } from "../../../srcs/game/gameplay/views/loading_screen.js";
-import { StorageKeys } from "../../../api/utils.js";
 
 let spacePressed = false;
 let bool = false;

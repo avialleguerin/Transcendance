@@ -2,8 +2,7 @@ import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.
 import AbstractView from "./AbstractView.js";
 import { startTournamentGame } from "../../../srcs/game/gameplay/babylon.js";
 import { getPlayer_1_win } from "../../../srcs/game/gameplay/score.js";
-import { homeView } from "../../../api/utils.js";
-import { StorageKeys } from "../../../api/utils.js";
+import { homeView, StorageKeys } from "../../../api/utils.js";
 
 let count = 0;
 let tournamentStarted = false;

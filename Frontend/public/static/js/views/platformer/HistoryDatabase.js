@@ -1,4 +1,4 @@
-import { StorageKeys } from "../../../../api/utils";
+import { StorageKeys } from "../../../../api/utils.js";
 
 export default class HistoryDatabase {
 	constructor() {

@@ -1,5 +1,4 @@
 import { User, GameResult, PlatformerGame, Friendship } from './types.js';
-// import { $, $input, $form } from './utils.js';
 
 function $(id: string): HTMLElement | null { return document.getElementById(id); }
 function $input(id: string): HTMLInputElement { return document.getElementById(id) as HTMLInputElement; }

@@ -7,7 +7,7 @@ import tournament from "./views/tournament.js";
 import tournament_game from "./views/tournament-game.js";
 import PlatformView  from "./views/platformer/PlatformView.js";
 import { Route, RouteMatch } from "../../api/types.js";
-import { gameMenuView } from "../../api/utils.js";
+import { gameMenuView, StorageKeys } from "../../api/utils.js";
 import { handleViewTransitions } from "../../srcs/game/gameplay/views/camera.js";
 import { leave_Game, leave_Multiplayer_Game, leave_tournament_game } from "../../srcs/game/gameplay/babylon.js";
 import { gameState, GameState } from "./views/platformer/constants.js";
@@ -18,7 +18,6 @@ import { disable_skin_perso_player_first_and_seconde_default } from "../../srcs/
 import { setPowerUP_value, setPowerUP_value_multi } from "./views/game-menu.js";
 import { disable_skin_multi_podium_default } from "../../srcs/game/gameplay/multiplayer/init_teamPlayer_podium_default.js";
 import { disable_skin_multi_podium } from "../../srcs/game/gameplay/multiplayer/init_teamPlayer_podium.js";
-import { StorageKeys } from "../../api/utils.js";
 
 let canTransition: boolean = true;
 let leave_game_var: boolean = false;

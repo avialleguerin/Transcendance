@@ -1,7 +1,5 @@
 import AbstractView from "./AbstractView.js";
 import { initGoogleSignIn, tokenClient } from '../../../api/auth.js';
-import { gameMenuView } from '../../../api/utils.js';
-import { notif } from '../../../api/utils.js';
 
 
 export default class Home extends AbstractView {
@@ -253,8 +251,6 @@ export default class Home extends AbstractView {
 		const handleGoogleAuth = () => {
 			if (typeof tokenClient !== 'undefined' && tokenClient)
 				tokenClient.requestAccessToken();
-			else 
-				console.error(`Google Auth Token not initialised : typeof=${typeof tokenClient} && ${tokenClient} `);
 		};
 
 		googleSignInBtn?.addEventListener("click", handleGoogleAuth);

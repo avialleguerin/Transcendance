@@ -284,7 +284,6 @@ export async function handleGoogleSignIn(response: { access_token: string }) {
 
 		if (data.success) {
 			sessionStorage.setItem("accessToken", data.accessToken);
-			StorageKeys.ACCESS_TOKEN = data.accessToken;
 			StorageKeys.PLAYER1 = data.name;
 			if (data.avatar)
 				StorageKeys.PROFILE_PICTURE = data.avatar;

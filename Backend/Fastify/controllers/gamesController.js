@@ -42,7 +42,6 @@ export async function getFriendGames(request, reply) {
 				const friendship = friendshipsModel.getFriendship(user.userId, friend.userId)
 			if (!friendship) return reply.code(404).send({ success: false, error: `Friendship with '${username}' not found`, accessToken: infos.accessToken })
 				const isFriendId = user.userId === friendship.userId ? friendship.userId : friendship.friendId
-			console.log(`Fetching games for : ${isFriendId}`)
 			const games = gamesModel.getUserGames(isFriendId)
 			return reply.send({ success: true, user: friend, games: games, accessToken: infos.accessToken })
 		} else 
