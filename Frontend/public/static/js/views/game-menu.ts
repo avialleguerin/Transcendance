@@ -280,7 +280,7 @@ export default class Game_menu extends AbstractView {
 						<div id="select_parametres" class="select_parametres">
 							<button id="profile_parrametre_btn" class="btn">PROFILE SETTINGS</button>
 							<button id="parrametre_jeux_btn" class="btn">GAME SETTINGS</button>
-							<button id="Game_History_btn" class="btn" onclick="fetch_user_games_big()">GAME HISTORY</button>
+							<button id="Game_History_btn" class="btn">GAME HISTORY</button><!-- onclick="fetch_user_games_big()" -->
 						</div>
 					</div>
 				</div>
