@@ -16,10 +16,10 @@ export async function create_1v1_game(event: Event, player1: string, player2: st
 
 	const data = await fetchAPI('/request/game/create-1v1-game', 'POST', { player1, player2, score_left, score_right }, false);
 	if (!data.success) return notif(data.error, false);
-	if (localStorage.getItem("tournamentStarted") !== "true")
+	if (StorageKeys.TOURNAMENT_STARTED === false)
 		StorageKeys.PLAYER2 = null;
 	else
-		localStorage.setItem("tournamentCount", (parseInt(localStorage.getItem("tournamentCount")) + 1).toString());
+		StorageKeys.TOURNAMENT_COUNT = StorageKeys.TOURNAMENT_COUNT + 1;
 	StorageKeys.SCORE_LEFT = 0;
 	StorageKeys.SCORE_RIGHT = 0;
 };

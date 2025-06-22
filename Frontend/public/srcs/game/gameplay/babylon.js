@@ -11,23 +11,27 @@ import { init_all_skin } from "./solo/skin/init_skin_perso.js";
 import { handleViewTransitions } from "./views/camera.js";
 import { get_skin_is_init } from "./solo/skin/init_skin_utils.js";
 import { init_skins_podium_default } from "./solo/skin/init_skin_player_default.js";
+import { StorageKeys } from "../../../api/utils.js";
 
 /**************************************************************/
 /*****************CREATION DU MOTEUR***************************/
 /**************************************************************/
 
-localStorage.removeItem("match1_result");
-localStorage.removeItem("match2_result");
-localStorage.removeItem("match3_result");
-localStorage.removeItem("match4_result");
-localStorage.removeItem("match5_result");
-localStorage.removeItem("match6_result");
+StorageKeys.MATCH_RESULT1 = null;
+StorageKeys.MATCH_RESULT2 = null;
+StorageKeys.MATCH_RESULT3 = null;
+StorageKeys.MATCH_RESULT4 = null;
+StorageKeys.MATCH_RESULT5 = null;
+StorageKeys.MATCH_RESULT6 = null;
+StorageKeys.MATCH_RESULT7 = null;
 
-localStorage.removeItem("tournamentCount");
 
-localStorage.removeItem("tournamentStarted");
-localStorage.removeItem("tournament_finished");
-localStorage.removeItem("secondChance");
+StorageKeys.TOURNAMENT_COUNT = 0;
+
+StorageKeys.TOURNAMENT_STARTED = false;
+console.log("Tournament started:", StorageKeys.TOURNAMENT_STARTED);
+StorageKeys.TOURNAMENT_FINISHED = false;
+StorageKeys.SECOND_CHANCE = false;
 
 let qualityLevel = 'medium';
 const canvas = document.getElementById('renderCanvas');

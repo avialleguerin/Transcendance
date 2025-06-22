@@ -1,6 +1,7 @@
 import { notif, fetchAPI, homeView, gameMenuView, platformerView, setLocalStorage, updateUI, $, $input, $form, StorageKeys } from './utils.js';
 import { ApiResponse, LoginRequest, RegisterRequest, User, GoogleTokenClient, GoogleSignInResponse,  } from './types.js';
 import { connectWebSocket, disconnectWebSocket } from './websocket.js';
+import { StorageKeys } from './utils.js';
 
 export let tokenClient: GoogleTokenClient | null = null;
 
@@ -132,7 +133,6 @@ export async function login_tournament(event: Event): Promise<void> {
 		const data = await fetchAPI('/request/user/login-2v2', 'POST', { username2, password2, username3, password3, username4, password4 }, true, false);		
 
 		if (data.success) {
-			console.log("Connexion to tournament successful");
 			console.log(username2);
 			console.log(username3);
 			console.log(username4);
@@ -144,6 +144,7 @@ export async function login_tournament(event: Event): Promise<void> {
 			document.getElementById("Player2").textContent = StorageKeys.PLAYER2;
 			document.getElementById("Player3").textContent = StorageKeys.PLAYER3;
 			document.getElementById("Player4").textContent = StorageKeys.PLAYER4;
+			StorageKeys.TOURNAMENT_STARTED = true;
 			const tournamentStarted = true;
 			localStorage.setItem('tournamentStarted', tournamentStarted.toString());
 			updateUI({ addClass: [{ id: "tournament_graphic_id", className: "active" }, { id: "container_name_player", className: "hidden"}] });
