@@ -5,14 +5,14 @@ let historyIsActive = StorageKeys.HISTORY_IS_VISIBLE = true;
 let currentHistoryType: 'user' | 'friend' | null = null; // Nouvelle variable pour tracker le type
 
 if (typeof window !== 'undefined') {
-	window.addFriend = addFriend;
+	// window.addFriend = addFriend;
 	window.accept_friendship = accept_friendship;
 	window.delete_friendship = delete_friendship;
-	window.fetch_user_friendships = fetch_user_friendships;
-	window.fetch_user_games = fetch_user_games;
-	window.fetch_user_games_big = fetch_user_games_big;
-	window.fetch_friend_games_big = fetch_friend_games_big;
-	window.togglePanel = togglePanel;
+	// window.fetch_user_friendships = fetch_user_friendships;
+	// window.fetch_user_games = fetch_user_games;
+	// window.fetch_user_games_big = fetch_user_games_big;
+	// window.fetch_friend_games_big = fetch_friend_games_big; //REVIEW
+	// window.togglePanel = togglePanel;
 }
 
 export async function addFriend(event: Event): Promise<void> {
@@ -70,7 +70,7 @@ export async function fetch_user_friendships(): Promise<void> {
     try {
         const data = await fetchAPI('/request/friendship/get-user-friendships', 'GET', null, false);
 		if (!data.success) return;
-
+		
 		const friendships = data.friendships;
 		const user = data.user;
 		const accepted:	Friendship[] = friendships.filter((f: Friendship) => f.status === 'accepted');
@@ -84,7 +84,7 @@ export async function fetch_user_friendships(): Promise<void> {
 			let statusClass: string = `${friendship.friendOnlineStatus ? 'friend_online_status online' : 'friend_online_status offline'}`;
 			let statusTitle: string = `${friendship.friendOnlineStatus ? 'Online' : 'Offline'}`;
 			let friendshipProfilePicture: string = friendship.status === 'accepted' ? friendship.friendProfilePicture : '/assets/image/default-profile-picture.png';
-			return `
+			return /*html*/`
 				<div id="friendId-${friendship.friendId}" class="friend">
 					<div class="friend-info">
 						<div id="friendStatus-${friendship.friendId}" class="${friendship.status === 'accepted' ? statusClass : ''}" title="${statusTitle}"></div>
@@ -94,10 +94,10 @@ export async function fetch_user_friendships(): Promise<void> {
 							<div class="friend-status-actions">
 								${
 									showActions
-									? `
+									? /*html*/`
 										<div class="friend-actions">
-											<button class="friend-btn accept-btn" onclick="accept_friendship(${friendship.friendshipId})">✓</button>
-											<button class="friend-btn reject-btn" onclick="delete_friendship(${friendship.friendshipId})">✖</button>
+											<button class="friend-btn accept-btn" id="friend_btn_accept" onclick="accept_friendship(${friendship.friendshipId})">✓</button>
+											<button class="friend-btn reject-btn" id="friend_btn_reject" onclick="delete_friendship(${friendship.friendshipId})">✖</button>
 										</div>
 									`
 									: ``
@@ -111,6 +111,9 @@ export async function fetch_user_friendships(): Promise<void> {
 				</div>
 			`;
 		};
+
+
+
 
 		document.getElementById('friends-accepted').innerHTML =
 			accepted.map(friend => renderFriend(friend, false)).join('') || `<div class="text-center">No Friends found</div>`;
@@ -188,6 +191,8 @@ export async function fetch_user_friendships(): Promise<void> {
 				}
 			};
 		});
+
+
 
 		const deleteButtons = document.querySelectorAll('.delete-btn');
 

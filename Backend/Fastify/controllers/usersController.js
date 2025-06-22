@@ -898,29 +898,19 @@ export async function anonymizeUser(request, reply) {
 
 		const user = infos.user
 		let newAccessToken = infos.accessToken
-		if (!user) {
-			fastify.log.warn('Anonymization failed: User not found in token')
+		if (!user)
 			return reply.code(401).send({ success: false, error: 'User not found' })
-		}
-		
-		try {
-			const anonymizedUsername = await generateAnonymousUsername(user.userId)
-			fastify.log.info(`Anonymizing user account: ${user.username} -> ${anonymizedUsername}`)
-		} catch (usernameError) {
-			fastify.log.error(`Failed to generate anonymous username: ${usernameError.message}`)
-			return reply.code(500).send({ success: false, error: 'Failed to generate unique username' })
-		}
-		
+
+		const anonymizedUsername = await generateAnonymousUsername(user.userId)
 		const anonymizedProfilePicture = "/assets/image/default-profile-picture.png"
 		usersModel.updateProfilePicture(user.userId, anonymizedProfilePicture)
 		newAccessToken = fastify.jwt.sign({ userId: user.userId, username: anonymizedUsername }, { expiresIn: '15m' })
 
-		const decoded = fastify.jwt.decode(accessToken)
+		const decoded = fastify.jwt.decode(infos.accessToken)
 		const expiresIn = decoded.exp - Math.floor(Date.now() / 1000)
-		if (expiresIn > 0) {
-			redisModel.addToBlacklist(accessToken, expiresIn)
-		}
-		
+		if (expiresIn > 0)
+			redisModel.addToBlacklist(infos.accessToken, expiresIn)
+
 		fastify.log.info(`User account anonymized successfully: ${user.username}`)
 		return reply.code(200).send({ success: true, profile_picture: anonymizedProfilePicture, accessToken: newAccessToken, message: 'User account anonymized successfully' })
 	} catch (error) {

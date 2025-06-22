@@ -12,6 +12,9 @@ import { enable_skin_perso_player_solo, disable_skin_perso_player_solo, disable_
 import { enable_skin_multi, disable_skin_and_save_multi, disable_skin_multi, switch_skin_perso_player1_right_multi, switch_skin_perso_player1_left_multi, switch_skin_perso_player2_left_multi, switch_skin_perso_player2_right_multi, switch_skin_perso_player3_left_multi, switch_skin_perso_player3_right_multi, switch_skin_perso_player4_left_multi, switch_skin_perso_player4_right_multi } from "../../../srcs/game/gameplay/multiplayer/init_skin_perso_multi.js";
 import { get_skin_is_init } from "../../../srcs/game/gameplay/solo/skin/init_skin_utils.js";
 import { homeView, StorageKeys } from "../../../api/utils.js";
+import { accessProfileInfo, changeProfilePicture, delete_account, anonymize_user, export_data, enable_doubleAuth, disable_doubleAuth, activate2FA, updateProfileInfo } from "../../../api/userManagement.js";
+import { logout, login_1v1, login_2v2, login_platformer } from "../../../api/auth.js";
+import { addFriend, fetch_user_games_big, togglePanel } from "../../../api/friendships.js";
 
 let powerUP_nb = 0;
 let powerUP_nb_multi = 0;
@@ -35,7 +38,7 @@ export default class Game_menu extends AbstractView {
 		<div class="navbar_menu">
 			<div class="profile_photo_circle_nav_bar" id="profile_photo_circle_nav_bar"><img src="${StorageKeys.PROFILE_PICTURE}" alt="profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;"></div>
 			<h1 id="player_name" class="player_name">${StorageKeys.PLAYER1}</h1>
-			<button class="option_navBar" id="option_btn_navBar" onclick="togglePanel(event)">
+			<button class="option_navBar" id="option_btn_navBar"> <!-- onclick="togglePanel(event)"-->
 				<img src="../../../srcs/game/assets/image/menu.svg" alt="menu">
 			</button>
 			
@@ -212,7 +215,7 @@ export default class Game_menu extends AbstractView {
 					</div>
 				</div>
 
-				<form class="add_friend_section" onsubmit="addFriend(event)">
+				<form class="add_friend_section" id="add_friend_section">
 					<input type="text" id="friend_name_input" placeholder="Username..." />
 					<button type="submit" id="add_friend_btn">Add</button>
 				</form>
@@ -227,7 +230,7 @@ export default class Game_menu extends AbstractView {
 					</table>
 				</div>
 			</div>
-			<button class="deconexion_navBar" id="deconnect_btn_navBar" onclick="logout()">Disconnect</button>
+			<button class="deconexion_navBar" id="deconnect_btn_navBar">Disconnect</button> <!-- onclick="logout()" -->
 		</div>
 		<div class="view1" id="view1">
 			<div class="view1-content">
@@ -348,7 +351,7 @@ export default class Game_menu extends AbstractView {
 				<div class="parrametres_profile" id="parametres_profile">
 					<div class="parametres_profile_content">
 						<h1>PROFILE SETTINGS</h1>
-						<form id="modif_profile" class="modif_profile" onsubmit="accessProfileInfo(event)">
+						<form id="modif_profile" class="modif_profile"> <!-- onsubmit="accessProfileInfo(event)"-->
 							<label for="mdp">Password</label>
 							<input type="password" id="password" name="password" placeholder="Password" required>
 							<button type="submit" class="btn_valider_mdp">Validate</button>
@@ -357,7 +360,7 @@ export default class Game_menu extends AbstractView {
 							<div class="photo_profile">
 								<div class="profile_photo_container">
 									<div class="profile_photo_circle" id="profile_photo_circle"></div>
-									<form id="uploadForm" enctype="multipart/form-data" onsubmit="changeProfilePicture(event)">
+									<form id="uploadForm" enctype="multipart/form-data"> <!-- onsubmit="changeProfilePicture(event)"-->
 										<input type="file" name="image" id="profile_photo_input" accept="image/*" />
 										<button type="button" onclick="document.getElementById('profile_photo_input').click()">
 											Choose File
@@ -367,7 +370,7 @@ export default class Game_menu extends AbstractView {
 									</form>
 								</div>
 							</div>
-							<form id="updateProfileForm" onsubmit="updateProfileInfo(event)">
+							<form id="updateProfileForm"> <!-- onsubmit="updateProfileInfo(event)"-->
 								<div class="input_container">
 									<label for="username">Change username</label>
 									<input type="text" id="change_username" name="username">
@@ -381,21 +384,21 @@ export default class Game_menu extends AbstractView {
 									<input type="password" id="confirm_change_password" name="confirm_password" placeholder="******">
 								</div>
 								<div id="fa_selector" class="fa_selector">
-									<p>2FA :<input type="checkbox" id="active_fa" class="active_fa" onchange="this.checked ? enable_doubleAuth() : disable_doubleAuth()" /></p>
+									<p>2FA :<input type="checkbox" id="active_fa" class="active_fa" /></p> <!--onchange="this.checked ? enable_doubleAuth() : disable_doubleAuth()"-->
 								</div>
 								<button type="submit" id="valid_profile_info" class="valid_profile_info_btn">Valider</button>
 							</form>
 							<div class="btn_deconnect">
-								<button id="deconnect_btn" class="btn_deconnect_btn" onclick="logout()">Disconnect</button>
+								<button id="deconnect_btn" class="btn_deconnect_btn" >Disconnect</button> <!--onclick="logout()"-->
 							</div>
 							<div class="btn_delete">
-								<button id="delete_btn" class="btn_delete_btn" onclick="delete_account()">Delete account</button>
+								<button id="delete_btn" class="btn_delete_btn" >Delete account</button> <!--onclick="delete_account()"-->
 							</div>
 							<div class="export_btn">
-								<button id="export_btn" class="btn_export_btn" onclick="export_data()">Export data</button>
+								<button id="export_btn" class="btn_export_btn">Export data</button> <!--onclick="export_data()"-->
 							</div>
 							<div class="anonymize_btn">
-								<button id="anonymize_btn" class="btn_anonymize_btn" onclick="anonymize_user()">Anonymize Account</button>
+								<button id="anonymize_btn" class="btn_anonymize_btn">Anonymize Account</button> <!-- onclick="anonymize_user()" -->
 							</div>
 							<div class="cgu-container">
 								<label for="accept-cgu"><a href="#" id="show-cgu" class="cgu-link">Terms of Service</a></label>
@@ -409,7 +412,7 @@ export default class Game_menu extends AbstractView {
 				</div>
 
 				<div class="choose_your_opponent_1v1" id="choose_your_opponent_1v1_id">
-					<form class="choose_your_opponent_1v1_content" id="choose_your_opponent_1v1_form" onsubmit="login_1v1(event)">
+					<form class="choose_your_opponent_1v1_content" id="choose_your_opponent_1v1_form"> <!-- onsubmit="login_1v1(event)"-->
 						<h1>CONNECT YOUR OPPONENT</h1>
 						<div class="player-section">
 							<p>PLAYER 2</p>
@@ -427,7 +430,7 @@ export default class Game_menu extends AbstractView {
 				</div>
 
 				<div class="choose_your_opponent_platformer" id="choose_your_opponent_platformer_id">
-					<form class="choose_your_opponent_platformer_content" id="choose_your_opponent_platformer_form" onsubmit="login_platformer(event)">
+					<form class="choose_your_opponent_platformer_content" id="choose_your_opponent_platformer_form"> <!-- onsubmit="login_platformer(event)"-->
 						<h1>CONNECT YOUR OPPONENT</h1>
 						<div class="player-section">
 							<p>PLAYER 2</p>
@@ -447,7 +450,7 @@ export default class Game_menu extends AbstractView {
 
 
 				<div class="choose_your_opponent_multi" id="choose_your_opponent_multi_id">
-					<form class="choose_your_opponent_multi_content" id="choose_your_opponent_multi_form" onsubmit="login_2v2(event)">
+					<form class="choose_your_opponent_multi_content" id="choose_your_opponent_multi_form"> <!-- onsubmit="login_2v2(event)"-->
 						<h1>CONNECT YOUR OPPONENTS</h1>
 
 						<div class="player-section">
@@ -547,7 +550,7 @@ export default class Game_menu extends AbstractView {
 				</div>
 			</div>
 
-			<form id="code_validation_id" class="code_validation hidden" onsubmit="activate2FA(event)">
+			<form id="code_validation_id" class="code_validation hidden"> <!-- onsubmit="activate2FA(event)"-->
 				<img id="qrCode" src="../../../srcs/game/assets/image/timer-reset.svg" style="width:auto" alt="delay">
 				<label for="code">code</label>
 				<input type="code" id="activate-2fa-code" name="code" placeholder="code" required>
@@ -1432,12 +1435,16 @@ export default class Game_menu extends AbstractView {
 
 		active_fa.addEventListener('change', () => {
 			if (active_fa.checked) {
+				enable_doubleAuth();
 				code_validation_id.classList.add('active');
 				fa_selector.classList.remove('hidden');
 			}
-			else
+			else {
+				disable_doubleAuth();
 				fa_selector.classList.add('hidden');
+			}
 		});
+		
 
 		cancel_fa.addEventListener('click', () => {
 			code_validation_id.classList.remove('active');
@@ -1476,13 +1483,15 @@ export default class Game_menu extends AbstractView {
 		const option_btn_navBar = document.getElementById('option_btn_navBar');
 		const panel_option_navbar = document.getElementById('panel_option_navbar');
 		const option_btn_remove = document.getElementById('option_btn_remove');
-		const deconnect_btn_navBar = document.getElementById('deconnect_btn_navBar');
+		
 		const gameHistory = document.getElementById('game_history');
-		option_btn_navBar.addEventListener('click', () => {
+
+		option_btn_navBar.addEventListener('click', (event) => {
 			panel_option_navbar.classList.remove('remove'); // retire l'animation de fermeture
 			void panel_option_navbar.offsetWidth; // force le reflow pour relancer l'animation si besoin
 			panel_option_navbar.classList.add('active');
 			option_btn_navBar.style.display = 'none';
+			togglePanel(event);
 		});
 
 		option_btn_remove.addEventListener('click', () => {
@@ -1508,6 +1517,7 @@ export default class Game_menu extends AbstractView {
 			btn_back_home.classList.remove('active');
 			view5.classList.remove('active');
 			StorageKeys.HISTORY_IS_VISIBLE = true;
+			fetch_user_games_big();
 		});
 
 		exit_game_history_btn.addEventListener('click', () => {
@@ -1556,6 +1566,38 @@ export default class Game_menu extends AbstractView {
 		document.getElementById("start-platformer").addEventListener('click', () => {
 			handleViewTransitions("platformer", "vue2");
 		});
+
+
+		/***********************************************************************/
+		/*************************UserManagement*******************************/
+		/***********************************************************************/
+
+		const accessProfileBtn = document.getElementById('modif_profile');
+		const changeAvatarBtn = document.getElementById('uploadForm');
+		const deleteBtn = document.getElementById('delete_btn');
+		const anonymizeBtn = document.getElementById('anonymize_btn');
+		const exportBtn = document.getElementById('export_btn');
+		const updateProfileBtn = document.getElementById('updateProfileForm');
+		const deconnect_btn_navBar = document.getElementById('deconnect_btn_navBar');
+		const deconnect_btn = document.getElementById('deconnect_btn');
+		const login1v1Btn = document.getElementById('choose_your_opponent_1v1_form');
+		const login2v2Btn = document.getElementById('choose_your_opponent_multi_form');
+		const add_friend_section = document.getElementById('add_friend_section');
+
+		accessProfileBtn.addEventListener('submit', (event) => { accessProfileInfo(event); });
+		changeAvatarBtn.addEventListener('submit', (event) => { changeProfilePicture(event); });
+		deleteBtn.addEventListener('click', () => { delete_account(); });
+		anonymizeBtn.addEventListener('click', () => { anonymize_user(); });
+		exportBtn.addEventListener('click', () => { export_data(); });
+		code_validation_id.addEventListener('submit', (event) => { activate2FA(event); });
+		updateProfileBtn.addEventListener('submit', (event) => { updateProfileInfo(event); });
+		deconnect_btn_navBar?.addEventListener('click', async () => { await logout(); });
+		deconnect_btn?.addEventListener('click', async () => { await logout(); });
+		login1v1Btn?.addEventListener('submit', async (event) => { await login_1v1(event); });
+		login2v2Btn?.addEventListener('submit', async (event) => { await login_2v2(event); });
+		choose_your_opponent_platformer_form?.addEventListener('submit', async (event) => { await login_platformer(event); });
+		add_friend_section.addEventListener('submit', (event) => { addFriend(event); });
+
 	}
 }
 

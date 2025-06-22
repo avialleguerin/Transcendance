@@ -5,19 +5,6 @@ import { connectWebSocket, disconnectWebSocket } from './websocket.js';
 
 export let tokenClient: GoogleTokenClient | null = null;
 
-if (typeof window !== 'undefined') {
-	window.login = login;
-	window.register = register;
-	window.verify2FA = verify2FA;
-	window.logout = logout;
-	window.login_1v1 = login_1v1;
-	window.login_2v2 = login_2v2;
-	window.login_tournament = login_tournament;
-	window.login_platformer = login_platformer;
-	window.initGoogleSignIn = initGoogleSignIn;
-	window.tokenClient = tokenClient;
-}
-
 //* ==== LOG-INs ==== *//
 
 /**
@@ -207,8 +194,6 @@ export async function verify2FA(event: Event) {
 		}
 	} catch (err) { console.error(`verify2FA: ${err}`); }
 }
-
-
 
 /**
  * Register a new user.

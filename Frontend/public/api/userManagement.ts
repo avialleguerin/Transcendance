@@ -1,19 +1,6 @@
 import { notif, fetchAPI, $, $input, $form, updateUI, gameMenuView, homeView, StorageKeys } from './utils.js';
 import { disconnectWebSocket } from './websocket.js';
 
-if (typeof window !== 'undefined') {
-	window.accessProfileInfo = accessProfileInfo;
-	window.changeProfilePicture = changeProfilePicture;
-	window.activate2FA = activate2FA;
-	window.enable_doubleAuth = enable_doubleAuth;
-	window.disable_doubleAuth = disable_doubleAuth;
-	window.export_data = export_data;
-	window.anonymize_user = anonymize_user;
-	window.delete_account = delete_account;
-	window.fetchProfile = fetchProfile;
-	window.updateProfileInfo = updateProfileInfo;
-}
-
 export async function changeProfilePicture(event: Event): Promise<void> {
 	event.preventDefault();
 	const input = $input('profile_photo_input');
@@ -92,7 +79,6 @@ export async function disable_doubleAuth(): Promise<void> {
 
 export async function export_data(): Promise<void> {
 	try {
-		// notif("Preparing your data for download...", true);
 		const data = await fetchAPI('/request/user/export-data', 'GET', null, false);
 
 		const username = data.personal_information.username;
