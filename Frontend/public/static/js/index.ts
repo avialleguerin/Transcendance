@@ -1,3 +1,4 @@
+
 import home from "./views/home.js";
 import Game_menu from "./views/game-menu.js";
 import solo_game_1v1 from "./views/solo-game-1v1.js";
@@ -6,14 +7,200 @@ import tournament from "./views/tournament.js";
 import tournament_game from "./views/tournament-game.js";
 import PlatformView  from "./views/platformer/PlatformView.js";
 import { Route, RouteMatch } from "../../api/types.js";
+import { gameMenuView } from "../../api/utils.js";
+import { handleViewTransitions } from "../../srcs/game/gameplay/views/camera.js";
+import { leave_Game, leave_Multiplayer_Game, leave_tournament_game } from "../../srcs/game/gameplay/babylon.js";
+import { gameState, GameState } from "./views/platformer/constants.js";
+import { Setgame_started } from "./views/platformer/PlatformView.js";
+import { get_skin_is_init } from "../../srcs/game/gameplay/solo/skin/init_skin_utils.js";
+import { disable_skin_perso_player_first_and_seconde } from "../../srcs/game/gameplay/solo/skin/init_skin_player_podium.js";
+import { disable_skin_perso_player_first_and_seconde_default } from "../../srcs/game/gameplay/solo/skin/init_skin_player_default.js";
+import { setPowerUP_value, setPowerUP_value_multi } from "./views/game-menu.js";
+import { disable_skin_multi_podium_default } from "../../srcs/game/gameplay/multiplayer/init_teamPlayer_podium_default.js";
+import { disable_skin_multi_podium } from "../../srcs/game/gameplay/multiplayer/init_teamPlayer_podium.js";
 
-
-
+let canTransition: boolean = true;
 let leave_game_var: boolean = false;
+let currentPage: string = location.pathname;
+let navigationHistory: string[] = [location.pathname];
+let canNavigate = true;
+
+let is_init = get_skin_is_init();
 
 const navigateTo = (url: string): void => {
+	const previousPage = currentPage;
+	const nextPage = url;
+
+	// Réinitialiser canNavigate à true au début
+	canNavigate = true;
+	let blockMessage = "";
+	
+	if (nextPage === "/solo-game-1v1" && !localStorage.getItem("Player2")) {
+		canNavigate = false;
+		blockMessage = "You don't have opponents to play with";
+
+	}
+	
+	if (nextPage === "/multi-player-game" && !localStorage.getItem("Player2") && !localStorage.getItem("Player3") && !localStorage.getItem("Player4")) {
+		canNavigate = false;
+		blockMessage = "You don't have opponents to play with";
+	}
+
+	else if (nextPage === "/platformer" && !localStorage.getItem("Player2")) {
+		canNavigate = false;
+		blockMessage = "You don't have opponents to play with";
+	}
+
+	else if (nextPage === "/tournament-game" && localStorage.getItem("canPlay") === "false") {
+		canNavigate = false;
+		blockMessage = "You don't have opponents to play with";
+	}
+
+	if (!canNavigate)
+	{
+		console.log(`🚫 Navigation bloquée: ${previousPage} → ${nextPage}`);
+		gameMenuView(false, blockMessage);
+		return;
+	}
+	
+	navigationHistory.push(nextPage);
+	
+	logPageTransition(previousPage, nextPage);
+	
 	history.pushState(null, "", url);
 	router();
+};
+
+// Exporter navigateTo pour pouvoir l'utiliser dans utils.ts
+export { navigateTo };
+
+const logPageTransition = (from: string, to: string): void => {
+	if (from === "/")
+	{
+		if (to === "/game-menu")
+			console.log("📱 Transition: Accueil → Menu de jeu");
+	}
+	
+	else if (from === "/game-menu")
+	{
+		if (to === "/")
+		{
+			console.log("🏠 Transition: Menu de jeu → Accueil");
+		}
+		else if (to === "/solo-game-1v1" && localStorage.getItem("Player2"))
+		{
+			handleViewTransitions("vue2", "vue3");
+			canTransition = true;
+		}
+		else if (to === "/solo-game-1v1" && !localStorage.getItem("Player2"))
+		{
+			gameMenuView(false, "You dont have oponents to play with");
+			canTransition = false;
+		}
+
+		else if (to === "/multi-player-game" && (localStorage.getItem("Player2") && localStorage.getItem("Player3") && localStorage.getItem("Player4")))
+		{
+			handleViewTransitions("vue2", "vue3");
+			canTransition = true;
+		}
+
+		else if (to === "/multi-player-game" && (!localStorage.getItem("Player2") && !localStorage.getItem("Player3") && !localStorage.getItem("Player4")))
+		{
+			gameMenuView(false, "You dont have oponents to play with");
+			canTransition = false;
+		}
+	
+
+		else if (to === "/tournament")
+		{
+			handleViewTransitions("tournament", "vue2");
+			canTransition = true;
+		}
+		else if (to === "/platformer" && localStorage.getItem("Player2"))
+		{
+			handleViewTransitions("platformer", "vue2");
+			canTransition = true;
+		}
+		else if (to === "/platformer" && !localStorage.getItem("Player2"))
+		{
+			gameMenuView(false, "You dont have oponents to play with");
+			canTransition = false;
+		}
+
+		else {
+			console.log(`❓ Transition inconnue: ${from} → ${to}`);
+		}
+	}
+
+	else if (from === "/solo-game-1v1")
+	{
+		if (to === "/game-menu")
+		{
+			handleViewTransitions("vue2", "vue4");
+			leave_Game();
+			if (is_init === true)
+				disable_skin_perso_player_first_and_seconde();
+			else
+				disable_skin_perso_player_first_and_seconde_default();
+			setPowerUP_value(0);
+		}
+	}
+	
+	else if (from === "/multi-player-game")
+	{
+		if (to === "/game-menu")
+		{
+			handleViewTransitions("vue2", "vue4");
+			leave_Multiplayer_Game();
+			if (is_init === true)
+				disable_skin_multi_podium();
+			else
+				disable_skin_multi_podium_default();
+			setPowerUP_value_multi(0);
+		}
+	}
+
+	else if (from === "/tournament")
+	{
+		if (to === "/game-menu")
+		{
+			localStorage.setItem("tournamentStarted", "false");
+			handleViewTransitions("vue2", "tournament");
+		}
+		else if (to === "/tournament-game" && localStorage.getItem("canPlay") === "true")
+		{
+			handleViewTransitions("tournament", "vue3");
+			canTransition = true;
+
+		}
+		else if (to === "/tournament-game" && localStorage.getItem("canPlay") === "false")
+		{
+			gameMenuView(false, "You dont have oponents to play with");
+			canTransition = false;
+		}
+	}
+
+	else if (from === "/tournament-game")
+	{
+		if (to === "/tournament")
+		{
+			handleViewTransitions("tournament", "vue4");
+			leave_tournament_game();
+		}
+	}
+
+	else if (from === "/platformer" ) {
+		if (to === "/game-menu") {
+			handleViewTransitions("vue2", "platformer");
+			localStorage.removeItem("Player2");
+			gameState.previous = GameState.Menu;
+			gameState.current = GameState.Menu;
+		}
+	}
+
+	else {
+		console.log(`❓ Transition inconnue: ${from} → ${to}`);
+	}
 };
 
 const router = async (): Promise<void> => {
@@ -36,23 +223,47 @@ const router = async (): Promise<void> => {
 
 	let match: RouteMatch | undefined = potentialMatches.find((potentialMatch) => potentialMatch.isMatch);
 
-	if (!match) {
+	if (!match)
+	{
 		match = {
 			route: routes[0],
 			isMatch: true,
 		};
 	}
 
-	const view = new match.route.view();
+	const accessToken = sessionStorage.getItem("accessToken");
+	if (match.route.path === "/" && accessToken) {
+		console.log("Vue home chargée !");
+		gameMenuView(false, "You are already logged in");
+		return;
+	}
+
+	if (canTransition === false)
+	{
+		if (navigationHistory.length > 1)
+		{
+			const previousPage = navigationHistory[navigationHistory.length - 2];
+			history.pushState(null, "", previousPage);
+			currentPage = previousPage;
+		}
+		return;
+	}
+
+	const previousPage = currentPage;
+	currentPage = location.pathname;
+	
+	if (previousPage !== currentPage) {
+		logPageTransition(previousPage, currentPage);
+	}
 	const app: HTMLElement | null = document.querySelector("#app");
 	
-	app.style.opacity = "0";
+	app.style.display = "none";
 
 	setTimeout(async () => {
 		const view = new match.route.view();
+
 		app.innerHTML = await view.getHtml();
-		app.style.transition = "opacity 0.5s ease-in-out";
-		app.style.opacity = "1";
+		app.style.display = "flex";
 
 		if (typeof view.initEvents === "function") view.initEvents();
 		if (typeof view.createAccount === "function") view.createAccount();
@@ -83,7 +294,66 @@ const router = async (): Promise<void> => {
 	}, 1500);
 };
 
-window.addEventListener("popstate", router);
+export function getCurrentPage(): string {
+	return currentPage;
+}
+
+export function getNavigationInfo(): { current: string, previous?: string } {
+	return {
+		current: currentPage,
+		previous: document.referrer ? new URL(document.referrer).pathname : undefined
+	};
+}
+
+export function disableBackNavigation(): void {
+history.pushState(null, "", location.href);
+window.onpopstate = function() {
+	history.pushState(null, "", location.href);
+	console.log("🔒 Navigation arrière bloquée");
+};
+}
+
+window.removeEventListener("popstate", router);
+
+window.addEventListener("popstate", (e) => {
+	const targetPath = location.pathname;
+	const previousPath = currentPage;
+
+	let blockNavigation = false;
+	let blockMessage = "";
+
+	if (targetPath === "/solo-game-1v1" && !localStorage.getItem("Player2")) {
+		blockNavigation = true;
+		blockMessage = "You don't have opponents to play with";
+	}
+
+	if (targetPath === "/multi-player-game" && !localStorage.getItem("Player2") && !localStorage.getItem("Player3") && !localStorage.getItem("Player4")) {
+		blockNavigation = true;
+		blockMessage = "You don't have opponents to play with";
+	}
+
+	if (targetPath === "/platformer" && !localStorage.getItem("Player2")) {
+		blockNavigation = true;
+		blockMessage = "You don't have opponents to play with";
+	}
+
+	if (targetPath === "/tournament-game" && localStorage.getItem("canPlay") === "false") {
+		blockNavigation = true;
+		blockMessage = "You don't have opponents to play with";
+	}
+
+	if (blockNavigation)
+	{
+		console.log(`🚫 Navigation par flèche bloquée: ${previousPath} → ${targetPath}`);
+		history.back();
+		currentPage = previousPath;
+		setTimeout(() => {
+			gameMenuView(false, blockMessage);
+		}, 100);
+		return;
+	}
+	router();
+});
 
 document.addEventListener("DOMContentLoaded", () => {
 	document.body.addEventListener("click", (e: MouseEvent) => {
@@ -105,13 +375,12 @@ export function setLeaveGameVar(value: boolean): void {
 	leave_game_var = value;
 }
 
-//*POPUP COOKIE
 document.addEventListener('DOMContentLoaded', function() {
 	const persistentPopup = document.getElementById("persistent-popup");
 	const necessaryBtn = document.getElementById("necessary-btn");
 	const allowAllBtn = document.getElementById("allow-all-btn");
 
-	necessaryBtn?.addEventListener("click", () => {
+	necessaryBtn.addEventListener("click", () => {
 		persistentPopup?.classList.remove("active");
 		localStorage.setItem('cookieConsent', 'necessary');
 	});

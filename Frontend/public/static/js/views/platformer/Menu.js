@@ -3,7 +3,7 @@ import { Getgame_started, Setgame_started } from './PlatformView.js';
 import { get_platformers } from "../../../../api/games.js";
 
 export default class Menu {
-	constructor(config) {
+	constructor(config, player) {
 		this.title = "⏱️ Chrono Clash";
 		this.options = ["▶ Start", "⚙ Options", "☷ History", "✖ Quit" ];
 		this.selectedOption = 0;
@@ -27,6 +27,8 @@ export default class Menu {
 		this.optionOptions = 1;
 		this.optionHistory = 2;
 		this.optionQuit = 3;
+
+		this.player = player;
 
 		this.boundMouseClick = this.handleMouseClick.bind(this);
 		
@@ -183,3 +185,17 @@ export default class Menu {
 		}
 	}
 }
+
+export function leave_platformer_game() {
+    Setgame_started(false);
+    gameState.previous = gameState.current;
+    gameState.current = GameState.Menu;
+    localStorage.removeItem("platformer_view");
+    
+    // AJOUTER: Reset de la caméra
+    import('./constants.js').then(module => {
+        module.camera.position.x = 0;
+        module.camera.position.y = 0;
+    });
+}
+

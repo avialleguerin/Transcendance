@@ -128,10 +128,16 @@ export default class extends AbstractView {
 			space_pressed = false;
 			bool = false;
 			handleViewTransitions("vue2", "vue4");
-			setTimeout(() => {
-				window.history.back();
-				leave_Multiplayer_Game();
-			}, 1500);
+			
+			// Utiliser navigateTo au lieu de window.history.back()
+			import('../index.js').then(module => {
+				if (module.navigateTo) {
+					setTimeout(() => {
+						module.navigateTo('/game-menu');
+						leave_Multiplayer_Game();
+					}, 100);
+				}
+			});
 		});
 	}
 

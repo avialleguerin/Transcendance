@@ -119,6 +119,8 @@ export default class extends AbstractView {
 			startTournamentGame();
 			count = parseInt(localStorage.getItem('tournamentCount')) || 0;
 			localStorage.setItem('tournamentCount', count.toString());
+			localStorage.setItem("canPlay", "true");
+			console.log("canPlay set to true");
 
 			const Player1 = document.getElementById('Player1');
 			const Player2 = document.getElementById('Player2');
@@ -371,6 +373,7 @@ function updateTournamentState(
 		match6_loser: PlayerElement | undefined,
 		match7_winner: PlayerElement | undefined,
 		match7_loser: PlayerElement | undefined;
+
 
 	if (count >= 0) {
 		const players: PlayerElement[] = [Player1, Player2, Player3, Player4];
