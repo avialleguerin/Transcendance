@@ -152,6 +152,7 @@ export default class extends AbstractView {
 		count = parseInt(localStorage.getItem('tournamentCount')) || 0;
 		
 		updateTournamentState(count, Player1, Player2, Player3, Player4);
+		
 
 		const maxCount = secondeChance ? 7 : 6;
 		if (count >= maxCount) {
@@ -230,15 +231,16 @@ export default class extends AbstractView {
 			localStorage.setItem('tournamentStarted', tournamentStarted.toString());
 
 			resetHighlight([Player1, Player2, Player3, Player4]);
-
 			resetTournamentState(Player1, Player2, Player3, Player4);
+
 			back_to_menu_view_tournament.style.display = 'block';
 			start_tournament.style.display = 'block';
 			count = 0;
 		});
 	}
 
-	checktournamentstart() {
+	checktournamentstart()
+	{
 		if (window.location.pathname === "/tournament")
 		{
 			const container_name_player = document.getElementById('container_name_player');

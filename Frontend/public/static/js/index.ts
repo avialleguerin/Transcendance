@@ -164,9 +164,27 @@ const logPageTransition = (from: string, to: string): void => {
 	{
 		if (to === "/game-menu")
 		{
+			// AJOUTER: Reset complet du tournoi comme dans confirm_leave_tournament
 			localStorage.setItem("tournamentStarted", "false");
+			
+			// Reset de tous les localStorage du tournoi
+			localStorage.removeItem("match1_result");
+			localStorage.removeItem("match2_result");
+			localStorage.removeItem("match3_result");
+			localStorage.removeItem("match4_result");
+			localStorage.removeItem("match5_result");
+			localStorage.removeItem("match6_result");
+			localStorage.removeItem("match7_result");
+			localStorage.removeItem("tournamentCount");
+			localStorage.removeItem("tournament_finished");
+			localStorage.removeItem("secondChance");
+			localStorage.setItem("tournamentCount", "0");
+			
+			console.log("🏆 Tournoi réinitialisé - Retour au menu");
+			
 			handleViewTransitions("vue2", "tournament");
 		}
+
 		else if (to === "/tournament-game" && localStorage.getItem("canPlay") === "true")
 		{
 			handleViewTransitions("tournament", "vue3");

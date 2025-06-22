@@ -3,6 +3,7 @@ import { getPlayer_1_win, getPlayer_2_win, isGameFinished } from "../../../srcs/
 import { leave_tournament_game } from "../../../srcs/game/gameplay/babylon.js";
 import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.js";
 import { homeView } from "../../../api/utils.js";
+import { getIsloading } from "../../../srcs/game/gameplay/views/loading_screen.js";
 
 export default class extends AbstractView {
 	private cooldowns:		Record<string, boolean>;
@@ -52,13 +53,15 @@ export default class extends AbstractView {
 	
 		if (this.cooldowns[key]) return;
 
-		if (key === " ") {
-			const press_space = document.getElementById("press_space_id");
-			if (press_space) {
-				press_space.style.visibility = "hidden";
-				press_space.style.animation = "none";
-			} else {
-				console.error("press_space_id introuvable !");
+		if (getIsloading() === false) {
+			if (key === " ") {
+				const press_space = document.getElementById("press_space_id");
+				if (press_space) {
+					press_space.style.visibility = "hidden";
+					press_space.style.animation = "none";
+				} else {
+					console.error("press_space_id introuvable !");
+				}
 			}
 		}
 	}

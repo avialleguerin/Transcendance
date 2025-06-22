@@ -1,4 +1,4 @@
-import { createLoadingOverlay, removeLoadingOverlay } from './loading_screen.js';
+import { createLoadingOverlay, removeLoadingOverlay, forceRemoveLoadingOverlay } from './loading_screen.js';
 
 const views = {
 	default:
@@ -47,6 +47,27 @@ const views = {
 		rotation: new BABYLON.Vector3(0.30031205500253655, -4.721353872946304, 0)
 	}
 };
+
+export function clearAllTimeouts() {
+    console.log("🧹 Nettoyage de tous les timeouts de transition");
+    activeTimeouts.forEach(timeout => {
+        clearTimeout(timeout);
+    });
+    activeTimeouts = [];
+    
+    // Stopper l'animation de transition en cours
+    if (currentTransitionAnimation) {
+        scene.onBeforeRenderObservable.remove(currentTransitionAnimation);
+        currentTransitionAnimation = null;
+    }
+    
+    // Reset des variables
+    isLoading = false;
+    currentTransitionId = null;
+    
+    // Forcer la suppression du loading overlay
+    forceRemoveLoadingOverlay();
+}
 
 let currentTransitionAnimation = null;
 let isLoading = false;
@@ -118,6 +139,7 @@ export function handleViewTransitions(viewName, previousView)
 		return;
 	if (!previousView)
 	previousView = 'default';
+
 
 	if (viewName === 'vue1' && previousView === 'default')
 	{

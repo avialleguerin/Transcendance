@@ -9,6 +9,7 @@ import { getPlayer_1_win, getPlayer_2_win } from "../../../srcs/game/gameplay/sc
 import { disable_skin_perso_player_first_and_seconde_default } from "../../../srcs/game/gameplay/solo/skin/init_skin_player_default.js";
 import { get_skin_is_init } from "../../../srcs/game/gameplay/solo/skin/init_skin_utils.js";
 import { homeView } from "../../../api/utils.js";
+import { getIsloading } from "../../../srcs/game/gameplay/views/loading_screen.js";
 
 let spacePressed = false;
 let bool = false;
@@ -205,16 +206,18 @@ export default class solo_game extends AbstractView {
 		
 		if (this.cooldowns[key]) return;
 
-		if (key === " ") {
-			const press_space = document.getElementById("press_space_id");
-			if (press_space) {
-				press_space.style.visibility = "hidden";
-				press_space.style.animation = "none";
+		if (getIsloading() === false) {
+			if (key === " ") {
+				const press_space = document.getElementById("press_space_id");
+				if (press_space) {
+					press_space.style.visibility = "hidden";
+					press_space.style.animation = "none";
+				}
+				else {
+					console.error("press_space_id introuvable !");
+				}
+				spacePressed = true;
 			}
-			else {
-				console.error("press_space_id introuvable !");
-			}
-			spacePressed = true;
 		}
 
 
