@@ -3,6 +3,7 @@ import AbstractView from "./AbstractView.js";
 import { startTournamentGame } from "../../../srcs/game/gameplay/babylon.js";
 import { getPlayer_1_win } from "../../../srcs/game/gameplay/score.js";
 import { homeView } from "../../../api/utils.js";
+import { login_tournament } from "../../../api/auth.js";
 
 let count = 0;
 let tournamentStarted = false;
@@ -32,7 +33,7 @@ export default class extends AbstractView {
 				<h1>TOURNAMENT</h1>
 				<button id="start_tournament" form="container_name_player" class="btn_start_tournament">START</button>
 				<button id="back_to_menu_view_tournament" class="btn_back_tournament">BACK</button>
-				<form class="container_name_player" id="container_name_player" onsubmit="login_tournament(event)">
+				<form class="container_name_player" id="container_name_player"> <!-- onsubmit="login_tournament(event)" -->
 					<h1>Connect your opponents</h1>
 					<div class="player_section">
 						<p>Player 2</p>
@@ -176,6 +177,10 @@ export default class extends AbstractView {
 
 		const leave_tournament = document.getElementById('leave_tournament');
 		const message_id = document.getElementById('message_id');
+
+
+        
+        container_name_player?.addEventListener('submit', async (event) => { await login_tournament(event); });
 
 		leave_tournament.addEventListener('click', () => {
 			message_id.classList.add('active');

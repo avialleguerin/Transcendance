@@ -1,5 +1,5 @@
 import AbstractView from "./AbstractView.js";
-import { initGoogleSignIn, tokenClient } from '../../../api/auth.js';
+import { login, register, verify2FA, initGoogleSignIn, tokenClient } from '../../../api/auth.js';
 import { gameMenuView } from '../../../api/utils.js';
 import { notif } from '../../../api/utils.js';
 
@@ -145,7 +145,7 @@ export default class Home extends AbstractView {
 				<div class="login-form" id="loginform_id">
 					<h1 id="login-title">LOGIN</h1>
 					<div class="form-group"> 
-						<form id="loginForm" class="loginForm" onsubmit="login(event)">
+						<form id="loginForm" class="loginForm"> <!--onsubmit="login(event)"-->
 							<div class="input-container">
 								<label for="username">Username :</label>
 								<input type="text" id="login-username" name="username" placeholder="Your username" required>
@@ -163,8 +163,8 @@ export default class Home extends AbstractView {
 							</div>
 
 						</form>
-						
-						<form id="doubleAuthForm" class="doubleAuthForm" onsubmit="verify2FA(event)">
+
+						<form id="doubleAuthForm" class="doubleAuthForm"> <!-- onsubmit="verify2FA(event)"-->
 							<div class="input-container">
 								<label for="code">2FA Code :</label>
 								<input type="text" id="verify-2fa-code" name="code" placeholder="123456" required>
@@ -176,7 +176,7 @@ export default class Home extends AbstractView {
 				<div class="register-form" id="create_account_id">
 					<h1>SIGN UP</h1>
 					<div class="form-group">
-						<form id="registerForm" onsubmit="register(event)">
+						<form id="registerForm"> <!-- onsubmit="register(event)"-->
 							<div class="input-container">
 								<label for="username">Username :</label>
 									<input type="text" id="register-username" name="username" placeholder="Your username" required>
@@ -214,9 +214,16 @@ export default class Home extends AbstractView {
 	createAccount() {
 		//*===== Form Management =====*/
 		const loginForm = document.getElementById("loginform_id");
+		const loginFormBtn = document.getElementById("loginForm");
+		const registerFormBtn = document.getElementById("registerForm");
+		const doubleAuthForm = document.getElementById("doubleAuthForm");
 		const createAccountForm = document.getElementById("create_account_id");
 		const createAccountButton = document.getElementById("create-Account");
 		const alreadyHaveAccountButton = document.getElementById("alreadyHaveAccountButton_id");
+
+		loginFormBtn?.addEventListener("submit", async (event) => { await login(event); });
+		registerFormBtn?.addEventListener("submit", async (event) => { await register(event); });
+		doubleAuthForm?.addEventListener("submit", async (event) => { await verify2FA(event); });
 
 		createAccountButton.addEventListener("click", () => {
 			loginForm.classList.add("active");

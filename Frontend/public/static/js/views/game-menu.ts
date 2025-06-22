@@ -13,6 +13,7 @@ import { enable_skin_multi, disable_skin_and_save_multi, disable_skin_multi, swi
 import { get_skin_is_init } from "../../../srcs/game/gameplay/solo/skin/init_skin_utils.js";
 import { homeView } from "../../../api/utils.js";
 import { accessProfileInfo, changeProfilePicture, delete_account, anonymize_user, export_data, enable_doubleAuth, disable_doubleAuth, activate2FA, updateProfileInfo } from "../../../api/userManagement.js";
+import { logout, login_1v1, login_2v2, login_platformer } from "../../../api/auth.js";
 
 let powerUP_nb = 0;
 let powerUP_nb_multi = 0;
@@ -228,7 +229,7 @@ export default class Game_menu extends AbstractView {
 					</table>
 				</div>
 			</div>
-			<button class="deconexion_navBar" id="deconnect_btn_navBar" onclick="logout()">Disconnect</button>
+			<button class="deconexion_navBar" id="deconnect_btn_navBar">Disconnect</button> <!-- onclick="logout()" -->
 		</div>
 		<div class="view1" id="view1">
 			<div class="view1-content">
@@ -387,7 +388,7 @@ export default class Game_menu extends AbstractView {
 								<button type="submit" id="valid_profile_info" class="valid_profile_info_btn">Valider</button>
 							</form>
 							<div class="btn_deconnect">
-								<button id="deconnect_btn" class="btn_deconnect_btn" onclick="logout()">Disconnect</button>
+								<button id="deconnect_btn" class="btn_deconnect_btn" >Disconnect</button> <!--onclick="logout()"-->
 							</div>
 							<div class="btn_delete">
 								<button id="delete_btn" class="btn_delete_btn" >Delete account</button> <!--onclick="delete_account()"-->
@@ -410,7 +411,7 @@ export default class Game_menu extends AbstractView {
 				</div>
 
 				<div class="choose_your_opponent_1v1" id="choose_your_opponent_1v1_id">
-					<form class="choose_your_opponent_1v1_content" id="choose_your_opponent_1v1_form" onsubmit="login_1v1(event)">
+					<form class="choose_your_opponent_1v1_content" id="choose_your_opponent_1v1_form"> <!-- onsubmit="login_1v1(event)"-->
 						<h1>CONNECT YOUR OPPONENT</h1>
 						<div class="player-section">
 							<p>PLAYER 2</p>
@@ -428,7 +429,7 @@ export default class Game_menu extends AbstractView {
 				</div>
 
 				<div class="choose_your_opponent_platformer" id="choose_your_opponent_platformer_id">
-					<form class="choose_your_opponent_platformer_content" id="choose_your_opponent_platformer_form" onsubmit="login_platformer(event)">
+					<form class="choose_your_opponent_platformer_content" id="choose_your_opponent_platformer_form"> <!-- onsubmit="login_platformer(event)"-->
 						<h1>CONNECT YOUR OPPONENT</h1>
 						<div class="player-section">
 							<p>PLAYER 2</p>
@@ -448,7 +449,7 @@ export default class Game_menu extends AbstractView {
 
 
 				<div class="choose_your_opponent_multi" id="choose_your_opponent_multi_id">
-					<form class="choose_your_opponent_multi_content" id="choose_your_opponent_multi_form" onsubmit="login_2v2(event)">
+					<form class="choose_your_opponent_multi_content" id="choose_your_opponent_multi_form"> <!-- onsubmit="login_2v2(event)"-->
 						<h1>CONNECT YOUR OPPONENTS</h1>
 
 						<div class="player-section">
@@ -1481,8 +1482,8 @@ export default class Game_menu extends AbstractView {
 		const option_btn_navBar = document.getElementById('option_btn_navBar');
 		const panel_option_navbar = document.getElementById('panel_option_navbar');
 		const option_btn_remove = document.getElementById('option_btn_remove');
-		const deconnect_btn_navBar = document.getElementById('deconnect_btn_navBar');
-		const gameHistory = document.getElementById('game_history');
+		// const gameHistory = document.getElementById('game_history');
+
 		option_btn_navBar.addEventListener('click', () => {
 			panel_option_navbar.classList.remove('remove'); // retire l'animation de fermeture
 			void panel_option_navbar.offsetWidth; // force le reflow pour relancer l'animation si besoin
@@ -1574,6 +1575,13 @@ export default class Game_menu extends AbstractView {
 		const exportBtn = document.getElementById('export_btn');
 		const updateProfileBtn = document.getElementById('updateProfileForm');
 
+		const deconnect_btn_navBar = document.getElementById('deconnect_btn_navBar');
+		const deconnect_btn = document.getElementById('deconnect_btn');
+		const login1v1Btn = document.getElementById('choose_your_opponent_1v1_form');
+		const login2v2Btn = document.getElementById('choose_your_opponent_multi_form');
+		
+		
+
 
 		accessProfileBtn.addEventListener('submit', (event) => { accessProfileInfo(event); });
 		changeAvatarBtn.addEventListener('submit', (event) => { changeProfilePicture(event); });
@@ -1582,6 +1590,12 @@ export default class Game_menu extends AbstractView {
 		exportBtn.addEventListener('click', () => { export_data(); });
 		code_validation_id.addEventListener('submit', (event) => { activate2FA(event); });
 		updateProfileBtn.addEventListener('submit', (event) => { updateProfileInfo(event); });
+
+		deconnect_btn_navBar?.addEventListener('click', async () => { await logout(); });
+		deconnect_btn?.addEventListener('click', async () => { await logout(); });
+		login1v1Btn?.addEventListener('submit', async (event) => { await login_1v1(event); });
+		login2v2Btn?.addEventListener('submit', async (event) => { await login_2v2(event); });
+		choose_your_opponent_platformer_form?.addEventListener('submit', async (event) => { await login_platformer(event); });
 
 	}
 }
