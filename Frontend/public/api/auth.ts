@@ -1,7 +1,7 @@
 import { notif, fetchAPI, homeView, gameMenuView, platformerView, setLocalStorage, updateUI, $, $input, $form, StorageKeys } from './utils.js';
 import { ApiResponse, LoginRequest, RegisterRequest, User, GoogleTokenClient, GoogleSignInResponse,  } from './types.js';
 import { connectWebSocket, disconnectWebSocket } from './websocket.js';
-import { StorageKeys } from './utils.js';
+
 
 export let tokenClient: GoogleTokenClient | null = null;
 
@@ -39,7 +39,6 @@ export async function login(event: Event): Promise<void> {
 			updateUI({ removeClass: [{ id:"doubleAuthForm", className: "hidden" }], addClass: ["loginForm", "doubleAuthForm"] });
 			$input("login-title").textContent = "Double Authentication";
 		} else if (data.success && data.connection_status === "connected") {
-			// setLocalStorage({ "Player1": data.username, "profile_picture": data.profile_picture });
 			StorageKeys.PLAYER1 = data.username
 			StorageKeys.PROFILE_PICTURE = data.profile_picture
 			connectWebSocket()
@@ -66,7 +65,6 @@ export async function login_1v1(event: Event) {
 		const data: ApiResponse  = await fetchAPI('/request/user/login-1v1', 'POST', { username, password }, true, false);
 
 		if (data.success) {
-			// setLocalStorage({ "Player2": data.player2.username });
 			StorageKeys.PLAYER2 = username
 			updateUI({
 				removeClass: ["choose_your_opponent_1v1_form", "container"],
@@ -96,7 +94,6 @@ export async function login_2v2(event: Event): Promise<void> {
 		const data: ApiResponse = await fetchAPI('/request/user/login-2v2', 'POST', { username2, password2, username3, password3, username4, password4 }, true, false);
 
 		if (data.success) {
-			// setLocalStorage({"Player2": username2, "Player3": username3, "Player4": username4 });
 			StorageKeys.PLAYER2 = username2;
 			StorageKeys.PLAYER3 = username3;
 			StorageKeys.PLAYER4 = username4
@@ -203,7 +200,6 @@ export async function verify2FA(event: Event) {
 
 		if (data.success) {
 			sessionStorage.removeItem("authTicket")
-			// setLocalStorage({"Player1": data.username, "profile_picture": data.profile_picture});
 			StorageKeys.PLAYER1 = data.username;
 			StorageKeys.PROFILE_PICTURE = data.profile_picture;
 			connectWebSocket()
@@ -245,7 +241,6 @@ export async function refreshInfos() { //REVIEW - maybe put in utils
 			homeView();
 			
 		} else if (sessionStorage.getItem("accessToken") && sessionStorage.getItem("accessToken") !== "undefined") {
-			// setLocalStorage({"Player1": data.user.username, "profile_picture": data.user.profile_picture});
 			StorageKeys.PLAYER1 = data.user.username;
 			StorageKeys.PROFILE_PICTURE = data.user.profile_picture;
 			console.log(StorageKeys.PLAYER1, StorageKeys.PROFILE_PICTURE);

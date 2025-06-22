@@ -330,7 +330,13 @@ export function resetTournamentState(Player1: PlayerElement, Player2: PlayerElem
 	StorageKeys.MATCH_RESULT4 = null;
 	StorageKeys.MATCH_RESULT5 = null;
 	StorageKeys.MATCH_RESULT6 = null;
+	StorageKeys.MATCH_RESULT7 = null;
 
+	// Reset tournament rankings
+	StorageKeys.TOURNAMENT_FIRST_PLACE = null;
+	StorageKeys.TOURNAMENT_SECOND_PLACE = null;
+	StorageKeys.TOURNAMENT_THIRD_PLACE = null;
+	StorageKeys.TOURNAMENT_FOURTH_PLACE = null;
 
 	StorageKeys.TOURNAMENT_COUNT = 0;
 	StorageKeys.TOURNAMENT_STARTED = false;
@@ -589,9 +595,15 @@ function updateTournamentState(
 				secondeChance = false;
 				StorageKeys.SECOND_CHANCE = false;
 
-				document.getElementById('first_place_name_id')!.textContent = localStorage.getItem(match6_winner.id);
-				document.getElementById('second_place_name_id')!.textContent = localStorage.getItem(match6_loser.id);
-				document.getElementById('third_place_name_id')!.textContent = localStorage.getItem(match5_loser.id);
+				// Store final rankings
+				StorageKeys.TOURNAMENT_FIRST_PLACE = match6_winner.textContent;
+				StorageKeys.TOURNAMENT_SECOND_PLACE = match6_loser.textContent;
+				StorageKeys.TOURNAMENT_THIRD_PLACE = match5_loser?.textContent || null;
+				StorageKeys.TOURNAMENT_FOURTH_PLACE = match3_loser?.textContent || null;
+
+				document.getElementById('first_place_name_id')!.textContent = StorageKeys.TOURNAMENT_FIRST_PLACE;
+				document.getElementById('second_place_name_id')!.textContent = StorageKeys.TOURNAMENT_SECOND_PLACE;
+				document.getElementById('third_place_name_id')!.textContent = StorageKeys.TOURNAMENT_THIRD_PLACE;
 			}
 		}
 	}
@@ -636,9 +648,15 @@ function updateTournamentState(
 				secondeChance = false;
 				StorageKeys.SECOND_CHANCE = false;
 				
-				document.getElementById('first_place_name_id')!.textContent = localStorage.getItem(match7_winner.id);
-				document.getElementById('second_place_name_id')!.textContent = localStorage.getItem(match7_loser.id);
-				document.getElementById('third_place_name_id')!.textContent = localStorage.getItem(match5_loser.id);
+				// Store final rankings for second chance scenario
+				StorageKeys.TOURNAMENT_FIRST_PLACE = match7_winner.textContent;
+				StorageKeys.TOURNAMENT_SECOND_PLACE = match7_loser.textContent;
+				StorageKeys.TOURNAMENT_THIRD_PLACE = match5_loser?.textContent || null;
+				StorageKeys.TOURNAMENT_FOURTH_PLACE = match3_loser?.textContent || null;
+
+				document.getElementById('first_place_name_id')!.textContent = StorageKeys.TOURNAMENT_FIRST_PLACE;
+				document.getElementById('second_place_name_id')!.textContent = StorageKeys.TOURNAMENT_SECOND_PLACE;
+				document.getElementById('third_place_name_id')!.textContent = StorageKeys.TOURNAMENT_THIRD_PLACE;
 			}
 		}
 	}
