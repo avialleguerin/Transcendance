@@ -213,9 +213,6 @@ export default class solo_game extends AbstractView {
 					press_space.style.visibility = "hidden";
 					press_space.style.animation = "none";
 				}
-				else {
-					console.error("press_space_id introuvable !");
-				}
 				spacePressed = true;
 			}
 		}
