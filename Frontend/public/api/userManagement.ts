@@ -133,7 +133,6 @@ export async function delete_account(): Promise<void> {
 			if (data.success) {
 				disconnectWebSocket()
 				sessionStorage.clear()
-				localStorage.clear()
 				homeView()
 			}
 		} catch (err) { console.error(`delete_account: ${err}`) }

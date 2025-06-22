@@ -145,8 +145,6 @@ export async function login_tournament(event: Event): Promise<void> {
 			document.getElementById("Player3").textContent = StorageKeys.PLAYER3;
 			document.getElementById("Player4").textContent = StorageKeys.PLAYER4;
 			StorageKeys.TOURNAMENT_STARTED = true;
-			const tournamentStarted = true;
-			localStorage.setItem('tournamentStarted', tournamentStarted.toString());
 			updateUI({ addClass: [{ id: "tournament_graphic_id", className: "active" }, { id: "container_name_player", className: "hidden"}] });
 			$("start_tournament").style.display = 'none';
 			$("back_to_menu_view_tournament").style.display = 'none';
@@ -170,7 +168,6 @@ export async function login_platformer(event: Event) {
 		const data = await fetchAPI('/request/user/login-1v1', 'POST', { username, password }, true, false);
 
 		if (data.success) {
-			// setLocalStorage({"Player1": localStorage.getItem("Player1"), "Player2": data.player2.username, "platformer_view": true });
 			StorageKeys.PLAYER2 = username;
 			$("start-platformer").click();
 			// PlatformerView(); //TODO
@@ -189,7 +186,6 @@ export async function logout() {
 		disconnectWebSocket()
 		await fetchAPI('/request/user/logout', 'POST', {}, true);
 		sessionStorage.clear();
-		localStorage.clear();
 		homeView();
 	} catch (err) { console.error(`logout: ${err}`); }
 }
@@ -246,7 +242,6 @@ export async function refreshInfos() { //REVIEW - maybe put in utils
 
 		if (!data.accessToken || data.deleted_account) {
 			sessionStorage.clear();
-			localStorage.clear();
 			homeView();
 			
 		} else if (sessionStorage.getItem("accessToken") && sessionStorage.getItem("accessToken") !== "undefined") {
@@ -281,7 +276,6 @@ export async function initGoogleSignIn(): Promise<void> {
 				scope: "openid email profile",
 				callback: handleGoogleSignIn,
 			});
-			localStorage.setItem("googleSignIn", "true");
 		} catch (error) {
 			console.error("Erreur lors de l'initialisation OAuth:", error);
 		}
@@ -299,7 +293,7 @@ export async function handleGoogleSignIn(response: { access_token: string }) {
 			StorageKeys.PLAYER1 = data.name;
 			if (data.avatar)
 				StorageKeys.PROFILE_PICTURE = data.avatar;
-			notif("Connexion Google réussie !", true);
+			notif("Successfully connected with Google !", true);
 			gameMenuView(true, null);
 		} else
 			notif(data.error || "Erreur lors de la connexion Google", false);

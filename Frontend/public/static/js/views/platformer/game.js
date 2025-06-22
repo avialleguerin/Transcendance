@@ -285,7 +285,7 @@ export function initGame()
 	});
 
 	const historyDBInstance = new HistoryDatabase();
-	historyDBInstance.loadFromLocalStorage(); // Charger l'historique depuis le localStorage
+	historyDBInstance.loadFromLocalStorage();
 
 	const gameHistory = new GameHistory({
 		historyDB: historyDBInstance,

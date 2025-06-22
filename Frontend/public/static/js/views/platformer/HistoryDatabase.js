@@ -1,3 +1,5 @@
+import { StorageKeys } from "../../../../api/utils";
+
 export default class HistoryDatabase {
 	constructor() {
 		this.history = [];
@@ -17,10 +19,10 @@ export default class HistoryDatabase {
 		this.history = [];
 	}
 	saveToLocalStorage() {
-		localStorage.setItem('gameHistory', JSON.stringify(this.history));
+		StorageKeys.GAME_HISTORY = JSON.stringify(this.history);
 	}
 	loadFromLocalStorage() {
-		const savedHistory = localStorage.getItem('gameHistory');
+		const savedHistory = StorageKeys.GAME_HISTORY;localStorage
 		if (savedHistory) {
 			this.history = JSON.parse(savedHistory);
 		}

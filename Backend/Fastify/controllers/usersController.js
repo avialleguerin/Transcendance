@@ -40,6 +40,28 @@ export async function googleConfig(request, reply) {
 	}
 }
 
+function generateSecurePassword() {
+	const chars = {
+		lower: 'abcdefghijklmnopqrstuvwxyz',
+		upper: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+		digit: '0123456789',
+		special: '!?@&*#'
+	};
+
+	let password = '';
+
+	password += chars.lower[Math.floor(Math.random() * chars.lower.length)];
+	password += chars.upper[Math.floor(Math.random() * chars.upper.length)];
+	password += chars.digit[Math.floor(Math.random() * chars.digit.length)];
+	password += chars.special[Math.floor(Math.random() * chars.special.length)];
+
+	const allChars = chars.lower + chars.upper + chars.digit + chars.special;
+	for (let i = 4; i < 12; i++)
+		password += allChars[Math.floor(Math.random() * allChars.length)];
+
+	return password.split('').sort(() => Math.random() - 0.5).join('');
+}
+
 export async function googleSignIn(request, reply) {
 	try {
 		const { access_token } = request.body
@@ -58,7 +80,7 @@ export async function googleSignIn(request, reply) {
 
 		if (!user || user.deleted_at) {
 			const username = generateUniqueGoogleUsername(name)
-			const randomPassword = Math.random().toString(36).substring(2, 17)
+			const randomPassword = generateSecurePassword()
 			const hashedPassword = await hashPassword(randomPassword)
 
 			tempPassword = randomPassword
@@ -364,6 +386,7 @@ export async function accessProfileInfo(request, reply) {
 		const { password } = request.body
 		if (!sanitizeInput(password, 'password').success)
 			return reply.code(400).send({ error: "Invalid password" })
+		console.log(`Accessing profile info with password: ${password}`)
 		const infos = await getUserFromToken(request)
 		if (!infos)
 			return reply.code(401).send({ success: false, error: 'Unauthorized' })

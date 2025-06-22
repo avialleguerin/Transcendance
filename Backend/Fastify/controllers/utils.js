@@ -137,15 +137,13 @@ export function sanitizeInput(input, type) {
 		return { success: true, input: sanitizedUsername };
 	} else if (type === "password") {
 		const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!?@&*#])[A-Za-z\d!?@&*#]{8,20}$/;
-		if (!regex.test(input)) {
+		if (!regex.test(input))
 			return { success: false, error: "Password must contain 8-20 characters, one lowercase, one uppercase, one number, and one special character (!?@&*#)" };
-		}
 		return { success: true };
 	} else if (type === "score") {
 		const regex = /^[0-9]{1,4}$/;
-		if (!regex.test(input)) {
+		if (!regex.test(input))
 			return { success: false, error: "Invalid characters in score" };
-		}
 		return { success: true };
 	}
 }

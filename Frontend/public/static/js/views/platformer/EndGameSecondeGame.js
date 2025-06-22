@@ -110,9 +110,7 @@ export default class EndGameSecondeGame {
 			if (this.Score > this.EndGame_FirstGame.Score)
 			{
 				this.WinnerScore = this.Score;
-				// localStorage.setItem("score_player1", this.Score);
 				StorageKeys.SCORE_PLAYER1 = this.Score;
-				// localStorage.setItem("score_player2", this.EndGame_FirstGame.Score);
 				StorageKeys.SCORE_PLAYER2 = this.EndGame_FirstGame.Score;
 			}
 			else
@@ -120,8 +118,6 @@ export default class EndGameSecondeGame {
 				this.WinnerScore = this.EndGame_FirstGame.Score;
 				StorageKeys.SCORE_PLAYER1 = this.EndGame_FirstGame.Score;
 				StorageKeys.SCORE_PLAYER2 = this.Score;
-				// localStorage.setItem("score_player1", this.EndGame_FirstGame.Score);
-				// localStorage.setItem("score_player2", this.Score);
 			}
 			console.log("window.create_platformer");
 			window.create_platformer();

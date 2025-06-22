@@ -168,7 +168,6 @@ export default class Menu {
 		else if (selected === "✖ Quit") {
 			this.selectedOption = 0;
 			this.disableControls();
-			localStorage.removeItem("platformer_view");
 			gameState.previous = GameState.Menu;
 			gameState.current = GameState.Menu;
 			Setgame_started(false);
@@ -190,7 +189,6 @@ export function leave_platformer_game() {
     Setgame_started(false);
     gameState.previous = gameState.current;
     gameState.current = GameState.Menu;
-    localStorage.removeItem("platformer_view");
     
     // AJOUTER: Reset de la caméra
     import('./constants.js').then(module => {
