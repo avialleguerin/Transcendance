@@ -52,6 +52,7 @@ const usersModel = {
 	updatePassword: (userId, newPassword) => { return db.prepare("UPDATE users SET password = ? WHERE userId = ?").run(newPassword, userId) },
 	updateOnlineStatus: (userId, NewOnlineStatus) => { return db.prepare("UPDATE users SET online_status = ? WHERE userId = ?").run(NewOnlineStatus, userId) },
 	setInactiveUsersOffline: (inactiveSince) => { return db.prepare("UPDATE users SET online_status = 0 WHERE last_activity <= ?").run(inactiveSince); },
+	delogAllUsers: () => { return db.prepare("UPDATE users SET online_status = 0").run() },
 	updateProfilePicture: (userId, profile_picture) => { return db.prepare("UPDATE users SET profile_picture = ? WHERE userId = ?").run(profile_picture, userId) },
 	updateGamesWon: (userId) => { return db.prepare("UPDATE users SET games_won = games_won + 1 WHERE userId = ?").run(userId) },
 	updateGamesLost: (userId) => { return db.prepare("UPDATE users SET games_lost = games_lost + 1 WHERE userId = ?").run(userId) },

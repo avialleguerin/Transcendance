@@ -36,45 +36,28 @@ export const log = fastify.logger;
  */
 const start = async () => {
 	try {
-		// 1. Infrastructure plugins first
 		await fastify.register(websocket)
 		await fastify.register(cookie)
 		await fastify.register(colorLoggerPlugin)
-		
-		// 2. Setup Redis
 		setupRedisLogging(fastify);
 		await redisClient.connect();
 		fastify.decorate('redis', redisClient);
 		
-		// 3. Multipart pour les uploads
 		await fastify.register(fastifyMultipart, { 
 			attachFieldsToBody: true, 
 			limits: { fileSize: 5 * 1024 * 1024 } 
 		});
-		
-		// 4. JWT avec secret depuis Vault
 		const jwtSecret = await getJwtSecret();
 		await fastify.register(jwt, { 
 			secret: jwtSecret, 
 			cookie: { cookieName: 'token', signed: false } 
 		});
-		
-		// 5. WebSocket plugin
 		await fastify.register(websocketPlugin)
-		
-		// 6. Routes
 		await fastify.register(routes, { prefix: '/request' })
-		
-		// 7. Database initialization
 		initDb();
-		
-		// 8. Setup cron jobs
+		usersModel.delogAllUsers();
 		setupCronJobs();
-		
-		// 9. Check email configuration
 		checkEmailConfig();
-		
-		// 10. Start server
 		await fastify.listen({ port: 3000, host: '0.0.0.0' })
 		
 	} catch (err) {

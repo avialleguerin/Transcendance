@@ -103,9 +103,9 @@ export async function login_2v2(event: Event): Promise<void> {
 					"2v2-oponent-username4": localStorage.getItem("Player4")
 				}
 			});
+			$form("choose_your_opponent_multi_form").reset();
 		}
 	} catch (err) { notif("Connexion to 2v2 failed", false); }
-	$form("choose_your_opponent_multi_form").reset();
 }
 
 /**

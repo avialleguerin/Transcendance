@@ -18,9 +18,18 @@ export async function changeProfilePicture(event: Event): Promise<void> {
 	event.preventDefault();
 	const input = $input('profile_photo_input');
 	const formData = new FormData();
+	const MAX_SIZE = 5 * 1024 * 1024;
+	const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/jpg'];
+
+	if (input.files[0].size > MAX_SIZE)
+		return notif('File size exceeds 5MB limit.', false);
+
+	if (!ALLOWED_TYPES.includes(input.files[0].type))
+		return notif('Invalid file type. Only PNG, JPG and JPEG files are allowed.');
 	formData.append('profile-picture', input.files[0]);
 	
 	try {
+		
 		const data = await fetchAPI('/request/user/update-profile-picture', 'POST', null, true, formData);
 
 		if (data.success) {

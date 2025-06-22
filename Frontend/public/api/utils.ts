@@ -48,7 +48,14 @@ export async function fetchAPI(url: string, method: string, body: any = null, sh
 			options.body = formData;
 
 		const response = await fetch(url, options);
-		const data = await response.json();
+		let data = await response.json();
+		if (!response.ok) {
+			data = {
+				success: false,
+				error: `HTTP ${response.status}: ${response.statusText}`,
+				...data
+			};
+		}
 		if (data.accessToken)
 			sessionStorage.setItem('accessToken', data.accessToken);
 
