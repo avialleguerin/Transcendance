@@ -58,6 +58,7 @@ export async function fetchAPI(url: string, method: string, body: any = null, sh
 			notif(data.error, false);
 		return data;
 	} catch (err) {
+		console.error("Error in fetchAPI:", err);
 		if (showNotification)
 			notif("Une erreur s'est produite lors de la communication avec le serveur", false);
 	}

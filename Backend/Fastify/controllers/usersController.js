@@ -264,6 +264,7 @@ export async function login2v2(request, reply) {
 	const { username2, password2, username3, password3, username4, password4 } = request.body
 	try {
 		const infos = await getUserFromToken(request)
+		fastify.log.debug(`Login 2v2 attempt - Infos: ${JSON.stringify(infos)}`)
 		if (!infos || !infos.user || !infos.accessToken) return reply.code(401).send({ success: false, error: 'Unauthorized' })
 		const player2 = usersModel.getUserByUsername(username2)
 		const player3 = usersModel.getUserByUsername(username3)
@@ -281,7 +282,7 @@ export async function login2v2(request, reply) {
 		usersModel.updateLastActivity(player2.userId)
 		usersModel.updateLastActivity(player3.userId)
 		usersModel.updateLastActivity(player4.userId)
-		reply.code(200).send({ success: true, message: 'Opponents logged in', accessToken: accessToken })
+		reply.code(200).send({ success: true, message: 'Opponents logged in', accessToken: infos.accessToken })
 	} catch (err) {
 		return reply.code(500).send({ error: err.message })
 	}
