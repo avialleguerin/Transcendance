@@ -182,7 +182,8 @@ declare global {
 		delete_friendship: (friendshipId: string | number) => Promise<void>;
 		fetch_user_friendships: () => Promise<void>;
 		fetch_user_games: () => Promise<void>;
-		fetch_user_games_big: (username: string) => Promise<void>;
+		fetch_user_games_big: () => Promise<void>;
+		fetch_friend_games_big: (username: string) => Promise<void>;
 		togglePanel: (event: Event) => void;
 
 		//* userManagement.ts

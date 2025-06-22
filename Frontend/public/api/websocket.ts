@@ -33,8 +33,13 @@ export class WebSocketManager {
 			const data = JSON.parse(event.data)
 			if (data.type === 'friend_request' || data.type === 'server_shutdown')
 				this.handleFriendRequest(data.message)
-			else if (data.type === 'friend_deleted' || data.type === 'account_deleted' || data.type === 'friend_status_update')
+			else if (data.type === 'account_deleted' || data.type === 'friend_status_update')
 				this.handleFriendRequest("null")
+			else if (data.type === 'friend_deleted')
+			{
+				this.handleFriendRequest("null")
+				
+			}
 		}
 		
 		this.socket.onclose = () => {
@@ -107,12 +112,5 @@ export function connectWebSocket(): void {
 // Déconnexion lors du logout
 export function disconnectWebSocket(): void {
 	wsManager.disconnect()
-}
-
-// AJOUT : Rendre les fonctions accessibles globalement pour les fichiers non-modules
-if (typeof window !== 'undefined') {
-	window.connectWebSocket = connectWebSocket;
-	window.disconnectWebSocket = disconnectWebSocket;
-	window.wsManager = wsManager;
 }
 
