@@ -67,7 +67,7 @@ export async function create1v1Game(request, reply) {
 
 	const scoreLeft = parseInt(score_left, 10)
 	const scoreRight = parseInt(score_right, 10)
-	if (isNaN(scoreLeft) || isNaN(scoreRight) || scoreLeft < 0 || scoreRight < 0) return reply.code(400).send({ success: false, error: "Scores must be valid positive numbers" }) // ?
+	if (isNaN(scoreLeft) || isNaN(scoreRight) || scoreLeft < 0 || scoreRight < 0) return reply.code(400).send({ success: false, error: "Scores must be valid positive numbers" })
 
 	try {
 

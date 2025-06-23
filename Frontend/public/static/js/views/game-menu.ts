@@ -235,7 +235,7 @@ export default class Game_menu extends AbstractView {
 		<div class="view1" id="view1">
 			<div class="view1-content">
 				<button id="view1_btn" class="btn">GAME MODE</button>
-				<button id="settings_btn" class="btn">OPTIONS</button>
+				<button id="settings_btn" class="btn">PROFILE</button>
 			</div>
 		</div>
 		<div class="back-home" id="back-home">
@@ -276,10 +276,10 @@ export default class Game_menu extends AbstractView {
 				</div>
 				<div class="view5" id="view5">
 					<div class="view5-content">
-						<h1>OPTIONS</h1>
+						<h1>PROFILE</h1>
 						<div id="select_parametres" class="select_parametres">
-							<button id="profile_parrametre_btn" class="btn">PROFILE SETTINGS</button>
-							<button id="parrametre_jeux_btn" class="btn">GAME SETTINGS</button>
+							<button id="profile_parrametre_btn" class="btn">ACCOUNT</button>
+							<button id="parrametre_jeux_btn" class="btn">GAME CONTROLS</button>
 							<button id="Game_History_btn" class="btn">GAME HISTORY</button><!-- onclick="fetch_user_games_big()" -->
 						</div>
 					</div>
@@ -287,7 +287,7 @@ export default class Game_menu extends AbstractView {
 
 				<div class="parametres_jeu" id="parametres_jeu">
 					<div class="parametres_jeu_content" id="parametre_jeux_content">
-						<h1>GAME SETTINGS</h1>
+						<h1>GAME CONTROLS</h1>
 						<h2>PONG</h2>
 						<div class="parametre_mode_jeu">
 							<div class="mode_de_jeu_solo_parametre">
@@ -350,7 +350,7 @@ export default class Game_menu extends AbstractView {
 
 				<div class="parrametres_profile" id="parametres_profile">
 					<div class="parametres_profile_content">
-						<h1>PROFILE SETTINGS</h1>
+						<h1>ACCOUNT</h1>
 						<form id="modif_profile" class="modif_profile"> <!-- onsubmit="accessProfileInfo(event)"-->
 							<label for="mdp">Password</label>
 							<input type="password" id="password" name="password" placeholder="Password" required>

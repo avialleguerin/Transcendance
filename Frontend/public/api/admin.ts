@@ -41,7 +41,7 @@ export async function fetchAPI(url: string, method: string, body: any = null, sh
 
 		if (body && !formData)
 			options.body = JSON.stringify(body);
-		else if (formData && formData instanceof FormData) // instanceof FormData)
+		else if (formData && formData instanceof FormData)
 			options.body = formData;
 
 		const response = await fetch(url, options);
@@ -131,17 +131,14 @@ export async function fetch_games(): Promise<void> {
 		const games = await response.json();
 
 		document.getElementById('games-table').innerHTML = games.map((game: GameResult) => {
-			// Vérifier si c'est un 1v1 ou un 2v2
 			const is1v1 = !game.user3_name || game.user3_name === '—' || !game.user4_name || game.user4_name === '—';
 			
 			let teamLeftDisplay, teamRightDisplay;
 			
 			if (is1v1) {
-				// 1v1: user1 à gauche, user2 à droite
 				teamLeftDisplay = game.user1_name || 'Utilisateur supprimé';
 				teamRightDisplay = game.user2_name || 'Utilisateur supprimé';
 			} else {
-				// 2v2: (user1 & user3) vs (user2 & user4)
 				const teamLeft = [game.user1_name, game.user2_name].filter(name => name && name !== '—');
 				const teamRight = [game.user3_name, game.user4_name].filter(name => name && name !== '—');
 				
@@ -489,6 +486,3 @@ window.addEventListener('DOMContentLoaded', () => {
 	fetch_deleted_users();
 });
 
-// Module admin.ts exporte toutes les fonctions nécessaires pour être utilisées dans le HTML
-// Lorsque ce fichier est importé comme module, les fonctions sont disponibles
-// sans être attachées à l'objet window global

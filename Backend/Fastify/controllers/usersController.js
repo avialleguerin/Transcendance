@@ -139,7 +139,6 @@ export async function googleSignIn(request, reply) {
 				success: true, 
 				message: 'Google Sign-In successful', 
 				connection_status: "connected", 
-				// user: user, //todo: change to multiple infos
 				name: user.username,
 				avatar: user.profile_picture,
 				accessToken: accessToken 
@@ -624,7 +623,6 @@ export async function changeProfilePicture(request, reply) {
 	}
 }
 
-// Utility function to generate anonymous username
 async function generateAnonymousUsername(userId) {
 	const adjectives = ['Cool', 'Fast', 'Wild', 'Bold', 'Wise', 'Smart', 'Calm', 'Quick']
 	const nouns = ['Cat', 'Fox', 'Wolf', 'Bear', 'Lion', 'Hawk', 'Tiger', 'Owl']
@@ -632,16 +630,14 @@ async function generateAnonymousUsername(userId) {
 	let anonymizedUsername = ''
 	let updateSuccess = false
 	let attempts = 0
-	const maxAttempts = 50 // Safety limit to prevent infinite loops
+	const maxAttempts = 50 
 	
 	while (!updateSuccess && attempts < maxAttempts) {
 		const randomAdjective = adjectives[Math.floor(Math.random() * adjectives.length)]
 		const randomNoun = nouns[Math.floor(Math.random() * nouns.length)]
-		const randomNumber = Math.floor(Math.random() * 9) + 1  // 1-9 (single digit)
+		const randomNumber = Math.floor(Math.random() * 9) + 1
 		
 		anonymizedUsername = `${randomAdjective}${randomNoun}${randomNumber}`
-		
-		// Ensure username is under 10 characters
 		if (anonymizedUsername.length < 10) {
 			try {
 				const result = usersModel.updateUsername(userId, anonymizedUsername)

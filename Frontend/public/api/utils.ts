@@ -217,6 +217,7 @@ export function sanitizeInput(input: string, type: string) : { success: boolean,
 }
 
 export const StorageKeys = {
+	AUTH_TICKET: null as string,
 	PROFILE_PICTURE: null as string,
 	TOURNAMENT_COUNT: 0 as number,
 	TOURNAMENT_STARTED: false as boolean, 

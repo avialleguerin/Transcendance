@@ -21,7 +21,8 @@ export async function login(event: Event): Promise<void> {
 		
 		
 		if (data.success && data.connection_status === "partially_connected" && data.doubleAuth_status) {
-			sessionStorage.setItem("authTicket", data.ticket); // todo change userid to id
+			// sessionStorage.setItem("authTicket", data.ticket); // todo change userid to id
+			StorageKeys.AUTH_TICKET = data.ticket;
 			updateUI({ removeClass: [{ id:"doubleAuthForm", className: "hidden" }], addClass: ["loginForm", "doubleAuthForm"] });
 			$input("login-title").textContent = "Double Authentication";
 		} else if (data.success && data.connection_status === "connected") {
@@ -182,12 +183,13 @@ export async function logout() {
 export async function verify2FA(event: Event) {
 	try {
 		event.preventDefault();
-		const ticket = sessionStorage.getItem("authTicket");
+		// const ticket = sessionStorage.getItem("authTicket");
+		const ticket = StorageKeys.AUTH_TICKET;
 		const code = $input("verify-2fa-code").value;
 		const data = await fetchAPI('/request/user/verify-2fa', 'POST', { ticket, code });
 
 		if (data.success) {
-			sessionStorage.removeItem("authTicket")
+			StorageKeys.AUTH_TICKET = null;
 			StorageKeys.PLAYER1 = data.username;
 			StorageKeys.PROFILE_PICTURE = data.profile_picture;
 			const { connectWebSocket } = await import('./websocket.js')
