@@ -153,7 +153,6 @@ export async function googleSignIn(request, reply) {
 export async function getUserProfile(request, reply) {
 	try {
 		const infos = await getUserFromToken(request)
-		fastify.log.debug(`User profile requested - Infos: ${JSON.stringify(infos)}`)
 		if (!infos) {
 			fastify.log.warn('Profile access denied: Unauthorized request')
 			return reply.code(401).send({ success: false, error: 'Unauthorized' })
