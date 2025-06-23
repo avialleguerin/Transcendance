@@ -68,6 +68,9 @@ export async function create1v1Game(request, reply) {
 	const scoreLeft = parseInt(score_left, 10)
 	const scoreRight = parseInt(score_right, 10)
 	if (isNaN(scoreLeft) || isNaN(scoreRight) || scoreLeft < 0 || scoreRight < 0) return reply.code(400).send({ success: false, error: "Scores must be valid positive numbers" })
+	if (scoreLeft > 5 || scoreRight > 5) return reply.code(400).send({ success: false, error: "Scores must be less than or equal to 5" })
+	if (scoreLeft === scoreRight) return reply.code(400).send({ success: false, error: "Scores cannot be equal" })
+	if (scoreLeft !== 5 && scoreRight !== 5) return reply.code(400).send({ success: false, error: "One of the scores must be equal to 5" })
 
 	try {
 
@@ -83,6 +86,8 @@ export async function create1v1Game(request, reply) {
 		if (!player2User || player2User.anonymized_at) return reply.code(404).send({ success: false, error: `Player '${player2}' not found`, accessToken: infos.accessToken })
 
 		gamesModel.create1v1Game(player1User.userId, player2User.userId, scoreLeft, scoreRight)
+
+		
 		
 		if (scoreLeft < scoreRight) {
 			usersModel.updateGamesLost(player1User.userId)
@@ -121,6 +126,9 @@ export async function create2v2Game(request, reply) {
 	const scoreLeft = parseInt(score_left, 10)
 	const scoreRight = parseInt(score_right, 10)
 	if (isNaN(scoreLeft) || isNaN(scoreRight) || scoreLeft < 0 || scoreRight < 0) return reply.code(400).send({ success: false, error: "Scores must be valid positive numbers" })
+	if (scoreLeft > 5 || scoreRight > 5) return reply.code(400).send({ success: false, error: "Scores must be less than or equal to 5" })
+	if (scoreLeft === scoreRight) return reply.code(400).send({ success: false, error: "Scores cannot be equal" })
+	if (scoreLeft !== 5 && scoreRight !== 5) return reply.code(400).send({ success: false, error: "One of the scores must be equal to 5" })
 
 	try {
 		infos = await getUserFromToken(request)

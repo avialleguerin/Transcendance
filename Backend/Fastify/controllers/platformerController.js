@@ -32,7 +32,8 @@ export async function createPlatformer(request, reply) {
 	const score1 = parseInt(score_player1, 10)
 	const score2 = parseInt(score_player2, 10)
 	if (isNaN(score1) || isNaN(score2) || score1 < 0 || score2 < 0) return reply.code(400).send({ success: false, error: "Scores must be valid positive numbers" })
-	
+	if (score1 > 1000 || score2 > 1000) return reply.code(400).send({ success: false, error: "Scores must be less than or equal to 1000" })
+
 	try {
 		const infos = await getUserFromToken(request)
 		if (!infos) return reply.code(401).send({ error: "Unauthorized" })

@@ -4,6 +4,8 @@ import { leave_tournament_game } from "../../../srcs/game/gameplay/babylon.js";
 import { handleViewTransitions } from "../../../srcs/game/gameplay/views/camera.js";
 import { homeView, StorageKeys } from "../../../api/utils.js";
 import { getIsloading } from "../../../srcs/game/gameplay/views/loading_screen.js";
+import { create } from "domain";
+import { create_1v1_game } from "../../../api/games.js";
 
 export default class extends AbstractView {
 	private cooldowns:		Record<string, boolean>;
@@ -42,7 +44,7 @@ export default class extends AbstractView {
 			<div class="winner">
 				<h1 id="winner_id"></h1>
 			</div>
-			<button class="leave_game_2" id="leave_game_2_id" onclick="create_1v1_game(event, '${StorageKeys.CURRENT_PLAYER1}', '${StorageKeys.CURRENT_PLAYER2}')">Leave Game</button>
+			<button class="leave_game_2" id="leave_game_2_id">Leave Game</button>
 		</div>
 	`;
 	}
@@ -96,7 +98,8 @@ export default class extends AbstractView {
 	event_tournament_game() {
 		const leave_game_2 = document.getElementById("leave_game_2_id");
 
-		leave_game_2?.addEventListener("click", () => {
+		leave_game_2?.addEventListener("click", (event) => {
+			create_1v1_game(event,	StorageKeys.CURRENT_PLAYER1, StorageKeys.CURRENT_PLAYER2);
 			window.history.back();
 			if (this.gameLoop !== null) {
 				clearInterval(this.gameLoop);

@@ -95,8 +95,8 @@ export function MoveBall(player_1, player_2, ball, player_1_bonus, player_2_bonu
 
 	const BALL_RADIUS = 1.5;
 
-	if (ballSpeed >= 2.5)
-		ballSpeed = 2.5;
+	if (ballSpeed >= 2)
+		ballSpeed = 2;
 
 	ball.position.x += ballDirection.x * ballSpeed;
 	ball.position.z += ballDirection.z * ballSpeed;
@@ -209,6 +209,9 @@ export function MoveBall2v2(player_1, player_2, player_3, player_4, ball)
 		resetBall(ball);
 	}
 	previousX = ball.position.x;
+
+	if (ballSpeed >= 2)
+		ballSpeed = 2;
 
 	const BALL_RADIUS = 1.5;
 	const PADDLE_WIDTH = 10;
