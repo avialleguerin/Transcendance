@@ -39,10 +39,10 @@ export async function getFriendGames(request, reply) {
 				
 			const friend = usersModel.getUserByUsername(username)
 			if (!friend || friend.anonymized_at) return reply.code(404).send({ error: `Friend '${username}' not found`, accessToken: infos.accessToken })
-				const friendship = friendshipsModel.getFriendship(user.userId, friend.userId)
+			const friendship = friendshipsModel.getFriendship(user.userId, friend.userId)
 			if (!friendship) return reply.code(404).send({ success: false, error: `Friendship with '${username}' not found`, accessToken: infos.accessToken })
-				const isFriendId = user.userId === friendship.userId ? friendship.userId : friendship.friendId
-			const games = gamesModel.getUserGames(isFriendId)
+			const friendId = user.userId === friendship.userId ? friendship.friendId : friendship.userId
+			const games = gamesModel.getUserGames(friendId)
 			return reply.send({ success: true, user: friend, games: games, accessToken: infos.accessToken })
 		} else 
 			return reply.code(400).send({ error: "Username is required", accessToken: infos.accessToken })
