@@ -9,7 +9,7 @@ export const CREATE_GAMES_TABLE = `
 		user4_id TEXT DEFAULT NULL,
 		score_left INTEGER DEFAULT 0,
 		score_right INTEGER DEFAULT 0,
-		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+		created_at DATETIME DEFAULT (datetime('now', 'localtime')),
 		FOREIGN KEY (user1_id) REFERENCES users(userId),
 		FOREIGN KEY (user2_id) REFERENCES users(userId),
 		FOREIGN KEY (user3_id) REFERENCES users(userId),

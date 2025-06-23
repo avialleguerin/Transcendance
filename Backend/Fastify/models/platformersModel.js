@@ -7,7 +7,7 @@ export const CREATE_PLATFORMERS_TABLE = `
 		user2_id INTEGER NOT NULL,
 		score_player1 INTEGER NOT NULL DEFAULT 0 CHECK(score_player1 >= 0),
 		score_player2 INTEGER NOT NULL DEFAULT 0 CHECK(score_player2 >= 0),
-		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+		created_at DATETIME DEFAULT (datetime('now', 'localtime')),
 		FOREIGN KEY (user1_id) REFERENCES users(userId) ON DELETE CASCADE,
 		FOREIGN KEY (user2_id) REFERENCES users(userId) ON DELETE CASCADE
     );

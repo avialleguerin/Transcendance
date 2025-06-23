@@ -6,7 +6,7 @@ export const CREATE_FRIENDSHIPS_TABLE = `
 		userId INTEGER NOT NULL,
 		friendId INTEGER NOT NULL,
 		status TEXT DEFAULT 'pending' CHECK(status IN ('pending', 'accepted')),
-		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+		created_at DATETIME DEFAULT (datetime('now', 'localtime')),
 		FOREIGN KEY (userId) REFERENCES users(userId) ON DELETE CASCADE,
 		FOREIGN KEY (friendId) REFERENCES users(userId) ON DELETE CASCADE,
 		UNIQUE(userId, friendId),
