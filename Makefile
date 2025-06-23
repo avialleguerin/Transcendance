@@ -46,17 +46,13 @@ all:
 	-@docker rm redis tsengine fastify nginx vault
 	@make build
 	@make -j4 up
-	@make health-check
 
 health-check:
-	@echo "${BLUE}⏳ Vérification de l'état des services...${RESET}"
-	@echo "${YELLOW}Attente de la disponibilité de Vault...${RESET}"
-	@timeout 60 sh -c 'until curl -k -s https://localhost:8200/v1/sys/health > /dev/null 2>&1; do sleep 2; done' || (echo "${RED}Vault n'est pas accessible${RESET}" && exit 1)
-	@echo "${GREEN}✓ Vault est disponible${RESET}"
-	@echo "${YELLOW}Attente de la disponibilité de Fastify...${RESET}"
-	@timeout 60 sh -c 'until curl -k -s https://localhost:3443 > /dev/null 2>&1; do sleep 2; done' || (echo "${RED}Fastify n'est pas accessible${RESET}" && exit 1)
-	@echo "${GREEN}✓ Fastify est disponible${RESET}"
-	@echo "${GREEN}🎉 Tous les services sont opérationnels !${RESET}"
+	@timeout 60 sh -c 'until curl -k -s https://localhost:8200/v1/sys/health > /dev/null 2>&1; do sleep 2; done' || (echo "${RED}Vault is not accessible${RESET}" && exit 1)
+	@echo "${GREEN}✓ Vault is available${RESET}"
+	@timeout 60 sh -c 'until curl -k -s https://localhost:3443 > /dev/null 2>&1; do sleep 2; done' || (echo "${RED}Fastify is not accessible${RESET}" && exit 1)
+	@echo "${GREEN}✓ Fastify is available${RESET}"
+	@echo "${GREEN}=> All the services are operational.${RESET}"
 
 up:
 	@docker compose up ${NO_LOGS}
@@ -67,23 +63,23 @@ up:
 build:
 	@docker compose build
 
-down:
+down:	clean
 	@docker compose down --remove-orphans
-	@rm -rf ./Frontend/dist
-	@rm -rf ./Security/Nginx/passwd
-# @rm -rf ./Data/sqlite_data/database.sqlite
 	@echo "$(MSG_DOWN_SUCCESS)"
 
 re:
 	@make down
 	@make all
 
-clean-vault:
-	@echo "${YELLOW}🧹 Nettoyage complet des données Vault...${RESET}"
-	@docker compose down --remove-orphans
-	@rm -rf ./Data/vault_data/*
-	@echo "${GREEN}✓ Données Vault supprimées${RESET}"
-# @make all
+clean:
+	@rm -rf ./Frontend/dist
+	@rm -rf ./Backend/Fastify/node_modules
+	@rm -rf ./Backend/Fastify/Data
+	@rm -rf ./Security/Nginx/passwd
+
+fclean: clean
+	@echo "${YELLOW}Forced clean up ${RESET}"
+	@rm -rf ./Data/*
 
 #FIXER
 fixer:
@@ -137,4 +133,4 @@ nlog:
 	@sed -i 's/^LOG_ACTIVE=.*/LOG_ACTIVE=false/' .env || echo "LOG_ACTIVE=false" >> .env
 	@echo "$(MSG_NLOG_SUCCESS)"
 
-.PHONY: all up build down re clean-vault health-check fixer ip reload-nginx debug-files sectest normal with_skin log nlog
+.PHONY: all up build down re clean fclean health-check fixer ip reload-nginx debug-files sectest normal with_skin log nlog
