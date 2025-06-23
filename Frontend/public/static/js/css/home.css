@@ -13,8 +13,8 @@
 	pointer-events: auto;
 
 
-	background: rgba(0, 0, 0, 0.3); /* Fond semi-transparent */
-	backdrop-filter: blur(3px); /* Flou */
+	background: rgba(0, 0, 0, 0.3);
+	backdrop-filter: blur(3px);
 }
 
 .login-form {
@@ -66,10 +66,10 @@
 	left: 50%;
 	transform: translateX(-50%);
 
-	display: flex; /* Pour aider au centrage du texte */
-	justify-content: center; /* Centre horizontalement */
-	align-items: center; /* Centre verticalement */
-	text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.7); /* Ombre noire douce */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.7);
 }
 
 
@@ -92,8 +92,8 @@
 
 .input-container {
 	display: flex;
-	align-items: center; /* Alignement vertical */
-	gap: 10px; /* Espacement entre le label et l'input */
+	align-items: center;
+	gap: 10px;
 	width: 100%;
 	margin-bottom: 10px;
 }
@@ -102,12 +102,12 @@
 	color: #fff;
 	font-size: 14px;
 	font-family: "Black Ops One", sans-serif;
-	width: 30%; /* Largeur fixe pour aligner les labels */
-	text-align: right; /* Alignement du texte à droite */
+	width: 30%;
+	text-align: right;
 }
 
 .input-container input {
-	width: 60%; /* Laisse de la place pour le label */
+	width: 60%;
 	padding: 10px;
 	border: none;
 	border-radius: 8px;
@@ -146,8 +146,8 @@ button:hover {
 
 .form-group-container {
 	display: flex;
-	flex-direction: column; /* Place les formulaires l'un en dessous de l'autre */
-	gap: 20px; /* Espace entre chaque formulaire */
+	flex-direction: column;
+	gap: 20px;
 }
 
 
@@ -257,27 +257,26 @@ button:hover {
 	font-family: "Black Ops One", sans-serif;
 }
 
-/* CGU Button */
 .cgu-container {
 	display: flex;
-	align-items: flex-start;  /* Aligne les éléments au début */
+	align-items: flex-start;
 	margin: 10px 0;
 	width: 100%;
 }
 
 .cgu-container input[type="checkbox"] {
-	width: auto;  /* Annule la largeur par défaut */
-	flex: 0 0 20px;  /* Largeur fixe pour la checkbox */
-	margin-top: 3px;  /* Alignement vertical avec le texte */
+	width: auto;
+	flex: 0 0 20px;
+	margin-top: 3px;
 	margin-right: 10px;
 }
 
 .cgu-container label {
-	flex: 1;  /* Prend tout l'espace restant */
-	text-align: left;  /* Alignement du texte à gauche */
-	font-size: 14px;  /* Taille du texte appropriée */
-	overflow-wrap: break-word;  /* Permet au texte de se casser correctement */
-	white-space: normal;  /* Permet au texte de se casser sur plusieurs lignes */
+	flex: 1; 
+	text-align: left;
+	font-size: 14px;
+	overflow-wrap: break-word;
+	white-space: normal;
 }
 
 .cgu-link {
@@ -290,7 +289,6 @@ button:hover {
 	color: #ffffff;
 }
 
-/* CGU Modal */
 .cgu-modal {
 	position: fixed;
 	top: 0;
@@ -323,13 +321,11 @@ button:hover {
 		inset 0 0 2px rgba(255, 255, 255, 0.3);
 	overflow-y: auto;
 	border: 1px solid rgba(255, 255, 255, 0.15);
-	
-	/* Hide Scrollbar */
-	scrollbar-width: none; /* For Firefox */
-	-ms-overflow-style: none; /* For IE and Edge */
+
+	scrollbar-width: none;
+	-ms-overflow-style: none;
 }
 
-/* Hide Scrollbar for Chrome, Safari and Opera */
 .cgu-content::-webkit-scrollbar {
 	display: none;
 }
@@ -401,12 +397,12 @@ button:hover {
 
 .privacy-policy-container {
     display: flex;
-    justify-content: center; /* Centre horizontalement */
-    margin-top: 20px; /* Ajoute un espace au-dessus */
+    justify-content: center;
+    margin-top: 20px;
 }
 
 .privacy-policy-container label {
-    text-align: center; /* Centre le texte */
+    text-align: center;
     font-size: 14px;
     font-family: "Black Ops One", sans-serif;
     color: #75c7ff;
@@ -422,8 +418,6 @@ button:hover {
     color: #ffffff;
 }
 
-
-/* Google Sign In Button */
 .google-signin-container {
     margin-top: 15px;
     display: flex;

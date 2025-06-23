@@ -10,6 +10,7 @@ import { disable_skin_multi_podium_default } from "../../../srcs/game/gameplay/m
 import { get_skin_is_init } from "../../../srcs/game/gameplay/solo/skin/init_skin_utils.js";
 import { homeView, StorageKeys } from "../../../api/utils.js";
 import { getIsloading } from "../../../srcs/game/gameplay/views/loading_screen.js";
+import { create_2v2_game } from "../../../api/games.js";
 
 let space_pressed = false;
 let bool = false;
@@ -106,7 +107,7 @@ export default class extends AbstractView {
 					<div class="looser">
 						<h1 id="looser_id"></h1>
 					</div>
-					<button class="leave_game_2" id="leave_game_2_id" onclick="create_2v2_game(event)">Leave Game</button>
+					<button class="leave_game_2" id="leave_game_2_id">Leave Game</button>
 				</div>
 			</div>
 		`;
@@ -118,9 +119,9 @@ export default class extends AbstractView {
 	}
 
 	leave_game_2_multi() {
-		document.getElementById("leave_game_2_id").addEventListener("click", () => {
+		document.getElementById("leave_game_2_id").addEventListener("click", (event) => {
 			this.cleanup();
-
+			create_2v2_game(event);
 			setLeaveGameVar(true);
 			if (!is_init)
 				disable_skin_multi_podium_default();

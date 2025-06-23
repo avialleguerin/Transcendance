@@ -68,8 +68,8 @@
 
 .container-item_player1 > div,
 .container-item_player2 > div {
-    margin-left: -10px;  /* Plus petit espace à gauche */
-    margin-right: 10px; /* 20px d'espace à droite */
+    margin-left: -10px;
+    margin-right: 10px;
 }
 
 .item-circle {
@@ -116,8 +116,8 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7); /* couleur noire avec opacité */
-    visibility: hidden; /* par défaut, ne pas visible */
+    background-color: rgba(0, 0, 0, 0.7);
+    visibility: hidden;
   }
 
   .overlay-reloading {
@@ -126,7 +126,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    visibility: hidden; /* par défaut, ne pas visible */
+    visibility: hidden;
     animation: none;
   }
 
@@ -136,7 +136,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    visibility: hidden; /* par défaut, ne pas visible */
+    visibility: hidden;
     animation: none;
   }
 
@@ -444,32 +444,32 @@ p {
 }
 
 .touch_player2:nth-child(2) {
-    left: 38px; /* Décalage à gauche */
+    left: 38px;
     top: 44%;
 }
 
 .touch_player2:nth-child(5) {
-    right: 42%; /* Décalage à droite */
+    right: 42%;
     top: 44%;
 }
 
 .touch_player2:nth-child(8) {
-    right: 10%; /* Encore plus à droite */
+    right: 10%;
     top: 44%;
 }
 
 .touch_player1:nth-child(2) {
-    left: 38px; /* Décalage à gauche */
+    left: 38px;
     top: 44%;
 }
 
 .touch_player1:nth-child(5) {
-    right: 42%; /* Décalage à droite */
+    right: 42%;
     top: 44%;
 }
 
 .touch_player1:nth-child(8) {
-    right: 10%; /* Encore plus à droite */
+    right: 10%;
     top: 44%;
 }
 

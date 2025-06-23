@@ -148,7 +148,7 @@ export default class GameHistory {
 		else
 		{
 			c.fillStyle = "white";
-			c.fillText("Loading game history...", 400, 240);
+			c.fillText("No game found ...",  canvas.width / 2 - 75, canvas.height / 2);
 		}
 
 		const optionPositions = [{ x: 900, y: 550 }];

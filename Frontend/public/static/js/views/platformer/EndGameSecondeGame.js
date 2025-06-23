@@ -1,6 +1,7 @@
 import { c, canvas } from "./constants.js";
 import { gameState, GameState, setIsFirstGame, setSecondeGameFinish, getSecondeGameFinish } from "./constants.js";
 import { StorageKeys } from "../../../../api/utils.js";
+import { create_platformer } from "../../../../api/games.js";
 
 export default class EndGameSecondeGame {
 	constructor({gameCanvas, player, coins, EndGame_FirstGame, historyGame, MapMenu}) {
@@ -120,7 +121,7 @@ export default class EndGameSecondeGame {
 				StorageKeys.SCORE_PLAYER2 = this.Score;
 			}
 			console.log("window.create_platformer");
-			window.create_platformer();
+			create_platformer();
 			if (this.player && typeof this.player.reset_Game === "function")
 				this.player.reset_Game();
 			if (this.gameCanvas)
@@ -138,7 +139,7 @@ export default class EndGameSecondeGame {
 			}
 			this.disableControls();
 			gameState.previous = gameState.current;
-			gameState.current = GameState.MapMenu;
+			gameState.current = GameState.Menu;
 			setIsFirstGame(true);
 			setSecondeGameFinish(true);
 		}
