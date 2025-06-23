@@ -128,7 +128,7 @@ const logPageTransition = (from: string, to: string): void => {
 		}
 
 		else {
-			console.log(`❓ Transition inconnue: ${from} → ${to}`);
+			// console.log(`❓ Transition inconnue: ${from} → ${to}`);
 		}
 	}
 
