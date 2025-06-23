@@ -44,7 +44,6 @@ export async function createPlatformer(request, reply) {
 
 		const user2 = usersModel.getUserByUsername(player2)
 		if (!user2 || user2.anonymized_at) return reply.code(404).send({ success: false, error: `Player '${player2}' not found`, accessToken: infos.accessToken })
-
 		platformersModel.createPlatformer(user.userId, user2.userId, score1, score2)
 
 		return reply.code(201).send({ success: true, username: user.username, message: "Platformer finished successfully", accessToken: infos.accessToken })

@@ -10,13 +10,6 @@ import { sanitizeInput } from './utils.js'
 
 const uploadDir = '/usr/share/nginx/uploads'
 
-// function response(reply, code, msg) {
-// 	const success = code >= 200 && code < 300
-// 	return reply.code(code).send({ success, [success ? 'message' : 'error']: msg })
-// }
-
-
-
 export async function getAllUsers(request, reply) {
 	try {
 		return usersModel.getActiveUsers()

@@ -477,7 +477,6 @@
 			close_game_modal, close_platformer_modal, close_friendship_modal
 		} from './api/admin.js';
 		
-		// Fonction de gestion des onglets
 		function showTab(tabId) {
 			const tabNames = {
 				'users-tab': 'Users',
@@ -488,7 +487,7 @@
 				'deleted-tab': 'Deleted Users'
 			};
 			
-			localStorage.setItem('transcendance_admin_active_tab', tabId);
+			localStorage.setItem('transcendence_admin_active_tab', tabId);
 			fetch_users();
 			fetch_games();
 			fetch_platformers();
@@ -508,9 +507,7 @@
 			});
 		}
 		
-		// Configuration des gestionnaires d'événements
 		document.addEventListener('DOMContentLoaded', () => {
-			// Associer les gestionnaires d'événements aux boutons
 			const tabButtons = document.querySelectorAll('[onclick^="showTab"]');
 			tabButtons.forEach(button => {
 				const tabId = button.getAttribute('onclick').match(/'([^']+)'/)[1];
@@ -518,7 +515,6 @@
 				button.addEventListener('click', () => showTab(tabId));
 			});
 			
-			// Configurer les gestionnaires d'événements pour les formulaires
 			if (document.getElementById('addUserForm')) {
 				document.getElementById('addUserForm').addEventListener('submit', create_user);
 			}
@@ -532,7 +528,6 @@
 				document.getElementById('addFriendshipForm').addEventListener('submit', create_friendship);
 			}
 			
-			// Configurer les gestionnaires pour les boutons d'ajout et de fermeture avec data-action
 			document.querySelectorAll('[data-action]').forEach(elem => {
 				elem.addEventListener('click', event => {
 					const action = elem.getAttribute('data-action');
@@ -549,11 +544,9 @@
 				});
 			});
 			
-			// Remplacer les éléments qui ont encore des onclick
 			document.querySelectorAll('[onclick]').forEach(elem => {
 				const onclickAttr = elem.getAttribute('onclick');
 				
-				// Gérer showTab séparément
 				if (onclickAttr && onclickAttr.startsWith('showTab')) {
 					const tabId = onclickAttr.match(/'([^']+)'/)[1];
 					elem.removeAttribute('onclick');
@@ -561,11 +554,9 @@
 				}
 			});
 			
-			// Initialiser avec le dernier onglet actif
-			const lastActiveTab = localStorage.getItem('transcendance_admin_active_tab') || 'users-tab';
+			const lastActiveTab = localStorage.getItem('transcendence_admin_active_tab') || 'users-tab';
 			showTab(lastActiveTab);
 			
-			// Remplacer les gestionnaires d'événements pour les tables
 			const tables = document.querySelectorAll('tbody');
 			tables.forEach(table => {
 				table.addEventListener('click', event => {

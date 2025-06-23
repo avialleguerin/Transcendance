@@ -1,6 +1,6 @@
 ============ PROJECT STRUCTURE ============
 
-Transcendance/
+Transcendence/
 |
 |── README.md
 |

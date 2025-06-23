@@ -13,7 +13,7 @@ let secondeChance = false;
 
 
 export default class extends AbstractView {
-	private gameLoop: ReturnType<typeof setInterval> | null;
+	private gameLoop: ReturnType<typeof setInterval> | null = null;
 	constructor() {
 		super();
 		this.setTitle("Tournament");
@@ -108,14 +108,16 @@ export default class extends AbstractView {
 
 	exit_tournament()
 	{
-		document.getElementById('back_to_menu_view_tournament').addEventListener('click', () => {
+		const backBtn = document.getElementById('back_to_menu_view_tournament');
+		backBtn?.addEventListener('click', () => {
 			handleViewTransitions('vue2', 'tournament');
 			window.history.back();
 		});
 	}
 
 	start_tournament_game() {
-		document.getElementById('start_game').addEventListener('click', () => {
+		const startBtn = document.getElementById('start_game');
+		startBtn?.addEventListener('click', () => {
 			handleViewTransitions('tournament_game_start', 'tournament');
 			startTournamentGame();
 			count = StorageKeys.TOURNAMENT_COUNT;
@@ -123,12 +125,14 @@ export default class extends AbstractView {
 			StorageKeys.CAN_PLAY = true;
 			console.log("canPlay set to true");
 
-			const Player1 = document.getElementById('Player1');
-			const Player2 = document.getElementById('Player2');
-			const Player3 = document.getElementById('Player3');
-			const Player4 = document.getElementById('Player4');
+			const Player1 = document.getElementById('Player1') as PlayerElement;
+			const Player2 = document.getElementById('Player2') as PlayerElement;
+			const Player3 = document.getElementById('Player3') as PlayerElement;
+			const Player4 = document.getElementById('Player4') as PlayerElement;
 			
-			updateTournamentState(count, Player1, Player2, Player3, Player4);
+			if (Player1 && Player2 && Player3 && Player4) {
+				updateTournamentState(count, Player1, Player2, Player3, Player4);
+			}
 			
 			StorageKeys.SECOND_CHANCE = true;
 			
@@ -136,7 +140,8 @@ export default class extends AbstractView {
 
 			
 			if (tournamentFinishedFlag) {
-				document.getElementById('finiched_game').style.display = 'block';
+				const finishedGameElement = document.getElementById('finiched_game');
+				if (finishedGameElement) finishedGameElement.style.display = 'block';
 				tournament_finished = true;
 				StorageKeys.SECOND_CHANCE = false;
 				secondeChance = false;
@@ -145,15 +150,17 @@ export default class extends AbstractView {
 	}
 
 	init_tournament() {
-		const Player1 = document.getElementById('Player1');
-		const Player2 = document.getElementById('Player2');
-		const Player3 = document.getElementById('Player3');
-		const Player4 = document.getElementById('Player4');
+		const Player1 = document.getElementById('Player1') as PlayerElement;
+		const Player2 = document.getElementById('Player2') as PlayerElement;
+		const Player3 = document.getElementById('Player3') as PlayerElement;
+		const Player4 = document.getElementById('Player4') as PlayerElement;
 
 		StorageKeys.SECOND_CHANCE = true;
 		count = StorageKeys.TOURNAMENT_COUNT;
 		
-		updateTournamentState(count, Player1, Player2, Player3, Player4);
+		if (Player1 && Player2 && Player3 && Player4) {
+			updateTournamentState(count, Player1, Player2, Player3, Player4);
+		}
 		
 
 		const maxCount = secondeChance ? 7 : 6;
@@ -184,58 +191,69 @@ export default class extends AbstractView {
         
         container_name_player?.addEventListener('submit', async (event) => { await login_tournament(event); });
 
-		leave_tournament.addEventListener('click', () => {
-			message_id.classList.add('active');
-			tournament_graphic_id.style.filter = "blur(5px)";
-			tournament_graphic_id.style.pointerEvents = "none";
+		leave_tournament?.addEventListener('click', () => {
+			message_id?.classList.add('active');
+			if (tournament_graphic_id) {
+				tournament_graphic_id.style.filter = "blur(5px)";
+				tournament_graphic_id.style.pointerEvents = "none";
+			}
 		});
 
 		const close_message = document.getElementById('close_message_id');
 
-		close_message.addEventListener('click', () => {
-			message_id.classList.remove('active');
-			tournament_graphic_id.style.filter = "none";
-			tournament_graphic_id.style.pointerEvents = "auto"; 
+		close_message?.addEventListener('click', () => {
+			message_id?.classList.remove('active');
+			if (tournament_graphic_id) {
+				tournament_graphic_id.style.filter = "none";
+				tournament_graphic_id.style.pointerEvents = "auto";
+			}
 		});
 
 		const confirm_leave_tournament = document.getElementById('confirm_leave_tournament');
-		const Player1 = document.getElementById('Player1');
-		const Player2 = document.getElementById('Player2');
-		const Player3 = document.getElementById('Player3');
-		const Player4 = document.getElementById('Player4');
+		const Player1 = document.getElementById('Player1') as PlayerElement;
+		const Player2 = document.getElementById('Player2') as PlayerElement;
+		const Player3 = document.getElementById('Player3') as PlayerElement;
+		const Player4 = document.getElementById('Player4') as PlayerElement;
 
-		confirm_leave_tournament.addEventListener('click', () => {
-			message_id.classList.remove('active');
-			tournament_graphic_id.style.filter = "none";
-			tournament_graphic_id.style.pointerEvents = "auto";
-			tournament_graphic_id.classList.remove('active');
-			container_name_player.classList.remove('hidden');
+		confirm_leave_tournament?.addEventListener('click', () => {
+			message_id?.classList.remove('active');
+			if (tournament_graphic_id) {
+				tournament_graphic_id.style.filter = "none";
+				tournament_graphic_id.style.pointerEvents = "auto";
+				tournament_graphic_id.classList.remove('active');
+			}
+			container_name_player?.classList.remove('hidden');
 			tournamentStarted = false;
 			StorageKeys.TOURNAMENT_STARTED = false;
-			resetHighlight([Player1, Player2, Player3, Player4]);
-
-			resetTournamentState(Player1, Player2, Player3, Player4);
-			back_to_menu_view_tournament.style.display = 'block';
-			start_tournament.style.display = 'block';
+			
+			if (Player1 && Player2 && Player3 && Player4) {
+				resetHighlight([Player1, Player2, Player3, Player4]);
+				resetTournamentState(Player1, Player2, Player3, Player4);
+			}
+			
+			if (back_to_menu_view_tournament) back_to_menu_view_tournament.style.display = 'block';
+			if (start_tournament) start_tournament.style.display = 'block';
 			count = 0;
 			StorageKeys.TOURNAMENT_COUNT = count;
 		});
 
-		finish_tournament.addEventListener('click', () => {
-			tournament_graphic_id.classList.remove('active');
-			container_name_player.classList.remove('hidden');
+		finish_tournament?.addEventListener('click', () => {
+			tournament_graphic_id?.classList.remove('active');
+			container_name_player?.classList.remove('hidden');
 			const container_endTournament = document.getElementById('container_endTournament');
-			container_endTournament.classList.remove('active');
+			container_endTournament?.classList.remove('active');
 			tournamentStarted = false;
 			tournament_finished = false;
 			tournament_leave = true;
 			StorageKeys.TOURNAMENT_STARTED = false;
 
-			resetHighlight([Player1, Player2, Player3, Player4]);
-			resetTournamentState(Player1, Player2, Player3, Player4);
+			if (Player1 && Player2 && Player3 && Player4) {
+				resetHighlight([Player1, Player2, Player3, Player4]);
+				resetTournamentState(Player1, Player2, Player3, Player4);
+			}
 
-			back_to_menu_view_tournament.style.display = 'block';
-			start_tournament.style.display = 'block';
+			if (back_to_menu_view_tournament) back_to_menu_view_tournament.style.display = 'block';
+			if (start_tournament) start_tournament.style.display = 'block';
 			count = 0;
 		});
 	}
@@ -261,19 +279,19 @@ export default class extends AbstractView {
 				back_to_menu_view_tournament.style.display = 'none';
 			}
 			if (tournament_finished == true) {
-				container_name_player.classList.add('hidden');
-				tournament_graphic_id.classList.remove('active');
-				start_tournament.style.display = 'none';
-				back_to_menu_view_tournament.style.display = 'none';
-				container_endTournament.classList.add('active');
+				container_name_player?.classList.add('hidden');
+				tournament_graphic_id?.classList.remove('active');
+				if (start_tournament) start_tournament.style.display = 'none';
+				if (back_to_menu_view_tournament) back_to_menu_view_tournament.style.display = 'none';
+				container_endTournament?.classList.add('active');
 			}
 			else if (tournament_leave == true) {
-				if (container_name_player.classList.contains('hidden')) {
+				if (container_name_player?.classList.contains('hidden')) {
 					container_name_player.classList.remove('hidden');
-					tournament_graphic_id.classList.remove('active');
-					start_tournament.style.display = 'block';
-					back_to_menu_view_tournament.style.display = 'block';
-					container_endTournament.classList.remove('active');
+					tournament_graphic_id?.classList.remove('active');
+					if (start_tournament) start_tournament.style.display = 'block';
+					if (back_to_menu_view_tournament) back_to_menu_view_tournament.style.display = 'block';
+					container_endTournament?.classList.remove('active');
 					tournament_leave = false;
 				}
 			}
@@ -328,19 +346,19 @@ interface TournamentPlayerState {
 export function resetTournamentState(Player1: PlayerElement, Player2: PlayerElement, Player3: PlayerElement, Player4: PlayerElement): void {    
 	const joueurs: PlayerElement[] = [Player1, Player2, Player3, Player4];
 
-	StorageKeys.MATCH_RESULT1 = null;
-	StorageKeys.MATCH_RESULT2 = null;
-	StorageKeys.MATCH_RESULT3 = null;
-	StorageKeys.MATCH_RESULT4 = null;
-	StorageKeys.MATCH_RESULT5 = null;
-	StorageKeys.MATCH_RESULT6 = null;
-	StorageKeys.MATCH_RESULT7 = null;
+	StorageKeys.MATCH_RESULT1 = "";
+	StorageKeys.MATCH_RESULT2 = "";
+	StorageKeys.MATCH_RESULT3 = "";
+	StorageKeys.MATCH_RESULT4 = "";
+	StorageKeys.MATCH_RESULT5 = "";
+	StorageKeys.MATCH_RESULT6 = "";
+	StorageKeys.MATCH_RESULT7 = "";
 
 	// Reset tournament rankings
-	StorageKeys.TOURNAMENT_FIRST_PLACE = null;
-	StorageKeys.TOURNAMENT_SECOND_PLACE = null;
-	StorageKeys.TOURNAMENT_THIRD_PLACE = null;
-	StorageKeys.TOURNAMENT_FOURTH_PLACE = null;
+	StorageKeys.TOURNAMENT_FIRST_PLACE = "";
+	StorageKeys.TOURNAMENT_SECOND_PLACE = "";
+	StorageKeys.TOURNAMENT_THIRD_PLACE = "";
+	StorageKeys.TOURNAMENT_FOURTH_PLACE = "";
 
 	StorageKeys.TOURNAMENT_COUNT = 0;
 	StorageKeys.TOURNAMENT_STARTED = false;
@@ -396,8 +414,8 @@ function updateTournamentState(
 		});
 
 		highlightNextPlayers(Player1, Player2);
-		StorageKeys.CURRENT_PLAYER1 = Player1.textContent;
-		StorageKeys.CURRENT_PLAYER2 = Player2.textContent;
+		StorageKeys.CURRENT_PLAYER1 = Player1.textContent || "";
+		StorageKeys.CURRENT_PLAYER2 = Player2.textContent || "";
 	}
 
 	if (count >= 1) {
@@ -428,8 +446,8 @@ function updateTournamentState(
 			match1_loser.style.top = POSITIONS.quart_winner.loser1_2.top;
 			match1_loser.style.left = POSITIONS.quart_winner.loser1_2.left;
 			highlightNextPlayers(Player3, Player4);
-			StorageKeys.CURRENT_PLAYER1 = Player3.textContent;
-			StorageKeys.CURRENT_PLAYER2 = Player4.textContent;
+			StorageKeys.CURRENT_PLAYER1 = Player3.textContent || "";
+			StorageKeys.CURRENT_PLAYER2 = Player4.textContent || "";
 		}
 	}
 
@@ -459,8 +477,8 @@ function updateTournamentState(
 			match2_loser.style.left = POSITIONS.quart_winner.loser3_4.left;
 
 			highlightNextPlayers(match1_loser, match2_loser);
-			StorageKeys.CURRENT_PLAYER1 = match1_loser.textContent;
-			StorageKeys.CURRENT_PLAYER2 = match2_loser.textContent;
+			StorageKeys.CURRENT_PLAYER1 = match1_loser?.textContent || "";
+			StorageKeys.CURRENT_PLAYER2 = match2_loser?.textContent || "";
 		}
 	}
 
@@ -488,8 +506,8 @@ function updateTournamentState(
 			match3_winner.style.left = POSITIONS.quart_loser.winner.left;
 			match3_loser.style.color = 'red';
 			highlightNextPlayers(match1_winner, match2_winner);
-			StorageKeys.CURRENT_PLAYER1 = match1_winner.textContent;
-			StorageKeys.CURRENT_PLAYER2 = match2_winner.textContent;
+			StorageKeys.CURRENT_PLAYER1 = match1_winner?.textContent || "";
+			StorageKeys.CURRENT_PLAYER2 = match2_winner?.textContent || "";
 		}
 	}
 
@@ -520,8 +538,8 @@ function updateTournamentState(
 			match4_loser.style.left = POSITIONS.demi_winer.loser.left;
 
 			highlightNextPlayers(match3_winner, match4_loser);
-			StorageKeys.CURRENT_PLAYER1 = match3_winner.textContent;
-			StorageKeys.CURRENT_PLAYER2 = match4_loser.textContent;
+			StorageKeys.CURRENT_PLAYER1 = match3_winner?.textContent || "";
+			StorageKeys.CURRENT_PLAYER2 = match4_loser?.textContent || "";
 		}
 	}
 
@@ -550,8 +568,8 @@ function updateTournamentState(
 
 			match5_loser.style.color = 'red';
 			highlightNextPlayers(match4_winner, match5_winner);
-			StorageKeys.CURRENT_PLAYER1 = match4_winner.textContent;
-			StorageKeys.CURRENT_PLAYER2 = match5_winner.textContent;
+			StorageKeys.CURRENT_PLAYER1 = match4_winner?.textContent || "";
+			StorageKeys.CURRENT_PLAYER2 = match5_winner?.textContent || "";
 		}
 	}
 
@@ -600,10 +618,10 @@ function updateTournamentState(
 				StorageKeys.SECOND_CHANCE = false;
 
 				// Store final rankings
-				StorageKeys.TOURNAMENT_FIRST_PLACE = match6_winner.textContent;
-				StorageKeys.TOURNAMENT_SECOND_PLACE = match6_loser.textContent;
-				StorageKeys.TOURNAMENT_THIRD_PLACE = match5_loser?.textContent || null;
-				StorageKeys.TOURNAMENT_FOURTH_PLACE = match3_loser?.textContent || null;
+				StorageKeys.TOURNAMENT_FIRST_PLACE = match6_winner?.textContent || "";
+				StorageKeys.TOURNAMENT_SECOND_PLACE = match6_loser?.textContent || "";
+				StorageKeys.TOURNAMENT_THIRD_PLACE = match5_loser?.textContent || "";
+				StorageKeys.TOURNAMENT_FOURTH_PLACE = match3_loser?.textContent || "";
 
 				document.getElementById('first_place_name_id')!.textContent = StorageKeys.TOURNAMENT_FIRST_PLACE;
 				document.getElementById('second_place_name_id')!.textContent = StorageKeys.TOURNAMENT_SECOND_PLACE;
@@ -653,10 +671,10 @@ function updateTournamentState(
 				StorageKeys.SECOND_CHANCE = false;
 				
 				// Store final rankings for second chance scenario
-				StorageKeys.TOURNAMENT_FIRST_PLACE = match7_winner.textContent;
-				StorageKeys.TOURNAMENT_SECOND_PLACE = match7_loser.textContent;
-				StorageKeys.TOURNAMENT_THIRD_PLACE = match5_loser?.textContent || null;
-				StorageKeys.TOURNAMENT_FOURTH_PLACE = match3_loser?.textContent || null;
+				StorageKeys.TOURNAMENT_FIRST_PLACE = match7_winner.textContent || '';
+				StorageKeys.TOURNAMENT_SECOND_PLACE = match7_loser.textContent || '';
+				StorageKeys.TOURNAMENT_THIRD_PLACE = match5_loser?.textContent || '';
+				StorageKeys.TOURNAMENT_FOURTH_PLACE = match3_loser?.textContent || '';
 
 				document.getElementById('first_place_name_id')!.textContent = StorageKeys.TOURNAMENT_FIRST_PLACE;
 				document.getElementById('second_place_name_id')!.textContent = StorageKeys.TOURNAMENT_SECOND_PLACE;

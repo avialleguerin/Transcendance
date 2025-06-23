@@ -168,13 +168,13 @@ const logPageTransition = (from: string, to: string): void => {
 			StorageKeys.TOURNAMENT_COUNT = 0;
 			StorageKeys.TOURNAMENT_FINISHED = false;
 			StorageKeys.SECOND_CHANCE = false;
-			StorageKeys.MATCH_RESULT1 = null;
-			StorageKeys.MATCH_RESULT2 = null;
-			StorageKeys.MATCH_RESULT3 = null;
-			StorageKeys.MATCH_RESULT4 = null;
-			StorageKeys.MATCH_RESULT5 = null;
-			StorageKeys.MATCH_RESULT6 = null;
-			StorageKeys.MATCH_RESULT7 = null;
+			StorageKeys.MATCH_RESULT1 = "";
+			StorageKeys.MATCH_RESULT2 = "";
+			StorageKeys.MATCH_RESULT3 = "";
+			StorageKeys.MATCH_RESULT4 = "";
+			StorageKeys.MATCH_RESULT5 = "";
+			StorageKeys.MATCH_RESULT6 = "";
+			StorageKeys.MATCH_RESULT7 = "";
 			
 			console.log("🏆 Tournoi réinitialisé - Retour au menu");
 			
@@ -206,8 +206,8 @@ const logPageTransition = (from: string, to: string): void => {
 	else if (from === "/platformer" ) {
 		if (to === "/game-menu") {
 			handleViewTransitions("vue2", "platformer");
-			StorageKeys.PLAYER2 = null;
-			gameState.previous = GameState.Menu;
+			StorageKeys.PLAYER2 = "";
+			gameState.previous = null;
 			gameState.current = GameState.Menu;
 		}
 	}
@@ -270,6 +270,11 @@ const router = async (): Promise<void> => {
 		logPageTransition(previousPage, currentPage);
 	}
 	const app: HTMLElement | null = document.querySelector("#app");
+	
+	if (!app) {
+		console.error("App element not found");
+		return;
+	}
 	
 	app.style.display = "none";
 
@@ -395,7 +400,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	const necessaryBtn = document.getElementById("necessary-btn");
 	const allowAllBtn = document.getElementById("allow-all-btn");
 
-	necessaryBtn.addEventListener("click", () => {
+	necessaryBtn?.addEventListener("click", () => {
 		persistentPopup?.classList.remove("active");
 		const expires = new Date();
 		expires.setTime(expires.getTime() + (365 * 24 * 60 * 60 * 1000));

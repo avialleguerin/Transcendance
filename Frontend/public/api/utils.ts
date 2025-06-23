@@ -4,7 +4,10 @@ import { ClassModification, UIConfig } from './types.js';
 export function notif(message: string, success = true) {
 	const notification = document.getElementById('resultMessage');
 	if (notification) {
-		document.getElementById('notification-container').style.display = 'flex';
+		const notificationContainer = document.getElementById('notification-container');
+		if (!notificationContainer)
+			return;
+		notificationContainer.style.display = 'flex';
 		notification.innerHTML = `<div style='display:flex; align-items:center;'><span>${message}</span></div>`;
 		if (success)
 			notification.className = `success_notif`
@@ -17,7 +20,7 @@ export function notif(message: string, success = true) {
 
 		setTimeout(() => {
 			notification.style.opacity = '0';
-			document.getElementById('notification-container').style.display = 'none';
+			notificationContainer.style.display = 'none';
 		}, 3000);
 	}
 }
@@ -93,7 +96,6 @@ export function gameMenuView(changeView: boolean, txt: string): void {
 	if (changeView)
 	{
 		handleViewTransitions("vue1", "default");
-		// Utiliser le router normal au lieu de contourner la navigation
 		import('../static/js/index.js').then(module => {
 			if (module.navigateTo) {
 				module.navigateTo('/game-menu');
@@ -103,8 +105,6 @@ export function gameMenuView(changeView: boolean, txt: string): void {
 	else 
 	{
 		notif(txt, false);
-		// Pour les messages d'erreur, ne pas changer de page
-		// Sauf pour "You are already logged in" qui nécessite une redirection
 		if (txt === "You are already logged in") {
 			import('../static/js/index.js').then(module => {
 				if (module.navigateTo) {
@@ -112,7 +112,6 @@ export function gameMenuView(changeView: boolean, txt: string): void {
 				}
 			});
 		}
-		// Pour les autres messages d'erreur, juste afficher la notification
 	}
 }
 
@@ -126,8 +125,6 @@ export function platformerView(): void {
 			const appElement = document.getElementById('app');
 			if (appElement) {
 				appElement.innerHTML = html;
-				// if (platformerInstance.createAccount && typeof platformerInstance.createAccount === 'function') {
-				//todo: changer init to createAccount je crois
 				if (platformerInstance.init_game_platformer && typeof platformerInstance.init_game_platformer === 'function') {
 					platformerInstance.init_game_platformer();
 				}
@@ -220,52 +217,54 @@ export function sanitizeInput(input: string, type: string) : { success: boolean,
 		}
 		return { success: true };
 	}
+	return { success: false, error: "Invalid type specified" };
 }
 
 export const StorageKeys = {
-	PROFILE_PICTURE: null as string,
+	AUTH_TICKET: "" as string,
+	PROFILE_PICTURE: "" as string,
 	TOURNAMENT_COUNT: 0 as number,
 	TOURNAMENT_STARTED: false as boolean, 
 	TOURNAMENT_FINISHED: false as boolean,
-	GAME_HISTORY: null as string,
+	GAME_HISTORY: "" as string,
 	SECOND_CHANCE: false as boolean,
 	CAN_PLAY: false as boolean,
 	SCORE_LEFT: 0 as number,
 	SCORE_RIGHT: 0 as number,
-	MATCH_RESULT1: null as string,
-	MATCH_RESULT2: null as string,
-	MATCH_RESULT3: null as string,
-	MATCH_RESULT4: null as string,
-	MATCH_RESULT5: null as string,
-	MATCH_RESULT6: null as string,
-	MATCH_RESULT7: null as string, 
-	PLAYER1: null as string,
-	PLAYER2: null as string,
-	PLAYER3: null as string,
-	PLAYER4: null as string,
-	CURRENT_PLAYER1: null as string,
-	CURRENT_PLAYER2: null as string,
+	MATCH_RESULT1: "" as string,
+	MATCH_RESULT2: "" as string,
+	MATCH_RESULT3: "" as string,
+	MATCH_RESULT4: "" as string,
+	MATCH_RESULT5: "" as string,
+	MATCH_RESULT6: "" as string,
+	MATCH_RESULT7: "" as string, 
+	PLAYER1: "" as string,
+	PLAYER2: "" as string,
+	PLAYER3: "" as string,
+	PLAYER4: "" as string,
+	CURRENT_PLAYER1: "" as string,
+	CURRENT_PLAYER2: "" as string,
 	SCORE_PLAYER1: 0 as number,
 	SCORE_PLAYER2: 0 as number,
-	MATCH1_WINNER: null as string,
-	MATCH2_WINNER: null as string,
-	MATCH3_WINNER: null as string,
-	MATCH4_WINNER: null as string,
-	MATCH5_WINNER: null as string,
-	MATCH6_WINNER: null as string,
-	MATCH7_WINNER: null as string,
-	MATCH1_LOSER: null as string,
-	MATCH2_LOSER: null as string,
-	MATCH3_LOSER: null as string,
-	MATCH4_LOSER: null as string,
-	MATCH5_LOSER: null as string,
-	MATCH6_LOSER: null as string,
-	MATCH7_LOSER: null as string,
+	MATCH1_WINNER: "" as string,
+	MATCH2_WINNER: "" as string,
+	MATCH3_WINNER: "" as string,
+	MATCH4_WINNER: "" as string,
+	MATCH5_WINNER: "" as string,
+	MATCH6_WINNER: "" as string,
+	MATCH7_WINNER: "" as string,
+	MATCH1_LOSER: "" as string,
+	MATCH2_LOSER: "" as string,
+	MATCH3_LOSER: "" as string,
+	MATCH4_LOSER: "" as string,
+	MATCH5_LOSER: "" as string,
+	MATCH6_LOSER: "" as string,
+	MATCH7_LOSER: "" as string,
 	HISTORY_VISIBLE: false as boolean,
 	HISTORY_IS_VISIBLE: false as boolean,
 	BOOL: false as boolean,
-	TOURNAMENT_FIRST_PLACE: null as string,
-	TOURNAMENT_SECOND_PLACE: null as string,
-	TOURNAMENT_THIRD_PLACE: null as string,
-	TOURNAMENT_FOURTH_PLACE: null as string,
+	TOURNAMENT_FIRST_PLACE: "" as string,
+	TOURNAMENT_SECOND_PLACE: "" as string,
+	TOURNAMENT_THIRD_PLACE: "" as string,
+	TOURNAMENT_FOURTH_PLACE: "" as string,
 };

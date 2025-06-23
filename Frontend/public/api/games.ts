@@ -17,7 +17,7 @@ export async function create_1v1_game(event: Event, player1: string, player2: st
 	const data = await fetchAPI('/request/game/create-1v1-game', 'POST', { player1, player2, score_left, score_right }, false);
 	if (!data.success) return notif(data.error, false);
 	if (StorageKeys.TOURNAMENT_STARTED === false)
-		StorageKeys.PLAYER2 = null;
+		StorageKeys.PLAYER2 = "";
 	else
 		StorageKeys.TOURNAMENT_COUNT = StorageKeys.TOURNAMENT_COUNT + 1;
 	StorageKeys.SCORE_LEFT = 0;
@@ -41,9 +41,9 @@ export async function create_2v2_game(event: Event): Promise<void> {
 	const data = await fetchAPI('/request/game/create-2v2-game', 'POST', { player1, player2, player3, player4, score_left, score_right }, false);
 	if (!data.success)
 		notif(data.error, false);
-	StorageKeys.PLAYER2 = null;
-	StorageKeys.PLAYER3 = null;
-	StorageKeys.PLAYER4 = null;
+	StorageKeys.PLAYER2 = "";
+	StorageKeys.PLAYER3 = "";
+	StorageKeys.PLAYER4 = "";
 	StorageKeys.SCORE_LEFT = 0;
 	StorageKeys.SCORE_RIGHT = 0;
 };

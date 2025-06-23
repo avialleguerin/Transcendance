@@ -22,7 +22,7 @@ export default class HistoryDatabase {
 		StorageKeys.GAME_HISTORY = JSON.stringify(this.history);
 	}
 	loadFromLocalStorage() {
-		const savedHistory = StorageKeys.GAME_HISTORY;localStorage
+		const savedHistory = StorageKeys.GAME_HISTORY;
 		if (savedHistory) {
 			this.history = JSON.parse(savedHistory);
 		}

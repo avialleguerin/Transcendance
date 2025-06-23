@@ -20,7 +20,6 @@ async function setupDatabase() {
 		db.pragma(`key = '${pass}'`)
 		return db
 	} catch (err) {
-		// if (fastify) fastify.log.error("Error config of SQLite:", err)
 		console.error("Error config of SQLite:", err)
 		throw err
 	}

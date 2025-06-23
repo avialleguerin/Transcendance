@@ -402,12 +402,12 @@ generate_report() {
 	echo -e "${GREEN}✅ Tests completed${RESET}"
 	echo -e "${BLUE}ℹ️  Check logs above for any ❌ failures${RESET}"
 	echo -e "${PURPLE}🛡️  Security tests validate ModSecurity protection${RESET}"
-	echo -e "${CYAN}📋 Full test coverage for Transcendance API${RESET}"
+	echo -e "${CYAN}📋 Full test coverage for Transcendence API${RESET}"
 }
 
 # Main execution
 main() {
-	print_header "🚀 TRANSCENDANCE API TESTING SUITE"
+	print_header "🚀 TRANSCENDENCE API TESTING SUITE"
 	
 	# Check if containers are running
 	if ! docker ps | grep -q nginx; then
