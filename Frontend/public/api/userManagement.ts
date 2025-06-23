@@ -89,7 +89,7 @@ export async function export_data(): Promise<void> {
 		const date = new Date().toISOString().split('T')[0];
 		
 		a.href = url;
-		a.download = `transcendance-${username}-data-${date}.json`;
+		a.download = `transcendence-${username}-data-${date}.json`;
 		document.body.appendChild(a);
 		a.click();
 		window.URL.revokeObjectURL(url);

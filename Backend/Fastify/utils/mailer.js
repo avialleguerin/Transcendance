@@ -36,9 +36,9 @@ export default async function sendWelcomeEmail(to, username, tempPassword) {
 	const transporter = createTransporter();
 	
 	const mailOptions = {
-		from: `"Transcendance Game" <${process.env.GMAIL_USER}>`,
+		from: `"Transcendence Game" <${process.env.GMAIL_USER}>`,
 		to,
-		subject: "Welcome to Transcendance - Temporary Credentials",
+		subject: "Welcome to Transcendence - Temporary Credentials",
 		html: /*html*/`
 		<!DOCTYPE html>
 		<html>
@@ -56,7 +56,7 @@ export default async function sendWelcomeEmail(to, username, tempPassword) {
 		<body>
 			<div class="container">
 			<div class="header">
-				<h2>Welcome to Transcendance!</h2>
+				<h2>Welcome to Transcendence!</h2>
 			</div>
 			<div class="content">
 				<p>Hello <strong>${username}</strong>,</p>
@@ -84,7 +84,7 @@ export default async function sendWelcomeEmail(to, username, tempPassword) {
 				<p style="margin-top: 20px;">
 				<a href="${process.env.WEBSITE_PORT || 'https://localhost:8443'}" 
 					style="background: #667eea; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; display: inline-block;">
-					Access Transcendance
+					Access Transcendence
 				</a>
 				</p>
 				
@@ -97,7 +97,7 @@ export default async function sendWelcomeEmail(to, username, tempPassword) {
 		</html>
 		`,
 		text: `
-		Welcome ${username} to Transcendance!
+		Welcome ${username} to Transcendence!
 		
 		Your temporary credentials:
 		- Username: ${username}

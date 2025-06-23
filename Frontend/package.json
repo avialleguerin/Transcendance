@@ -1,7 +1,7 @@
 {
-  "name": "transcendance-frontend",
+  "name": "transcendence-frontend",
   "version": "1.0.0",
-  "description": "Frontend TypeScript for Transcendance",
+  "description": "Frontend TypeScript for Transcendence",
   "dependencies": {
     "typescript": "^5.3.0",
     "google-auth-library": "^9.4.0"

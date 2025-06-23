@@ -1,12 +1,12 @@
-# REGISTRE DES ACTIVITÉS DE TRAITEMENT (Ar. 30) - TRANSCENDANCE
+# REGISTRE DES ACTIVITÉS DE TRAITEMENT (Ar. 30) - TRANSCENDENCE
 
 ## 1. Responsable du traitement
-- Nom: Équipe projet Transcendance - École 42
+- Nom: Équipe projet Transcendence - École 42
 - Contact: ozasahin@student.42lyon.fr
 - DPO (Délégué à la Protection des Données): M. SAHIN O.
 
 ## 2. Finalités des traitements
-- Fourniture du service de jeu en ligne Transcendance
+- Fourniture du service de jeu en ligne Transcendence
 - Administration des comptes utilisateurs
 - Fonctionnalités sociales (amis)
 - Enregistrement des statistiques de jeu et classements

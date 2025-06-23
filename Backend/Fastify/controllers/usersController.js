@@ -826,8 +826,8 @@ export async function generateDoubleAuth(userId) {
 
 	const otpauth = speakeasy.otpauthURL({
 		secret: secret,
-		label: `Transcendance (${user.username})`,
-		issuer: 'Transcendance',
+		label: `Transcendence (${user.username})`,
+		issuer: 'Transcendence',
 		encoding: 'base32',
 		algorithm: 'sha1',
 		period: 30

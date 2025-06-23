@@ -22,13 +22,13 @@ export default class Home extends AbstractView {
 						<h1>Terms of Use</h1>
 						<div class="cgu-text">
 							<h2>1. Introduction</h2>
-							<p>Welcome to Transcendance. By using our application, you accept these terms of use.</p>
-							<p>Data controller: Transcendance Project Team - 42 School<br>
+							<p>Welcome to Transcendence. By using our application, you accept these terms of use.</p>
+							<p>Data controller: Transcendence Project Team - 42 School<br>
 							Contact: ozasahin@student.42lyon.fr<br>
 							Data Protection Officer (DPO): Mr. SAHIN O.</p>
 							
 							<h2>2. Service Description</h2>
-							<p>Transcendance is an online gaming platform allowing users to play Pong and other games, communicate and interact with other users.</p>
+							<p>Transcendence is an online gaming platform allowing users to play Pong and other games, communicate and interact with other users.</p>
 							
 							<h2>3. Registration and Account</h2>
 							<p>To use our service, you must create an account with accurate and up-to-date information. We only collect data necessary for providing our services.</p>
@@ -37,7 +37,7 @@ export default class Home extends AbstractView {
 							<p>Users agree to respect other members and not publish offensive or illegal content.</p>
 							
 							<h2>5. Intellectual Property</h2>
-							<p>All intellectual property rights related to Transcendance belong to their respective owners.</p>
+							<p>All intellectual property rights related to Transcendence belong to their respective owners.</p>
 							
 							<h2>6. Data Protection</h2>
 							<p>We are committed to protecting your personal data in accordance with the General Data Protection Regulation (GDPR).</p>
@@ -53,7 +53,7 @@ export default class Home extends AbstractView {
 							<h3>6.2 Processing purposes</h3>
 							<p>Your data is processed for the following purposes:
 							<ul>
-								<li>Provision of the Transcendance online game service</li>
+								<li>Provision of the Transcendence online game service</li>
 								<li>User account administration</li>
 								<li>Social features (friends)</li>
 								<li>Recording game statistics and rankings</li>

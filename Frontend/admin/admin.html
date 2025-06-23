@@ -484,7 +484,7 @@
 				'deleted-tab': 'Deleted Users'
 			};
 			
-			localStorage.setItem('transcendance_admin_active_tab', tabId);
+			localStorage.setItem('transcendence_admin_active_tab', tabId);
 			fetch_users();
 			fetch_games();
 			fetch_platformers();
@@ -551,7 +551,7 @@
 				}
 			});
 			
-			const lastActiveTab = localStorage.getItem('transcendance_admin_active_tab') || 'users-tab';
+			const lastActiveTab = localStorage.getItem('transcendence_admin_active_tab') || 'users-tab';
 			showTab(lastActiveTab);
 			
 			const tables = document.querySelectorAll('tbody');
