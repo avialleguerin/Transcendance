@@ -2,7 +2,7 @@ import { getUserProfilePicture, createAccount , deleteAccount, login, login1v1, 
 import { getUserGames, getFriendGames, create1v1Game, create2v2Game } from '../controllers/gamesController.js';
 import { getUserPlatformer, createPlatformer } from '../controllers/platformerController.js';
 import { getUserFriendships, addFriend, acceptFriend, deleteFriend } from '../controllers/friendshipsController.js';
-import { getAllUsers, getDeletedUsers, deleteUser, forceDeleteUser, getAllGames, addGame, deleteGame, getAllPlatformers, addPlatformer, deletePlatformer, getAllFriendships, addFriendship, deleteFriendship } from '../controllers/adminController.js';
+import { getAllUsers, getDeletedUsers, getAllGames, addGame, getAllPlatformers, addPlatformer, getAllFriendships, addFriendship } from '../controllers/adminController.js';
 import { getSQLiteCreds } from '../utils/vault.js';
 import { refreshInfos } from '../controllers/utils.js';
 import { env } from 'process';
@@ -33,11 +33,11 @@ export default async function routes (fastify) {
 	fastify.post('/admin/create-game', addGame);
 	fastify.post('/admin/create-platformer', addPlatformer);
 	fastify.post('/admin/create-friendship', addFriendship);
-	fastify.delete('/admin/delete-user', deleteUser);
-	fastify.delete('/admin/delete-game', deleteGame);
-	fastify.delete('/admin/delete-platformer', deletePlatformer);
-	fastify.delete('/admin/delete-friendship', deleteFriendship);
-	fastify.delete('/admin/force-delete-user', forceDeleteUser);
+	// fastify.delete('/admin/delete-user', deleteUser);
+	// fastify.delete('/admin/delete-game', deleteGame);
+	// fastify.delete('/admin/delete-platformer', deletePlatformer);
+	// fastify.delete('/admin/delete-friendship', deleteFriendship);
+	// fastify.delete('/admin/force-delete-user', forceDeleteUser);
 
 	fastify.get('/profile', getUserProfile);
 	fastify.get('/user/profile-picture', getUserProfilePicture);

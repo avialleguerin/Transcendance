@@ -86,8 +86,7 @@
 								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">CGU</th>
 								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Status</th>
 								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Last Activity</th>
-								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Date</th>
-								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider rounded-r-xl">Action</th>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 tracking-wider rounded-r-xl">Creation Date</th>
 							</tr>
 						</thead>
 						<tbody class="bg-white " id="users-table">
@@ -129,8 +128,7 @@
 								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">User</th>
 								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Friend</th>
 								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Status</th>
-								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Date</th>
-								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider rounded-r-xl">Action</th>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 tracking-wider rounded-r-xl">Creation Date</th>
 							</tr>
 						</thead>
 						<tbody class="bg-white" id="friendships-table">
@@ -170,8 +168,7 @@
 								<th class="bg-gray-100 px-6 py-4 text-center text-md font-medium text-gray-800 tracking-wider">Score Gauche</th>
 								<th class="bg-gray-100 px-6 py-4 text-center text-md font-medium text-gray-800 tracking-wider">Score Droit</th>
 								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 tracking-wider">Équipe Droite</th>
-								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 tracking-wider">Date</th>
-								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 tracking-wider rounded-r-xl">Action</th>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 tracking-wider rounded-r-xl">Creation Date</th>
 							</tr>
 						</thead>
 						<tbody class="bg-white" id="games-table">
@@ -209,7 +206,7 @@
 
 		<div id="platformer-tab" class="tab-content hidden container m-6 mx-auto">
 			<div class="px-4 md:px-8 container mx-auto">
-				<h2 class="text-xl font-semibold mb-6 mt-4">List of Platformer</h2>
+				<h2 class="text-xl font-semibold mb-6 mt-4">List of Platformer Games</h2>
 				<div class="bg-white">
 					<table class="py-4 my-4 md:py-8 min-w-full border-separate border-spacing-y-3">
 						<thead>
@@ -218,8 +215,7 @@
 								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Player 1</th>
 								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Score</th>
 								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Player 2</th>
-								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider">Date</th>
-								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 text-b tracking-wider rounded-r-xl">Action</th>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 tracking-wider rounded-r-xl">Creation Date</th>
 							</tr>
 						</thead>
 						<tbody class="bg-white" id="platformers-table">
@@ -455,8 +451,8 @@
 								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 tracking-wider rounded-l-xl">User ID</th>
 								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 tracking-wider">Deleted Username</th>
 								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 tracking-wider">Google ID</th>
-								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 tracking-wider">Date of Deletion</th>
-								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 tracking-wider rounded-r-xl">Action</th>
+								<th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 tracking-wider rounded-r-xl">Date of Deletion</th>
+								<!-- <th class="bg-gray-100 px-6 py-4 text-left text-md font-medium text-gray-800 tracking-wider rounded-r-xl">Action</th> -->
 							</tr>
 						</thead>
 						<tbody id="deleted-users-table">
@@ -471,8 +467,7 @@
 		import { 
 			fetch_users, fetch_games, fetch_platformers, fetch_friendships, 
 			fetch_deleted_users, create_user, create_game, create_platformer, 
-			create_friendship, delete_user, force_delete_user, delete_game, 
-			delete_platformer, delete_friendship, add_user_modal, add_game_modal,
+			create_friendship, add_user_modal, add_game_modal,
 			add_platformer_modal, add_friendship_modal, close_user_modal,
 			close_game_modal, close_platformer_modal, close_friendship_modal
 		} from './api/admin.js';

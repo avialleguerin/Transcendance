@@ -91,11 +91,7 @@ export async function fetch_users(): Promise<void> {
 						</span>
 					</td>
 					<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.last_activity}</td>
-					<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.created_at}</td>
-					<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0">
-						<button class="bg-red-200 hover:bg-red-300 m-1 text-red-500 hover:text-red-600 px-3 py-1 rounded-full transition-colors duration-300 ease-in-out text-xs" onclick="delete_user(${user.userId})">Delete</button>
-						<button class="bg-red-500 hover:bg-red-600 m-1 text-white px-3 py-1 rounded-full transition-colors duration-300 ease-in-out text-xs" onclick="force_delete_user(${user.userId})">Force Delete</button>
-					</td>
+					<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0">${user.created_at}</td>
 				</tr>
 			`).join('');
 		}
@@ -119,11 +115,8 @@ export async function fetch_deleted_users(): Promise<void> {
 						<td class="bg-gray-50 px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${user.userId}</td>
 						<td class="bg-gray-50 px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.username}</td>
 						<td class="bg-gray-50 px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.google_id || "—"}</td>
-						<td class="bg-gray-50 px-6 py-2 border border-gray-100 border-l-0">${user.deleted_at ? new Date(user.deleted_at).toLocaleString() : "—"}</td>
-						<td class="bg-gray-50 px-6 py-2 rounded-r-xl border border-gray-100 border-l-0">
-							<button class="bg-red-500 hover:bg-red-600 m-1 text-white px-3 py-1 rounded-full transition-colors duration-300 ease-in-out text-xs" onclick="force_delete_user(${user.userId})">Force Delete</button>
-						</td>
-						</tr>
+						<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0">${user.deleted_at ? new Date(user.deleted_at).toLocaleString() : "—"}</td>
+					</tr>
 				`).join('') || '<tr><td colspan="3" class="text-center py-4 text-gray-500">No deleted users</td></tr>';
 			}
 		}
@@ -164,11 +157,7 @@ export async function fetch_games(): Promise<void> {
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0 text-center font-bold ${game.score_left > game.score_right ? 'text-green-600' : 'text-red-600'}">${game.score_left}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0 text-center font-bold ${game.score_right > game.score_left ? 'text-green-600' : 'text-red-600'}">${game.score_right}</td>
 				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0 font-semibold text-gray-800">${teamRightDisplay}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0 text-gray-500">${game.created_at}</td>
-				<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0">
-					<button class="bg-red-200 hover:bg-red-300 m-2 text-red-500 hover:text-red-600 px-4 py-1 rounded-full transition-colors duration-300 ease-in-out">Delete</button>
-					<!--<button class="bg-red-200 hover:bg-red-300 m-2 text-red-500 hover:text-red-600 px-4 py-1 rounded-full transition-colors duration-300 ease-in-out" onclick="delete_game(${game.gameId})">Delete</button>-->
-				</td>
+				<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0">${game.created_at}</td>
 			</tr>
 			`;
 		}).join('');
@@ -191,9 +180,7 @@ export async function fetch_platformers(): Promise<void> {
 					<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.user1_name}</td>
 					<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.score_player1} - ${platformer.score_player2}</td>
 					<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.user2_name}</td>
-					<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.created_at}</td>
-					<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0"><button class="bg-red-200 hover:bg-red-300 m-2 text-red-500 hover:text-red-600 px-4 py-1 rounded-full transition-colors duration-300 ease-in-out">Delete</button></td>
-				<!--<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0"><button class="bg-red-200 hover:bg-red-300 m-2 text-red-500 hover:text-red-600 px-4 py-1 rounded-full transition-colors duration-300 ease-in-out" onclick="delete_platformer(${platformer.platformerId})">Delete</button></td>-->
+					<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0">${platformer.created_at}</td>
 				</tr>
 			`).join('');
 		}
@@ -216,9 +203,7 @@ export async function fetch_friendships(): Promise<void> {
 					<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${friendship.username}</td>
 					<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${friendship.friend_username}</td>
 					<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${friendship.status}</td>
-					<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${friendship.created_at}</td>
-					<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0"><button class="bg-red-200 hover:bg-red-300 m-2 text-red-500 hover:text-red-600 px-4 py-1 rounded-full">Delete</button></td>
-				<!--<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0"><button class="bg-red-200 hover:bg-red-300 m-2 text-red-500 hover:text-red-600 px-4 py-1 rounded-full" onclick="delete_friendship(${friendship.friendshipId})">Delete</button></td> -->
+					<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0">${friendship.created_at}</td>
 				</tr>
 			`).join('');
 		}
@@ -339,119 +324,6 @@ export async function create_friendship(event: Event): Promise<void> {
 	$form("addFriendshipForm").reset();
 	fetch_friendships();
 };
-
-export async function delete_user(userId: string): Promise<void> {
-	if (confirm('Do you really want to delete this account ?')) {
-		try {
-			const response = await fetch('/request/admin/delete-user', { 
-				method: 'DELETE',
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ userId }),
-				credentials: 'include'
-			},);
-			const data = await response.json();
-			if (!data.success)
-				notif(data.error || 'Failed to delete user', false);
-		} catch (err) {
-			notif('Failed to delete user' + err, false);
-		}
-	}
-	fetch_users();
-	fetch_games();
-	fetch_friendships();
-	fetch_deleted_users();
-}
-
-export async function force_delete_user(userId: string): Promise<void> {
-	if (confirm('⚠️ PERMANENT DELETION WARNING ⚠️\n\nThis will PERMANENTLY DELETE the user and BREAK all game references!\nThis action cannot be undone.\n\nAre you absolutely sure?')) {
-		try {
-			const response = await fetch('/request/admin/force-delete-user', { 
-				method: 'DELETE',
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ userId }),
-				credentials: 'include'
-			},);
-			const data = await response.json();
-			if (data.success)
-				notif('User permanently deleted', true);
-			else
-				notif(data.error || 'Failed to permanently delete user', false);
-		} catch (err) {
-			notif('Failed to force delete user' + err, false);
-		}
-	}
-	fetch_users();
-	fetch_games();
-	fetch_friendships();
-	fetch_deleted_users();
-}
-
-export async function delete_game(gameId: string): Promise<void> {
-	if (confirm('Do you really want to delete this game ?')) {
-		try {
-			const response = await fetch('/request/admin/delete-game', { 
-				method: 'DELETE',
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ gameId }),
-				credentials: 'include'
-			},);
-			await response.json();
-		} catch (err) {
-			notif('Failed to delete game', false);
-		}
-	}
-	fetch_games();
-}
-
-export async function delete_platformer(platformerId: string): Promise<void> {
-	if (confirm('Do you really want to delete this platformer ?')) {
-		try {
-			const response = await fetch('/request/admin/delete-platformer', { 
-				method: 'DELETE',
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ platformerId }),
-				credentials: 'include'
-			},);
-			await response.json();
-		} catch (err) {
-			notif('Failed to delete platformer', false);
-		}
-	}
-	fetch_platformers();
-}
-
-export async function delete_friendship(friendshipId: string | number): Promise<void> {
-	if (confirm('Do you really want to delete this friendship ?')) {
-		try {
-			const response = await fetch('/request/admin/delete-friendship', { 
-				method: 'DELETE',
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ friendshipId }),
-				credentials: 'include'
-			},);
-			const data = await response.json();
-			if (data.success) {
-				notif(data.message, true);
-			}
-			else {
-				notif(data.error, false);
-			}
-		} catch (err) {
-			notif('Failed to delete friendship', false);
-		}
-	}
-	fetch_friendships();
-}
 
 
 export async function add_user_modal() {
