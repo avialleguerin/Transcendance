@@ -12,6 +12,7 @@ import { handleViewTransitions } from "./views/camera.js";
 import { get_skin_is_init } from "./solo/skin/init_skin_utils.js";
 import { init_skins_podium_default } from "./solo/skin/init_skin_player_default.js";
 import { StorageKeys } from "../../../api/utils.js";
+import { c } from "../../../static/js/views/platformer/constants.js";
 
 /**************************************************************/
 /*****************CREATION DU MOTEUR***************************/

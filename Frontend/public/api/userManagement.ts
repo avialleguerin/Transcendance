@@ -106,6 +106,7 @@ export async function anonymize_user(): Promise<void> {
 			document.getElementById("profile_photo_circle_nav_bar").innerHTML = `
 			<img src="${data.profile_picture}" alt="Profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
 			`;
+			StorageKeys.PROFILE_PICTURE = data.profile_picture;
 			fetchProfile();
 		} catch (err) { console.error(`anonymize_user: ${err}`); }
 	}

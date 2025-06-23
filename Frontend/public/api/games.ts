@@ -1,10 +1,10 @@
 import { notif, fetchAPI, StorageKeys } from './utils.js';
 
 if (typeof window !== 'undefined') {
-	window.create_1v1_game = create_1v1_game;
-	window.create_2v2_game = create_2v2_game;
-	window.create_platformer = create_platformer;
-	window.get_platformers = get_platformers;
+	// window.create_1v1_game = create_1v1_game;
+	// window.create_2v2_game = create_2v2_game;
+	// window.create_platformer = create_platformer;
+	// window.get_platformers = get_platformers;
 }
 
 

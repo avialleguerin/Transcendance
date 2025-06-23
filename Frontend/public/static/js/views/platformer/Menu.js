@@ -5,7 +5,7 @@ import { get_platformers } from "../../../../api/games.js";
 export default class Menu {
 	constructor(config, player) {
 		this.title = "⏱️ Chrono Clash";
-		this.options = ["▶ Start", "⚙ Options", "☷ History", "✖ Quit" ];
+		this.options = ["▶ Start", "⚙ Controls", "☷ History", "✖ Quit" ];
 		this.selectedOption = 0;
 		this.optionSpacing = 60;
 		this.titleFont = "bold 60px 'Press Start 2P', Black Ops One";
@@ -34,7 +34,7 @@ export default class Menu {
 		
 		this.buttonAreas = [
 			{ option: "▶ Start", x: canvas.width / 2 - 100, y: canvas.height / 2 - 20, width: 200, height: 40 },
-			{ option: "⚙ Options", x: canvas.width / 2 - 100, y: canvas.height / 2 + 40, width: 200, height: 40 },
+			{ option: "⚙ Controls", x: canvas.width / 2 - 100, y: canvas.height / 2 + 40, width: 200, height: 40 },
 			{ option: "☷ History", x: canvas.width / 2 - 100, y: canvas.height / 2 + 100, width: 200, height: 40 },
 			{ option: "✖ Quit", x: canvas.width / 2 - 100, y: canvas.height / 2 + 160, width: 200, height: 40 }
 		];
@@ -160,7 +160,7 @@ export default class Menu {
 			gameState.previous = gameState.current;
 			gameState.current = GameState.MapMenu;
 		}
-		else if (selected === "⚙ Options") {
+		else if (selected === "⚙ Controls") {
 			this.disableControls();
 			gameState.previous = gameState.current;
 			gameState.current = GameState.Options;
@@ -168,7 +168,7 @@ export default class Menu {
 		else if (selected === "✖ Quit") {
 			this.selectedOption = 0;
 			this.disableControls();
-			gameState.previous = GameState.Menu;
+			gameState.previous = gameState.current;
 			gameState.current = GameState.Menu;
 			Setgame_started(false);
 		}

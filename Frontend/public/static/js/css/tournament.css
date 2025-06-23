@@ -129,12 +129,11 @@
 	background-repeat: no-repeat;
 	line-height: 4vh;
 	
-	/* Ajout de dimensions fixes */
-	width: 120px;  /* Largeur fixe */
-	height: 70px;  /* Hauteur fixe */
-	display: flex; /* Pour aider au centrage du texte */
-	justify-content: center; /* Centre horizontalement */
-	align-items: center; /* Centre verticalement */
+	width: 120px;
+	height: 70px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 
 	position: absolute;
 	bottom: 5%;
@@ -151,7 +150,7 @@
 	font-size: 0.8vw;
 	text-align: center;
 	position: relative;
-	top: -7%; /* Assurez-vous qu'il soit en haut */
+	top: -7%;
 }
 
 .btn_start_tournament {
@@ -294,12 +293,11 @@
 	background-repeat: no-repeat;
 	line-height: 4vh;
 	
-	/* Ajout de dimensions fixes */
-	width: 120px;  /* Largeur fixe */
-	height: 70px;  /* Hauteur fixe */
-	display: flex; /* Pour aider au centrage du texte */
-	justify-content: center; /* Centre horizontalement */
-	align-items: center; /* Centre verticalement */
+	width: 120px;
+	height: 70px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 
 	position: absolute;
 	bottom: 3%;

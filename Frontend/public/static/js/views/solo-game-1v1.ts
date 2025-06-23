@@ -10,6 +10,7 @@ import { disable_skin_perso_player_first_and_seconde_default } from "../../../sr
 import { get_skin_is_init } from "../../../srcs/game/gameplay/solo/skin/init_skin_utils.js";
 import { homeView, StorageKeys } from "../../../api/utils.js";
 import { getIsloading } from "../../../srcs/game/gameplay/views/loading_screen.js";
+import { create_1v1_game } from "../../../api/games.js";
 
 let spacePressed = false;
 let bool = false;
@@ -125,7 +126,7 @@ export default class solo_game extends AbstractView {
 							<h1 id="looser_id"></h1>
 						</div>
 					</div>
-					<button class="leave_game_2" id="leave_game_2_id" onclick="window.create_1v1_game(event, '${StorageKeys.PLAYER1}', '${StorageKeys.PLAYER2}')">Leave Game</button>
+					<button class="leave_game_2" id="leave_game_2_id">Leave Game</button>
 				</div>
 			</div>
 		`;
@@ -137,9 +138,10 @@ export default class solo_game extends AbstractView {
 	}
 
 	leave_game_2() {
-		document.getElementById("leave_game_2_id").addEventListener("click", () => {
+		document.getElementById("leave_game_2_id").addEventListener("click", (event) => {
 			
 			this.cleanup();
+			create_1v1_game(event, StorageKeys.PLAYER1, StorageKeys.PLAYER2);
 			setLeaveGameVar(true);
 			if (!is_init)
 				disable_skin_perso_player_first_and_seconde_default();
