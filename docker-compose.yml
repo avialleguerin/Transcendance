@@ -21,7 +21,7 @@ services:
       - .env
     environment:
       - REDIS_URL="redis://redis:6379"
-      - VAULT_ADDR=http://vault:8200
+      - VAULT_ADDR=https://vault:8200
     depends_on:
       - redis
       - vault
@@ -43,9 +43,11 @@ services:
       - "8081:8081"
       - "8443:8443"
       - "8143:8143"
+      - "8444:8444"
     depends_on:
       - fastify
       - tsengine
+      - vault
     environment:
       - NGINX_ENVSUBST_TEMPLATE_DIR=off
     volumes:
@@ -93,11 +95,12 @@ services:
     env_file:
       - .env
     environment:
-      - VAULT_ADDR=http://127.0.0.1:8200
+      - VAULT_ADDR=https://127.0.0.1:8200
     volumes:
       - ./Data/vault_data:/vault/data
       - ./Security/Vault/scripts:/vault/scripts
       - ./Security/Nginx/passwd:/nginx/passwd
+      - ./Security/Nginx/ssl:/vault/ssl
     cap_add:
       - IPC_LOCK
 
