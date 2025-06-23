@@ -156,9 +156,9 @@ export function updateScore(side)
 	}
 	else if (tournament_game)
 	{
-		if (scoreLeft === 1 || scoreRight === 1) {
+		if (scoreLeft === 5 || scoreRight === 5) {
 			SetIsGameFinished(true);
-			if (scoreLeft === 1)
+			if (scoreLeft === 5)
 			{
 				isPlayer1_win = true;
 				isPlayer2_win = false;
