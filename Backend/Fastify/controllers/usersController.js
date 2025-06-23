@@ -290,7 +290,6 @@ export async function login2v2(request, reply) {
 		if (!sanitizeInput(username4, 'username').success || !sanitizeInput(password4, 'password').success)
 			return reply.code(400).send({ error: "Player 2: Invalid credentials" })
 		const infos = await getUserFromToken(request)
-		fastify.log.debug(`Login 2v2 attempt - Infos: ${JSON.stringify(infos)}`)
 		if (!infos || !infos.user || !infos.accessToken) return reply.code(401).send({ success: false, error: 'Unauthorized' })
 		const player2 = usersModel.getUserByUsername(username2)
 		const player3 = usersModel.getUserByUsername(username3)
