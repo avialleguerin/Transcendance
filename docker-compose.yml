@@ -23,8 +23,12 @@ services:
       - REDIS_URL="redis://redis:6379"
       - VAULT_ADDR=https://vault:8200
     depends_on:
-      - redis
-      - vault
+      vault:
+        condition: service_started
+      redis:
+        condition: service_started
+    # Ajouter un délai pour permettre à Vault de s'initialiser complètement
+    command: sh -c "echo 'Attente de Vault...' && sleep 20 && echo 'Démarrage de Fastify...' && npm start"
     volumes: # TODO - Change "app" -> "Fatsify"
       - ./Backend/Fastify:/app
       - /app/node_modules    # Preserve the modules installed in the container 

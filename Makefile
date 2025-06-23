@@ -46,6 +46,17 @@ all:
 	-@docker rm redis tsengine fastify nginx vault
 	@make build
 	@make -j4 up
+	@make health-check
+
+health-check:
+	@echo "${BLUE}⏳ Vérification de l'état des services...${RESET}"
+	@echo "${YELLOW}Attente de la disponibilité de Vault...${RESET}"
+	@timeout 60 sh -c 'until curl -k -s https://localhost:8200/v1/sys/health > /dev/null 2>&1; do sleep 2; done' || (echo "${RED}Vault n'est pas accessible${RESET}" && exit 1)
+	@echo "${GREEN}✓ Vault est disponible${RESET}"
+	@echo "${YELLOW}Attente de la disponibilité de Fastify...${RESET}"
+	@timeout 60 sh -c 'until curl -k -s https://localhost:3443 > /dev/null 2>&1; do sleep 2; done' || (echo "${RED}Fastify n'est pas accessible${RESET}" && exit 1)
+	@echo "${GREEN}✓ Fastify est disponible${RESET}"
+	@echo "${GREEN}🎉 Tous les services sont opérationnels !${RESET}"
 
 up:
 	@docker compose up ${NO_LOGS}
@@ -66,6 +77,13 @@ down:
 re:
 	@make down
 	@make all
+
+clean-vault:
+	@echo "${YELLOW}🧹 Nettoyage complet des données Vault...${RESET}"
+	@docker compose down --remove-orphans
+	@rm -rf ./Data/vault_data/*
+	@echo "${GREEN}✓ Données Vault supprimées${RESET}"
+# @make all
 
 #FIXER
 fixer:
@@ -119,4 +137,4 @@ nlog:
 	@sed -i 's/^LOG_ACTIVE=.*/LOG_ACTIVE=false/' .env || echo "LOG_ACTIVE=false" >> .env
 	@echo "$(MSG_NLOG_SUCCESS)"
 
-.PHONY: all up build down re fixer ip reload-nginx debug-files sectest normal with_skin log nlog
+.PHONY: all up build down re clean-vault health-check fixer ip reload-nginx debug-files sectest normal with_skin log nlog

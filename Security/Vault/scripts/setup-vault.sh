@@ -19,8 +19,19 @@ ROOT_TOKEN_FILE="/vault/data/root_token"
 UNSEAL_KEY_FILE="/vault/data/unseal_key"
 
 echo -e "\n${YELLOW}⏳ Attente de la disponibilité de Vault...${RESET}"
+# Attendre plus longtemps et vérifier plus fréquemment
+timeout=60
+count=0
 until curl -k -s $VAULT_ADDR/v1/sys/health > /dev/null 2>&1; do
-	sleep 2
+	if [ $count -ge $timeout ]; then
+		echo -e "${RED}Timeout: Vault n'est pas disponible après ${timeout} secondes${RESET}"
+		exit 1
+	fi
+	sleep 1
+	count=$((count + 1))
+	if [ $((count % 10)) -eq 0 ]; then
+		echo -e "${YELLOW}Attente en cours... ${count}s${RESET}"
+	fi
 done
 echo -e "${GREEN}Vault est maintenant disponible !${RESET}"
 
@@ -123,12 +134,46 @@ echo -e "${GREEN}Fichier .htpasswd généré à : $HTPASSWD_FILE${RESET}"
 if curl -k -s -H "X-Vault-Token: $VAULT_TOKEN" $VAULT_ADDR/v1/secret/data/jwt | grep '"data"' > /dev/null; then
     echo -e "${YELLOW} Le secret JWT existe déjà. Pas besoin de l'écraser.${RESET}"
 else
-    # Générer un secret JWT sécurisé
-    JWT_SECRET=$(openssl rand -base64 64)
-    JWT_SECRET_ESCAPED=$(echo "$JWT_SECRET" | sed 's/"/\\"/g')
-    curl -k -s -X POST -H "X-Vault-Token: $VAULT_TOKEN" -d "{\"data\":{\"secret\":\"${JWT_SECRET_ESCAPED}\"}}" $VAULT_ADDR/v1/secret/data/jwt
+    # Générer un secret JWT sécurisé (alphanumeric uniquement pour éviter les problèmes d'échappement)
+    JWT_SECRET=$(openssl rand -hex 32)
+    curl -k -s -X POST -H "X-Vault-Token: $VAULT_TOKEN" -d "{\"data\":{\"secret\":\"${JWT_SECRET}\"}}" $VAULT_ADDR/v1/secret/data/jwt
     echo -e "${GREEN}Secret JWT ajouté !${RESET}"
 fi
 
+# Vérification finale que tous les secrets sont bien configurés
+echo -e "\n${CYAN}Vérification finale des secrets...${RESET}"
+secrets_ok=true
+
+# Vérifier SQLite
+if curl -k -s -H "X-Vault-Token: $VAULT_TOKEN" $VAULT_ADDR/v1/secret/data/sqlite | grep '"data"' > /dev/null; then
+    echo -e "${GREEN}✓ Secret SQLite configuré${RESET}"
+else
+    echo -e "${RED}✗ Secret SQLite manquant${RESET}"
+    secrets_ok=false
+fi
+
+# Vérifier Nginx
+if curl -k -s -H "X-Vault-Token: $VAULT_TOKEN" $VAULT_ADDR/v1/secret/data/nginx | grep '"data"' > /dev/null; then
+    echo -e "${GREEN}✓ Secret Nginx configuré${RESET}"
+else
+    echo -e "${RED}✗ Secret Nginx manquant${RESET}"
+    secrets_ok=false
+fi
+
+# Vérifier JWT
+if curl -k -s -H "X-Vault-Token: $VAULT_TOKEN" $VAULT_ADDR/v1/secret/data/jwt | grep '"data"' > /dev/null; then
+    echo -e "${GREEN}✓ Secret JWT configuré${RESET}"
+else
+    echo -e "${RED}✗ Secret JWT manquant${RESET}"
+    secrets_ok=false
+fi
+
+if [ "$secrets_ok" = true ]; then
+    echo -e "\n${GREEN}🎉 Tous les secrets sont correctement configurés !${RESET}"
+    echo -e "${GREEN}🚀 Vault est prêt pour l'utilisation par les applications${RESET}"
+else
+    echo -e "\n${RED}❌ Certains secrets sont manquants !${RESET}"
+    exit 1
+fi
 
 echo -e "\n${GREEN}Script terminé avec succès en mode Production avec HTTPS !${RESET}"

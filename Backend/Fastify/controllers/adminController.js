@@ -6,7 +6,6 @@ import friendshipsModel from '../models/friendshipsModel.js'
 import { generateRandomString } from './utils.js'
 import fs from 'fs/promises'
 import path from 'path'
-import { send } from 'process'
 import { sanitizeInput } from './utils.js'
 
 const uploadDir = '/usr/share/nginx/uploads'
