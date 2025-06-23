@@ -27,67 +27,6 @@ export async function getDeletedUsers(request, reply) {
 	}
 }
 
-// export async function deleteUser(request, reply) {
-// 	const { userId } = request.body
-	
-// 	try {
-// 		const user = usersModel.getUserById(userId)
-// 		if (!user) return reply.code(404).send({ error: 'User not found' })
-
-// 		const oldProfilePicture = user.profile_picture;
-// 		if (oldProfilePicture !== "/assets/image/default-profile-picture.png") {
-// 			try {
-// 				const oldFilePath = path.join(uploadDir, oldProfilePicture);
-// 				const fileExists = await fs.access(oldFilePath)
-// 				.then(() => true)
-// 				.catch(() => false);
-				
-// 				if (fileExists) await fs.unlink(oldFilePath);
-// 			} catch (deleteErr) {}
-// 		}
-
-// 		const anonymizedUsername = generateRandomString(9)
-// 		const anonymizedPassword = generateRandomString(9)
-// 		const defaultProfilePicture = '/assets/image/default-profile-picture.png'
-// 		usersModel.updateUsername(userId, anonymizedUsername)
-// 		const info = usersModel.anonymizeUserData(userId, anonymizedPassword, defaultProfilePicture)
-// 		if (info.changes === 0) return reply.code(404).send({ error: "User not found" })
-		
-// 		return reply.send({ success: true, message: "User anonymized successfully"})
-// 	} catch (err) {
-// 		return reply.code(500).send({ error: err.message })
-// 	}
-// }
-
-// export async function forceDeleteUser(request, reply) {
-// 	const { userId } = request.body
-
-// 	try {
-// 		const user = usersModel.getUserById(userId)
-// 		if (!user) return reply.code(404).send({ error: 'User not found' })
-
-// 		const oldProfilePicture = user.profile_picture;
-// 		if (oldProfilePicture !== "/assets/image/default-profile-picture.png") {
-// 			try {
-// 				const oldFilePath = path.join(uploadDir, oldProfilePicture);
-// 				const fileExists = await fs.access(oldFilePath)
-// 				.then(() => true)
-// 				.catch(() => false);
-				
-// 				if (fileExists) await fs.unlink(oldFilePath);
-
-// 			} catch (deleteErr) {}
-// 		}
-
-// 		const info = usersModel.forceDeleteUser(userId)
-// 		if (info.changes === 0) return reply.code(404).send({ error: "User not found" })
-
-// 		return reply.send({ success: true, message: "User permanently deleted"})
-// 	} catch (err) {
-// 		return reply.code(500).send({ error: err.message })
-// 	}
-// }
-
 export async function getAllGames(request, reply) {
 	try {
 		return gamesModel.getAllGames()
@@ -133,22 +72,6 @@ export async function addGame(request, reply) {
 	}
 }
 
-// export async function deleteGame(request, reply) {
-// 	const { gameId } = request.body
-
-// 	try {
-// 		const game = gamesModel.getgameById(gameId)
-// 		if (!game) return reply.code(404).send({ error: 'Game not found' })
-
-// 		const info = gamesModel.deleteGame(gameId)
-// 		if (info.changes === 0) return reply.code(404).send({ error: "Game not found" })
-
-// 		return reply.send({ success: true, message: "Game deleted successfully"})
-// 	} catch (err) {
-// 		return reply.code(500).send({ error: err.message })
-// 	}
-// }
-
 export async function getAllFriendships(request, reply) {
 	try {
 		return friendshipsModel.getAllFriendships()
@@ -178,22 +101,6 @@ export async function addFriendship(request, reply) {
 	}
 }
 
-// export async function deleteFriendship(request, reply) {
-// 	const { friendshipId } = request.body
-	
-// 	try {
-// 		const friendship = friendshipsModel.getFriendshipById(friendshipId)
-// 		if (!friendship) return reply.code(404).send({ error: 'Friendship not found' })
-		
-// 		const info = friendshipsModel.deleteFriendship(friendship.userId, friendship.friendId)
-// 		if (info.changes === 0) return reply.code(404).send({ error: "Friendship not found" })
-		
-// 		return reply.send({ success: true, message: "Friendship deleted successfully"})
-// 	} catch (err) {
-// 		return reply.code(500).send({ error: err.message })
-// 	}
-// }
-
 export async function getAllPlatformers(request, reply) {
 	try {
 		return platformersModel.getAllPlatformers()
@@ -221,17 +128,3 @@ export async function addPlatformer(request, reply) {
 		return reply.code(201).send({ success: true, message: "Platformer finished successfully" })
 	} catch (err) { return reply.code(500).send({ error: err.message }) }
 }
-
-// export async function deletePlatformer(request, reply) {
-// 	const { platformerId } = request.body
-	
-// 	try {
-// 		const platformer = platformersModel.getPlatformerById(platformerId)
-// 		if (!platformer) return reply.code(404).send({ error: 'Platformer not found' })
-		
-// 		const info = platformersModel.deletePlatformer(platformerId)
-// 		if (info.changes === 0) return reply.code(404).send({ error: "Platformer not found" })
-		
-// 		return reply.send({ success: true, message: "Platformer deleted successfully"})
-// 	} catch (err) { return reply.code(500).send({ error: err.message }) }
-// }

@@ -27,11 +27,10 @@ services:
         condition: service_started
       redis:
         condition: service_started
-    # Ajouter un délai pour permettre à Vault de s'initialiser complètement
-    command: sh -c "echo 'Attente de Vault...' && sleep 20 && echo 'Démarrage de Fastify...' && npm start"
-    volumes: # TODO - Change "app" -> "Fatsify"
+    command: sh -c "echo 'Waiting for Vault...' && sleep 20 && echo 'Starting Fastify...' && npm start"
+    volumes:
       - ./Backend/Fastify:/app
-      - /app/node_modules    # Preserve the modules installed in the container 
+      - /app/node_modules
       - ./Data/vault_data:/app/vault/data
       - ./Data/sqlite_data:/app/Data/db
       - ./Data/uploads:/usr/share/nginx/uploads

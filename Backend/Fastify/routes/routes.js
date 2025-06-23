@@ -33,11 +33,6 @@ export default async function routes (fastify) {
 	fastify.post('/admin/create-game', addGame);
 	fastify.post('/admin/create-platformer', addPlatformer);
 	fastify.post('/admin/create-friendship', addFriendship);
-	// fastify.delete('/admin/delete-user', deleteUser);
-	// fastify.delete('/admin/delete-game', deleteGame);
-	// fastify.delete('/admin/delete-platformer', deletePlatformer);
-	// fastify.delete('/admin/delete-friendship', deleteFriendship);
-	// fastify.delete('/admin/force-delete-user', forceDeleteUser);
 
 	fastify.get('/profile', getUserProfile);
 	fastify.get('/user/profile-picture', getUserProfilePicture);
