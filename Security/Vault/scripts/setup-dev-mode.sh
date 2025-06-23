@@ -9,42 +9,95 @@ RESET='\e[0m'
 
 set -e
 
-echo -e "\n\n${GREEN}🚀 Démarrage de Vault en mode Dev...${RESET}"
+# Configuration pour les certificats auto-signés
+export VAULT_SKIP_VERIFY=true
 
-export root_token="${VAULT_DEV_ROOT_TOKEN_ID}"
+echo -e "\n\n${GREEN}🚀 Démarrage de Vault en mode production avec HTTPS...${RESET}"
 
-if [ -z "$root_token" ]; then
-    echo -e "\033[31mErreur: VAULT_DEV_ROOT_TOKEN_ID n'est pas défini dans le .env\033[0m"
-    exit 1
-fi
-
-vault server -dev -dev-root-token-id=$root_token &
+# Vérifier si on a un token root existant ou si on doit initialiser
+ROOT_TOKEN_FILE="/vault/data/root_token"
+UNSEAL_KEY_FILE="/vault/data/unseal_key"
 
 echo -e "\n${YELLOW}⏳ Attente de la disponibilité de Vault...${RESET}"
-until curl -s $VAULT_ADDR/v1/sys/health | grep -E '"initialized":true|"standby":true' > /dev/null; do
+until curl -k -s $VAULT_ADDR/v1/sys/health > /dev/null 2>&1; do
 	sleep 2
 done
 echo -e "${GREEN}Vault est maintenant disponible !${RESET}"
 
-export VAULT_TOKEN=$root_token
+# Vérifier si Vault est initialisé
+if curl -k -s $VAULT_ADDR/v1/sys/init | grep '"initialized":false' > /dev/null; then
+    echo -e "${YELLOW}Initialisation de Vault...${RESET}"
+    # Initialiser Vault avec 1 clé de déverrouillage et 1 partage
+    INIT_RESPONSE=$(curl -k -s -X POST -d '{"secret_shares":1,"secret_threshold":1}' $VAULT_ADDR/v1/sys/init)
+    UNSEAL_KEY=$(echo $INIT_RESPONSE | jq -r '.keys[0]')
+    ROOT_TOKEN=$(echo $INIT_RESPONSE | jq -r '.root_token')
+    
+    # Sauvegarder les clés pour les redémarrages futurs
+    echo $ROOT_TOKEN > $ROOT_TOKEN_FILE
+    echo $UNSEAL_KEY > $UNSEAL_KEY_FILE
+    
+    echo -e "${GREEN}Vault initialisé avec succès !${RESET}"
+    echo -e "${YELLOW}Déverrouillage de Vault...${RESET}"
+    
+    # Déverrouiller Vault
+    curl -k -s -X POST -d "{\"key\":\"$UNSEAL_KEY\"}" $VAULT_ADDR/v1/sys/unseal
+    
+    echo -e "${GREEN}Vault déverrouillé !${RESET}"
+    export VAULT_TOKEN=$ROOT_TOKEN
+else
+    echo -e "${GREEN}Vault est déjà initialisé${RESET}"
+    
+    # Vérifier si Vault est déverrouillé
+    if curl -k -s $VAULT_ADDR/v1/sys/seal-status | grep '"sealed":true' > /dev/null; then
+        echo -e "${YELLOW}Vault est verrouillé, déverrouillage...${RESET}"
+        if [ -f "$UNSEAL_KEY_FILE" ]; then
+            UNSEAL_KEY=$(cat $UNSEAL_KEY_FILE)
+            curl -k -s -X POST -d "{\"key\":\"$UNSEAL_KEY\"}" $VAULT_ADDR/v1/sys/unseal
+            echo -e "${GREEN}Vault déverrouillé !${RESET}"
+        else
+            echo -e "${RED}Erreur: Clé de déverrouillage non trouvée dans $UNSEAL_KEY_FILE${RESET}"
+            exit 1
+        fi
+    else
+        echo -e "${GREEN}Vault est déjà déverrouillé${RESET}"
+    fi
+    
+    # Utiliser le token root sauvegardé
+    if [ -f "$ROOT_TOKEN_FILE" ]; then
+        ROOT_TOKEN=$(cat $ROOT_TOKEN_FILE)
+        export VAULT_TOKEN=$ROOT_TOKEN
+    else
+        echo -e "${RED}Erreur: Token root non trouvé dans $ROOT_TOKEN_FILE${RESET}"
+        exit 1
+    fi
+fi
+
+# Activer le moteur de secrets KV v2 si ce n'est pas déjà fait
+echo -e "${YELLOW}Configuration du moteur de secrets...${RESET}"
+if ! curl -k -s -H "X-Vault-Token: $VAULT_TOKEN" $VAULT_ADDR/v1/sys/mounts | grep '"secret/"' > /dev/null; then
+    curl -k -s -X POST -H "X-Vault-Token: $VAULT_TOKEN" -d '{"type":"kv","options":{"version":"2"}}' $VAULT_ADDR/v1/sys/mounts/secret
+    echo -e "${GREEN}Moteur de secrets KV v2 activé !${RESET}"
+else
+    echo -e "${GREEN}Moteur de secrets KV déjà configuré${RESET}"
+fi
 
 ###################
 #     SQLITE
 ###################
-if vault kv get secret/sqlite >/dev/null 2>&1; then
+if curl -k -s -H "X-Vault-Token: $VAULT_TOKEN" $VAULT_ADDR/v1/secret/data/sqlite | grep '"data"' > /dev/null; then
 	echo -e "${YELLOW} Le secret SQLite existe déjà. Pas besoin de l'écraser.${RESET}"
 else
-	vault kv put secret/sqlite username="${DB_USERNAME}" password="${DB_PASSWORD}"
+	curl -k -s -X POST -H "X-Vault-Token: $VAULT_TOKEN" -d "{\"data\":{\"username\":\"${DB_USERNAME}\",\"password\":\"${DB_PASSWORD}\"}}" $VAULT_ADDR/v1/secret/data/sqlite
 	echo -e "${GREEN}Secret SQLite ajouté !${RESET}"
 fi
 
 ###################
 #      NGINX
 ###################
-if vault kv get secret/nginx >/dev/null 2>&1; then
+if curl -k -s -H "X-Vault-Token: $VAULT_TOKEN" $VAULT_ADDR/v1/secret/data/nginx | grep '"data"' > /dev/null; then
 	echo -e "${YELLOW} Le secret Nginx existe déjà. Pas besoin de l'écraser.${RESET}"          
 else
-	vault kv put secret/nginx username="${NGINX_USERNAME}" password="${NGINX_PASSWORD}"
+	curl -k -s -X POST -H "X-Vault-Token: $VAULT_TOKEN" -d "{\"data\":{\"username\":\"${NGINX_USERNAME}\",\"password\":\"${NGINX_PASSWORD}\"}}" $VAULT_ADDR/v1/secret/data/nginx
 	echo -e "${GREEN}Secret Nginx ajouté !${RESET}"
 fi
 
@@ -54,25 +107,28 @@ if ! command -v htpasswd > /dev/null; then
 fi
 
 echo -e "\n${CYAN}Génération du fichier .htpasswd pour Nginx...${RESET}"
-nginx_user=$(vault kv get -field=username secret/nginx)
-nginx_pass=$(vault kv get -field=password secret/nginx)
-NGINX_DIR="./nginx/passwd"
+nginx_user_response=$(curl -k -s -H "X-Vault-Token: $VAULT_TOKEN" $VAULT_ADDR/v1/secret/data/nginx)
+nginx_pass_response=$(curl -k -s -H "X-Vault-Token: $VAULT_TOKEN" $VAULT_ADDR/v1/secret/data/nginx)
+nginx_user=$(echo $nginx_user_response | jq -r '.data.data.username')
+nginx_pass=$(echo $nginx_pass_response | jq -r '.data.data.password')
+NGINX_DIR="/nginx/passwd"
 HTPASSWD_FILE="$NGINX_DIR/.htpasswd"
-mkdir -p "$(dirname "$NGINX_DIR")"
+mkdir -p "$NGINX_DIR"
 htpasswd -cb "$HTPASSWD_FILE" "$nginx_user" "$nginx_pass"
 echo -e "${GREEN}Fichier .htpasswd généré à : $HTPASSWD_FILE${RESET}"
 
 ###################
 #       JWT
 ###################
-if vault kv get secret/jwt >/dev/null 2>&1; then
+if curl -k -s -H "X-Vault-Token: $VAULT_TOKEN" $VAULT_ADDR/v1/secret/data/jwt | grep '"data"' > /dev/null; then
     echo -e "${YELLOW} Le secret JWT existe déjà. Pas besoin de l'écraser.${RESET}"
 else
     # Générer un secret JWT sécurisé
     JWT_SECRET=$(openssl rand -base64 64)
-    vault kv put secret/jwt secret="${JWT_SECRET}"
+    JWT_SECRET_ESCAPED=$(echo "$JWT_SECRET" | sed 's/"/\\"/g')
+    curl -k -s -X POST -H "X-Vault-Token: $VAULT_TOKEN" -d "{\"data\":{\"secret\":\"${JWT_SECRET_ESCAPED}\"}}" $VAULT_ADDR/v1/secret/data/jwt
     echo -e "${GREEN}Secret JWT ajouté !${RESET}"
 fi
 
 
-echo -e "\n${GREEN}Script terminé avec succès en mode Dev !${RESET}"
+echo -e "\n${GREEN}Script terminé avec succès en mode Production avec HTTPS !${RESET}"

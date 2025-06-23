@@ -17,16 +17,16 @@ COPY config/*.hcl /vault/config/
 COPY policies/*.hcl /vault/policies/
 COPY scripts/*.sh /vault/scripts/
 
-RUN chmod +x /vault/scripts/setup-vault.sh
+# RUN chmod +x /vault/scripts/setup-vault.sh
 RUN chmod +x /vault/scripts/setup-dev-mode.sh
 
-ENV VAULT_ADDR=http://127.0.0.1:8200
+ENV VAULT_ADDR=https://127.0.0.1:8200
 
 #VAULT DEV
 # CMD ["vault", "server", "-dev", "-dev-listen-address=0.0.0.0:8200", "&& ./vault/scripts/setup-dev-mode.sh", "&& tail -f /dev/null"]
-CMD vault server -dev -dev-listen-address=0.0.0.0:8200 & sleep 1 && ./vault/scripts/setup-dev-mode.sh && tail -f /dev/null
-
+# CMD vault server -dev -dev-listen-address=0.0.0.0:8200 & sleep 1 && ./vault/scripts/setup-dev-mode.sh && tail -f /dev/null
 
 
 #VAULT PROD
 # CMD ["vault", "server", "-config=/vault/config/vault-config.hcl", "&& ./vault/scripts/setup-vault.sh", "&& tail -f /dev/null"]
+CMD vault server -config=/vault/config/vault-config.hcl & sleep 3 && ./vault/scripts/setup-dev-mode.sh && tail -f /dev/null
