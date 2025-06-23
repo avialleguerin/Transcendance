@@ -14,7 +14,7 @@ import { get_skin_is_init } from "../../../srcs/game/gameplay/solo/skin/init_ski
 import { homeView, StorageKeys } from "../../../api/utils.js";
 import { accessProfileInfo, changeProfilePicture, delete_account, anonymize_user, export_data, enable_doubleAuth, disable_doubleAuth, activate2FA, updateProfileInfo } from "../../../api/userManagement.js";
 import { logout, login_1v1, login_2v2, login_platformer } from "../../../api/auth.js";
-import { addFriend, fetch_user_games_big, togglePanel } from "../../../api/friendships.js";
+import { addFriend, fetch_user_games_big, fetch_user_games, fetch_user_friendships } from "../../../api/friendships.js";
 
 let powerUP_nb = 0;
 let powerUP_nb_multi = 0;
@@ -38,7 +38,7 @@ export default class Game_menu extends AbstractView {
 		<div class="navbar_menu">
 			<div class="profile_photo_circle_nav_bar" id="profile_photo_circle_nav_bar"><img src="${StorageKeys.PROFILE_PICTURE}" alt="profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;"></div>
 			<h1 id="player_name" class="player_name">${StorageKeys.PLAYER1}</h1>
-			<button class="option_navBar" id="option_btn_navBar"> <!-- onclick="togglePanel(event)"-->
+			<button class="option_navBar" id="option_btn_navBar">
 				<img src="../../../srcs/game/assets/image/menu.svg" alt="menu">
 			</button>
 			
@@ -1491,7 +1491,8 @@ export default class Game_menu extends AbstractView {
 			void panel_option_navbar.offsetWidth; // force le reflow pour relancer l'animation si besoin
 			panel_option_navbar.classList.add('active');
 			option_btn_navBar.style.display = 'none';
-			togglePanel(event);
+			fetch_user_friendships();
+			fetch_user_games();
 		});
 
 		option_btn_remove.addEventListener('click', () => {

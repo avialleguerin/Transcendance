@@ -93,7 +93,6 @@ export function gameMenuView(changeView: boolean, txt: string): void {
 	if (changeView)
 	{
 		handleViewTransitions("vue1", "default");
-		// Utiliser le router normal au lieu de contourner la navigation
 		import('../static/js/index.js').then(module => {
 			if (module.navigateTo) {
 				module.navigateTo('/game-menu');
@@ -103,8 +102,6 @@ export function gameMenuView(changeView: boolean, txt: string): void {
 	else 
 	{
 		notif(txt, false);
-		// Pour les messages d'erreur, ne pas changer de page
-		// Sauf pour "You are already logged in" qui nécessite une redirection
 		if (txt === "You are already logged in") {
 			import('../static/js/index.js').then(module => {
 				if (module.navigateTo) {
@@ -112,7 +109,6 @@ export function gameMenuView(changeView: boolean, txt: string): void {
 				}
 			});
 		}
-		// Pour les autres messages d'erreur, juste afficher la notification
 	}
 }
 
@@ -126,8 +122,6 @@ export function platformerView(): void {
 			const appElement = document.getElementById('app');
 			if (appElement) {
 				appElement.innerHTML = html;
-				// if (platformerInstance.createAccount && typeof platformerInstance.createAccount === 'function') {
-				//todo: changer init to createAccount je crois
 				if (platformerInstance.init_game_platformer && typeof platformerInstance.init_game_platformer === 'function') {
 					platformerInstance.init_game_platformer();
 				}
@@ -227,7 +221,7 @@ export const StorageKeys = {
 	TOURNAMENT_COUNT: 0 as number,
 	TOURNAMENT_STARTED: false as boolean, 
 	TOURNAMENT_FINISHED: false as boolean,
-	GAME_HISTORY: [] as string[],
+	GAME_HISTORY: null as string,
 	SECOND_CHANCE: false as boolean,
 	CAN_PLAY: false as boolean,
 	SCORE_LEFT: 0 as number,

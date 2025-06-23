@@ -1,6 +1,5 @@
 import { notif, fetchAPI, homeView, gameMenuView, platformerView, setLocalStorage, updateUI, $, $input, $form, StorageKeys } from './utils.js';
 import { ApiResponse, LoginRequest, RegisterRequest, User, GoogleTokenClient, GoogleSignInResponse,  } from './types.js';
-import { connectWebSocket, disconnectWebSocket } from './websocket.js';
 
 
 export let tokenClient: GoogleTokenClient | null = null;
@@ -28,6 +27,7 @@ export async function login(event: Event): Promise<void> {
 		} else if (data.success && data.connection_status === "connected") {
 			StorageKeys.PLAYER1 = data.username
 			StorageKeys.PROFILE_PICTURE = data.profile_picture
+			const { connectWebSocket } = await import('./websocket.js')
 			connectWebSocket()
 			gameMenuView(true, null);
 			$form("loginForm").reset();
@@ -167,6 +167,7 @@ export async function login_platformer(event: Event) {
  */
 export async function logout() {
 	try {
+		const { disconnectWebSocket } = await import('./websocket.js')
 		disconnectWebSocket()
 		await fetchAPI('/request/user/logout', 'POST', {}, true);
 		sessionStorage.clear();
@@ -189,6 +190,7 @@ export async function verify2FA(event: Event) {
 			sessionStorage.removeItem("authTicket")
 			StorageKeys.PLAYER1 = data.username;
 			StorageKeys.PROFILE_PICTURE = data.profile_picture;
+			const { connectWebSocket } = await import('./websocket.js')
 			connectWebSocket()
 			gameMenuView(true, null);
 		}
@@ -229,6 +231,7 @@ export async function refreshInfos() { //REVIEW - maybe put in utils
 			StorageKeys.PLAYER1 = data.user.username;
 			StorageKeys.PROFILE_PICTURE = data.user.profile_picture;
 			console.log(StorageKeys.PLAYER1, StorageKeys.PROFILE_PICTURE);
+			const { connectWebSocket } = await import('./websocket.js')
 			connectWebSocket();
 			gameMenuView(true, null);
 		}
@@ -289,6 +292,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 //* ==== WEB SOCKET ==== *//
 
-window.addEventListener('beforeunload', () => {
+window.addEventListener('beforeunload', async () => {
+	const { disconnectWebSocket } = await import('./websocket.js')
 	disconnectWebSocket()
 });

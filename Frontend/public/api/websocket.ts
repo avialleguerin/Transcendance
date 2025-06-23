@@ -113,10 +113,3 @@ export function connectWebSocket(): void {
 export function disconnectWebSocket(): void {
 	wsManager.disconnect()
 }
-
-if (typeof window !== 'undefined') {
-	window.connectWebSocket = connectWebSocket
-	window.disconnectWebSocket = disconnectWebSocket
-	window.wsManager = wsManager
-}
-

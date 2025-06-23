@@ -12,7 +12,6 @@ if (typeof window !== 'undefined') {
 	// window.fetch_user_games = fetch_user_games;
 	// window.fetch_user_games_big = fetch_user_games_big;
 	// window.fetch_friend_games_big = fetch_friend_games_big; //REVIEW
-	// window.togglePanel = togglePanel;
 }
 
 export async function addFriend(event: Event): Promise<void> {
@@ -587,12 +586,6 @@ export async function fetch_user_games_big(): Promise<boolean> {
 	} catch (err) {
 		console.error('Error retrieving games:', err);
 	}
-}
-
-export async function togglePanel(event: Event): Promise<void> {
-	event.preventDefault();
-	await fetch_user_friendships(); //REVIEW - i add await
-	await fetch_user_games();
 }
 
 // Variable globale pour stocker la fonction
