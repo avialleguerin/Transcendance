@@ -227,7 +227,7 @@ export const StorageKeys = {
 	TOURNAMENT_COUNT: 0 as number,
 	TOURNAMENT_STARTED: false as boolean, 
 	TOURNAMENT_FINISHED: false as boolean,
-	GAME_HISTORY: [] as string[],
+	GAME_HISTORY: null as string,
 	SECOND_CHANCE: false as boolean,
 	CAN_PLAY: false as boolean,
 	SCORE_LEFT: 0 as number,
