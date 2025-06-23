@@ -19,9 +19,6 @@ import { addFriend, fetch_user_games_big, fetch_user_games, fetch_user_friendshi
 let powerUP_nb = 0;
 let powerUP_nb_multi = 0;
 
-// if (localStorage.getItem('historyIsVisible') === null)
-// 	localStorage.setItem('historyIsVisible', 'false');
-
 export default class Game_menu extends AbstractView {
 	constructor() {
 		super();
@@ -716,14 +713,14 @@ export default class Game_menu extends AbstractView {
 	handleDeconnection() {
 		const deconnect_btn = document.getElementById("deconnect_btn");
 
-		deconnect_btn.addEventListener("click", () => {
+		deconnect_btn?.addEventListener("click", () => {
 			handleViewTransitions("vue1", "vue2");
 			window.history.back();
 		});
 	}
 
 	game_menu()
-	{
+	{		// DOM element declarations with null safety
 		const btn_jouer = document.getElementById('btn_jouer');
 		const view1 = document.getElementById('view1');
 		const view2 = document.getElementById('view2');
@@ -755,15 +752,55 @@ export default class Game_menu extends AbstractView {
 		const back_to_select_mode_view7 = document.getElementById('back_to_select_mode_view7');
 		const back_to_select_mode_view8 = document.getElementById('back_to_select_mode_view8');
 		const choose_your_opponent_platformer_form = document.getElementById('choose_your_opponent_platformer_form');
+		const choose_your_skin = document.getElementById('choose_your_skin');
+		const custom_ta_game = document.getElementById('custom_ta_game');
+		const solo_1v1_btn = document.getElementById('solo_1v1_btn');
+		const container_menu = document.getElementById('container');
+		const choose_your_opponent_multi_form = document.getElementById('choose_your_opponent_multi_form');
+		const skin_perso_game_multi = document.getElementById('skin_perso_game_multi');
+		const choose_your_skin_game_multi = document.getElementById('choose_your_skin_game_multi');
+		const multiplayer_btn = document.getElementById('multiplayer_btn');
+		const custom_ta_game_multi = document.getElementById('custom_ta_game_multi');
+		const power_selector_game_multi = document.getElementById('power_selector_game_multi');
+		const powerUP_multi = document.getElementById('powerUP_multi');
+		const number_powerUP_1_game_multi = document.getElementById('number_powerUP_1_game_multi');
+		const number_powerUP_3_game_multi = document.getElementById('number_powerUP_3_game_multi');
+		const number_powerUP_5_game_multi = document.getElementById('number_powerUP_5_game_multi');
+		const valide_ton_skin_game_multi = document.getElementById('valide_ton_skin_game_multi');
+		const switch_skn_left_id1_game_multi = document.getElementById('switch_skn_left_id1_game_multi');
+		const switch_skn_right_id1_game_multi = document.getElementById('switch_skn_right_id1_game_multi');
+		const switch_skn_left_id2_game_multi = document.getElementById('switch_skn_left_id2_game_multi');
+		const switch_skn_right_id2_game_multi = document.getElementById('switch_skn_right_id2_game_multi');
+		const switch_skn_left_id3_game_multi = document.getElementById('switch_skn_left_id3_game_multi');
+		const switch_skn_right_id3_game_multi = document.getElementById('switch_skn_right_id3_game_multi');
+		const switch_skn_left_id4_game_multi = document.getElementById('switch_skn_left_id4_game_multi');
+		const switch_skn_right_id4_game_multi = document.getElementById('switch_skn_right_id4_game_multi');
+		const power_up_info_id = document.getElementById('power_up_info_id');
+		const container_info_power_up = document.getElementById('container_info_power_up');
+		const exit_powerUP_info = document.getElementById('exit_powerUP_info');
+		const power_up_info_id_multi = document.getElementById('power_up_info_id_multi');
+		const container_info_power_up_multi = document.getElementById('container_info_power_up_multi');
+		const exit_powerUP_info_multi = document.getElementById('exit_powerUP_info_multi');
+		const option_btn_navBar = document.getElementById('option_btn_navBar');
+		const panel_option_navbar = document.getElementById('panel_option_navbar');
+		const option_btn_remove = document.getElementById('option_btn_remove');
+		const Game_History_btn = document.getElementById('Game_History_btn');
+		const game_history = document.getElementById('game_history');
+		const exit_game_history_btn = document.getElementById('exit_game_history_btn');
+		const code_validation_id = document.getElementById('code_validation_id');
+		const fa_selector = document.getElementById('fa_selector');
+		const cancel_fa = document.getElementById('cancel_fa');
 
 		const showCguLink = document.getElementById("show-cgu");
 		const cguModal = document.getElementById("cgu-modal");
 		const cguBackButton = document.getElementById("cgu-back-button");
 
-
-		view1_btn.style.color = '#e6e600';
-		view1_btn.style.textShadow = '0 0 10px #e6e600';
-		view1_btn.style.cursor = 'default';
+		// Apply null safety to initial styling
+		if (view1_btn) {
+			view1_btn.style.color = '#e6e600';
+			view1_btn.style.textShadow = '0 0 10px #e6e600';
+			view1_btn.style.cursor = 'default';
+		}
 		
 		showCguLink?.addEventListener("click", (e) => {
 			e.preventDefault();
@@ -805,26 +842,30 @@ export default class Game_menu extends AbstractView {
 			}
 		});
 
-		btn_jouer.addEventListener('click', () => {
-			view1.classList.add('active');
-			view2.classList.add('active');
-			btn_back_home.classList.add('active');
-			btn_jouer.style.display = 'none';
+		btn_jouer?.addEventListener('click', () => {
+			view1?.classList.add('active');
+			view2?.classList.add('active');
+			btn_back_home?.classList.add('active');
+			if (btn_jouer) btn_jouer.style.display = 'none';
 		});
 
-		view1_btn.addEventListener('click', () => {
-			if (view5.classList.contains('active')) {
-				view5.classList.remove('active');
-				view2.classList.add('active');
-				view1_btn.style.color = '#e6e600';
-				view1_btn.style.textShadow = '0 0 10px #e6e600';
-				settings_btn.style.color = 'white';
-				settings_btn.style.textShadow = 'none';
-				view1_btn.style.cursor = 'default';
-				settings_btn.style.cursor = 'pointer';
+		view1_btn?.addEventListener('click', () => {
+			if (view5?.classList.contains('active')) {
+				view5?.classList.remove('active');
+				view2?.classList.add('active');
+				if (view1_btn) {
+					view1_btn.style.color = '#e6e600';
+					view1_btn.style.textShadow = '0 0 10px #e6e600';
+					view1_btn.style.cursor = 'default';
+				}
+				if (settings_btn) {
+					settings_btn.style.color = 'white';
+					settings_btn.style.textShadow = 'none';
+					settings_btn.style.cursor = 'pointer';
+				}
 			}
-			else if (!view2.classList.contains('active'))
-				view2.classList.add('active');
+			else if (view2 && !view2.classList.contains('active'))
+				view2?.classList.add('active');
 		});
 
 		let skin = get_skin_is_init();
@@ -833,12 +874,12 @@ export default class Game_menu extends AbstractView {
 
 
 		if (skin == false) {
-			skin_id.classList.add('hidden');
-			skin_id_multi.classList.add('hidden');
+			skin_id?.classList.add('hidden');
+			skin_id_multi?.classList.add('hidden');
 		}
 		else {
-			skin_id.classList.remove('hidden');
-			skin_id_multi.classList.remove('hidden');
+			skin_id?.classList.remove('hidden');
+			skin_id_multi?.classList.remove('hidden');
 		}
 
 
@@ -847,15 +888,19 @@ export default class Game_menu extends AbstractView {
 		/***********************************************************************/
 
 
-		settings_btn.addEventListener('click', () => {
-			view2.classList.remove('active');
-			view5.classList.add('active');
-			view1_btn.style.color = 'white';
-			view1_btn.style.textShadow = 'none';
-			settings_btn.style.color = 'yellow';
-			settings_btn.style.textShadow = '0 0 10px yellow';
-			view1_btn.style.cursor = 'pointer';
-			settings_btn.style.cursor = 'default';
+		settings_btn?.addEventListener('click', () => {
+			view2?.classList.remove('active');
+			view5?.classList.add('active');
+			if (view1_btn) {
+				view1_btn.style.color = 'white';
+				view1_btn.style.textShadow = 'none';
+				view1_btn.style.cursor = 'pointer';
+			}
+			if (settings_btn) {
+				settings_btn.style.color = 'yellow';
+				settings_btn.style.textShadow = '0 0 10px yellow';
+				settings_btn.style.cursor = 'default';
+			}
 		});
 
 
@@ -864,18 +909,18 @@ export default class Game_menu extends AbstractView {
 		/***********************************************************************/
 
 
-		solo.addEventListener('click', () => {
-			view2.classList.remove('active');
-			view3.classList.add('active');
-			view1.classList.remove('active');
-			btn_back_home.classList.remove('active');
+		solo?.addEventListener('click', () => {
+			view2?.classList.remove('active');
+			view3?.classList.add('active');
+			view1?.classList.remove('active');
+			btn_back_home?.classList.remove('active');
 		});
 
-		multiplayer.addEventListener('click', () => {
-			view2.classList.remove('active');
-			view4.classList.add('active');
-			view1.classList.remove('active');
-			btn_back_home.classList.remove('active');
+		multiplayer?.addEventListener('click', () => {
+			view2?.classList.remove('active');
+			view4?.classList.add('active');
+			view1?.classList.remove('active');
+			btn_back_home?.classList.remove('active');
 		});
 
 
@@ -883,21 +928,21 @@ export default class Game_menu extends AbstractView {
 		/**************************BACK_TO_MENU********************************/
 		/***********************************************************************/
 
-		if (!view3.classList.contains('active')) {
-			back_to_menu_view3.addEventListener('click', () => {
-				view3.classList.remove('active');
-				view2.classList.add('active');
-				view1.classList.add('active');
-				btn_back_home.classList.add('active');
+		if (view3 && !view3.classList.contains('active')) {
+			back_to_menu_view3?.addEventListener('click', () => {
+				view3?.classList.remove('active');
+				view2?.classList.add('active');
+				view1?.classList.add('active');
+				btn_back_home?.classList.add('active');
 			});
 		}
 
-		if (!view4.classList.contains('active')) {
-			back_to_menu_view4.addEventListener('click', () => {
-				view4.classList.remove('active');
-				view2.classList.add('active');
-				view1.classList.add('active');
-				btn_back_home.classList.add('active');
+		if (view4 && !view4.classList.contains('active')) {
+			back_to_menu_view4?.addEventListener('click', () => {
+				view4?.classList.remove('active');
+				view2?.classList.add('active');
+				view1?.classList.add('active');
+				btn_back_home?.classList.add('active');
 			});
 		}
 
@@ -906,168 +951,172 @@ export default class Game_menu extends AbstractView {
 		/***********************************************************************/
 
 
-		btn_back_home.addEventListener('click', () => {
-			if (view2.classList.contains('active')) {
-				view2.classList.remove('active');
-				view1.classList.remove('active');
-				btn_back_home.classList.remove('active');
-				btn_jouer.style.display = 'block';
-				view1_btn.style.cursor = 'default';
-				view1_btn.style.color = 'yellow';
-				view1_btn.style.textShadow = '0 0 10px yellow';
-				settings_btn.style.color = 'white';
-				settings_btn.style.textShadow = 'none';
-				settings_btn.style.cursor = 'pointer';
+		btn_back_home?.addEventListener('click', () => {
+			if (view2?.classList.contains('active')) {
+				view2?.classList.remove('active');
+				view1?.classList.remove('active');
+				btn_back_home?.classList.remove('active');
+				if (btn_jouer) btn_jouer.style.display = 'block';
+				if (view1_btn) {
+					view1_btn.style.cursor = 'default';
+					view1_btn.style.color = 'yellow';
+					view1_btn.style.textShadow = '0 0 10px yellow';
+				}
+				if (settings_btn) {
+					settings_btn.style.color = 'white';
+					settings_btn.style.textShadow = 'none';
+					settings_btn.style.cursor = 'pointer';
+				}
 			}
-			if (view5.classList.contains('active')) {
-				view5.classList.remove('active');
-				view1.classList.remove('active');
-				btn_back_home.classList.remove('active');
-				btn_jouer.style.display = 'block';
-				view1_btn.style.cursor = 'default';
-				view1_btn.style.color = 'yellow';
-				view1_btn.style.textShadow = '0 0 10px yellow';
-				settings_btn.style.color = 'white';
-				settings_btn.style.textShadow = 'none';
-				settings_btn.style.cursor = 'pointer';
+			if (view5?.classList.contains('active')) {
+				view5?.classList.remove('active');
+				view1?.classList.remove('active');
+				btn_back_home?.classList.remove('active');
+				if (btn_jouer) btn_jouer.style.display = 'block';
+				if (view1_btn) {
+					view1_btn.style.cursor = 'default';
+					view1_btn.style.color = 'yellow';
+					view1_btn.style.textShadow = '0 0 10px yellow';
+				}
+				if (settings_btn) {
+					settings_btn.style.color = 'white';
+					settings_btn.style.textShadow = 'none';
+					settings_btn.style.cursor = 'pointer';
+				}
 			}
 
-		});
-
+		});		
 		const choose_your_opponent_1v1_form = document.getElementById('choose_your_opponent_1v1_form');
 
-		prepar_game_1v1.addEventListener('click', () => {
-			view3.classList.remove('active');
-			choose_your_opponent_1v1_form.classList.add('active');
-			back_to_select_mode_view6.classList.add('active');
+		prepar_game_1v1?.addEventListener('click', () => {
+			view3?.classList.remove('active');
+			choose_your_opponent_1v1_form?.classList.add('active');
+			back_to_select_mode_view6?.classList.add('active');
 		});
 		
-		const choose_your_opponent_multi_form = document.getElementById('choose_your_opponent_multi_form');
 		const validate_multi_opponent = document.getElementById('validate_multi_opponent');
 
-		prepar_game_multi.addEventListener('click', () => {
-			view4.classList.remove('active');
-			choose_your_opponent_multi_form.classList.add('active');
-			back_to_select_mode_view8.classList.add('active');
-			container_menu.classList.add('active');
-			container_menu.scrollTop = 0;
+		prepar_game_multi?.addEventListener('click', () => {
+			view4?.classList.remove('active');
+			choose_your_opponent_multi_form?.classList.add('active');
+			back_to_select_mode_view8?.classList.add('active');
+			container_menu?.classList.add('active');
+			if (container_menu) container_menu.scrollTop = 0;
 		});
 
 		/***********************************************************************/
 		/**************************BACK_TO_MENU********************************/
 		/***********************************************************************/
 
-		back_to_menu_view6.addEventListener('click', () => {
-			view6.classList.remove('active');
-			view3.classList.add('active');
-			back_to_select_mode_view6.classList.remove('active');
+		back_to_menu_view6?.addEventListener('click', () => {
+			view6?.classList.remove('active');
+			view3?.classList.add('active');
+			back_to_select_mode_view6?.classList.remove('active');
 
 
-			if (choose_your_opponent_1v1_form.classList.contains('active')) {
-				choose_your_opponent_1v1_form.classList.remove('active');
-				back_to_select_mode_view6.classList.remove('active');
-				view3.classList.add('active');
-				container_menu.classList.remove('active');
-				container_menu.scrollTop = 0;
+			if (choose_your_opponent_1v1_form?.classList.contains('active')) {
+				choose_your_opponent_1v1_form?.classList.remove('active');
+				back_to_select_mode_view6?.classList.remove('active');
+				view3?.classList.add('active');
+				container_menu?.classList.remove('active');
+				if (container_menu) container_menu.scrollTop = 0;
 			}
 		
 
-			if (skin_perso.classList.contains('checked')) {
-				skin_perso.classList.remove('checked');
-				if (choose_your_skin.classList.contains('active')) {
-					choose_your_skin.classList.remove('active');
-					solo_1v1_btn.style.display = 'block';
-					custom_ta_game.style.visibility = 'visible';
+			if (skin_perso?.classList.contains('checked')) {
+				skin_perso?.classList.remove('checked');
+				if (choose_your_skin?.classList.contains('active')) {
+					choose_your_skin?.classList.remove('active');
+					if (solo_1v1_btn) solo_1v1_btn.style.display = 'block';
+					if (custom_ta_game) custom_ta_game.style.visibility = 'visible';
 				}
 			}
-			if (power_selector.classList.contains('active')) {
-				power_selector.classList.remove('active');
-				powerUP.classList.remove('checked');
+			if (power_selector?.classList.contains('active')) {
+				power_selector?.classList.remove('active');
+				powerUP?.classList.remove('checked');
 				reset_powerUP_grenade();
 				reset_powerUP_teammate();
 				reset_powerUP_inverse_player();
 				powerUP_nb = 0;
-				if (number_powerUP_1.classList.contains('checked')) {
-					number_powerUP_1.classList.remove('checked');
+				if (number_powerUP_1?.classList.contains('checked')) {
+					number_powerUP_1?.classList.remove('checked');
 				}
-				if (number_powerUP_3.classList.contains('checked')) {
-					number_powerUP_3.classList.remove('checked');
+				if (number_powerUP_3?.classList.contains('checked')) {
+					number_powerUP_3?.classList.remove('checked');
 				}
-				if (number_powerUP_5.classList.contains('checked')) {
-					number_powerUP_5.classList.remove('checked');
+				if (number_powerUP_5?.classList.contains('checked')) {
+					number_powerUP_5?.classList.remove('checked');
 				}
 			}
 		});
 
-		const skin_perso_game_multi = document.getElementById('skin_perso_game_multi');
-
-		back_to_menu_view7.addEventListener('click', () => {
-			view3.classList.add('active');
-			view7.classList.remove('active');
-			back_to_select_mode_view7.classList.remove('active');
-			if (skin_perso.classList.contains('checked')) {
-				skin_perso.classList.remove('checked');
-				if (choose_your_skin.classList.contains('active')) {
-					choose_your_skin.classList.remove('active');
-					solo_1v1_btn.style.display = 'block';
-					custom_ta_game.style.visibility = 'visible';
+		back_to_menu_view7?.addEventListener('click', () => {
+			view3?.classList.add('active');
+			view7?.classList.remove('active');
+			back_to_select_mode_view7?.classList.remove('active');
+			if (skin_perso?.classList.contains('checked')) {
+				skin_perso?.classList.remove('checked');
+				if (choose_your_skin?.classList.contains('active')) {
+					choose_your_skin?.classList.remove('active');
+					if (solo_1v1_btn) solo_1v1_btn.style.display = 'block';
+					if (custom_ta_game) custom_ta_game.style.visibility = 'visible';
 					disable_skin_perso_player_solo();
 				}
 			}
-			if (power_selector.classList.contains('active')) {
-				power_selector.classList.remove('active');
-				powerUP.classList.remove('checked');
+			if (power_selector?.classList.contains('active')) {
+				power_selector?.classList.remove('active');
+				powerUP?.classList.remove('checked');
 				reset_powerUP_grenade();
 				reset_powerUP_teammate();
 				reset_powerUP_inverse_player();
 				powerUP_nb = 0;
-				if (number_powerUP_1.classList.contains('checked')) {
-					number_powerUP_1.classList.remove('checked');
+				if (number_powerUP_1?.classList.contains('checked')) {
+					number_powerUP_1?.classList.remove('checked');
 				}
-				if (number_powerUP_3.classList.contains('checked')) {
-					number_powerUP_3.classList.remove('checked');
+				if (number_powerUP_3?.classList.contains('checked')) {
+					number_powerUP_3?.classList.remove('checked');
 				}
-				if (number_powerUP_5.classList.contains('checked')) {
-					number_powerUP_5.classList.remove('checked');
+				if (number_powerUP_5?.classList.contains('checked')) {
+					number_powerUP_5?.classList.remove('checked');
 				}
 			}
 		});
 
-		back_to_menu_view8.addEventListener('click', () => {
-			view8.classList.remove('active');
-			view4.classList.add('active');
-			back_to_select_mode_view8.classList.remove('active');
-			if (choose_your_opponent_multi_form.classList.contains('active')) {
-				choose_your_opponent_multi_form.classList.remove('active');
-				back_to_select_mode_view8.classList.remove('active');
-				view4.classList.add('active');
-				container_menu.classList.remove('active');
-				container_menu.scrollTop = 0;
+		back_to_menu_view8?.addEventListener('click', () => {
+			view8?.classList.remove('active');
+			view4?.classList.add('active');
+			back_to_select_mode_view8?.classList.remove('active');
+			if (choose_your_opponent_multi_form?.classList.contains('active')) {
+				choose_your_opponent_multi_form?.classList.remove('active');
+				back_to_select_mode_view8?.classList.remove('active');
+				view4?.classList.add('active');
+				container_menu?.classList.remove('active');
+				if (container_menu) container_menu.scrollTop = 0;
 			}
-			if (skin_perso_game_multi.classList.contains('checked')) {
-				skin_perso_game_multi.classList.remove('checked');
-				if (choose_your_skin_game_multi.classList.contains('active')) {
-					choose_your_skin_game_multi.classList.remove('active');
-					multiplayer_btn.style.display = 'block';
-					custom_ta_game_multi.style.visibility = 'visible';
+			if (skin_perso_game_multi?.classList.contains('checked')) {
+				skin_perso_game_multi?.classList.remove('checked');
+				if (choose_your_skin_game_multi?.classList.contains('active')) {
+					choose_your_skin_game_multi?.classList.remove('active');
+					if (multiplayer_btn) multiplayer_btn.style.display = 'block';
+					if (custom_ta_game_multi) custom_ta_game_multi.style.visibility = 'visible';
 					disable_skin_multi();
 				}
 			}
-			if (power_selector_game_multi.classList.contains('active')) {
-				power_selector_game_multi.classList.remove('active');
-				powerUP_multi.classList.remove('checked');
+			if (power_selector_game_multi?.classList.contains('active')) {
+				power_selector_game_multi?.classList.remove('active');
+				powerUP_multi?.classList.remove('checked');
 				reset_powerUP_grenadeTeam_player();
 				reset_powerUP_freeze_Team_player();
 				powerUP_nb = 0;
 				powerUP_nb_multi = 0;
-				if (number_powerUP_1_game_multi.classList.contains('checked')) {
-					number_powerUP_1_game_multi.classList.remove('checked');
+				if (number_powerUP_1_game_multi?.classList.contains('checked')) {
+					number_powerUP_1_game_multi?.classList.remove('checked');
 				}
-				if (number_powerUP_3_game_multi.classList.contains('checked')) {
-					number_powerUP_3_game_multi.classList.remove('checked');
+				if (number_powerUP_3_game_multi?.classList.contains('checked')) {
+					number_powerUP_3_game_multi?.classList.remove('checked');
 				}
-				if (number_powerUP_5_game_multi.classList.contains('checked')) {
-					number_powerUP_5_game_multi.classList.remove('checked');
+				if (number_powerUP_5_game_multi?.classList.contains('checked')) {
+					number_powerUP_5_game_multi?.classList.remove('checked');
 				}
 			}
 		});
@@ -1076,54 +1125,54 @@ export default class Game_menu extends AbstractView {
 		/**************************POWER_UP_SOLO********************************/
 		/***********************************************************************/
 
-		powerUP.addEventListener('click', () => {
-			powerUP.classList.toggle('checked');
+		powerUP?.addEventListener('click', () => {
+			powerUP?.classList.toggle('checked');
 
-			if (powerUP.classList.contains('checked'))
-				power_selector.classList.add('active');
+			if (powerUP?.classList.contains('checked'))
+				power_selector?.classList.add('active');
 			else {
-				power_selector.classList.remove('active');
+				power_selector?.classList.remove('active');
 				reset_powerUP_grenade();
 				reset_powerUP_teammate();
 				reset_powerUP_inverse_player();
 				powerUP_nb = 0;
 				powerUP_nb_multi = 0;
-				if (number_powerUP_1.classList.contains('checked')) {
-					number_powerUP_1.classList.remove('checked');
+				if (number_powerUP_1?.classList.contains('checked')) {
+					number_powerUP_1?.classList.remove('checked');
 				}
-				if (number_powerUP_3.classList.contains('checked')) {
-					number_powerUP_3.classList.remove('checked');
+				if (number_powerUP_3?.classList.contains('checked')) {
+					number_powerUP_3?.classList.remove('checked');
 				}
-				if (number_powerUP_5.classList.contains('checked')) {
-					number_powerUP_5.classList.remove('checked');
+				if (number_powerUP_5?.classList.contains('checked')) {
+					number_powerUP_5?.classList.remove('checked');
 				}
 			}
 		});
 
-		number_powerUP_1.addEventListener('click', () => {
-			number_powerUP_1.classList.toggle('checked');
-			number_powerUP_3.classList.remove('checked');
-			number_powerUP_5.classList.remove('checked');
+		number_powerUP_1?.addEventListener('click', () => {
+			number_powerUP_1?.classList.toggle('checked');
+			number_powerUP_3?.classList.remove('checked');
+			number_powerUP_5?.classList.remove('checked');
 			init_nb_powerUP_grenadeFlash(1);
 			init_nb_powerUP_teammate(1);
 			init_powerUP_inverse_player(1);
 			powerUP_nb = 1;
 		});
 
-		number_powerUP_3.addEventListener('click', () => {
-			number_powerUP_3.classList.toggle('checked');
-			number_powerUP_1.classList.remove('checked');
-			number_powerUP_5.classList.remove('checked');
+		number_powerUP_3?.addEventListener('click', () => {
+			number_powerUP_3?.classList.toggle('checked');
+			number_powerUP_1?.classList.remove('checked');
+			number_powerUP_5?.classList.remove('checked');
 			init_nb_powerUP_grenadeFlash(3);
 			init_nb_powerUP_teammate(3);
 			init_powerUP_inverse_player(3);
 			powerUP_nb = 3;
 		});
 
-		number_powerUP_5.addEventListener('click', () => {
-			number_powerUP_5.classList.toggle('checked');
-			number_powerUP_1.classList.remove('checked');
-			number_powerUP_3.classList.remove('checked');
+		number_powerUP_5?.addEventListener('click', () => {
+			number_powerUP_5?.classList.toggle('checked');
+			number_powerUP_1?.classList.remove('checked');
+			number_powerUP_3?.classList.remove('checked');
 			init_nb_powerUP_grenadeFlash(5);
 			init_nb_powerUP_teammate(5);
 			init_powerUP_inverse_player(5);
@@ -1134,56 +1183,50 @@ export default class Game_menu extends AbstractView {
 		/**************************POWER_UP_multi*******************************/
 		/***********************************************************************/
 
-		const powerUP_multi = document.getElementById('powerUP_multi');
-		const number_powerUP_1_game_multi = document.getElementById('number_powerUP_1_game_multi');
-		const number_powerUP_3_game_multi = document.getElementById('number_powerUP_3_game_multi');
-		const number_powerUP_5_game_multi = document.getElementById('number_powerUP_5_game_multi');
-		const power_selector_game_multi = document.getElementById('power_selector_game_multi');
+		powerUP_multi?.addEventListener('click', () => {
+			powerUP_multi?.classList.toggle('checked');
 
-		powerUP_multi.addEventListener('click', () => {
-			powerUP_multi.classList.toggle('checked');
-
-			if (powerUP_multi.classList.contains('checked'))
-				power_selector_game_multi.classList.add('active');
+			if (powerUP_multi?.classList.contains('checked'))
+				power_selector_game_multi?.classList.add('active');
 			else {
-				power_selector_game_multi.classList.remove('active');
+				power_selector_game_multi?.classList.remove('active');
 				reset_powerUP_grenadeTeam_player();
 				reset_powerUP_freeze_Team_player();
 				powerUP_nb = 0;
 				powerUP_nb_multi = 0;
-				if (number_powerUP_1_game_multi.classList.contains('checked')) {
-					number_powerUP_1_game_multi.classList.remove('checked');
+				if (number_powerUP_1_game_multi?.classList.contains('checked')) {
+					number_powerUP_1_game_multi?.classList.remove('checked');
 				}
-				if (number_powerUP_3_game_multi.classList.contains('checked')) {
-					number_powerUP_3_game_multi.classList.remove('checked');
+				if (number_powerUP_3_game_multi?.classList.contains('checked')) {
+					number_powerUP_3_game_multi?.classList.remove('checked');
 				}
-				if (number_powerUP_5_game_multi.classList.contains('checked')) {
-					number_powerUP_5_game_multi.classList.remove('checked');
+				if (number_powerUP_5_game_multi?.classList.contains('checked')) {
+					number_powerUP_5_game_multi?.classList.remove('checked');
 				}
 			}
 		});
 
-		number_powerUP_1_game_multi.addEventListener('click', () => {
-			number_powerUP_1_game_multi.classList.toggle('checked');
-			number_powerUP_3_game_multi.classList.remove('checked');
-			number_powerUP_5_game_multi.classList.remove('checked');
+		number_powerUP_1_game_multi?.addEventListener('click', () => {
+			number_powerUP_1_game_multi?.classList.toggle('checked');
+			number_powerUP_3_game_multi?.classList.remove('checked');
+			number_powerUP_5_game_multi?.classList.remove('checked');
 			init_nb_powerUP_grenadeFlash_team_player(1);
 			init_powerUP_freeze_Team_player(1);
 			powerUP_nb_multi = 1;
 		});
 
-		number_powerUP_3_game_multi.addEventListener('click', () => {
-			number_powerUP_3_game_multi.classList.toggle('checked');
-			number_powerUP_1_game_multi.classList.remove('checked');
-			number_powerUP_5_game_multi.classList.remove('checked');
+		number_powerUP_3_game_multi?.addEventListener('click', () => {
+			number_powerUP_3_game_multi?.classList.toggle('checked');
+			number_powerUP_1_game_multi?.classList.remove('checked');
+			number_powerUP_5_game_multi?.classList.remove('checked');
 			init_nb_powerUP_grenadeFlash_team_player(3);
 			init_powerUP_freeze_Team_player(3);
 			powerUP_nb_multi = 3;
 		});
-		number_powerUP_5_game_multi.addEventListener('click', () => {
-			number_powerUP_5_game_multi.classList.toggle('checked');
-			number_powerUP_1_game_multi.classList.remove('checked');
-			number_powerUP_3_game_multi.classList.remove('checked');
+		number_powerUP_5_game_multi?.addEventListener('click', () => {
+			number_powerUP_5_game_multi?.classList.toggle('checked');
+			number_powerUP_1_game_multi?.classList.remove('checked');
+			number_powerUP_3_game_multi?.classList.remove('checked');
 			init_nb_powerUP_grenadeFlash_team_player(5);
 			init_powerUP_freeze_Team_player(5);
 			powerUP_nb_multi = 5;
@@ -1196,54 +1239,51 @@ export default class Game_menu extends AbstractView {
 		/***********************************************************************/
 		/**************************SKIN-SOLO************************************/
 		/***********************************************************************/
-		const choose_your_skin = document.getElementById('choose_your_skin');
 		const valide_ton_skin = document.getElementById('valide_ton_skin');
-		const custom_ta_game = document.getElementById('custom_ta_game');
-		const solo_1v1_btn = document.getElementById('solo_1v1_btn');
 		const switch_skn_left_id1 = document.getElementById('switch_skn_left_id1');
 		const switch_skn_right_id1 = document.getElementById('switch_skn_right_id1');
 		const switch_skn_left_id2 = document.getElementById('switch_skn_left_id2');
 		const switch_skn_right_id2 = document.getElementById('switch_skn_right_id2');
 
-		skin_perso.addEventListener('click', () => {
-			skin_perso.classList.toggle('checked');
+		skin_perso?.addEventListener('click', () => {
+			skin_perso?.classList.toggle('checked');
 			
-			if (skin_perso.classList.contains('checked')) {
-				choose_your_skin.classList.add('active');
-				solo_1v1_btn.style.display = 'none';
-				custom_ta_game.style.visibility = 'hidden';
+			if (skin_perso?.classList.contains('checked')) {
+				choose_your_skin?.classList.add('active');
+				if (solo_1v1_btn) solo_1v1_btn.style.display = 'none';
+				if (custom_ta_game) custom_ta_game.style.visibility = 'hidden';
 				enable_skin_perso_player_solo();
 
-				valide_ton_skin.addEventListener('click', () => {
-					choose_your_skin.classList.remove('active');
-					solo_1v1_btn.style.display = 'block';
-					custom_ta_game.style.visibility = 'visible';
+				valide_ton_skin?.addEventListener('click', () => {
+					choose_your_skin?.classList.remove('active');
+					if (solo_1v1_btn) solo_1v1_btn.style.display = 'block';
+					if (custom_ta_game) custom_ta_game.style.visibility = 'visible';
 					disable_skin_perso_player_solo_and_save();
 				});
 			}
 			else {
-				if (choose_your_skin.classList.contains('active')) {
-					choose_your_skin.classList.remove('active');
-					solo_1v1_btn.style.display = 'block';
-					custom_ta_game.style.visibility = 'visible';
+				if (choose_your_skin?.classList.contains('active')) {
+					choose_your_skin?.classList.remove('active');
+					if (solo_1v1_btn) solo_1v1_btn.style.display = 'block';
+					if (custom_ta_game) custom_ta_game.style.visibility = 'visible';
 					disable_skin_perso_player_solo();
 				}
 			}
 		});
 
-		switch_skn_left_id1.addEventListener('click', () => {
+		switch_skn_left_id1?.addEventListener('click', () => {
 			switch_skin_perso_player1_left();
 		});
 
-		switch_skn_right_id1.addEventListener('click', () => {
+		switch_skn_right_id1?.addEventListener('click', () => {
 			switch_skin_perso_player1_right();
 		});
 
-		switch_skn_left_id2.addEventListener('click', () => {
+		switch_skn_left_id2?.addEventListener('click', () => {
 			switch_skin_perso_player2_left();
 		});
 
-		switch_skn_right_id2.addEventListener('click', () => {
+		switch_skn_right_id2?.addEventListener('click', () => {
 			switch_skin_perso_player2_right();
 		});
 
@@ -1252,75 +1292,62 @@ export default class Game_menu extends AbstractView {
 		/**************************SKIN_MULTI***********************************/
 		/***********************************************************************/
 
-		const choose_your_skin_game_multi = document.getElementById('choose_your_skin_game_multi');
-		const valide_ton_skin_game_multi = document.getElementById('valide_ton_skin_game_multi');
-		const switch_skn_left_id1_game_multi = document.getElementById('switch_skn_left_id1_game_multi');
-		const switch_skn_right_id1_game_multi = document.getElementById('switch_skn_right_id1_game_multi');
-		const switch_skn_left_id2_game_multi = document.getElementById('switch_skn_left_id2_game_multi');
-		const switch_skn_right_id2_game_multi = document.getElementById('switch_skn_right_id2_game_multi');
-		const switch_skn_left_id3_game_multi = document.getElementById('switch_skn_left_id3_game_multi');
-		const switch_skn_right_id3_game_multi = document.getElementById('switch_skn_right_id3_game_multi');
-		const switch_skn_left_id4_game_multi = document.getElementById('switch_skn_left_id4_game_multi');
-		const switch_skn_right_id4_game_multi = document.getElementById('switch_skn_right_id4_game_multi');
-		const custom_ta_game_multi = document.getElementById('custom_ta_game_multi');
-		const multiplayer_btn = document.getElementById('multiplayer_btn');
-
-		skin_perso_game_multi.addEventListener('click', () => {
-			skin_perso_game_multi.classList.toggle('checked');
+		skin_perso_game_multi?.addEventListener('click', () => {
+			skin_perso_game_multi?.classList.toggle('checked');
 			
-			if (skin_perso_game_multi.classList.contains('checked')) {
-				choose_your_skin_game_multi.classList.add('active');
-				multiplayer_btn.style.display = 'none';
-				custom_ta_game_multi.style.visibility = 'hidden';
+			if (skin_perso_game_multi?.classList.contains('checked')) {
+				choose_your_skin_game_multi?.classList.add('active');
+				if (multiplayer_btn) multiplayer_btn.style.display = 'none';
+				if (custom_ta_game_multi) custom_ta_game_multi.style.visibility = 'hidden';
 				enable_skin_multi();
 
-				valide_ton_skin_game_multi.addEventListener('click', () => {
-					choose_your_skin_game_multi.classList.remove('active');
-					multiplayer_btn.style.display = 'block';
-					custom_ta_game_multi.style.visibility = 'visible';
+				valide_ton_skin_game_multi?.addEventListener('click', () => {
+					choose_your_skin_game_multi?.classList.remove('active');
+					if (multiplayer_btn) multiplayer_btn.style.display = 'block';
+					if (custom_ta_game_multi) custom_ta_game_multi.style.visibility = 'visible';
 					disable_skin_and_save_multi();
 				});
 			}
 			else
 			{
-				if (choose_your_skin_game_multi.classList.contains('active')) {
-					choose_your_skin_game_multi.classList.remove('active');
-					multiplayer_btn.style.display = 'block';
-					custom_ta_game_multi.style.visibility = 'visible';
+				if (choose_your_skin_game_multi?.classList.contains('active')) {
+					choose_your_skin_game_multi?.classList.remove('active');
+					if (multiplayer_btn) multiplayer_btn.style.display = 'block';
+					if (custom_ta_game_multi) custom_ta_game_multi.style.visibility = 'visible';
 					disable_skin_multi();
 				}
 			}
 		});
 
-		switch_skn_left_id1_game_multi.addEventListener('click', () => {
+		switch_skn_left_id1_game_multi?.addEventListener('click', () => {
 			switch_skin_perso_player1_left_multi();
 		});
 
-		switch_skn_right_id1_game_multi.addEventListener('click', () => {
+		switch_skn_right_id1_game_multi?.addEventListener('click', () => {
 			switch_skin_perso_player1_right_multi();
 		});
 
-		switch_skn_left_id2_game_multi.addEventListener('click', () => {
+		switch_skn_left_id2_game_multi?.addEventListener('click', () => {
 			switch_skin_perso_player2_left_multi();
 		});
 
-		switch_skn_right_id2_game_multi.addEventListener('click', () => {
+		switch_skn_right_id2_game_multi?.addEventListener('click', () => {
 			switch_skin_perso_player2_right_multi();
 		});
 
-		switch_skn_left_id3_game_multi.addEventListener('click', () => {
+		switch_skn_left_id3_game_multi?.addEventListener('click', () => {
 			switch_skin_perso_player3_left_multi();
 		});
 
-		switch_skn_right_id3_game_multi.addEventListener('click', () => {
+		switch_skn_right_id3_game_multi?.addEventListener('click', () => {
 			switch_skin_perso_player3_right_multi();
 		});
 
-		switch_skn_left_id4_game_multi.addEventListener('click', () => {
+		switch_skn_left_id4_game_multi?.addEventListener('click', () => {
 			switch_skin_perso_player4_left_multi();
 		});
 
-		switch_skn_right_id4_game_multi.addEventListener('click', () => {
+		switch_skn_right_id4_game_multi?.addEventListener('click', () => {
 			switch_skin_perso_player4_right_multi();
 		});
 
@@ -1329,21 +1356,16 @@ export default class Game_menu extends AbstractView {
 		/**************************POWER_UP_INFO*******************************/
 		/***********************************************************************/
 
-
-		const power_up_info_id = document.getElementById('power_up_info_id');
-		const container_info_power_up = document.getElementById('container_info_power_up');
-		const exit_powerUP_info = document.getElementById('exit_powerUP_info');
-
-		power_up_info_id.addEventListener('click', () => {
-			container_info_power_up.classList.add('active');
-			view6.classList.remove('active');
-			back_to_select_mode_view6.classList.remove('active');
+		power_up_info_id?.addEventListener('click', () => {
+			container_info_power_up?.classList.add('active');
+			view6?.classList.remove('active');
+			back_to_select_mode_view6?.classList.remove('active');
 		});
 
-		exit_powerUP_info.addEventListener('click', () => {
-			container_info_power_up.classList.remove('active');
-			view6.classList.add('active');
-			back_to_select_mode_view6.classList.add('active');
+		exit_powerUP_info?.addEventListener('click', () => {
+			container_info_power_up?.classList.remove('active');
+			view6?.classList.add('active');
+			back_to_select_mode_view6?.classList.add('active');
 		});
 
 
@@ -1351,20 +1373,16 @@ export default class Game_menu extends AbstractView {
 		/**************************POWER_UP_INFO_MULTI*************************/
 		/***********************************************************************/
 
-		const power_up_info_id_multi = document.getElementById('power_up_info_id_multi');
-		const container_info_power_up_multi = document.getElementById('container_info_power_up_multi');
-		const exit_powerUP_info_multi = document.getElementById('exit_powerUP_info_multi');
-
-		power_up_info_id_multi.addEventListener('click', () => {
-			container_info_power_up_multi.classList.add('active');
-			view8.classList.remove('active');
-			back_to_select_mode_view8.classList.remove('active');
+		power_up_info_id_multi?.addEventListener('click', () => {
+			container_info_power_up_multi?.classList.add('active');
+			view8?.classList.remove('active');
+			back_to_select_mode_view8?.classList.remove('active');
 		});
 
-		exit_powerUP_info_multi.addEventListener('click', () => {
-			container_info_power_up_multi.classList.remove('active');
-			view8.classList.add('active');
-			back_to_select_mode_view8.classList.add('active');
+		exit_powerUP_info_multi?.addEventListener('click', () => {
+			container_info_power_up_multi?.classList.remove('active');
+			view8?.classList.add('active');
+			back_to_select_mode_view8?.classList.add('active');
 		});
 
 		/***********************************************************************/
@@ -1375,46 +1393,45 @@ export default class Game_menu extends AbstractView {
 		const parametre_profile = document.getElementById('profile_parrametre_btn');
 		const parametre_jeu_view = document.getElementById('parametres_jeu');
 		const parametre_profile_view = document.getElementById('parametres_profile');
-		const container_menu = document.getElementById('container');
 
-		parametre_jeu.addEventListener('click', () => {
-			parametre_jeu_view.classList.add('active');
-			view5.classList.remove('active');
-			btn_back_home.classList.remove('active');
-			view1.classList.remove('active');
-			container_menu.classList.add('active');
-			btn_back_home.classList.add('active');
-			container_menu.scrollTop = 0;
+		parametre_jeu?.addEventListener('click', () => {
+			parametre_jeu_view?.classList.add('active');
+			view5?.classList.remove('active');
+			btn_back_home?.classList.remove('active');
+			view1?.classList.remove('active');
+			container_menu?.classList.add('active');
+			btn_back_home?.classList.add('active');
+			if (container_menu) container_menu.scrollTop = 0;
 
 		});
 		
-		parametre_profile.addEventListener('click', () => {
-			parametre_profile_view.classList.add('active');
-			view5.classList.remove('active');
-			btn_back_home.classList.remove('active');
-			view1.classList.remove('active');
-			btn_back_home.classList.add('active');
-			container_menu.classList.add('active');
-			container_menu.scrollTop = 0;
+		parametre_profile?.addEventListener('click', () => {
+			parametre_profile_view?.classList.add('active');
+			view5?.classList.remove('active');
+			btn_back_home?.classList.remove('active');
+			view1?.classList.remove('active');
+			btn_back_home?.classList.add('active');
+			container_menu?.classList.add('active');
+			if (container_menu) container_menu.scrollTop = 0;
 
 		});
 
 
-		btn_back_home.addEventListener('click', () => {
-			if (parametre_jeu_view.classList.contains('active')) {
-				parametre_jeu_view.classList.remove('active');
-				view5.classList.add('active');
-				view1.classList.add('active');
-				container_menu.classList.remove('active');
-				container_menu.scrollTop = 0;
+		btn_back_home?.addEventListener('click', () => {
+			if (parametre_jeu_view?.classList.contains('active')) {
+				parametre_jeu_view?.classList.remove('active');
+				view5?.classList.add('active');
+				view1?.classList.add('active');
+				container_menu?.classList.remove('active');
+				if (container_menu) container_menu.scrollTop = 0;
 
 			}
-			if (parametre_profile_view.classList.contains('active')) {
-				parametre_profile_view.classList.remove('active');
-				view5.classList.add('active');
-				view1.classList.add('active');
-				container_menu.classList.remove('active');
-				container_menu.scrollTop = 0;
+			if (parametre_profile_view?.classList.contains('active')) {
+				parametre_profile_view?.classList.remove('active');
+				view5?.classList.add('active');
+				view1?.classList.add('active');
+				container_menu?.classList.remove('active');
+				if (container_menu) container_menu.scrollTop = 0;
 
 			}
 		});
@@ -1427,29 +1444,25 @@ export default class Game_menu extends AbstractView {
 		const modif_profil = document.getElementById('modif_profil');
 		const profile_param_unlocked_id = document.getElementById('profile_param_unlocked_id');
 		const valid_profile_info = document.getElementById('valid_profile_info');
-		const fa_selector = document.getElementById('fa_selector');
-		const active_fa = document.getElementById('active_fa') as HTMLInputElement;;
+		const active_fa = document.getElementById('active_fa') as HTMLInputElement;
 
-		const code_validation_id = document.getElementById('code_validation_id');
-		const cancel_fa = document.getElementById('cancel_fa');
-
-		active_fa.addEventListener('change', () => {
-			if (active_fa.checked) {
+		active_fa?.addEventListener('change', () => {
+			if (active_fa?.checked) {
 				enable_doubleAuth();
-				code_validation_id.classList.add('active');
-				fa_selector.classList.remove('hidden');
+				code_validation_id?.classList.add('active');
+				fa_selector?.classList.remove('hidden');
 			}
 			else {
 				disable_doubleAuth();
-				fa_selector.classList.add('hidden');
+				fa_selector?.classList.add('hidden');
 			}
 		});
 		
 
-		cancel_fa.addEventListener('click', () => {
-			code_validation_id.classList.remove('active');
-			fa_selector.classList.add('hidden');
-			active_fa.checked = false;
+		cancel_fa?.addEventListener('click', () => {
+			code_validation_id?.classList.remove('active');
+			fa_selector?.classList.add('hidden');
+			if (active_fa) active_fa.checked = false;
 		});
 
 
@@ -1460,87 +1473,76 @@ export default class Game_menu extends AbstractView {
 		const platformer = document.getElementById('platformer_view');
 		const back_to_select_mode_platformer = document.getElementById('back_to_select_mode_platformer');
 
-		platformer.addEventListener('click', () => {
-			btn_back_home.classList.remove('active');
-			view2.classList.remove('active');
-			view1.classList.remove('active');
-			choose_your_opponent_platformer_form.classList.add('active');
-			back_to_select_mode_platformer.classList.add('active');
+		platformer?.addEventListener('click', () => {
+			btn_back_home?.classList.remove('active');
+			view2?.classList.remove('active');
+			view1?.classList.remove('active');
+			choose_your_opponent_platformer_form?.classList.add('active');
+			back_to_select_mode_platformer?.classList.add('active');
 		});
 
-		back_to_select_mode_platformer.addEventListener('click', () => {
-			choose_your_opponent_platformer_form.classList.remove('active');
-			back_to_select_mode_platformer.classList.remove('active');
-			view2.classList.add('active');
-			view1.classList.add('active');
-			btn_back_home.classList.add('active');
+		back_to_select_mode_platformer?.addEventListener('click', () => {
+			choose_your_opponent_platformer_form?.classList.remove('active');
+			back_to_select_mode_platformer?.classList.remove('active');
+			view2?.classList.add('active');
+			view1?.classList.add('active');
+			btn_back_home?.classList.add('active');
 		});
 
 		/***********************************************************************/
 		/*************************navbar****************************************/
 		/***********************************************************************/
 
-		const option_btn_navBar = document.getElementById('option_btn_navBar');
-		const panel_option_navbar = document.getElementById('panel_option_navbar');
-		const option_btn_remove = document.getElementById('option_btn_remove');
-		
-		const gameHistory = document.getElementById('game_history');
-
-		option_btn_navBar.addEventListener('click', (event) => {
-			panel_option_navbar.classList.remove('remove'); // retire l'animation de fermeture
-			void panel_option_navbar.offsetWidth; // force le reflow pour relancer l'animation si besoin
-			panel_option_navbar.classList.add('active');
-			option_btn_navBar.style.display = 'none';
+		option_btn_navBar?.addEventListener('click', (event: Event) => {
+			panel_option_navbar?.classList.remove('remove'); // retire l'animation de fermeture
+			if (panel_option_navbar) void panel_option_navbar.offsetWidth; // force le reflow pour relancer l'animation si besoin
+			panel_option_navbar?.classList.add('active');
+			if (option_btn_navBar) option_btn_navBar.style.display = 'none';
 			fetch_user_friendships();
 			fetch_user_games();
 		});
 
-		option_btn_remove.addEventListener('click', () => {
-			panel_option_navbar.classList.add('remove');
+		option_btn_remove?.addEventListener('click', () => {
+			panel_option_navbar?.classList.add('remove');
 			setTimeout(() => {
-				option_btn_navBar.style.display = 'block';
+				if (option_btn_navBar) option_btn_navBar.style.display = 'block';
 			}, 800);
 		});
-
 
 
 		/***********************************************************************/
 		/*************************Game History**********************************/
 		/***********************************************************************/
 
-		const Game_History_btn = document.getElementById('Game_History_btn');
-		const game_history = document.getElementById('game_history');
-		const exit_game_history_btn = document.getElementById('exit_game_history_btn');	
-
-		Game_History_btn.addEventListener('click', () => {
-			game_history.classList.add('active');
-			view1.classList.remove('active');
-			btn_back_home.classList.remove('active');
-			view5.classList.remove('active');
+		Game_History_btn?.addEventListener('click', () => {
+			game_history?.classList.add('active');
+			view1?.classList.remove('active');
+			btn_back_home?.classList.remove('active');
+			view5?.classList.remove('active');
 			StorageKeys.HISTORY_IS_VISIBLE = true;
 			fetch_user_games_big();
 		});
 
-		exit_game_history_btn.addEventListener('click', () => {
-			game_history.classList.remove('active');
-			view1.classList.add('active');
-			btn_back_home.classList.add('active');
-			view5.classList.add('active');
+		exit_game_history_btn?.addEventListener('click', () => {
+			game_history?.classList.remove('active');
+			view1?.classList.add('active');
+			btn_back_home?.classList.add('active');
+			view5?.classList.add('active');
 			StorageKeys.HISTORY_IS_VISIBLE = false;
 
 		});
 
-		document.getElementById("solo_1v1_btn").addEventListener("click", () => {
+		document.getElementById("solo_1v1_btn")?.addEventListener("click", () => {
 			startGame();
 			handleViewTransitions("vue3", "vue2");
 		});
 
-		document.getElementById("multiplayer_btn").addEventListener("click", () => {
+		document.getElementById("multiplayer_btn")?.addEventListener("click", () => {
 			startMultiGame();
 			handleViewTransitions("vue3", "vue2");
 		});
 
-		document.getElementById("tournament_view").addEventListener("click", () => {
+		document.getElementById("tournament_view")?.addEventListener("click", () => {
 			handleViewTransitions("tournament", "vue2");
 		});
 
@@ -1550,21 +1552,21 @@ export default class Game_menu extends AbstractView {
 		const btnAccepted = document.getElementById('tab-accepted');
 		const btnPending = document.getElementById('tab-pending');
 
-		btnAccepted.addEventListener('click', () => {
-			acceptedSection.style.display = 'block';
-			pendingSection.style.display = 'none';
-			btnAccepted.classList.add('active');
-			btnPending.classList.remove('active');
+		btnAccepted?.addEventListener('click', () => {
+			if (acceptedSection) acceptedSection.style.display = 'block';
+			if (pendingSection) pendingSection.style.display = 'none';
+			btnAccepted?.classList.add('active');
+			btnPending?.classList.remove('active');
 		});
 
-		btnPending.addEventListener('click', () => {
-			acceptedSection.style.display = 'none';
-			pendingSection.style.display = 'block';
-			btnAccepted.classList.remove('active');
-			btnPending.classList.add('active');
+		btnPending?.addEventListener('click', () => {
+			if (acceptedSection) acceptedSection.style.display = 'none';
+			if (pendingSection) pendingSection.style.display = 'block';
+			btnAccepted?.classList.remove('active');
+			btnPending?.classList.add('active');
 		});
 
-		document.getElementById("start-platformer").addEventListener('click', () => {
+		document.getElementById("start-platformer")?.addEventListener('click', () => {
 			handleViewTransitions("platformer", "vue2");
 		});
 
@@ -1585,19 +1587,19 @@ export default class Game_menu extends AbstractView {
 		const login2v2Btn = document.getElementById('choose_your_opponent_multi_form');
 		const add_friend_section = document.getElementById('add_friend_section');
 
-		accessProfileBtn.addEventListener('submit', (event) => { accessProfileInfo(event); });
-		changeAvatarBtn.addEventListener('submit', (event) => { changeProfilePicture(event); });
-		deleteBtn.addEventListener('click', () => { delete_account(); });
-		anonymizeBtn.addEventListener('click', () => { anonymize_user(); });
-		exportBtn.addEventListener('click', () => { export_data(); });
-		code_validation_id.addEventListener('submit', (event) => { activate2FA(event); });
-		updateProfileBtn.addEventListener('submit', (event) => { updateProfileInfo(event); });
+		accessProfileBtn?.addEventListener('submit', (event) => { accessProfileInfo(event); });
+		changeAvatarBtn?.addEventListener('submit', (event) => { changeProfilePicture(event); });
+		deleteBtn?.addEventListener('click', () => { delete_account(); });
+		anonymizeBtn?.addEventListener('click', () => { anonymize_user(); });
+		exportBtn?.addEventListener('click', () => { export_data(); });
+		code_validation_id?.addEventListener('submit', (event) => { activate2FA(event); });
+		updateProfileBtn?.addEventListener('submit', (event) => { updateProfileInfo(event); });
 		deconnect_btn_navBar?.addEventListener('click', async () => { await logout(); });
 		deconnect_btn?.addEventListener('click', async () => { await logout(); });
 		login1v1Btn?.addEventListener('submit', async (event) => { await login_1v1(event); });
 		login2v2Btn?.addEventListener('submit', async (event) => { await login_2v2(event); });
 		choose_your_opponent_platformer_form?.addEventListener('submit', async (event) => { await login_platformer(event); });
-		add_friend_section.addEventListener('submit', (event) => { addFriend(event); });
+		add_friend_section?.addEventListener('submit', (event) => { addFriend(event); });
 
 	}
 }

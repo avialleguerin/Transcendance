@@ -21,7 +21,7 @@ export default class solo_game extends AbstractView {
 	cooldowns: { [key: string]: boolean };
 	cooldownTimes: { [key: string]: number };
 	boundKeyPressHandler: (event: KeyboardEvent) => void;
-	gameLoop: ReturnType<typeof setInterval> | null;
+	gameLoop: ReturnType<typeof setInterval> | null = null;
 
 	constructor() {
 		const accessToken: string | null = sessionStorage.getItem('accessToken');
@@ -133,11 +133,15 @@ export default class solo_game extends AbstractView {
 
 	cleanup() {
 		document.removeEventListener("keydown", this.boundKeyPressHandler);
-		clearInterval(this.gameLoop);
+		if (this.gameLoop !== null) {
+			clearInterval(this.gameLoop);
+			this.gameLoop = null;
+		}
 	}
 
 	leave_game_2() {
-		document.getElementById("leave_game_2_id").addEventListener("click", () => {
+		const leaveGameBtn = document.getElementById("leave_game_2_id");
+		leaveGameBtn?.addEventListener("click", () => {
 			
 			this.cleanup();
 			setLeaveGameVar(true);
@@ -165,38 +169,59 @@ export default class solo_game extends AbstractView {
 		const container_player1 = document.getElementById("container-player1_id");
 		const container_player2 = document.getElementById("container-player2_id");
 		if (getPowerUP_value() !== 0) {
-			container_player1.classList.add("active");
-			container_player2.classList.add("active");
+			if (container_player1) container_player1.classList.add("active");
+			if (container_player2) container_player2.classList.add("active");
 		}
 		else {
-			if (container_player1.classList.contains("active"))
+			if (container_player1?.classList.contains("active"))
 				container_player1.classList.remove("active");
-			if (container_player2.classList.contains("active"))
+			if (container_player2?.classList.contains("active"))
 				container_player2.classList.remove("active");
 		}
 
-		document.getElementById("nb-item-grenade-1").innerHTML = getPowerUP_value().toString();
-		document.getElementById("nb-item-teammate-1").innerHTML = getPowerUP_value().toString();
-		document.getElementById("nb-item-autre-1").innerHTML = getPowerUP_value().toString();
-		document.getElementById("nb-item-grenade-2").innerHTML = getPowerUP_value().toString();
-		document.getElementById("nb-item-teammate-2").innerHTML = getPowerUP_value().toString();
-		document.getElementById("nb-item-autre-2").innerHTML = getPowerUP_value().toString();
+		const nbItemGrenade1 = document.getElementById("nb-item-grenade-1");
+		const nbItemTeammate1 = document.getElementById("nb-item-teammate-1");
+		const nbItemAutre1 = document.getElementById("nb-item-autre-1");
+		const nbItemGrenade2 = document.getElementById("nb-item-grenade-2");
+		const nbItemTeammate2 = document.getElementById("nb-item-teammate-2");
+		const nbItemAutre2 = document.getElementById("nb-item-autre-2");
+		
+		if (nbItemGrenade1) nbItemGrenade1.innerHTML = getPowerUP_value().toString();
+		if (nbItemTeammate1) nbItemTeammate1.innerHTML = getPowerUP_value().toString();
+		if (nbItemAutre1) nbItemAutre1.innerHTML = getPowerUP_value().toString();
+		if (nbItemGrenade2) nbItemGrenade2.innerHTML = getPowerUP_value().toString();
+		if (nbItemTeammate2) nbItemTeammate2.innerHTML = getPowerUP_value().toString();
+		if (nbItemAutre2) nbItemAutre2.innerHTML = getPowerUP_value().toString();
 	}
 
 	updateOverlays() {
-		const nb_powerUP_grenade_player1 = parseInt(document.getElementById("nb-item-grenade-1").innerHTML, 10);
-		const nb_powerUP_grenade_player2 = parseInt(document.getElementById("nb-item-grenade-2").innerHTML, 10);
-		const nb_powerUP_teammate_player1 = parseInt(document.getElementById("nb-item-teammate-1").innerHTML, 10);
-		const nb_powerUP_teammate_player2 = parseInt(document.getElementById("nb-item-teammate-2").innerHTML, 10);
-		const nb_powerUP_inverse_player1 = parseInt(document.getElementById("nb-item-autre-1").innerHTML, 10);
-		const nb_powerUP_inverse_player2 = parseInt(document.getElementById("nb-item-autre-2").innerHTML, 10);
+		const nbItemGrenade1 = document.getElementById("nb-item-grenade-1");
+		const nbItemGrenade2 = document.getElementById("nb-item-grenade-2");
+		const nbItemTeammate1 = document.getElementById("nb-item-teammate-1");
+		const nbItemTeammate2 = document.getElementById("nb-item-teammate-2");
+		const nbItemAutre1 = document.getElementById("nb-item-autre-1");
+		const nbItemAutre2 = document.getElementById("nb-item-autre-2");
+		
+		const nb_powerUP_grenade_player1 = nbItemGrenade1 ? parseInt(nbItemGrenade1.innerHTML, 10) : 0;
+		const nb_powerUP_grenade_player2 = nbItemGrenade2 ? parseInt(nbItemGrenade2.innerHTML, 10) : 0;
+		const nb_powerUP_teammate_player1 = nbItemTeammate1 ? parseInt(nbItemTeammate1.innerHTML, 10) : 0;
+		const nb_powerUP_teammate_player2 = nbItemTeammate2 ? parseInt(nbItemTeammate2.innerHTML, 10) : 0;
+		const nb_powerUP_inverse_player1 = nbItemAutre1 ? parseInt(nbItemAutre1.innerHTML, 10) : 0;
+		const nb_powerUP_inverse_player2 = nbItemAutre2 ? parseInt(nbItemAutre2.innerHTML, 10) : 0;
 	
-		document.getElementById("overlay-grenade-1").classList.toggle("active", nb_powerUP_grenade_player1 === 0);
-		document.getElementById("overlay-grenade-2").classList.toggle("active", nb_powerUP_grenade_player2 === 0);
-		document.getElementById("overlay-teammate-1").classList.toggle("active", nb_powerUP_teammate_player1 === 0);
-		document.getElementById("overlay-teammate-2").classList.toggle("active", nb_powerUP_teammate_player2 === 0);
-		document.getElementById("overlay-inverse-1").classList.toggle("active", nb_powerUP_inverse_player1 === 0);
-		document.getElementById("overlay-inverse-2").classList.toggle("active", nb_powerUP_inverse_player2 === 0);
+		const overlayGrenade1 = document.getElementById("overlay-grenade-1");
+		const overlayGrenade2 = document.getElementById("overlay-grenade-2");
+		const overlayTeammate1 = document.getElementById("overlay-teammate-1");
+		const overlayTeammate2 = document.getElementById("overlay-teammate-2");
+		const overlayInverse1 = document.getElementById("overlay-inverse-1");
+		const overlayInverse2 = document.getElementById("overlay-inverse-2");
+		
+		overlayGrenade1?.classList.toggle("active", nb_powerUP_grenade_player1 === 0);
+		overlayGrenade2?.classList.toggle("active", nb_powerUP_grenade_player2 === 0);
+		overlayTeammate1?.classList.toggle("active", nb_powerUP_teammate_player1 === 0);
+		overlayTeammate2?.classList.toggle("active", nb_powerUP_teammate_player2 === 0);
+		overlayInverse1?.classList.toggle("active", nb_powerUP_inverse_player1 === 0);
+		overlayInverse2?.classList.toggle("active", nb_powerUP_inverse_player2 === 0);
 	}
 
 	handleKeyPress(event: KeyboardEvent) {
@@ -281,7 +306,7 @@ export default class solo_game extends AbstractView {
 
 					if (currentValue - 1 === 0)
 					{
-						itemCircle.classList.add("active");
+						itemCircle?.classList.add("active");
 						this.updateOverlays();
 						return;
 					}
@@ -323,21 +348,27 @@ export default class solo_game extends AbstractView {
 			return;
 		if (isGameFinished()) {
 			winnerContainer.classList.add("active");
-			clearInterval(this.gameLoop);
-			clearInterval(this.gameLoop);
+			if (this.gameLoop !== null) {
+				clearInterval(this.gameLoop);
+				this.gameLoop = null;
+			}
+			
+			const winnerElement = document.getElementById("winner_id");
+			const looserElement = document.getElementById("looser_id");
+			
 			if (player_1_win)
 			{
-				document.getElementById("winner_id").innerHTML = `${StorageKeys.PLAYER1}`;
-				document.getElementById("looser_id").innerHTML = `${StorageKeys.PLAYER2}`;
+				if (winnerElement) winnerElement.innerHTML = `${StorageKeys.PLAYER1}`;
+				if (looserElement) looserElement.innerHTML = `${StorageKeys.PLAYER2}`;
 			}
 			else if (player_2_win)
 			{
-				document.getElementById("winner_id").innerHTML = `${StorageKeys.PLAYER2}`;
-				document.getElementById("looser_id").innerHTML = `${StorageKeys.PLAYER1}`;
+				if (winnerElement) winnerElement.innerHTML = `${StorageKeys.PLAYER2}`;
+				if (looserElement) looserElement.innerHTML = `${StorageKeys.PLAYER1}`;
 			}
-			if (container_player1.classList.contains("active"))
+			if (container_player1?.classList.contains("active"))
 				container_player1.classList.remove("active");
-			if (container_player2.classList.contains("active"))
+			if (container_player2?.classList.contains("active"))
 				container_player2.classList.remove("active");
 		}
 		else 

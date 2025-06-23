@@ -22,15 +22,16 @@ export async function login(event: Event): Promise<void> {
 		
 		if (data.success && data.connection_status === "partially_connected" && data.doubleAuth_status) {
 			// sessionStorage.setItem("authTicket", data.ticket); // todo change userid to id
-			StorageKeys.AUTH_TICKET = data.ticket;
+			StorageKeys.AUTH_TICKET = data.ticket || "";
 			updateUI({ removeClass: [{ id:"doubleAuthForm", className: "hidden" }], addClass: ["loginForm", "doubleAuthForm"] });
-			$input("login-title").textContent = "Double Authentication";
+			const loginTitle = $input("login-title");
+			if (loginTitle) loginTitle.textContent = "Double Authentication";
 		} else if (data.success && data.connection_status === "connected") {
-			StorageKeys.PLAYER1 = data.username
-			StorageKeys.PROFILE_PICTURE = data.profile_picture
+			StorageKeys.PLAYER1 = data.username || "";
+			StorageKeys.PROFILE_PICTURE = data.profile_picture || "";
 			const { connectWebSocket } = await import('./websocket.js')
 			connectWebSocket()
-			gameMenuView(true, null);
+			gameMenuView(true, "");
 			$form("loginForm").reset();
 			$input("login-password").value = "";
 		} else
@@ -57,7 +58,7 @@ export async function login_1v1(event: Event) {
 			updateUI({
 				removeClass: ["choose_your_opponent_1v1_form", "container"],
 				addClass: ["back_to_select_mode_view6", "view6"],
-				setContent: {"1v1-oponent-username1": StorageKeys.PLAYER1, "1v1-oponent-username2": StorageKeys.PLAYER2 }
+				setContent: {"1v1-oponent-username1": StorageKeys.PLAYER1 || "", "1v1-oponent-username2": StorageKeys.PLAYER2 || "" }
 			});
 		}
 	} catch (err) { notif("Connexion to 1v1 failed", false); }
@@ -89,10 +90,10 @@ export async function login_2v2(event: Event): Promise<void> {
 				removeClass: ["choose_your_opponent_multi_form", "container"],
 				addClass: ["back_to_select_mode_view8", "view8"],
 				setContent: {
-					"2v2-oponent-username1": StorageKeys.PLAYER1,
-					"2v2-oponent-username2": StorageKeys.PLAYER2,
-					"2v2-oponent-username3": StorageKeys.PLAYER3,
-					"2v2-oponent-username4": StorageKeys.PLAYER4
+					"2v2-oponent-username1": StorageKeys.PLAYER1 || "",
+					"2v2-oponent-username2": StorageKeys.PLAYER2 || "",
+					"2v2-oponent-username3": StorageKeys.PLAYER3 || "",
+					"2v2-oponent-username4": StorageKeys.PLAYER4 || ""
 				}
 			});
 			$form("choose_your_opponent_multi_form").reset();
@@ -126,13 +127,18 @@ export async function login_tournament(event: Event): Promise<void> {
 			StorageKeys.PLAYER4 = username4;
 			StorageKeys.CURRENT_PLAYER1 = username1;
 			StorageKeys.CURRENT_PLAYER2 = username2;
-			document.getElementById("Player2").textContent = StorageKeys.PLAYER2;
-			document.getElementById("Player3").textContent = StorageKeys.PLAYER3;
-			document.getElementById("Player4").textContent = StorageKeys.PLAYER4;
+			const player2Element = document.getElementById("Player2");
+			const player3Element = document.getElementById("Player3");
+			const player4Element = document.getElementById("Player4");
+			if (player2Element) player2Element.textContent = StorageKeys.PLAYER2;
+			if (player3Element) player3Element.textContent = StorageKeys.PLAYER3;
+			if (player4Element) player4Element.textContent = StorageKeys.PLAYER4;
 			StorageKeys.TOURNAMENT_STARTED = true;
 			updateUI({ addClass: [{ id: "tournament_graphic_id", className: "active" }, { id: "container_name_player", className: "hidden"}] });
-			$("start_tournament").style.display = 'none';
-			$("back_to_menu_view_tournament").style.display = 'none';
+			const startTournamentElement = $("start_tournament");
+			const backToMenuElement = $("back_to_menu_view_tournament");
+			if (startTournamentElement) startTournamentElement.style.display = 'none';
+			if (backToMenuElement) backToMenuElement.style.display = 'none';
 			$form("container_name_player").reset();
 		}
 	} catch (err) { notif("Connexion to tournament failed", false); }
@@ -154,7 +160,8 @@ export async function login_platformer(event: Event) {
 
 		if (data.success) {
 			StorageKeys.PLAYER2 = username;
-			$("start-platformer").click();
+			const startPlatformerElement = $("start-platformer");
+			if (startPlatformerElement) startPlatformerElement.click();
 			// PlatformerView(); //TODO
 		}
 	} catch (err) { notif("Connexion to platformer failed", false); }
@@ -189,12 +196,12 @@ export async function verify2FA(event: Event) {
 		const data = await fetchAPI('/request/user/verify-2fa', 'POST', { ticket, code });
 
 		if (data.success) {
-			StorageKeys.AUTH_TICKET = null;
-			StorageKeys.PLAYER1 = data.username;
-			StorageKeys.PROFILE_PICTURE = data.profile_picture;
+			StorageKeys.AUTH_TICKET = "";
+			StorageKeys.PLAYER1 = data.username || "";
+			StorageKeys.PROFILE_PICTURE = data.profile_picture || "";
 			const { connectWebSocket } = await import('./websocket.js')
 			connectWebSocket()
-			gameMenuView(true, null);
+			gameMenuView(true, "");
 		}
 	} catch (err) { console.error(`verify2FA: ${err}`); }
 }
@@ -230,12 +237,12 @@ export async function refreshInfos() { //REVIEW - maybe put in utils
 			homeView();
 			
 		} else if (sessionStorage.getItem("accessToken") && sessionStorage.getItem("accessToken") !== "undefined") {
-			StorageKeys.PLAYER1 = data.user.username;
-			StorageKeys.PROFILE_PICTURE = data.user.profile_picture;
+			StorageKeys.PLAYER1 = data.user.username || "";
+			StorageKeys.PROFILE_PICTURE = data.user.profile_picture || "";
 			console.log(StorageKeys.PLAYER1, StorageKeys.PROFILE_PICTURE);
 			const { connectWebSocket } = await import('./websocket.js')
 			connectWebSocket();
-			gameMenuView(true, null);
+			gameMenuView(true, "");
 		}
 	} catch (err) { console.error(`refreshInfos: ${err}`); }
 }
@@ -274,11 +281,11 @@ export async function handleGoogleSignIn(response: { access_token: string }) {
 
 		if (data.success) {
 			sessionStorage.setItem("accessToken", data.accessToken);
-			StorageKeys.PLAYER1 = data.name;
+			StorageKeys.PLAYER1 = data.name || "";
 			if (data.avatar)
 				StorageKeys.PROFILE_PICTURE = data.avatar;
 			notif("Successfully connected with Google !", true);
-			gameMenuView(true, null);
+			gameMenuView(true, "");
 		} else
 			notif(data.error || "Erreur lors de la connexion Google", false);
 	} catch (err) {

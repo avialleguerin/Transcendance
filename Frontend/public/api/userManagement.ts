@@ -8,6 +8,9 @@ export async function changeProfilePicture(event: Event): Promise<void> {
 	const MAX_SIZE = 5 * 1024 * 1024;
 	const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/jpg'];
 
+	if (!input.files || !input.files[0])
+		return notif('Please select a file.', false);
+
 	if (input.files[0].size > MAX_SIZE)
 		return notif('File size exceeds 5MB limit.', false);
 
@@ -23,9 +26,12 @@ export async function changeProfilePicture(event: Event): Promise<void> {
 			$form("uploadForm").reset();
 			fetchProfile();
 			StorageKeys.PROFILE_PICTURE = data.profile_picture;
-			document.getElementById("profile_photo_circle_nav_bar").innerHTML = `
+			const navBarElement = document.getElementById("profile_photo_circle_nav_bar");
+			if (navBarElement) {
+				navBarElement.innerHTML = `
 			<img src="${data.profile_picture}" alt="Profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
 			`;
+			}
 		}
 	} catch (err) { notif(`Error changing profile picture: ${err}`, false) }
 }
@@ -39,9 +45,13 @@ export async function accessProfileInfo(event: Event): Promise<void> {
 		if (!data.success)
 			return notif(data.error, false);
 		else {
-			$("modif_profile").classList.add('hidden'); //todo: use updateUI
-			$("btn_back_home").classList.remove('active');
-			$("profile_param_unlocked_id").classList.add('active');
+			const modifProfile = $("modif_profile");
+			const btnBackHome = $("btn_back_home");
+			const profileParam = $("profile_param_unlocked_id");
+			
+			modifProfile?.classList.add('hidden'); //todo: use updateUI
+			btnBackHome?.classList.remove('active');
+			profileParam?.classList.add('active');
 			$input("password").value = "";
 			fetchProfile();
 		}
@@ -55,8 +65,10 @@ export async function activate2FA(event: Event): Promise<void> {
 	try {
 		const data = await fetchAPI('/request/user/activate-2fa', 'POST', { code });
 
-		if (data.success)
-			document.getElementById("code_validation_id").classList.remove('active');
+		if (data.success) {
+			const codeValidationElement = document.getElementById("code_validation_id");
+			codeValidationElement?.classList.remove('active');
+		}
 	} catch (err) {
 		console.error("activate2FA: ", err);
 	}
@@ -103,9 +115,12 @@ export async function anonymize_user(): Promise<void> {
 	if (confirm('Do you really want to anonymize your account ?')) {
 		try {
 			const data = await fetchAPI('/request/user/anonymize-account', 'PUT');
-			document.getElementById("profile_photo_circle_nav_bar").innerHTML = `
+			const navBarElement = document.getElementById("profile_photo_circle_nav_bar");
+			if (navBarElement) {
+				navBarElement.innerHTML = `
 			<img src="${data.profile_picture}" alt="Profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
 			`;
+			}
 			fetchProfile();
 		} catch (err) { console.error(`anonymize_user: ${err}`); }
 	}
@@ -131,17 +146,29 @@ export async function fetchProfile(): Promise<void> {
 
 		if (data.user) {
 			const user = data.user;
-			document.getElementById("profile_photo_circle").innerHTML = `<img src="${data.profile_picture}" alt="${user.username} profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
-			$("player_name").textContent = user.username;
+			const profilePhotoElement = document.getElementById("profile_photo_circle");
+			if (profilePhotoElement) {
+				profilePhotoElement.innerHTML = `<img src="${data.profile_picture}" alt="${user.username} profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+			}
+			const playerNameElement = $("player_name");
+			if (playerNameElement) {
+				playerNameElement.textContent = user.username;
+			}
 			StorageKeys.PLAYER1 = user.username;
 			const username = $input("change_username");
 			username.placeholder = StorageKeys.PLAYER1;
 			const doubleAuth = $input("active_fa");
 			if (user.google_id) {
-				$("fa_selector").style.display = "none";
+				const faSelectorElement = $("fa_selector");
+				if (faSelectorElement) {
+					faSelectorElement.style.display = "none";
+				}
 			}
 			else {
-				$("fa_selector").style.display = "flex";
+				const faSelectorElement = $("fa_selector");
+				if (faSelectorElement) {
+					faSelectorElement.style.display = "flex";
+				}
 				if (user.doubleAuth_status)
 					doubleAuth.checked = true;
 				else {

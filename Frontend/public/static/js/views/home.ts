@@ -223,16 +223,16 @@ export default class Home extends AbstractView {
 		registerFormBtn?.addEventListener("submit", async (event) => { await register(event); });
 		doubleAuthForm?.addEventListener("submit", async (event) => { await verify2FA(event); });
 
-		createAccountButton.addEventListener("click", () => {
-			loginForm.classList.add("active");
-			createAccountForm.classList.add("active");
+		createAccountButton?.addEventListener("click", () => {
+			loginForm?.classList.add("active");
+			createAccountForm?.classList.add("active");
 			(document.getElementById("login-username") as HTMLInputElement).value = "";
 			(document.getElementById("login-password") as HTMLInputElement).value = "";
 		});
 
-		alreadyHaveAccountButton.addEventListener("click", () => {
-			createAccountForm.classList.remove("active");
-			loginForm.classList.remove("active");
+		alreadyHaveAccountButton?.addEventListener("click", () => {
+			createAccountForm?.classList.remove("active");
+			loginForm?.classList.remove("active");
 			(document.getElementById("registerForm") as HTMLFormElement).reset();
 		});
 

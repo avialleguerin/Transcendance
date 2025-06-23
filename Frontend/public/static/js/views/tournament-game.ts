@@ -8,7 +8,7 @@ import { getIsloading } from "../../../srcs/game/gameplay/views/loading_screen.j
 export default class extends AbstractView {
 	private cooldowns:		Record<string, boolean>;
 	private cooldownTimes:	Record<string, number>;
-	private gameLoop:		ReturnType<typeof setInterval> | null;
+	private gameLoop:		ReturnType<typeof setInterval> | null = null;
 	private boundKeyPressHandler: (event: KeyboardEvent) => void;
 
 	constructor() {
@@ -74,11 +74,18 @@ export default class extends AbstractView {
 			return;
 		if (isGameFinished()) {
 			winnerContainer.classList.add("active");
-			clearInterval(this.gameLoop);
-			if (player_1_win)
-				document.getElementById("winner_id").innerHTML = StorageKeys.CURRENT_PLAYER1 + " won !";
-			else if (player_2_win)
-				document.getElementById("winner_id").innerHTML = StorageKeys.CURRENT_PLAYER2 + " won !";
+			if (this.gameLoop !== null) {
+				clearInterval(this.gameLoop);
+				this.gameLoop = null;
+			}
+			
+			const winnerElement = document.getElementById("winner_id");
+			if (player_1_win) {
+				if (winnerElement) winnerElement.innerHTML = StorageKeys.CURRENT_PLAYER1 + " won !";
+			}
+			else if (player_2_win) {
+				if (winnerElement) winnerElement.innerHTML = StorageKeys.CURRENT_PLAYER2 + " won !";
+			}
 		}
 		else 
 		{
@@ -89,9 +96,12 @@ export default class extends AbstractView {
 	event_tournament_game() {
 		const leave_game_2 = document.getElementById("leave_game_2_id");
 
-		leave_game_2.addEventListener("click", () => {
+		leave_game_2?.addEventListener("click", () => {
 			window.history.back();
-			clearInterval(this.gameLoop);
+			if (this.gameLoop !== null) {
+				clearInterval(this.gameLoop);
+				this.gameLoop = null;
+			}
 			handleViewTransitions('tournament', 'vue4');
 			setTimeout(() => {
 				leave_tournament_game();

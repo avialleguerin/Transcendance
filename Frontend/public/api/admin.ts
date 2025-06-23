@@ -7,7 +7,10 @@ function $form(id: string): HTMLFormElement { return document.getElementById(id)
 export function notif(message: string, success = true): void {
 	const notification = document.getElementById('resultMessage');
 	if (notification) {
-		document.getElementById('notification-container').style.display = 'flex';
+		const notificationContainer = document.getElementById('notification-container');
+		if (notificationContainer) {
+			notificationContainer.style.display = 'flex';
+		}
 		notification.innerHTML = `<div style='display:flex; align-items:center;'><span>${message}</span></div>`;
 		notification.className = `py-2 px-4 rounded shadow-lg ${success ? 'bg-green-500' : 'bg-red-500'} text-white font-medium`;
 
@@ -67,32 +70,35 @@ export async function fetch_users(): Promise<void> {
 			method: 'GET',
 		});
 		const users = await response.json();
-		document.getElementById('users-table').innerHTML = users.map((user: User) => /*html*/`
-			<tr class="border-collapse text-sm hover:shadow-lg hover:rounded-xl hover:-translate-y-1 transition-all duration-200 ease-in-out cursor-pointer">
-				<td class="bg-white px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${user.userId}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.username}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.google_id || "—"}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.games_won}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.games_lost}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">
-					<span class="${user.doubleAuth_status === 0 ? 'bg-gray-100 text-gray-500' : 'bg-green-100 text-green-600'} px-3 py-1 rounded-full">
-						${user.doubleAuth_status === 0 ? "Disabled" : "Enabled"}
-					</span>
-				</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.cgu_version || "—"}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">
-					<span class="${user.online_status === 0 ? 'bg-gray-100 text-gray-600' : 'text-green-600 bg-green-100'} px-3 py-1 rounded-full">
-						${user.online_status === 0 ? "Offline" : "Online"}
-					</span>
-				</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.last_activity}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.created_at}</td>
-				<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0">
-					<button class="bg-red-200 hover:bg-red-300 m-1 text-red-500 hover:text-red-600 px-3 py-1 rounded-full transition-colors duration-300 ease-in-out text-xs" onclick="delete_user(${user.userId})">Delete</button>
-					<button class="bg-red-500 hover:bg-red-600 m-1 text-white px-3 py-1 rounded-full transition-colors duration-300 ease-in-out text-xs" onclick="force_delete_user(${user.userId})">Force Delete</button>
-				</td>
-			</tr>
-		`).join('');
+		const usersTable = document.getElementById('users-table');
+		if (usersTable) {
+			usersTable.innerHTML = users.map((user: User) => /*html*/`
+				<tr class="border-collapse text-sm hover:shadow-lg hover:rounded-xl hover:-translate-y-1 transition-all duration-200 ease-in-out cursor-pointer">
+					<td class="bg-white px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${user.userId}</td>
+					<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.username}</td>
+					<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.google_id || "—"}</td>
+					<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.games_won}</td>
+					<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.games_lost}</td>
+					<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">
+						<span class="${user.doubleAuth_status === 0 ? 'bg-gray-100 text-gray-500' : 'bg-green-100 text-green-600'} px-3 py-1 rounded-full">
+							${user.doubleAuth_status === 0 ? "Disabled" : "Enabled"}
+						</span>
+					</td>
+					<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.cgu_version || "—"}</td>
+					<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">
+						<span class="${user.online_status === 0 ? 'bg-gray-100 text-gray-600' : 'text-green-600 bg-green-100'} px-3 py-1 rounded-full">
+							${user.online_status === 0 ? "Offline" : "Online"}
+						</span>
+					</td>
+					<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.last_activity}</td>
+					<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.created_at}</td>
+					<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0">
+						<button class="bg-red-200 hover:bg-red-300 m-1 text-red-500 hover:text-red-600 px-3 py-1 rounded-full transition-colors duration-300 ease-in-out text-xs" onclick="delete_user(${user.userId})">Delete</button>
+						<button class="bg-red-500 hover:bg-red-600 m-1 text-white px-3 py-1 rounded-full transition-colors duration-300 ease-in-out text-xs" onclick="force_delete_user(${user.userId})">Force Delete</button>
+					</td>
+				</tr>
+			`).join('');
+		}
 	} catch (err) {
 		notif('Failed to fetch users', false);
 	}
@@ -106,17 +112,20 @@ export async function fetch_deleted_users(): Promise<void> {
 		const data = await response.json();
 		
 		if (data.success) {
-			document.getElementById('deleted-users-table').innerHTML = data.users.map((user: User) => /*html*/`
-				<tr class="border-collapse text-sm hover:shadow-lg hover:rounded-xl hover:-translate-y-1 transition-all duration-200 ease-in-out">
-					<td class="bg-gray-50 px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${user.userId}</td>
-					<td class="bg-gray-50 px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.username}</td>
-					<td class="bg-gray-50 px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.google_id || "—"}</td>
-					<td class="bg-gray-50 px-6 py-2 border border-gray-100 border-l-0">${new Date(user.deleted_at).toLocaleString()}</td>
-					<td class="bg-gray-50 px-6 py-2 rounded-r-xl border border-gray-100 border-l-0">
-						<button class="bg-red-500 hover:bg-red-600 m-1 text-white px-3 py-1 rounded-full transition-colors duration-300 ease-in-out text-xs" onclick="force_delete_user(${user.userId})">Force Delete</button>
-					</td>
-					</tr>
-			`).join('') || '<tr><td colspan="3" class="text-center py-4 text-gray-500">No deleted users</td></tr>';
+			const deletedUsersTable = document.getElementById('deleted-users-table');
+			if (deletedUsersTable) {
+				deletedUsersTable.innerHTML = data.users.map((user: User) => /*html*/`
+					<tr class="border-collapse text-sm hover:shadow-lg hover:rounded-xl hover:-translate-y-1 transition-all duration-200 ease-in-out">
+						<td class="bg-gray-50 px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${user.userId}</td>
+						<td class="bg-gray-50 px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.username}</td>
+						<td class="bg-gray-50 px-6 py-2 border border-gray-100 border-r-0 border-l-0">${user.google_id || "—"}</td>
+						<td class="bg-gray-50 px-6 py-2 border border-gray-100 border-l-0">${user.deleted_at ? new Date(user.deleted_at).toLocaleString() : "—"}</td>
+						<td class="bg-gray-50 px-6 py-2 rounded-r-xl border border-gray-100 border-l-0">
+							<button class="bg-red-500 hover:bg-red-600 m-1 text-white px-3 py-1 rounded-full transition-colors duration-300 ease-in-out text-xs" onclick="force_delete_user(${user.userId})">Force Delete</button>
+						</td>
+						</tr>
+				`).join('') || '<tr><td colspan="3" class="text-center py-4 text-gray-500">No deleted users</td></tr>';
+			}
 		}
 	} catch (err) {
 		notif('Failed to fetch deleted users', false);
@@ -129,8 +138,10 @@ export async function fetch_games(): Promise<void> {
 			method: 'GET',
 		});
 		const games = await response.json();
-
-		document.getElementById('games-table').innerHTML = games.map((game: GameResult) => {
+		const gamesTable = document.getElementById('games-table');
+		if (!gamesTable)
+			return;
+		gamesTable.innerHTML = games.map((game: GameResult) => {
 			const is1v1 = !game.user3_name || game.user3_name === '—' || !game.user4_name || game.user4_name === '—';
 			
 			let teamLeftDisplay, teamRightDisplay;
@@ -171,16 +182,19 @@ export async function fetch_platformers(): Promise<void> {
 			method: 'GET',
 		});
 		const platformers = await response.json();
-		document.getElementById('platformers-table').innerHTML = platformers.map((platformer: PlatformerGame) => /*html*/`
-			<tr class="border-collapse text-sm hover:shadow-lg hover:rounded-xl hover:-translate-y-1 transition-all duration-200 ease-in-out cursor-pointer">
-				<td class="bg-white px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${platformer.platformerId}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.user1_name}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.score_player1} - ${platformer.score_player2}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.user2_name}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.created_at}</td>
-				<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0"><button class="bg-red-200 hover:bg-red-300 m-2 text-red-500 hover:text-red-600 px-4 py-1 rounded-full transition-colors duration-300 ease-in-out" onclick="delete_platformer(${platformer.platformerId})">Delete</button></td>
-			</tr>
-		`).join('');
+		const platformersTable = document.getElementById('platformers-table');
+		if (platformersTable) {
+			platformersTable.innerHTML = platformers.map((platformer: PlatformerGame) => /*html*/`
+				<tr class="border-collapse text-sm hover:shadow-lg hover:rounded-xl hover:-translate-y-1 transition-all duration-200 ease-in-out cursor-pointer">
+					<td class="bg-white px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${platformer.platformerId}</td>
+					<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.user1_name}</td>
+					<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.score_player1} - ${platformer.score_player2}</td>
+					<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.user2_name}</td>
+					<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${platformer.created_at}</td>
+					<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0"><button class="bg-red-200 hover:bg-red-300 m-2 text-red-500 hover:text-red-600 px-4 py-1 rounded-full transition-colors duration-300 ease-in-out" onclick="delete_platformer(${platformer.platformerId})">Delete</button></td>
+				</tr>
+			`).join('');
+		}
 	} catch (err) {
 		notif('Failed to fetch platformers', false);
 	}
@@ -192,16 +206,19 @@ export async function fetch_friendships(): Promise<void> {
 			method: 'GET',
 		});
 		const friendships = await response.json();
-		document.getElementById('friendships-table').innerHTML = friendships.map((friendship: Friendship) => /*html*/`
-			<tr class="border-collapse text-sm hover:shadow-lg hover:rounded-xl hover:-translate-y-1 transition-all duration-200 ease-in-out cursor-pointer">
-				<td class="bg-white px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${friendship.friendshipId}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${friendship.username}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${friendship.friend_username}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${friendship.status}</td>
-				<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${friendship.created_at}</td>
-				<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0"><button class="bg-red-200 hover:bg-red-300 m-2 text-red-500 hover:text-red-600 px-4 py-1 rounded-full" onclick="delete_friendship(${friendship.friendshipId})">Delete</button></td>
-			</tr>
-		`).join('');
+		const friendshipsTable = document.getElementById('friendships-table');
+		if (friendshipsTable) {
+			friendshipsTable.innerHTML = friendships.map((friendship: Friendship) => /*html*/`
+				<tr class="border-collapse text-sm hover:shadow-lg hover:rounded-xl hover:-translate-y-1 transition-all duration-200 ease-in-out cursor-pointer">
+					<td class="bg-white px-6 py-2 rounded-l-xl border border-gray-100 border-r-0">${friendship.friendshipId}</td>
+					<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${friendship.username}</td>
+					<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${friendship.friend_username}</td>
+					<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${friendship.status}</td>
+					<td class="bg-white px-6 py-2 border border-gray-100 border-r-0 border-l-0">${friendship.created_at}</td>
+					<td class="bg-white px-6 py-2 rounded-r-xl border border-gray-100 border-l-0"><button class="bg-red-200 hover:bg-red-300 m-2 text-red-500 hover:text-red-600 px-4 py-1 rounded-full" onclick="delete_friendship(${friendship.friendshipId})">Delete</button></td>
+				</tr>
+			`).join('');
+		}
 	} catch (err) {
 		notif('Failed to fetch friendships', false);
 	}
