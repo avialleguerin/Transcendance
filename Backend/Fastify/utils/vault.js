@@ -1,8 +1,8 @@
 import fs from 'fs';
 import https from 'https';
 
-console.log("Configuration Vault:");
-console.log("VAULT_ADDR:", process.env.VAULT_ADDR);
+// console.log("Configuration Vault:");
+// console.log("VAULT_ADDR:", process.env.VAULT_ADDR);
 
 // Fonction pour obtenir le token Vault
 function getVaultToken() {
@@ -31,7 +31,7 @@ function getVaultToken() {
 }
 
 const vaultToken = getVaultToken();
-console.log("Token Vault:", vaultToken ? "***défini***" : "NON DÉFINI");
+// console.log("Token Vault:", vaultToken ? "***défini***" : "NON DÉFINI");
 
 // Agent HTTPS qui ignore les certificats auto-signés
 const httpsAgent = new https.Agent({
@@ -90,23 +90,22 @@ async function makeVaultRequest(path, method = 'GET', data = null) {
 
 export async function getSQLiteCreds() {
 	try {
-		console.log("🔍 Tentative de récupération des credentials SQLite...");
-		console.log("🔗 URL Vault:", process.env.VAULT_ADDR);
-		console.log("🔑 Token disponible:", vaultToken ? "Oui" : "Non");
+		// console.log("🔍 Tentative de récupération des credentials SQLite...");
+		// console.log("🔑 Token disponible:", vaultToken ? "Oui" : "Non");
 		
 		// Retry logic pour attendre que Vault soit prêt
 		let retries = 5;
 		while (retries > 0) {
 			try {
-				console.log(`🔄 Tentative ${6 - retries}/5 de connexion à Vault...`);
+				// console.log(`🔄 Tentative ${6 - retries}/5 de connexion à Vault...`);
 				const response = await makeVaultRequest('/v1/secret/data/sqlite');
-				console.log("✅ Credentials SQLite récupérés avec succès !");
+				// console.log("\x1b[32m%s\x1b[0m", "SQLite credentials retrieved successfully");
 				return { 
 					user: response.data.data.username, 
 					pass: response.data.data.password 
 				};
 			} catch (err) {
-				console.log(`❌ Erreur lors de la tentative ${6 - retries}:`, err.message);
+				// console.log(`❌ Erreur lors de la tentative ${6 - retries}:`, err.message);
 				if (retries === 1) throw err;
 				retries--;
 				await new Promise(resolve => setTimeout(resolve, 2000)); // Attendre 2 secondes
@@ -127,7 +126,7 @@ export async function getJwtSecret(request, reply) {
 				const response = await makeVaultRequest('/v1/secret/data/jwt');
 				return response.data.data.secret;
 			} catch (err) {
-				console.log(`Tentative de connexion à Vault pour JWT... ${6 - retries}/5`);
+				// console.log(`Tentative de connexion à Vault pour JWT... ${6 - retries}/5`);
 				if (retries === 1) throw err;
 				retries--;
 				await new Promise(resolve => setTimeout(resolve, 2000)); // Attendre 2 secondes

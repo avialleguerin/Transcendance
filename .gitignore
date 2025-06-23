@@ -16,6 +16,8 @@ Data/sqlite_data/
 Data/uploads/
 Data/vault_data/
 
+.sqlite
+
 # Builds
 Frontend/dist
 Frontend/node_modules
