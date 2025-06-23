@@ -6,6 +6,12 @@ services:
     ports:
       - "6380:6379"
     restart: always
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 2s
+      retries: 5
+      start_period: 5s
 
   fastify:
     container_name: fastify
@@ -24,18 +30,31 @@ services:
       - VAULT_ADDR=https://vault:8200
     depends_on:
       vault:
-        condition: service_started
+        condition: service_healthy
       redis:
-        condition: service_started
-    # Ajouter un délai pour permettre à Vault de s'initialiser complètement
-    command: sh -c "echo 'Attente de Vault...' && sleep 20 && echo 'Démarrage de Fastify...' && npm start"
-    volumes: # TODO - Change "app" -> "Fatsify"
+        condition: service_healthy
+    # Attente réduite avec vérification intelligente
+    command: sh -c "
+      echo 'Vérification de Vault...' && 
+      until curl -k -s https://vault:8200/v1/sys/health > /dev/null 2>&1; do 
+        echo 'Attente de Vault...'; 
+        sleep 2; 
+      done && 
+      echo 'Vault est prêt, démarrage de Fastify...' && 
+      npm start"
+    volumes:
       - ./Backend/Fastify:/app
-      - /app/node_modules    # Preserve the modules installed in the container 
+      - /app/node_modules
       - ./Data/vault_data:/app/vault/data
       - ./Data/sqlite_data:/app/Data/db
       - ./Data/uploads:/usr/share/nginx/uploads
       - ./Security/Nginx/ssl:/etc/fastify/ssl
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health", "||", "curl", "-k", "-f", "https://localhost:3443/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
 
   nginx:
     container_name: nginx
@@ -49,9 +68,12 @@ services:
       - "8143:8143"
       - "8444:8444"
     depends_on:
-      - fastify
-      - tsengine
-      - vault
+      fastify:
+        condition: service_healthy
+      tsengine:
+        condition: service_started
+      vault:
+        condition: service_healthy
     environment:
       - NGINX_ENVSUBST_TEMPLATE_DIR=off
     volumes:
@@ -107,6 +129,12 @@ services:
       - ./Security/Nginx/ssl:/vault/ssl
     cap_add:
       - IPC_LOCK
+    healthcheck:
+      test: ["CMD", "curl", "-k", "-f", "https://127.0.0.1:8200/v1/sys/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 6
+      start_period: 10s
 
 # networks:
 #   transcendence-network:
