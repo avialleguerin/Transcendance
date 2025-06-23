@@ -12,11 +12,11 @@ export const CREATE_USERS_TABLE = `
 		doubleAuth_secret TEXT,
 		games_won INTEGER DEFAULT 0,
 		games_lost INTEGER DEFAULT 0,
-		cgu_accepted DATETIME DEFAULT CURRENT_TIMESTAMP,
+		cgu_accepted DATETIME DEFAULT (datetime('now', 'localtime')),
 		cgu_version TEXT DEFAULT '1.0',
 		online_status BOOL DEFAULT false,
-		last_activity DATETIME DEFAULT CURRENT_TIMESTAMP,
-		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+		last_activity DATETIME DEFAULT (datetime('now', 'localtime')),
+		created_at DATETIME DEFAULT (datetime('now', 'localtime')),
 		deleted_at DATETIME DEFAULT NULL,
 		google_id TEXT UNIQUE
 	);
@@ -56,13 +56,13 @@ const usersModel = {
 	updateProfilePicture: (userId, profile_picture) => { return db.prepare("UPDATE users SET profile_picture = ? WHERE userId = ?").run(profile_picture, userId) },
 	updateGamesWon: (userId) => { return db.prepare("UPDATE users SET games_won = games_won + 1 WHERE userId = ?").run(userId) },
 	updateGamesLost: (userId) => { return db.prepare("UPDATE users SET games_lost = games_lost + 1 WHERE userId = ?").run(userId) },
-	updateUserCGUVersion: (userId, version) => { return db.prepare("UPDATE users SET cgu_version = ?, cgu_accepted = CURRENT_TIMESTAMP WHERE userId = ?").run(version, userId) },
-	updateLastActivity: (userId) => { return db.prepare("UPDATE users SET last_activity = CURRENT_TIMESTAMP WHERE userId = ?").run(userId) },
+	updateUserCGUVersion: (userId, version) => { return db.prepare("UPDATE users SET cgu_version = ?, cgu_accepted = datetime('now', 'localtime') WHERE userId = ?").run(version, userId) },
+	updateLastActivity: (userId) => { return db.prepare("UPDATE users SET last_activity = datetime('now', 'localtime') WHERE userId = ?").run(userId) },
 	
 	//* Delete
 	delete: (userId) => { return db.prepare("DELETE FROM users WHERE userId = ?").run(userId) },
-	deleteInactiveUsers: () => { return db.prepare("DELETE FROM users WHERE last_activity <= date('now', '-3 years')").run() },
-	anonymizeUserData: (userId, anonymizedPassword, defaultProfilePicture) => {return db.prepare(`UPDATE users SET password = ?, profile_picture = ?, doubleAuth_status = 0, doubleAuth_secret = ?, google_id = NULL, deleted_at = CURRENT_TIMESTAMP WHERE userId = ?`).run(anonymizedPassword, defaultProfilePicture, null, userId); },
+	deleteInactiveUsers: () => { return db.prepare("DELETE FROM users WHERE last_activity <= datetime('now', 'localtime', '-3 years')").run() },
+	anonymizeUserData: (userId, anonymizedPassword, defaultProfilePicture) => {return db.prepare(`UPDATE users SET password = ?, profile_picture = ?, doubleAuth_status = 0, doubleAuth_secret = ?, google_id = NULL, deleted_at = datetime('now', 'localtime') WHERE userId = ?`).run(anonymizedPassword, defaultProfilePicture, null, userId); },
 	forceDeleteUser: (userId) => {
 		const transaction = db.transaction(() => {
 			db.prepare("DELETE FROM games WHERE user1_id = ? OR user2_id = ? OR user3_id = ? OR user4_id = ?").run(userId, userId, userId, userId);
