@@ -68,8 +68,8 @@ down:
 	@echo "$(MSG_DOWN_SUCCESS)"
 
 re:	fclean
-	@make down
-	@make all
+	@make -j4 down
+	@make -j4 all
 
 clean:
 	@rm -rf ./Frontend/dist
