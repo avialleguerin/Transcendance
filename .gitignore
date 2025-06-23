@@ -12,7 +12,9 @@ __pycache__/
 .env
 .docker
 
-Data/
+Data/sqlite_data/
+Data/uploads/
+Data/vault_data/
 
 # Builds
 Frontend/dist
