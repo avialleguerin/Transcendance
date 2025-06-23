@@ -77,7 +77,7 @@ export default class extends AbstractView {
 					<p class="joueur3" id="Player3">${StorageKeys.PLAYER3}</p>
 					<p class="joueur4" id="Player4">${StorageKeys.PLAYER4}</p>
 					<img src="../../../srcs/game/assets/image/tournament_with_bracket.svg" alt="tournament">
-					<a id="start_game" class="btn_start_game" href="/tournament-game" data-link>JOUER</a>
+					<a id="start_game" class="btn_start_game" href="/tournament-game" data-link>PLAY</a>
 					<button id="leave_tournament" class="btn_leave_tournament">X</button>
 				</div>
 				<div class="message" id="message_id">

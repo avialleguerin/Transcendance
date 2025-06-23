@@ -53,7 +53,7 @@ const navigateTo = (url: string): void => {
 
 	else if (nextPage === "/tournament-game" && !StorageKeys.CAN_PLAY) {
 		canNavigate = false;
-		blockMessage = "You don't have opponents to play with";
+		blockMessage = "Click on the play button to start the game";
 	}
 
 	if (!canNavigate)
@@ -189,7 +189,7 @@ const logPageTransition = (from: string, to: string): void => {
 		}
 		else if (to === "/tournament-game" && !StorageKeys.CAN_PLAY)
 		{
-			gameMenuView(false, "You dont have oponents to play with");
+			gameMenuView(false, "Click on the play button to start the game");
 			canTransition = false;
 		}
 	}
@@ -358,7 +358,7 @@ window.addEventListener("popstate", (e) => {
 
 	if (targetPath === "/tournament-game" && !StorageKeys.CAN_PLAY) {
 		blockNavigation = true;
-		blockMessage = "You don't have opponents to play with";
+		blockMessage = "Click on the play button to start the game";
 	}
 
 	if (blockNavigation)
