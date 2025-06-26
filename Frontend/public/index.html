@@ -6,7 +6,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Test</title>
 	<link rel="icon" href="favicon.ico" type="image/x-icon">
-	<link rel="stylesheet" href="./static/js/css/index.css">
+	<script src="https://cdn.tailwindcss.com"></script>
+	<!-- <link rel="stylesheet" href="./static/js/css/index.css"> -->
 	<script src="https://accounts.google.com/gsi/client" async defer></script>
 	<script>console.log = function () {};</script>
 	<style>
@@ -66,14 +67,12 @@
 		.fade-in {
 			opacity: 1;
 		}
-
-		 
 	</style>
 </head>
 
 <body>
-	<div id="notification-container" style="display: none;">
-		<p id="resultMessage"></p>
+	<div id="notification-div" style="hidden py-2 px-4 rounded shadow-lg text-white font-medium">
+		<p id="notification-text"></p>
 	</div>
 	<canvas id="renderCanvas" style="width: 100%; height: 100vh;"></canvas>
 	<!-- Cookie Popup -->

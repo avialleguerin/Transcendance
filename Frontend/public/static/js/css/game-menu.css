@@ -57,7 +57,7 @@
 }
 
 #btn_jouer {
-	position: absolute;
+	/* position: absolute; */
 	
 	top: 50%;
 	left: 50%;
@@ -76,7 +76,7 @@
 
 	width: 170px;
 	height: 112px;
-	display: flex;
+	/* display: flex; */
 	justify-content: center;
 	align-items: center;
 }
@@ -1758,7 +1758,7 @@
 	/* border-radius: 12px; */
 	max-width: 300px;
 	margin: 2rem auto;
-	position: absolute;
+	 position: absolute;
 	top: 39%;
 	width: 80%;
 }

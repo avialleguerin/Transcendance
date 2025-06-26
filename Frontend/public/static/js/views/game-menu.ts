@@ -38,7 +38,6 @@ export default class Game_menu extends AbstractView {
 			<button class="option_navBar" id="option_btn_navBar">
 				<img src="../../../srcs/game/assets/image/menu.svg" alt="menu">
 			</button>
-			
 		</div>
 
 		<div id="cgu-modal" class="cgu-modal">
@@ -229,6 +228,7 @@ export default class Game_menu extends AbstractView {
 			</div>
 			<button class="deconexion_navBar" id="deconnect_btn_navBar">Disconnect</button> <!-- onclick="logout()" -->
 		</div>
+		
 		<div class="view1" id="view1">
 			<div class="view1-content">
 				<button id="view1_btn" class="btn">GAME MODE</button>
@@ -238,16 +238,26 @@ export default class Game_menu extends AbstractView {
 		<div class="back-home" id="back-home">
 			<button id="btn_back_home" class="btn">BACK</button>
 		</div>
-			<div id="container" class="container_menu">
-				<button id="btn_jouer">
-					<h1>ENTER</h1>
-				</button>
-				<div class="view2" id="view2">
+		<div id="container" class="container_menu">
+			<button id="btn_jouer" class="hidden">
+				<h1>ENTER</h1>
+			</button>
+			<div id="view2" class="view2 flex flex-col items-center justify-center h-screen">
+				<button id="prepar_game_1v1" class="bg-white/10 backdrop-blur-md border border-white/20 shadow-lg p-6">1v1</button>
+				<button id="prepar_game_multi" class="bg-white/10 backdrop-blur-md border border-white/20 shadow-lg p-6">2v2</button>
+				<a id="tournament_view" class="bg-white/10 backdrop-blur-md border border-white/20 shadow-lg p-6" href="/tournament" data-link>TOURNAMENT</a>
+				<button id="platformer_view" class="bg-white/10 backdrop-blur-md border border-white/20 shadow-lg p-6">PLATFORMER</button>
+			</div>
+				
+
+
+				<!-- -------------------------------------------------------------->
+				<!--<div class="view2" id="view2">
 					<div class="view2-content">
 						<h1>CHOOSE YOUR GAME MODE</h1>
 						<div id="game_mode_btn" class="game_mode_btn">
-							<button id="solo" class="btn">SOLO</button>
-							<button id="multiplayer" class="btn">MULTIPLAYER</button>
+							<button id="solo" class="bg-white/10 backdrop-blur-md border border-white/20 shadow-lg p-6">SOLO</button>
+							<button id="multiplayer" class="bg-white/10 backdrop-blur-md border border-white/20 shadow-lg p-6">MULTIPLAYER</button>
 							<a id="tournament_view" class="btn_tournament" href="/tournament" data-link>TOURNAMENT</a>
 							<button id="platformer_view" class="btn">PLATFORMER</button>
 						</div>
@@ -277,12 +287,12 @@ export default class Game_menu extends AbstractView {
 						<div id="select_parametres" class="select_parametres">
 							<button id="profile_parrametre_btn" class="btn">ACCOUNT</button>
 							<button id="parrametre_jeux_btn" class="btn">GAME CONTROLS</button>
-							<button id="Game_History_btn" class="btn">GAME HISTORY</button><!-- onclick="fetch_user_games_big()" -->
+							<button id="Game_History_btn" class="btn">GAME HISTORY</button>
 						</div>
 					</div>
-				</div>
+				</div>-->
 
-				<div class="parametres_jeu" id="parametres_jeu">
+				<!--<div class="parametres_jeu" id="parametres_jeu">
 					<div class="parametres_jeu_content" id="parametre_jeux_content">
 						<h1>GAME CONTROLS</h1>
 						<h2>PONG</h2>
@@ -343,12 +353,12 @@ export default class Game_menu extends AbstractView {
 							</div>
 						</div>
 					</div>
-			  </div>
+			  </div>-->
 
-				<div class="parrametres_profile" id="parametres_profile">
+				<!--<div class="parrametres_profile" id="parametres_profile">
 					<div class="parametres_profile_content">
 						<h1>ACCOUNT</h1>
-						<form id="modif_profile" class="modif_profile"> <!-- onsubmit="accessProfileInfo(event)"-->
+						<form id="modif_profile" class="modif_profile">
 							<label for="mdp">Password</label>
 							<input type="password" id="password" name="password" placeholder="Password" required>
 							<button type="submit" class="btn_valider_mdp">Validate</button>
@@ -357,7 +367,7 @@ export default class Game_menu extends AbstractView {
 							<div class="photo_profile">
 								<div class="profile_photo_container">
 									<div class="profile_photo_circle" id="profile_photo_circle"></div>
-									<form id="uploadForm" enctype="multipart/form-data"> <!-- onsubmit="changeProfilePicture(event)"-->
+									<form id="uploadForm" enctype="multipart/form-data">
 										<input type="file" name="image" id="profile_photo_input" accept="image/*" />
 										<button type="button" onclick="document.getElementById('profile_photo_input').click()">
 											Choose File
@@ -367,7 +377,7 @@ export default class Game_menu extends AbstractView {
 									</form>
 								</div>
 							</div>
-							<form id="updateProfileForm"> <!-- onsubmit="updateProfileInfo(event)"-->
+							<form id="updateProfileForm"> 
 								<div class="input_container">
 									<label for="username">Change username</label>
 									<input type="text" id="change_username" name="username">
@@ -381,21 +391,21 @@ export default class Game_menu extends AbstractView {
 									<input type="password" id="confirm_change_password" name="confirm_password" placeholder="******">
 								</div>
 								<div id="fa_selector" class="fa_selector">
-									<p>2FA :<input type="checkbox" id="active_fa" class="active_fa" /></p> <!--onchange="this.checked ? enable_doubleAuth() : disable_doubleAuth()"-->
+									<p>2FA :<input type="checkbox" id="active_fa" class="active_fa" /></p>
 								</div>
 								<button type="submit" id="valid_profile_info" class="valid_profile_info_btn">Valider</button>
 							</form>
 							<div class="btn_deconnect">
-								<button id="deconnect_btn" class="btn_deconnect_btn" >Disconnect</button> <!--onclick="logout()"-->
+								<button id="deconnect_btn" class="btn_deconnect_btn" >Disconnect</button> 
 							</div>
 							<div class="btn_delete">
-								<button id="delete_btn" class="btn_delete_btn" >Delete account</button> <!--onclick="delete_account()"-->
+								<button id="delete_btn" class="btn_delete_btn" >Delete account</button>
 							</div>
 							<div class="export_btn">
-								<button id="export_btn" class="btn_export_btn">Export data</button> <!--onclick="export_data()"-->
+								<button id="export_btn" class="btn_export_btn">Export data</button> 
 							</div>
 							<div class="anonymize_btn">
-								<button id="anonymize_btn" class="btn_anonymize_btn">Anonymize Account</button> <!-- onclick="anonymize_user()" -->
+								<button id="anonymize_btn" class="btn_anonymize_btn">Anonymize Account</button> 
 							</div>
 							<div class="cgu-container">
 								<label for="accept-cgu"><a href="#" id="show-cgu" class="cgu-link">Terms of Service</a></label>
@@ -406,7 +416,7 @@ export default class Game_menu extends AbstractView {
 							
 						</div>
 					</div>
-				</div>
+				</div>-->
 
 				<div class="choose_your_opponent_1v1" id="choose_your_opponent_1v1_id">
 					<form class="choose_your_opponent_1v1_content" id="choose_your_opponent_1v1_form"> <!-- onsubmit="login_1v1(event)"-->
@@ -719,889 +729,889 @@ export default class Game_menu extends AbstractView {
 		});
 	}
 
-	game_menu()
-	{		// DOM element declarations with null safety
-		const btn_jouer = document.getElementById('btn_jouer');
-		const view1 = document.getElementById('view1');
-		const view2 = document.getElementById('view2');
-		const view3 = document.getElementById('view3');
-		const view4 = document.getElementById('view4');
-		const view1_btn = document.getElementById('view1_btn');
-		const settings_btn = document.getElementById('settings_btn');
-		const solo = document.getElementById('solo');
-		const multiplayer = document.getElementById('multiplayer');
-		const back_to_menu_view3 = document.getElementById('back_to_menu_view3');
-		const back_to_menu_view4 = document.getElementById('back_to_menu_view4');
-		const btn_back_home = document.getElementById('back-home');
-		const view5 = document.getElementById('view5');
-		const view6 = document.getElementById('view6');
-		const view7 = document.getElementById('view7');
-		const view8 = document.getElementById('view8');
-		const prepar_game_1v1 = document.getElementById('prepar_game_1v1');
-		const prepar_game_multi = document.getElementById('prepar_game_multi');
-		const back_to_menu_view6 = document.getElementById('back_to_menu_view6');
-		const back_to_menu_view7 = document.getElementById('back_to_menu_view7');
-		const back_to_menu_view8 = document.getElementById('back_to_menu_view8');
-		const powerUP = document.getElementById('powerUP');
-		const number_powerUP_1 = document.getElementById('number_powerUP_1');
-		const number_powerUP_3 = document.getElementById('number_powerUP_3');
-		const number_powerUP_5 = document.getElementById('number_powerUP_5');
-		const power_selector = document.getElementById('power_selector');
-		const skin_perso = document.getElementById('skin_perso');
-		const back_to_select_mode_view6 = document.getElementById('back_to_select_mode_view6');
-		const back_to_select_mode_view7 = document.getElementById('back_to_select_mode_view7');
-		const back_to_select_mode_view8 = document.getElementById('back_to_select_mode_view8');
-		const choose_your_opponent_platformer_form = document.getElementById('choose_your_opponent_platformer_form');
-		const choose_your_skin = document.getElementById('choose_your_skin');
-		const custom_ta_game = document.getElementById('custom_ta_game');
-		const solo_1v1_btn = document.getElementById('solo_1v1_btn');
-		const container_menu = document.getElementById('container');
-		const choose_your_opponent_multi_form = document.getElementById('choose_your_opponent_multi_form');
-		const skin_perso_game_multi = document.getElementById('skin_perso_game_multi');
-		const choose_your_skin_game_multi = document.getElementById('choose_your_skin_game_multi');
-		const multiplayer_btn = document.getElementById('multiplayer_btn');
-		const custom_ta_game_multi = document.getElementById('custom_ta_game_multi');
-		const power_selector_game_multi = document.getElementById('power_selector_game_multi');
-		const powerUP_multi = document.getElementById('powerUP_multi');
-		const number_powerUP_1_game_multi = document.getElementById('number_powerUP_1_game_multi');
-		const number_powerUP_3_game_multi = document.getElementById('number_powerUP_3_game_multi');
-		const number_powerUP_5_game_multi = document.getElementById('number_powerUP_5_game_multi');
-		const valide_ton_skin_game_multi = document.getElementById('valide_ton_skin_game_multi');
-		const switch_skn_left_id1_game_multi = document.getElementById('switch_skn_left_id1_game_multi');
-		const switch_skn_right_id1_game_multi = document.getElementById('switch_skn_right_id1_game_multi');
-		const switch_skn_left_id2_game_multi = document.getElementById('switch_skn_left_id2_game_multi');
-		const switch_skn_right_id2_game_multi = document.getElementById('switch_skn_right_id2_game_multi');
-		const switch_skn_left_id3_game_multi = document.getElementById('switch_skn_left_id3_game_multi');
-		const switch_skn_right_id3_game_multi = document.getElementById('switch_skn_right_id3_game_multi');
-		const switch_skn_left_id4_game_multi = document.getElementById('switch_skn_left_id4_game_multi');
-		const switch_skn_right_id4_game_multi = document.getElementById('switch_skn_right_id4_game_multi');
-		const power_up_info_id = document.getElementById('power_up_info_id');
-		const container_info_power_up = document.getElementById('container_info_power_up');
-		const exit_powerUP_info = document.getElementById('exit_powerUP_info');
-		const power_up_info_id_multi = document.getElementById('power_up_info_id_multi');
-		const container_info_power_up_multi = document.getElementById('container_info_power_up_multi');
-		const exit_powerUP_info_multi = document.getElementById('exit_powerUP_info_multi');
-		const option_btn_navBar = document.getElementById('option_btn_navBar');
-		const panel_option_navbar = document.getElementById('panel_option_navbar');
-		const option_btn_remove = document.getElementById('option_btn_remove');
-		const Game_History_btn = document.getElementById('Game_History_btn');
-		const game_history = document.getElementById('game_history');
-		const exit_game_history_btn = document.getElementById('exit_game_history_btn');
-		const code_validation_id = document.getElementById('code_validation_id');
-		const fa_selector = document.getElementById('fa_selector');
-		const cancel_fa = document.getElementById('cancel_fa');
+	// game_menu()
+	// {		// DOM element declarations with null safety
+	// 	const btn_jouer = document.getElementById('btn_jouer');
+	// 	const view1 = document.getElementById('view1');
+	// 	const view2 = document.getElementById('view2');
+	// 	const view3 = document.getElementById('view3');
+	// 	const view4 = document.getElementById('view4');
+	// 	const view1_btn = document.getElementById('view1_btn');
+	// 	const settings_btn = document.getElementById('settings_btn');
+	// 	const solo = document.getElementById('solo');
+	// 	const multiplayer = document.getElementById('multiplayer');
+	// 	const back_to_menu_view3 = document.getElementById('back_to_menu_view3');
+	// 	const back_to_menu_view4 = document.getElementById('back_to_menu_view4');
+	// 	const btn_back_home = document.getElementById('back-home');
+	// 	const view5 = document.getElementById('view5');
+	// 	const view6 = document.getElementById('view6');
+	// 	const view7 = document.getElementById('view7');
+	// 	const view8 = document.getElementById('view8');
+	// 	const prepar_game_1v1 = document.getElementById('prepar_game_1v1');
+	// 	const prepar_game_multi = document.getElementById('prepar_game_multi');
+	// 	const back_to_menu_view6 = document.getElementById('back_to_menu_view6');
+	// 	const back_to_menu_view7 = document.getElementById('back_to_menu_view7');
+	// 	const back_to_menu_view8 = document.getElementById('back_to_menu_view8');
+	// 	const powerUP = document.getElementById('powerUP');
+	// 	const number_powerUP_1 = document.getElementById('number_powerUP_1');
+	// 	const number_powerUP_3 = document.getElementById('number_powerUP_3');
+	// 	const number_powerUP_5 = document.getElementById('number_powerUP_5');
+	// 	const power_selector = document.getElementById('power_selector');
+	// 	const skin_perso = document.getElementById('skin_perso');
+	// 	const back_to_select_mode_view6 = document.getElementById('back_to_select_mode_view6');
+	// 	const back_to_select_mode_view7 = document.getElementById('back_to_select_mode_view7');
+	// 	const back_to_select_mode_view8 = document.getElementById('back_to_select_mode_view8');
+	// 	const choose_your_opponent_platformer_form = document.getElementById('choose_your_opponent_platformer_form');
+	// 	const choose_your_skin = document.getElementById('choose_your_skin');
+	// 	const custom_ta_game = document.getElementById('custom_ta_game');
+	// 	const solo_1v1_btn = document.getElementById('solo_1v1_btn');
+	// 	const container_menu = document.getElementById('container');
+	// 	const choose_your_opponent_multi_form = document.getElementById('choose_your_opponent_multi_form');
+	// 	const skin_perso_game_multi = document.getElementById('skin_perso_game_multi');
+	// 	const choose_your_skin_game_multi = document.getElementById('choose_your_skin_game_multi');
+	// 	const multiplayer_btn = document.getElementById('multiplayer_btn');
+	// 	const custom_ta_game_multi = document.getElementById('custom_ta_game_multi');
+	// 	const power_selector_game_multi = document.getElementById('power_selector_game_multi');
+	// 	const powerUP_multi = document.getElementById('powerUP_multi');
+	// 	const number_powerUP_1_game_multi = document.getElementById('number_powerUP_1_game_multi');
+	// 	const number_powerUP_3_game_multi = document.getElementById('number_powerUP_3_game_multi');
+	// 	const number_powerUP_5_game_multi = document.getElementById('number_powerUP_5_game_multi');
+	// 	const valide_ton_skin_game_multi = document.getElementById('valide_ton_skin_game_multi');
+	// 	const switch_skn_left_id1_game_multi = document.getElementById('switch_skn_left_id1_game_multi');
+	// 	const switch_skn_right_id1_game_multi = document.getElementById('switch_skn_right_id1_game_multi');
+	// 	const switch_skn_left_id2_game_multi = document.getElementById('switch_skn_left_id2_game_multi');
+	// 	const switch_skn_right_id2_game_multi = document.getElementById('switch_skn_right_id2_game_multi');
+	// 	const switch_skn_left_id3_game_multi = document.getElementById('switch_skn_left_id3_game_multi');
+	// 	const switch_skn_right_id3_game_multi = document.getElementById('switch_skn_right_id3_game_multi');
+	// 	const switch_skn_left_id4_game_multi = document.getElementById('switch_skn_left_id4_game_multi');
+	// 	const switch_skn_right_id4_game_multi = document.getElementById('switch_skn_right_id4_game_multi');
+	// 	const power_up_info_id = document.getElementById('power_up_info_id');
+	// 	const container_info_power_up = document.getElementById('container_info_power_up');
+	// 	const exit_powerUP_info = document.getElementById('exit_powerUP_info');
+	// 	const power_up_info_id_multi = document.getElementById('power_up_info_id_multi');
+	// 	const container_info_power_up_multi = document.getElementById('container_info_power_up_multi');
+	// 	const exit_powerUP_info_multi = document.getElementById('exit_powerUP_info_multi');
+	// 	const option_btn_navBar = document.getElementById('option_btn_navBar');
+	// 	const panel_option_navbar = document.getElementById('panel_option_navbar');
+	// 	const option_btn_remove = document.getElementById('option_btn_remove');
+	// 	const Game_History_btn = document.getElementById('Game_History_btn');
+	// 	const game_history = document.getElementById('game_history');
+	// 	const exit_game_history_btn = document.getElementById('exit_game_history_btn');
+	// 	const code_validation_id = document.getElementById('code_validation_id');
+	// 	const fa_selector = document.getElementById('fa_selector');
+	// 	const cancel_fa = document.getElementById('cancel_fa');
 
-		const showCguLink = document.getElementById("show-cgu");
-		const cguModal = document.getElementById("cgu-modal");
-		const cguBackButton = document.getElementById("cgu-back-button");
+	// 	const showCguLink = document.getElementById("show-cgu");
+	// 	const cguModal = document.getElementById("cgu-modal");
+	// 	const cguBackButton = document.getElementById("cgu-back-button");
 
-		// Apply null safety to initial styling
-		if (view1_btn) {
-			view1_btn.style.color = '#e6e600';
-			view1_btn.style.textShadow = '0 0 10px #e6e600';
-			view1_btn.style.cursor = 'default';
-		}
+	// 	// Apply null safety to initial styling
+	// 	if (view1_btn) {
+	// 		view1_btn.style.color = '#e6e600';
+	// 		view1_btn.style.textShadow = '0 0 10px #e6e600';
+	// 		view1_btn.style.cursor = 'default';
+	// 	}
 		
-		showCguLink?.addEventListener("click", (e) => {
-			e.preventDefault();
-			cguModal?.classList.add("active");
-			document.body.style.overflow = "hidden";
-		});
+	// 	showCguLink?.addEventListener("click", (e) => {
+	// 		e.preventDefault();
+	// 		cguModal?.classList.add("active");
+	// 		document.body.style.overflow = "hidden";
+	// 	});
 
-		cguBackButton?.addEventListener("click", () => {
-			cguModal?.classList.remove("active");
-			document.body.style.overflow = "";
-		});
+	// 	cguBackButton?.addEventListener("click", () => {
+	// 		cguModal?.classList.remove("active");
+	// 		document.body.style.overflow = "";
+	// 	});
 
-		cguModal?.addEventListener("click", (event) => {
-			if (event.target === cguModal) {
-				cguModal?.classList.remove("active");
-				document.body.style.overflow = "";
-			}
-		});
+	// 	cguModal?.addEventListener("click", (event) => {
+	// 		if (event.target === cguModal) {
+	// 			cguModal?.classList.remove("active");
+	// 			document.body.style.overflow = "";
+	// 		}
+	// 	});
 
-		const showPrivacyPolicyLink = document.getElementById("show-privacy-policy");
-		const privacyPolicyModal = document.getElementById("privacy-policy-modal");
-		const privacyPolicyBackButton = document.getElementById("privacy-policy-back-button");
+	// 	const showPrivacyPolicyLink = document.getElementById("show-privacy-policy");
+	// 	const privacyPolicyModal = document.getElementById("privacy-policy-modal");
+	// 	const privacyPolicyBackButton = document.getElementById("privacy-policy-back-button");
 
-		showPrivacyPolicyLink?.addEventListener("click", (e) => {
-			e.preventDefault();
-			privacyPolicyModal?.classList.add("active");
-			document.body.style.overflow = "hidden";
-		});
+	// 	showPrivacyPolicyLink?.addEventListener("click", (e) => {
+	// 		e.preventDefault();
+	// 		privacyPolicyModal?.classList.add("active");
+	// 		document.body.style.overflow = "hidden";
+	// 	});
 
-		privacyPolicyBackButton?.addEventListener("click", () => {
-			privacyPolicyModal?.classList.remove("active");
-			document.body.style.overflow = "";
-		});
+	// 	privacyPolicyBackButton?.addEventListener("click", () => {
+	// 		privacyPolicyModal?.classList.remove("active");
+	// 		document.body.style.overflow = "";
+	// 	});
 
-		privacyPolicyModal?.addEventListener("click", (event) => {
-			if (event.target === privacyPolicyModal) {
-				privacyPolicyModal?.classList.remove("active");
-				document.body.style.overflow = "";
-			}
-		});
+	// 	privacyPolicyModal?.addEventListener("click", (event) => {
+	// 		if (event.target === privacyPolicyModal) {
+	// 			privacyPolicyModal?.classList.remove("active");
+	// 			document.body.style.overflow = "";
+	// 		}
+	// 	});
 
-		btn_jouer?.addEventListener('click', () => {
-			view1?.classList.add('active');
-			view2?.classList.add('active');
-			btn_back_home?.classList.add('active');
-			if (btn_jouer) btn_jouer.style.display = 'none';
-		});
+	// 	btn_jouer?.addEventListener('click', () => {
+	// 		view1?.classList.add('active');
+	// 		view2?.classList.add('active');
+	// 		btn_back_home?.classList.add('active');
+	// 		if (btn_jouer) btn_jouer.style.display = 'none';
+	// 	});
 
-		view1_btn?.addEventListener('click', () => {
-			if (view5?.classList.contains('active')) {
-				view5?.classList.remove('active');
-				view2?.classList.add('active');
-				if (view1_btn) {
-					view1_btn.style.color = '#e6e600';
-					view1_btn.style.textShadow = '0 0 10px #e6e600';
-					view1_btn.style.cursor = 'default';
-				}
-				if (settings_btn) {
-					settings_btn.style.color = 'white';
-					settings_btn.style.textShadow = 'none';
-					settings_btn.style.cursor = 'pointer';
-				}
-			}
-			else if (view2 && !view2.classList.contains('active'))
-				view2?.classList.add('active');
-		});
+	// 	view1_btn?.addEventListener('click', () => {
+	// 		if (view5?.classList.contains('active')) {
+	// 			view5?.classList.remove('active');
+	// 			view2?.classList.add('active');
+	// 			if (view1_btn) {
+	// 				view1_btn.style.color = '#e6e600';
+	// 				view1_btn.style.textShadow = '0 0 10px #e6e600';
+	// 				view1_btn.style.cursor = 'default';
+	// 			}
+	// 			if (settings_btn) {
+	// 				settings_btn.style.color = 'white';
+	// 				settings_btn.style.textShadow = 'none';
+	// 				settings_btn.style.cursor = 'pointer';
+	// 			}
+	// 		}
+	// 		else if (view2 && !view2.classList.contains('active'))
+	// 			view2?.classList.add('active');
+	// 	});
 
-		let skin = get_skin_is_init();
-		const skin_id = document.getElementById('skin');
-		const skin_id_multi = document.getElementById('skin_multi');
-
-
-		if (skin == false) {
-			skin_id?.classList.add('hidden');
-			skin_id_multi?.classList.add('hidden');
-		}
-		else {
-			skin_id?.classList.remove('hidden');
-			skin_id_multi?.classList.remove('hidden');
-		}
+	// 	let skin = get_skin_is_init();
+	// 	const skin_id = document.getElementById('skin');
+	// 	const skin_id_multi = document.getElementById('skin_multi');
 
 
-		/***********************************************************************/
-		/**************************SETTINGS************************************/
-		/***********************************************************************/
+	// 	if (skin == false) {
+	// 		skin_id?.classList.add('hidden');
+	// 		skin_id_multi?.classList.add('hidden');
+	// 	}
+	// 	else {
+	// 		skin_id?.classList.remove('hidden');
+	// 		skin_id_multi?.classList.remove('hidden');
+	// 	}
 
 
-		settings_btn?.addEventListener('click', () => {
-			view2?.classList.remove('active');
-			view5?.classList.add('active');
-			if (view1_btn) {
-				view1_btn.style.color = 'white';
-				view1_btn.style.textShadow = 'none';
-				view1_btn.style.cursor = 'pointer';
-			}
-			if (settings_btn) {
-				settings_btn.style.color = 'yellow';
-				settings_btn.style.textShadow = '0 0 10px yellow';
-				settings_btn.style.cursor = 'default';
-			}
-		});
+	// 	/***********************************************************************/
+	// 	/**************************SETTINGS************************************/
+	// 	/***********************************************************************/
 
 
-		/***********************************************************************/
-		/**************************MODE_DE_JEUX********************************/
-		/***********************************************************************/
+	// 	settings_btn?.addEventListener('click', () => {
+	// 		view2?.classList.remove('active');
+	// 		view5?.classList.add('active');
+	// 		if (view1_btn) {
+	// 			view1_btn.style.color = 'white';
+	// 			view1_btn.style.textShadow = 'none';
+	// 			view1_btn.style.cursor = 'pointer';
+	// 		}
+	// 		if (settings_btn) {
+	// 			settings_btn.style.color = 'yellow';
+	// 			settings_btn.style.textShadow = '0 0 10px yellow';
+	// 			settings_btn.style.cursor = 'default';
+	// 		}
+	// 	});
 
 
-		solo?.addEventListener('click', () => {
-			view2?.classList.remove('active');
-			view3?.classList.add('active');
-			view1?.classList.remove('active');
-			btn_back_home?.classList.remove('active');
-		});
-
-		multiplayer?.addEventListener('click', () => {
-			view2?.classList.remove('active');
-			view4?.classList.add('active');
-			view1?.classList.remove('active');
-			btn_back_home?.classList.remove('active');
-		});
+	// 	/***********************************************************************/
+	// 	/**************************MODE_DE_JEUX********************************/
+	// 	/***********************************************************************/
 
 
-		/***********************************************************************/
-		/**************************BACK_TO_MENU********************************/
-		/***********************************************************************/
+	// 	solo?.addEventListener('click', () => {
+	// 		view2?.classList.remove('active');
+	// 		view3?.classList.add('active');
+	// 		view1?.classList.remove('active');
+	// 		btn_back_home?.classList.remove('active');
+	// 	});
 
-		if (view3 && !view3.classList.contains('active')) {
-			back_to_menu_view3?.addEventListener('click', () => {
-				view3?.classList.remove('active');
-				view2?.classList.add('active');
-				view1?.classList.add('active');
-				btn_back_home?.classList.add('active');
-			});
-		}
-
-		if (view4 && !view4.classList.contains('active')) {
-			back_to_menu_view4?.addEventListener('click', () => {
-				view4?.classList.remove('active');
-				view2?.classList.add('active');
-				view1?.classList.add('active');
-				btn_back_home?.classList.add('active');
-			});
-		}
-
-		/***********************************************************************/
-		/**************************BACK_HOME************************************/
-		/***********************************************************************/
+	// 	multiplayer?.addEventListener('click', () => {
+	// 		view2?.classList.remove('active');
+	// 		view4?.classList.add('active');
+	// 		view1?.classList.remove('active');
+	// 		btn_back_home?.classList.remove('active');
+	// 	});
 
 
-		btn_back_home?.addEventListener('click', () => {
-			if (view2?.classList.contains('active')) {
-				view2?.classList.remove('active');
-				view1?.classList.remove('active');
-				btn_back_home?.classList.remove('active');
-				if (btn_jouer) btn_jouer.style.display = 'block';
-				if (view1_btn) {
-					view1_btn.style.cursor = 'default';
-					view1_btn.style.color = 'yellow';
-					view1_btn.style.textShadow = '0 0 10px yellow';
-				}
-				if (settings_btn) {
-					settings_btn.style.color = 'white';
-					settings_btn.style.textShadow = 'none';
-					settings_btn.style.cursor = 'pointer';
-				}
-			}
-			if (view5?.classList.contains('active')) {
-				view5?.classList.remove('active');
-				view1?.classList.remove('active');
-				btn_back_home?.classList.remove('active');
-				if (btn_jouer) btn_jouer.style.display = 'block';
-				if (view1_btn) {
-					view1_btn.style.cursor = 'default';
-					view1_btn.style.color = 'yellow';
-					view1_btn.style.textShadow = '0 0 10px yellow';
-				}
-				if (settings_btn) {
-					settings_btn.style.color = 'white';
-					settings_btn.style.textShadow = 'none';
-					settings_btn.style.cursor = 'pointer';
-				}
-			}
+	// 	/***********************************************************************/
+	// 	/**************************BACK_TO_MENU********************************/
+	// 	/***********************************************************************/
 
-		});		
-		const choose_your_opponent_1v1_form = document.getElementById('choose_your_opponent_1v1_form');
+	// 	if (view3 && !view3.classList.contains('active')) {
+	// 		back_to_menu_view3?.addEventListener('click', () => {
+	// 			view3?.classList.remove('active');
+	// 			view2?.classList.add('active');
+	// 			view1?.classList.add('active');
+	// 			btn_back_home?.classList.add('active');
+	// 		});
+	// 	}
 
-		prepar_game_1v1?.addEventListener('click', () => {
-			view3?.classList.remove('active');
-			choose_your_opponent_1v1_form?.classList.add('active');
-			back_to_select_mode_view6?.classList.add('active');
-		});
+	// 	if (view4 && !view4.classList.contains('active')) {
+	// 		back_to_menu_view4?.addEventListener('click', () => {
+	// 			view4?.classList.remove('active');
+	// 			view2?.classList.add('active');
+	// 			view1?.classList.add('active');
+	// 			btn_back_home?.classList.add('active');
+	// 		});
+	// 	}
+
+	// 	/***********************************************************************/
+	// 	/**************************BACK_HOME************************************/
+	// 	/***********************************************************************/
+
+
+	// 	btn_back_home?.addEventListener('click', () => {
+	// 		if (view2?.classList.contains('active')) {
+	// 			view2?.classList.remove('active');
+	// 			view1?.classList.remove('active');
+	// 			btn_back_home?.classList.remove('active');
+	// 			if (btn_jouer) btn_jouer.style.display = 'block';
+	// 			if (view1_btn) {
+	// 				view1_btn.style.cursor = 'default';
+	// 				view1_btn.style.color = 'yellow';
+	// 				view1_btn.style.textShadow = '0 0 10px yellow';
+	// 			}
+	// 			if (settings_btn) {
+	// 				settings_btn.style.color = 'white';
+	// 				settings_btn.style.textShadow = 'none';
+	// 				settings_btn.style.cursor = 'pointer';
+	// 			}
+	// 		}
+	// 		if (view5?.classList.contains('active')) {
+	// 			view5?.classList.remove('active');
+	// 			view1?.classList.remove('active');
+	// 			btn_back_home?.classList.remove('active');
+	// 			if (btn_jouer) btn_jouer.style.display = 'block';
+	// 			if (view1_btn) {
+	// 				view1_btn.style.cursor = 'default';
+	// 				view1_btn.style.color = 'yellow';
+	// 				view1_btn.style.textShadow = '0 0 10px yellow';
+	// 			}
+	// 			if (settings_btn) {
+	// 				settings_btn.style.color = 'white';
+	// 				settings_btn.style.textShadow = 'none';
+	// 				settings_btn.style.cursor = 'pointer';
+	// 			}
+	// 		}
+
+	// 	});		
+	// 	const choose_your_opponent_1v1_form = document.getElementById('choose_your_opponent_1v1_form');
+
+	// 	prepar_game_1v1?.addEventListener('click', () => {
+	// 		view3?.classList.remove('active');
+	// 		choose_your_opponent_1v1_form?.classList.add('active');
+	// 		back_to_select_mode_view6?.classList.add('active');
+	// 	});
 		
-		const validate_multi_opponent = document.getElementById('validate_multi_opponent');
+	// 	const validate_multi_opponent = document.getElementById('validate_multi_opponent');
 
-		prepar_game_multi?.addEventListener('click', () => {
-			view4?.classList.remove('active');
-			choose_your_opponent_multi_form?.classList.add('active');
-			back_to_select_mode_view8?.classList.add('active');
-			container_menu?.classList.add('active');
-			if (container_menu) container_menu.scrollTop = 0;
-		});
+	// 	prepar_game_multi?.addEventListener('click', () => {
+	// 		view4?.classList.remove('active');
+	// 		choose_your_opponent_multi_form?.classList.add('active');
+	// 		back_to_select_mode_view8?.classList.add('active');
+	// 		container_menu?.classList.add('active');
+	// 		if (container_menu) container_menu.scrollTop = 0;
+	// 	});
 
-		/***********************************************************************/
-		/**************************BACK_TO_MENU********************************/
-		/***********************************************************************/
+	// 	/***********************************************************************/
+	// 	/**************************BACK_TO_MENU********************************/
+	// 	/***********************************************************************/
 
-		back_to_menu_view6?.addEventListener('click', () => {
-			view6?.classList.remove('active');
-			view3?.classList.add('active');
-			back_to_select_mode_view6?.classList.remove('active');
+	// 	back_to_menu_view6?.addEventListener('click', () => {
+	// 		view6?.classList.remove('active');
+	// 		view3?.classList.add('active');
+	// 		back_to_select_mode_view6?.classList.remove('active');
 
 
-			if (choose_your_opponent_1v1_form?.classList.contains('active')) {
-				choose_your_opponent_1v1_form?.classList.remove('active');
-				back_to_select_mode_view6?.classList.remove('active');
-				view3?.classList.add('active');
-				container_menu?.classList.remove('active');
-				if (container_menu) container_menu.scrollTop = 0;
-			}
+	// 		if (choose_your_opponent_1v1_form?.classList.contains('active')) {
+	// 			choose_your_opponent_1v1_form?.classList.remove('active');
+	// 			back_to_select_mode_view6?.classList.remove('active');
+	// 			view3?.classList.add('active');
+	// 			container_menu?.classList.remove('active');
+	// 			if (container_menu) container_menu.scrollTop = 0;
+	// 		}
 		
 
-			if (skin_perso?.classList.contains('checked')) {
-				skin_perso?.classList.remove('checked');
-				if (choose_your_skin?.classList.contains('active')) {
-					choose_your_skin?.classList.remove('active');
-					if (solo_1v1_btn) solo_1v1_btn.style.display = 'block';
-					if (custom_ta_game) custom_ta_game.style.visibility = 'visible';
-				}
-			}
-			if (power_selector?.classList.contains('active')) {
-				power_selector?.classList.remove('active');
-				powerUP?.classList.remove('checked');
-				reset_powerUP_grenade();
-				reset_powerUP_teammate();
-				reset_powerUP_inverse_player();
-				powerUP_nb = 0;
-				if (number_powerUP_1?.classList.contains('checked')) {
-					number_powerUP_1?.classList.remove('checked');
-				}
-				if (number_powerUP_3?.classList.contains('checked')) {
-					number_powerUP_3?.classList.remove('checked');
-				}
-				if (number_powerUP_5?.classList.contains('checked')) {
-					number_powerUP_5?.classList.remove('checked');
-				}
-			}
-		});
+	// 		if (skin_perso?.classList.contains('checked')) {
+	// 			skin_perso?.classList.remove('checked');
+	// 			if (choose_your_skin?.classList.contains('active')) {
+	// 				choose_your_skin?.classList.remove('active');
+	// 				if (solo_1v1_btn) solo_1v1_btn.style.display = 'block';
+	// 				if (custom_ta_game) custom_ta_game.style.visibility = 'visible';
+	// 			}
+	// 		}
+	// 		if (power_selector?.classList.contains('active')) {
+	// 			power_selector?.classList.remove('active');
+	// 			powerUP?.classList.remove('checked');
+	// 			reset_powerUP_grenade();
+	// 			reset_powerUP_teammate();
+	// 			reset_powerUP_inverse_player();
+	// 			powerUP_nb = 0;
+	// 			if (number_powerUP_1?.classList.contains('checked')) {
+	// 				number_powerUP_1?.classList.remove('checked');
+	// 			}
+	// 			if (number_powerUP_3?.classList.contains('checked')) {
+	// 				number_powerUP_3?.classList.remove('checked');
+	// 			}
+	// 			if (number_powerUP_5?.classList.contains('checked')) {
+	// 				number_powerUP_5?.classList.remove('checked');
+	// 			}
+	// 		}
+	// 	});
 
-		back_to_menu_view7?.addEventListener('click', () => {
-			view3?.classList.add('active');
-			view7?.classList.remove('active');
-			back_to_select_mode_view7?.classList.remove('active');
-			if (skin_perso?.classList.contains('checked')) {
-				skin_perso?.classList.remove('checked');
-				if (choose_your_skin?.classList.contains('active')) {
-					choose_your_skin?.classList.remove('active');
-					if (solo_1v1_btn) solo_1v1_btn.style.display = 'block';
-					if (custom_ta_game) custom_ta_game.style.visibility = 'visible';
-					disable_skin_perso_player_solo();
-				}
-			}
-			if (power_selector?.classList.contains('active')) {
-				power_selector?.classList.remove('active');
-				powerUP?.classList.remove('checked');
-				reset_powerUP_grenade();
-				reset_powerUP_teammate();
-				reset_powerUP_inverse_player();
-				powerUP_nb = 0;
-				if (number_powerUP_1?.classList.contains('checked')) {
-					number_powerUP_1?.classList.remove('checked');
-				}
-				if (number_powerUP_3?.classList.contains('checked')) {
-					number_powerUP_3?.classList.remove('checked');
-				}
-				if (number_powerUP_5?.classList.contains('checked')) {
-					number_powerUP_5?.classList.remove('checked');
-				}
-			}
-		});
+	// 	back_to_menu_view7?.addEventListener('click', () => {
+	// 		view3?.classList.add('active');
+	// 		view7?.classList.remove('active');
+	// 		back_to_select_mode_view7?.classList.remove('active');
+	// 		if (skin_perso?.classList.contains('checked')) {
+	// 			skin_perso?.classList.remove('checked');
+	// 			if (choose_your_skin?.classList.contains('active')) {
+	// 				choose_your_skin?.classList.remove('active');
+	// 				if (solo_1v1_btn) solo_1v1_btn.style.display = 'block';
+	// 				if (custom_ta_game) custom_ta_game.style.visibility = 'visible';
+	// 				disable_skin_perso_player_solo();
+	// 			}
+	// 		}
+	// 		if (power_selector?.classList.contains('active')) {
+	// 			power_selector?.classList.remove('active');
+	// 			powerUP?.classList.remove('checked');
+	// 			reset_powerUP_grenade();
+	// 			reset_powerUP_teammate();
+	// 			reset_powerUP_inverse_player();
+	// 			powerUP_nb = 0;
+	// 			if (number_powerUP_1?.classList.contains('checked')) {
+	// 				number_powerUP_1?.classList.remove('checked');
+	// 			}
+	// 			if (number_powerUP_3?.classList.contains('checked')) {
+	// 				number_powerUP_3?.classList.remove('checked');
+	// 			}
+	// 			if (number_powerUP_5?.classList.contains('checked')) {
+	// 				number_powerUP_5?.classList.remove('checked');
+	// 			}
+	// 		}
+	// 	});
 
-		back_to_menu_view8?.addEventListener('click', () => {
-			view8?.classList.remove('active');
-			view4?.classList.add('active');
-			back_to_select_mode_view8?.classList.remove('active');
-			if (choose_your_opponent_multi_form?.classList.contains('active')) {
-				choose_your_opponent_multi_form?.classList.remove('active');
-				back_to_select_mode_view8?.classList.remove('active');
-				view4?.classList.add('active');
-				container_menu?.classList.remove('active');
-				if (container_menu) container_menu.scrollTop = 0;
-			}
-			if (skin_perso_game_multi?.classList.contains('checked')) {
-				skin_perso_game_multi?.classList.remove('checked');
-				if (choose_your_skin_game_multi?.classList.contains('active')) {
-					choose_your_skin_game_multi?.classList.remove('active');
-					if (multiplayer_btn) multiplayer_btn.style.display = 'block';
-					if (custom_ta_game_multi) custom_ta_game_multi.style.visibility = 'visible';
-					disable_skin_multi();
-				}
-			}
-			if (power_selector_game_multi?.classList.contains('active')) {
-				power_selector_game_multi?.classList.remove('active');
-				powerUP_multi?.classList.remove('checked');
-				reset_powerUP_grenadeTeam_player();
-				reset_powerUP_freeze_Team_player();
-				powerUP_nb = 0;
-				powerUP_nb_multi = 0;
-				if (number_powerUP_1_game_multi?.classList.contains('checked')) {
-					number_powerUP_1_game_multi?.classList.remove('checked');
-				}
-				if (number_powerUP_3_game_multi?.classList.contains('checked')) {
-					number_powerUP_3_game_multi?.classList.remove('checked');
-				}
-				if (number_powerUP_5_game_multi?.classList.contains('checked')) {
-					number_powerUP_5_game_multi?.classList.remove('checked');
-				}
-			}
-		});
+	// 	back_to_menu_view8?.addEventListener('click', () => {
+	// 		view8?.classList.remove('active');
+	// 		view4?.classList.add('active');
+	// 		back_to_select_mode_view8?.classList.remove('active');
+	// 		if (choose_your_opponent_multi_form?.classList.contains('active')) {
+	// 			choose_your_opponent_multi_form?.classList.remove('active');
+	// 			back_to_select_mode_view8?.classList.remove('active');
+	// 			view4?.classList.add('active');
+	// 			container_menu?.classList.remove('active');
+	// 			if (container_menu) container_menu.scrollTop = 0;
+	// 		}
+	// 		if (skin_perso_game_multi?.classList.contains('checked')) {
+	// 			skin_perso_game_multi?.classList.remove('checked');
+	// 			if (choose_your_skin_game_multi?.classList.contains('active')) {
+	// 				choose_your_skin_game_multi?.classList.remove('active');
+	// 				if (multiplayer_btn) multiplayer_btn.style.display = 'block';
+	// 				if (custom_ta_game_multi) custom_ta_game_multi.style.visibility = 'visible';
+	// 				disable_skin_multi();
+	// 			}
+	// 		}
+	// 		if (power_selector_game_multi?.classList.contains('active')) {
+	// 			power_selector_game_multi?.classList.remove('active');
+	// 			powerUP_multi?.classList.remove('checked');
+	// 			reset_powerUP_grenadeTeam_player();
+	// 			reset_powerUP_freeze_Team_player();
+	// 			powerUP_nb = 0;
+	// 			powerUP_nb_multi = 0;
+	// 			if (number_powerUP_1_game_multi?.classList.contains('checked')) {
+	// 				number_powerUP_1_game_multi?.classList.remove('checked');
+	// 			}
+	// 			if (number_powerUP_3_game_multi?.classList.contains('checked')) {
+	// 				number_powerUP_3_game_multi?.classList.remove('checked');
+	// 			}
+	// 			if (number_powerUP_5_game_multi?.classList.contains('checked')) {
+	// 				number_powerUP_5_game_multi?.classList.remove('checked');
+	// 			}
+	// 		}
+	// 	});
 
-		/***********************************************************************/
-		/**************************POWER_UP_SOLO********************************/
-		/***********************************************************************/
+	// 	/***********************************************************************/
+	// 	/**************************POWER_UP_SOLO********************************/
+	// 	/***********************************************************************/
 
-		powerUP?.addEventListener('click', () => {
-			powerUP?.classList.toggle('checked');
+	// 	powerUP?.addEventListener('click', () => {
+	// 		powerUP?.classList.toggle('checked');
 
-			if (powerUP?.classList.contains('checked'))
-				power_selector?.classList.add('active');
-			else {
-				power_selector?.classList.remove('active');
-				reset_powerUP_grenade();
-				reset_powerUP_teammate();
-				reset_powerUP_inverse_player();
-				powerUP_nb = 0;
-				powerUP_nb_multi = 0;
-				if (number_powerUP_1?.classList.contains('checked')) {
-					number_powerUP_1?.classList.remove('checked');
-				}
-				if (number_powerUP_3?.classList.contains('checked')) {
-					number_powerUP_3?.classList.remove('checked');
-				}
-				if (number_powerUP_5?.classList.contains('checked')) {
-					number_powerUP_5?.classList.remove('checked');
-				}
-			}
-		});
+	// 		if (powerUP?.classList.contains('checked'))
+	// 			power_selector?.classList.add('active');
+	// 		else {
+	// 			power_selector?.classList.remove('active');
+	// 			reset_powerUP_grenade();
+	// 			reset_powerUP_teammate();
+	// 			reset_powerUP_inverse_player();
+	// 			powerUP_nb = 0;
+	// 			powerUP_nb_multi = 0;
+	// 			if (number_powerUP_1?.classList.contains('checked')) {
+	// 				number_powerUP_1?.classList.remove('checked');
+	// 			}
+	// 			if (number_powerUP_3?.classList.contains('checked')) {
+	// 				number_powerUP_3?.classList.remove('checked');
+	// 			}
+	// 			if (number_powerUP_5?.classList.contains('checked')) {
+	// 				number_powerUP_5?.classList.remove('checked');
+	// 			}
+	// 		}
+	// 	});
 
-		number_powerUP_1?.addEventListener('click', () => {
-			number_powerUP_1?.classList.toggle('checked');
-			number_powerUP_3?.classList.remove('checked');
-			number_powerUP_5?.classList.remove('checked');
-			init_nb_powerUP_grenadeFlash(1);
-			init_nb_powerUP_teammate(1);
-			init_powerUP_inverse_player(1);
-			powerUP_nb = 1;
-		});
+	// 	number_powerUP_1?.addEventListener('click', () => {
+	// 		number_powerUP_1?.classList.toggle('checked');
+	// 		number_powerUP_3?.classList.remove('checked');
+	// 		number_powerUP_5?.classList.remove('checked');
+	// 		init_nb_powerUP_grenadeFlash(1);
+	// 		init_nb_powerUP_teammate(1);
+	// 		init_powerUP_inverse_player(1);
+	// 		powerUP_nb = 1;
+	// 	});
 
-		number_powerUP_3?.addEventListener('click', () => {
-			number_powerUP_3?.classList.toggle('checked');
-			number_powerUP_1?.classList.remove('checked');
-			number_powerUP_5?.classList.remove('checked');
-			init_nb_powerUP_grenadeFlash(3);
-			init_nb_powerUP_teammate(3);
-			init_powerUP_inverse_player(3);
-			powerUP_nb = 3;
-		});
+	// 	number_powerUP_3?.addEventListener('click', () => {
+	// 		number_powerUP_3?.classList.toggle('checked');
+	// 		number_powerUP_1?.classList.remove('checked');
+	// 		number_powerUP_5?.classList.remove('checked');
+	// 		init_nb_powerUP_grenadeFlash(3);
+	// 		init_nb_powerUP_teammate(3);
+	// 		init_powerUP_inverse_player(3);
+	// 		powerUP_nb = 3;
+	// 	});
 
-		number_powerUP_5?.addEventListener('click', () => {
-			number_powerUP_5?.classList.toggle('checked');
-			number_powerUP_1?.classList.remove('checked');
-			number_powerUP_3?.classList.remove('checked');
-			init_nb_powerUP_grenadeFlash(5);
-			init_nb_powerUP_teammate(5);
-			init_powerUP_inverse_player(5);
-			powerUP_nb = 5;
-		});
+	// 	number_powerUP_5?.addEventListener('click', () => {
+	// 		number_powerUP_5?.classList.toggle('checked');
+	// 		number_powerUP_1?.classList.remove('checked');
+	// 		number_powerUP_3?.classList.remove('checked');
+	// 		init_nb_powerUP_grenadeFlash(5);
+	// 		init_nb_powerUP_teammate(5);
+	// 		init_powerUP_inverse_player(5);
+	// 		powerUP_nb = 5;
+	// 	});
 
-		/***********************************************************************/
-		/**************************POWER_UP_multi*******************************/
-		/***********************************************************************/
+	// 	/***********************************************************************/
+	// 	/**************************POWER_UP_multi*******************************/
+	// 	/***********************************************************************/
 
-		powerUP_multi?.addEventListener('click', () => {
-			powerUP_multi?.classList.toggle('checked');
+	// 	powerUP_multi?.addEventListener('click', () => {
+	// 		powerUP_multi?.classList.toggle('checked');
 
-			if (powerUP_multi?.classList.contains('checked'))
-				power_selector_game_multi?.classList.add('active');
-			else {
-				power_selector_game_multi?.classList.remove('active');
-				reset_powerUP_grenadeTeam_player();
-				reset_powerUP_freeze_Team_player();
-				powerUP_nb = 0;
-				powerUP_nb_multi = 0;
-				if (number_powerUP_1_game_multi?.classList.contains('checked')) {
-					number_powerUP_1_game_multi?.classList.remove('checked');
-				}
-				if (number_powerUP_3_game_multi?.classList.contains('checked')) {
-					number_powerUP_3_game_multi?.classList.remove('checked');
-				}
-				if (number_powerUP_5_game_multi?.classList.contains('checked')) {
-					number_powerUP_5_game_multi?.classList.remove('checked');
-				}
-			}
-		});
+	// 		if (powerUP_multi?.classList.contains('checked'))
+	// 			power_selector_game_multi?.classList.add('active');
+	// 		else {
+	// 			power_selector_game_multi?.classList.remove('active');
+	// 			reset_powerUP_grenadeTeam_player();
+	// 			reset_powerUP_freeze_Team_player();
+	// 			powerUP_nb = 0;
+	// 			powerUP_nb_multi = 0;
+	// 			if (number_powerUP_1_game_multi?.classList.contains('checked')) {
+	// 				number_powerUP_1_game_multi?.classList.remove('checked');
+	// 			}
+	// 			if (number_powerUP_3_game_multi?.classList.contains('checked')) {
+	// 				number_powerUP_3_game_multi?.classList.remove('checked');
+	// 			}
+	// 			if (number_powerUP_5_game_multi?.classList.contains('checked')) {
+	// 				number_powerUP_5_game_multi?.classList.remove('checked');
+	// 			}
+	// 		}
+	// 	});
 
-		number_powerUP_1_game_multi?.addEventListener('click', () => {
-			number_powerUP_1_game_multi?.classList.toggle('checked');
-			number_powerUP_3_game_multi?.classList.remove('checked');
-			number_powerUP_5_game_multi?.classList.remove('checked');
-			init_nb_powerUP_grenadeFlash_team_player(1);
-			init_powerUP_freeze_Team_player(1);
-			powerUP_nb_multi = 1;
-		});
+	// 	number_powerUP_1_game_multi?.addEventListener('click', () => {
+	// 		number_powerUP_1_game_multi?.classList.toggle('checked');
+	// 		number_powerUP_3_game_multi?.classList.remove('checked');
+	// 		number_powerUP_5_game_multi?.classList.remove('checked');
+	// 		init_nb_powerUP_grenadeFlash_team_player(1);
+	// 		init_powerUP_freeze_Team_player(1);
+	// 		powerUP_nb_multi = 1;
+	// 	});
 
-		number_powerUP_3_game_multi?.addEventListener('click', () => {
-			number_powerUP_3_game_multi?.classList.toggle('checked');
-			number_powerUP_1_game_multi?.classList.remove('checked');
-			number_powerUP_5_game_multi?.classList.remove('checked');
-			init_nb_powerUP_grenadeFlash_team_player(3);
-			init_powerUP_freeze_Team_player(3);
-			powerUP_nb_multi = 3;
-		});
-		number_powerUP_5_game_multi?.addEventListener('click', () => {
-			number_powerUP_5_game_multi?.classList.toggle('checked');
-			number_powerUP_1_game_multi?.classList.remove('checked');
-			number_powerUP_3_game_multi?.classList.remove('checked');
-			init_nb_powerUP_grenadeFlash_team_player(5);
-			init_powerUP_freeze_Team_player(5);
-			powerUP_nb_multi = 5;
-		});
-		if (getValue_leave_game() == true) {
-			powerUP_nb = 0;
-			powerUP_nb_multi = 0;
-			setLeaveGameVar(false);
-		}
-		/***********************************************************************/
-		/**************************SKIN-SOLO************************************/
-		/***********************************************************************/
-		const valide_ton_skin = document.getElementById('valide_ton_skin');
-		const switch_skn_left_id1 = document.getElementById('switch_skn_left_id1');
-		const switch_skn_right_id1 = document.getElementById('switch_skn_right_id1');
-		const switch_skn_left_id2 = document.getElementById('switch_skn_left_id2');
-		const switch_skn_right_id2 = document.getElementById('switch_skn_right_id2');
+	// 	number_powerUP_3_game_multi?.addEventListener('click', () => {
+	// 		number_powerUP_3_game_multi?.classList.toggle('checked');
+	// 		number_powerUP_1_game_multi?.classList.remove('checked');
+	// 		number_powerUP_5_game_multi?.classList.remove('checked');
+	// 		init_nb_powerUP_grenadeFlash_team_player(3);
+	// 		init_powerUP_freeze_Team_player(3);
+	// 		powerUP_nb_multi = 3;
+	// 	});
+	// 	number_powerUP_5_game_multi?.addEventListener('click', () => {
+	// 		number_powerUP_5_game_multi?.classList.toggle('checked');
+	// 		number_powerUP_1_game_multi?.classList.remove('checked');
+	// 		number_powerUP_3_game_multi?.classList.remove('checked');
+	// 		init_nb_powerUP_grenadeFlash_team_player(5);
+	// 		init_powerUP_freeze_Team_player(5);
+	// 		powerUP_nb_multi = 5;
+	// 	});
+	// 	if (getValue_leave_game() == true) {
+	// 		powerUP_nb = 0;
+	// 		powerUP_nb_multi = 0;
+	// 		setLeaveGameVar(false);
+	// 	}
+	// 	/***********************************************************************/
+	// 	/**************************SKIN-SOLO************************************/
+	// 	/***********************************************************************/
+	// 	const valide_ton_skin = document.getElementById('valide_ton_skin');
+	// 	const switch_skn_left_id1 = document.getElementById('switch_skn_left_id1');
+	// 	const switch_skn_right_id1 = document.getElementById('switch_skn_right_id1');
+	// 	const switch_skn_left_id2 = document.getElementById('switch_skn_left_id2');
+	// 	const switch_skn_right_id2 = document.getElementById('switch_skn_right_id2');
 
-		skin_perso?.addEventListener('click', () => {
-			skin_perso?.classList.toggle('checked');
+	// 	skin_perso?.addEventListener('click', () => {
+	// 		skin_perso?.classList.toggle('checked');
 			
-			if (skin_perso?.classList.contains('checked')) {
-				choose_your_skin?.classList.add('active');
-				if (solo_1v1_btn) solo_1v1_btn.style.display = 'none';
-				if (custom_ta_game) custom_ta_game.style.visibility = 'hidden';
-				enable_skin_perso_player_solo();
+	// 		if (skin_perso?.classList.contains('checked')) {
+	// 			choose_your_skin?.classList.add('active');
+	// 			if (solo_1v1_btn) solo_1v1_btn.style.display = 'none';
+	// 			if (custom_ta_game) custom_ta_game.style.visibility = 'hidden';
+	// 			enable_skin_perso_player_solo();
 
-				valide_ton_skin?.addEventListener('click', () => {
-					choose_your_skin?.classList.remove('active');
-					if (solo_1v1_btn) solo_1v1_btn.style.display = 'block';
-					if (custom_ta_game) custom_ta_game.style.visibility = 'visible';
-					disable_skin_perso_player_solo_and_save();
-				});
-			}
-			else {
-				if (choose_your_skin?.classList.contains('active')) {
-					choose_your_skin?.classList.remove('active');
-					if (solo_1v1_btn) solo_1v1_btn.style.display = 'block';
-					if (custom_ta_game) custom_ta_game.style.visibility = 'visible';
-					disable_skin_perso_player_solo();
-				}
-			}
-		});
+	// 			valide_ton_skin?.addEventListener('click', () => {
+	// 				choose_your_skin?.classList.remove('active');
+	// 				if (solo_1v1_btn) solo_1v1_btn.style.display = 'block';
+	// 				if (custom_ta_game) custom_ta_game.style.visibility = 'visible';
+	// 				disable_skin_perso_player_solo_and_save();
+	// 			});
+	// 		}
+	// 		else {
+	// 			if (choose_your_skin?.classList.contains('active')) {
+	// 				choose_your_skin?.classList.remove('active');
+	// 				if (solo_1v1_btn) solo_1v1_btn.style.display = 'block';
+	// 				if (custom_ta_game) custom_ta_game.style.visibility = 'visible';
+	// 				disable_skin_perso_player_solo();
+	// 			}
+	// 		}
+	// 	});
 
-		switch_skn_left_id1?.addEventListener('click', () => {
-			switch_skin_perso_player1_left();
-		});
+	// 	switch_skn_left_id1?.addEventListener('click', () => {
+	// 		switch_skin_perso_player1_left();
+	// 	});
 
-		switch_skn_right_id1?.addEventListener('click', () => {
-			switch_skin_perso_player1_right();
-		});
+	// 	switch_skn_right_id1?.addEventListener('click', () => {
+	// 		switch_skin_perso_player1_right();
+	// 	});
 
-		switch_skn_left_id2?.addEventListener('click', () => {
-			switch_skin_perso_player2_left();
-		});
+	// 	switch_skn_left_id2?.addEventListener('click', () => {
+	// 		switch_skin_perso_player2_left();
+	// 	});
 
-		switch_skn_right_id2?.addEventListener('click', () => {
-			switch_skin_perso_player2_right();
-		});
+	// 	switch_skn_right_id2?.addEventListener('click', () => {
+	// 		switch_skin_perso_player2_right();
+	// 	});
 
 
-		/***********************************************************************/
-		/**************************SKIN_MULTI***********************************/
-		/***********************************************************************/
+	// 	/***********************************************************************/
+	// 	/**************************SKIN_MULTI***********************************/
+	// 	/***********************************************************************/
 
-		skin_perso_game_multi?.addEventListener('click', () => {
-			skin_perso_game_multi?.classList.toggle('checked');
+	// 	skin_perso_game_multi?.addEventListener('click', () => {
+	// 		skin_perso_game_multi?.classList.toggle('checked');
 			
-			if (skin_perso_game_multi?.classList.contains('checked')) {
-				choose_your_skin_game_multi?.classList.add('active');
-				if (multiplayer_btn) multiplayer_btn.style.display = 'none';
-				if (custom_ta_game_multi) custom_ta_game_multi.style.visibility = 'hidden';
-				enable_skin_multi();
+	// 		if (skin_perso_game_multi?.classList.contains('checked')) {
+	// 			choose_your_skin_game_multi?.classList.add('active');
+	// 			if (multiplayer_btn) multiplayer_btn.style.display = 'none';
+	// 			if (custom_ta_game_multi) custom_ta_game_multi.style.visibility = 'hidden';
+	// 			enable_skin_multi();
 
-				valide_ton_skin_game_multi?.addEventListener('click', () => {
-					choose_your_skin_game_multi?.classList.remove('active');
-					if (multiplayer_btn) multiplayer_btn.style.display = 'block';
-					if (custom_ta_game_multi) custom_ta_game_multi.style.visibility = 'visible';
-					disable_skin_and_save_multi();
-				});
-			}
-			else
-			{
-				if (choose_your_skin_game_multi?.classList.contains('active')) {
-					choose_your_skin_game_multi?.classList.remove('active');
-					if (multiplayer_btn) multiplayer_btn.style.display = 'block';
-					if (custom_ta_game_multi) custom_ta_game_multi.style.visibility = 'visible';
-					disable_skin_multi();
-				}
-			}
-		});
+	// 			valide_ton_skin_game_multi?.addEventListener('click', () => {
+	// 				choose_your_skin_game_multi?.classList.remove('active');
+	// 				if (multiplayer_btn) multiplayer_btn.style.display = 'block';
+	// 				if (custom_ta_game_multi) custom_ta_game_multi.style.visibility = 'visible';
+	// 				disable_skin_and_save_multi();
+	// 			});
+	// 		}
+	// 		else
+	// 		{
+	// 			if (choose_your_skin_game_multi?.classList.contains('active')) {
+	// 				choose_your_skin_game_multi?.classList.remove('active');
+	// 				if (multiplayer_btn) multiplayer_btn.style.display = 'block';
+	// 				if (custom_ta_game_multi) custom_ta_game_multi.style.visibility = 'visible';
+	// 				disable_skin_multi();
+	// 			}
+	// 		}
+	// 	});
 
-		switch_skn_left_id1_game_multi?.addEventListener('click', () => {
-			switch_skin_perso_player1_left_multi();
-		});
+	// 	switch_skn_left_id1_game_multi?.addEventListener('click', () => {
+	// 		switch_skin_perso_player1_left_multi();
+	// 	});
 
-		switch_skn_right_id1_game_multi?.addEventListener('click', () => {
-			switch_skin_perso_player1_right_multi();
-		});
+	// 	switch_skn_right_id1_game_multi?.addEventListener('click', () => {
+	// 		switch_skin_perso_player1_right_multi();
+	// 	});
 
-		switch_skn_left_id2_game_multi?.addEventListener('click', () => {
-			switch_skin_perso_player2_left_multi();
-		});
+	// 	switch_skn_left_id2_game_multi?.addEventListener('click', () => {
+	// 		switch_skin_perso_player2_left_multi();
+	// 	});
 
-		switch_skn_right_id2_game_multi?.addEventListener('click', () => {
-			switch_skin_perso_player2_right_multi();
-		});
+	// 	switch_skn_right_id2_game_multi?.addEventListener('click', () => {
+	// 		switch_skin_perso_player2_right_multi();
+	// 	});
 
-		switch_skn_left_id3_game_multi?.addEventListener('click', () => {
-			switch_skin_perso_player3_left_multi();
-		});
+	// 	switch_skn_left_id3_game_multi?.addEventListener('click', () => {
+	// 		switch_skin_perso_player3_left_multi();
+	// 	});
 
-		switch_skn_right_id3_game_multi?.addEventListener('click', () => {
-			switch_skin_perso_player3_right_multi();
-		});
+	// 	switch_skn_right_id3_game_multi?.addEventListener('click', () => {
+	// 		switch_skin_perso_player3_right_multi();
+	// 	});
 
-		switch_skn_left_id4_game_multi?.addEventListener('click', () => {
-			switch_skin_perso_player4_left_multi();
-		});
+	// 	switch_skn_left_id4_game_multi?.addEventListener('click', () => {
+	// 		switch_skin_perso_player4_left_multi();
+	// 	});
 
-		switch_skn_right_id4_game_multi?.addEventListener('click', () => {
-			switch_skin_perso_player4_right_multi();
-		});
-
-
-		/***********************************************************************/
-		/**************************POWER_UP_INFO*******************************/
-		/***********************************************************************/
-
-		power_up_info_id?.addEventListener('click', () => {
-			container_info_power_up?.classList.add('active');
-			view6?.classList.remove('active');
-			back_to_select_mode_view6?.classList.remove('active');
-		});
-
-		exit_powerUP_info?.addEventListener('click', () => {
-			container_info_power_up?.classList.remove('active');
-			view6?.classList.add('active');
-			back_to_select_mode_view6?.classList.add('active');
-		});
+	// 	switch_skn_right_id4_game_multi?.addEventListener('click', () => {
+	// 		switch_skin_perso_player4_right_multi();
+	// 	});
 
 
-		/***********************************************************************/
-		/**************************POWER_UP_INFO_MULTI*************************/
-		/***********************************************************************/
+	// 	/***********************************************************************/
+	// 	/**************************POWER_UP_INFO*******************************/
+	// 	/***********************************************************************/
 
-		power_up_info_id_multi?.addEventListener('click', () => {
-			container_info_power_up_multi?.classList.add('active');
-			view8?.classList.remove('active');
-			back_to_select_mode_view8?.classList.remove('active');
-		});
+	// 	power_up_info_id?.addEventListener('click', () => {
+	// 		container_info_power_up?.classList.add('active');
+	// 		view6?.classList.remove('active');
+	// 		back_to_select_mode_view6?.classList.remove('active');
+	// 	});
 
-		exit_powerUP_info_multi?.addEventListener('click', () => {
-			container_info_power_up_multi?.classList.remove('active');
-			view8?.classList.add('active');
-			back_to_select_mode_view8?.classList.add('active');
-		});
+	// 	exit_powerUP_info?.addEventListener('click', () => {
+	// 		container_info_power_up?.classList.remove('active');
+	// 		view6?.classList.add('active');
+	// 		back_to_select_mode_view6?.classList.add('active');
+	// 	});
 
-		/***********************************************************************/
-		/*************************PARRAMETRE JEU ET PROFILE*********************/
-		/***********************************************************************/
 
-		const parametre_jeu = document.getElementById('parrametre_jeux_btn');
-		const parametre_profile = document.getElementById('profile_parrametre_btn');
-		const parametre_jeu_view = document.getElementById('parametres_jeu');
-		const parametre_profile_view = document.getElementById('parametres_profile');
+	// 	/***********************************************************************/
+	// 	/**************************POWER_UP_INFO_MULTI*************************/
+	// 	/***********************************************************************/
 
-		parametre_jeu?.addEventListener('click', () => {
-			parametre_jeu_view?.classList.add('active');
-			view5?.classList.remove('active');
-			btn_back_home?.classList.remove('active');
-			view1?.classList.remove('active');
-			container_menu?.classList.add('active');
-			btn_back_home?.classList.add('active');
-			if (container_menu) container_menu.scrollTop = 0;
+	// 	power_up_info_id_multi?.addEventListener('click', () => {
+	// 		container_info_power_up_multi?.classList.add('active');
+	// 		view8?.classList.remove('active');
+	// 		back_to_select_mode_view8?.classList.remove('active');
+	// 	});
 
-		});
+	// 	exit_powerUP_info_multi?.addEventListener('click', () => {
+	// 		container_info_power_up_multi?.classList.remove('active');
+	// 		view8?.classList.add('active');
+	// 		back_to_select_mode_view8?.classList.add('active');
+	// 	});
+
+	// 	/***********************************************************************/
+	// 	/*************************PARRAMETRE JEU ET PROFILE*********************/
+	// 	/***********************************************************************/
+
+	// 	const parametre_jeu = document.getElementById('parrametre_jeux_btn');
+	// 	const parametre_profile = document.getElementById('profile_parrametre_btn');
+	// 	const parametre_jeu_view = document.getElementById('parametres_jeu');
+	// 	const parametre_profile_view = document.getElementById('parametres_profile');
+
+	// 	parametre_jeu?.addEventListener('click', () => {
+	// 		parametre_jeu_view?.classList.add('active');
+	// 		view5?.classList.remove('active');
+	// 		btn_back_home?.classList.remove('active');
+	// 		view1?.classList.remove('active');
+	// 		container_menu?.classList.add('active');
+	// 		btn_back_home?.classList.add('active');
+	// 		if (container_menu) container_menu.scrollTop = 0;
+
+	// 	});
 		
-		parametre_profile?.addEventListener('click', () => {
-			parametre_profile_view?.classList.add('active');
-			view5?.classList.remove('active');
-			btn_back_home?.classList.remove('active');
-			view1?.classList.remove('active');
-			btn_back_home?.classList.add('active');
-			container_menu?.classList.add('active');
-			if (container_menu) container_menu.scrollTop = 0;
+	// 	parametre_profile?.addEventListener('click', () => {
+	// 		parametre_profile_view?.classList.add('active');
+	// 		view5?.classList.remove('active');
+	// 		btn_back_home?.classList.remove('active');
+	// 		view1?.classList.remove('active');
+	// 		btn_back_home?.classList.add('active');
+	// 		container_menu?.classList.add('active');
+	// 		if (container_menu) container_menu.scrollTop = 0;
 
-		});
+	// 	});
 
 
-		btn_back_home?.addEventListener('click', () => {
-			if (parametre_jeu_view?.classList.contains('active')) {
-				parametre_jeu_view?.classList.remove('active');
-				view5?.classList.add('active');
-				view1?.classList.add('active');
-				container_menu?.classList.remove('active');
-				if (container_menu) container_menu.scrollTop = 0;
+	// 	btn_back_home?.addEventListener('click', () => {
+	// 		if (parametre_jeu_view?.classList.contains('active')) {
+	// 			parametre_jeu_view?.classList.remove('active');
+	// 			view5?.classList.add('active');
+	// 			view1?.classList.add('active');
+	// 			container_menu?.classList.remove('active');
+	// 			if (container_menu) container_menu.scrollTop = 0;
 
-			}
-			if (parametre_profile_view?.classList.contains('active')) {
-				parametre_profile_view?.classList.remove('active');
-				view5?.classList.add('active');
-				view1?.classList.add('active');
-				container_menu?.classList.remove('active');
-				if (container_menu) container_menu.scrollTop = 0;
+	// 		}
+	// 		if (parametre_profile_view?.classList.contains('active')) {
+	// 			parametre_profile_view?.classList.remove('active');
+	// 			view5?.classList.add('active');
+	// 			view1?.classList.add('active');
+	// 			container_menu?.classList.remove('active');
+	// 			if (container_menu) container_menu.scrollTop = 0;
 
-			}
-		});
+	// 		}
+	// 	});
 
-		/***********************************************************************/
-		/*************************Parametre_profil******************************/
-		/***********************************************************************/
+	// 	/***********************************************************************/
+	// 	/*************************Parametre_profil******************************/
+	// 	/***********************************************************************/
 
-		const valid_mdp = document.getElementById('valid_mdp');
-		const modif_profil = document.getElementById('modif_profil');
-		const profile_param_unlocked_id = document.getElementById('profile_param_unlocked_id');
-		const valid_profile_info = document.getElementById('valid_profile_info');
-		const active_fa = document.getElementById('active_fa') as HTMLInputElement;
+	// 	const valid_mdp = document.getElementById('valid_mdp');
+	// 	const modif_profil = document.getElementById('modif_profil');
+	// 	const profile_param_unlocked_id = document.getElementById('profile_param_unlocked_id');
+	// 	const valid_profile_info = document.getElementById('valid_profile_info');
+	// 	const active_fa = document.getElementById('active_fa') as HTMLInputElement;
 
-		active_fa?.addEventListener('change', () => {
-			if (active_fa?.checked) {
-				enable_doubleAuth();
-				code_validation_id?.classList.add('active');
-				fa_selector?.classList.remove('hidden');
-			}
-			else {
-				disable_doubleAuth();
-				fa_selector?.classList.add('hidden');
-			}
-		});
+	// 	active_fa?.addEventListener('change', () => {
+	// 		if (active_fa?.checked) {
+	// 			enable_doubleAuth();
+	// 			code_validation_id?.classList.add('active');
+	// 			fa_selector?.classList.remove('hidden');
+	// 		}
+	// 		else {
+	// 			disable_doubleAuth();
+	// 			fa_selector?.classList.add('hidden');
+	// 		}
+	// 	});
 		
 
-		cancel_fa?.addEventListener('click', () => {
-			code_validation_id?.classList.remove('active');
-			fa_selector?.classList.add('hidden');
-			if (active_fa) active_fa.checked = false;
-		});
+	// 	cancel_fa?.addEventListener('click', () => {
+	// 		code_validation_id?.classList.remove('active');
+	// 		fa_selector?.classList.add('hidden');
+	// 		if (active_fa) active_fa.checked = false;
+	// 	});
 
 
-		/***********************************************************************/
-		/*************************platformer************************************/
-		/***********************************************************************/
+	// 	/***********************************************************************/
+	// 	/*************************platformer************************************/
+	// 	/***********************************************************************/
 
-		const platformer = document.getElementById('platformer_view');
-		const back_to_select_mode_platformer = document.getElementById('back_to_select_mode_platformer');
+	// 	const platformer = document.getElementById('platformer_view');
+	// 	const back_to_select_mode_platformer = document.getElementById('back_to_select_mode_platformer');
 
-		platformer?.addEventListener('click', () => {
-			btn_back_home?.classList.remove('active');
-			view2?.classList.remove('active');
-			view1?.classList.remove('active');
-			choose_your_opponent_platformer_form?.classList.add('active');
-			back_to_select_mode_platformer?.classList.add('active');
-		});
+	// 	platformer?.addEventListener('click', () => {
+	// 		btn_back_home?.classList.remove('active');
+	// 		view2?.classList.remove('active');
+	// 		view1?.classList.remove('active');
+	// 		choose_your_opponent_platformer_form?.classList.add('active');
+	// 		back_to_select_mode_platformer?.classList.add('active');
+	// 	});
 
-		back_to_select_mode_platformer?.addEventListener('click', () => {
-			choose_your_opponent_platformer_form?.classList.remove('active');
-			back_to_select_mode_platformer?.classList.remove('active');
-			view2?.classList.add('active');
-			view1?.classList.add('active');
-			btn_back_home?.classList.add('active');
-		});
+	// 	back_to_select_mode_platformer?.addEventListener('click', () => {
+	// 		choose_your_opponent_platformer_form?.classList.remove('active');
+	// 		back_to_select_mode_platformer?.classList.remove('active');
+	// 		view2?.classList.add('active');
+	// 		view1?.classList.add('active');
+	// 		btn_back_home?.classList.add('active');
+	// 	});
 
-		/***********************************************************************/
-		/*************************navbar****************************************/
-		/***********************************************************************/
+	// 	/***********************************************************************/
+	// 	/*************************navbar****************************************/
+	// 	/***********************************************************************/
 
-		option_btn_navBar?.addEventListener('click', (event: Event) => {
-			panel_option_navbar?.classList.remove('remove'); // retire l'animation de fermeture
-			if (panel_option_navbar) void panel_option_navbar.offsetWidth; // force le reflow pour relancer l'animation si besoin
-			panel_option_navbar?.classList.add('active');
-			if (option_btn_navBar) option_btn_navBar.style.display = 'none';
-			fetch_user_friendships();
-			fetch_user_games();
-		});
+	// 	option_btn_navBar?.addEventListener('click', (event: Event) => {
+	// 		panel_option_navbar?.classList.remove('remove'); // retire l'animation de fermeture
+	// 		if (panel_option_navbar) void panel_option_navbar.offsetWidth; // force le reflow pour relancer l'animation si besoin
+	// 		panel_option_navbar?.classList.add('active');
+	// 		if (option_btn_navBar) option_btn_navBar.style.display = 'none';
+	// 		fetch_user_friendships();
+	// 		fetch_user_games();
+	// 	});
 
-		option_btn_remove?.addEventListener('click', () => {
-			panel_option_navbar?.classList.add('remove');
-			setTimeout(() => {
-				if (option_btn_navBar) option_btn_navBar.style.display = 'block';
-			}, 800);
-		});
-
-
-		/***********************************************************************/
-		/*************************Game History**********************************/
-		/***********************************************************************/
-
-		Game_History_btn?.addEventListener('click', () => {
-			game_history?.classList.add('active');
-			view1?.classList.remove('active');
-			btn_back_home?.classList.remove('active');
-			view5?.classList.remove('active');
-			StorageKeys.HISTORY_IS_VISIBLE = true;
-			fetch_user_games_big();
-		});
-
-		exit_game_history_btn?.addEventListener('click', () => {
-			game_history?.classList.remove('active');
-			view1?.classList.add('active');
-			btn_back_home?.classList.add('active');
-			view5?.classList.add('active');
-			StorageKeys.HISTORY_IS_VISIBLE = false;
-
-		});
-
-		document.getElementById("solo_1v1_btn")?.addEventListener("click", () => {
-			startGame();
-			handleViewTransitions("vue3", "vue2");
-		});
-
-		document.getElementById("multiplayer_btn")?.addEventListener("click", () => {
-			startMultiGame();
-			handleViewTransitions("vue3", "vue2");
-		});
-
-		document.getElementById("tournament_view")?.addEventListener("click", () => {
-			handleViewTransitions("tournament", "vue2");
-		});
-
-		const acceptedSection = document.getElementById('section-accepted');
-		const pendingSection = document.getElementById('section-pending');
-
-		const btnAccepted = document.getElementById('tab-accepted');
-		const btnPending = document.getElementById('tab-pending');
-
-		btnAccepted?.addEventListener('click', () => {
-			if (acceptedSection) acceptedSection.style.display = 'block';
-			if (pendingSection) pendingSection.style.display = 'none';
-			btnAccepted?.classList.add('active');
-			btnPending?.classList.remove('active');
-		});
-
-		btnPending?.addEventListener('click', () => {
-			if (acceptedSection) acceptedSection.style.display = 'none';
-			if (pendingSection) pendingSection.style.display = 'block';
-			btnAccepted?.classList.remove('active');
-			btnPending?.classList.add('active');
-		});
-
-		document.getElementById("start-platformer")?.addEventListener('click', () => {
-			handleViewTransitions("platformer", "vue2");
-		});
+	// 	option_btn_remove?.addEventListener('click', () => {
+	// 		panel_option_navbar?.classList.add('remove');
+	// 		setTimeout(() => {
+	// 			if (option_btn_navBar) option_btn_navBar.style.display = 'block';
+	// 		}, 800);
+	// 	});
 
 
-		/***********************************************************************/
-		/*************************UserManagement*******************************/
-		/***********************************************************************/
+	// 	/***********************************************************************/
+	// 	/*************************Game History**********************************/
+	// 	/***********************************************************************/
 
-		const accessProfileBtn = document.getElementById('modif_profile');
-		const changeAvatarBtn = document.getElementById('uploadForm');
-		const deleteBtn = document.getElementById('delete_btn');
-		const anonymizeBtn = document.getElementById('anonymize_btn');
-		const exportBtn = document.getElementById('export_btn');
-		const updateProfileBtn = document.getElementById('updateProfileForm');
-		const deconnect_btn_navBar = document.getElementById('deconnect_btn_navBar');
-		const deconnect_btn = document.getElementById('deconnect_btn');
-		const login1v1Btn = document.getElementById('choose_your_opponent_1v1_form');
-		const login2v2Btn = document.getElementById('choose_your_opponent_multi_form');
-		const add_friend_section = document.getElementById('add_friend_section');
+	// 	Game_History_btn?.addEventListener('click', () => {
+	// 		game_history?.classList.add('active');
+	// 		view1?.classList.remove('active');
+	// 		btn_back_home?.classList.remove('active');
+	// 		view5?.classList.remove('active');
+	// 		StorageKeys.HISTORY_IS_VISIBLE = true;
+	// 		fetch_user_games_big();
+	// 	});
 
-		accessProfileBtn?.addEventListener('submit', (event) => { accessProfileInfo(event); });
-		changeAvatarBtn?.addEventListener('submit', (event) => { changeProfilePicture(event); });
-		deleteBtn?.addEventListener('click', () => { delete_account(); });
-		anonymizeBtn?.addEventListener('click', () => { anonymize_user(); });
-		exportBtn?.addEventListener('click', () => { export_data(); });
-		code_validation_id?.addEventListener('submit', (event) => { activate2FA(event); });
-		updateProfileBtn?.addEventListener('submit', (event) => { updateProfileInfo(event); });
-		deconnect_btn_navBar?.addEventListener('click', async () => { await logout(); });
-		deconnect_btn?.addEventListener('click', async () => { await logout(); });
-		login1v1Btn?.addEventListener('submit', async (event) => { await login_1v1(event); });
-		login2v2Btn?.addEventListener('submit', async (event) => { await login_2v2(event); });
-		choose_your_opponent_platformer_form?.addEventListener('submit', async (event) => { await login_platformer(event); });
-		add_friend_section?.addEventListener('submit', (event) => { addFriend(event); });
+	// 	exit_game_history_btn?.addEventListener('click', () => {
+	// 		game_history?.classList.remove('active');
+	// 		view1?.classList.add('active');
+	// 		btn_back_home?.classList.add('active');
+	// 		view5?.classList.add('active');
+	// 		StorageKeys.HISTORY_IS_VISIBLE = false;
 
-	}
+	// 	});
+
+	// 	document.getElementById("solo_1v1_btn")?.addEventListener("click", () => {
+	// 		startGame();
+	// 		handleViewTransitions("vue3", "vue2");
+	// 	});
+
+	// 	document.getElementById("multiplayer_btn")?.addEventListener("click", () => {
+	// 		startMultiGame();
+	// 		handleViewTransitions("vue3", "vue2");
+	// 	});
+
+	// 	document.getElementById("tournament_view")?.addEventListener("click", () => {
+	// 		handleViewTransitions("tournament", "vue2");
+	// 	});
+
+	// 	const acceptedSection = document.getElementById('section-accepted');
+	// 	const pendingSection = document.getElementById('section-pending');
+
+	// 	const btnAccepted = document.getElementById('tab-accepted');
+	// 	const btnPending = document.getElementById('tab-pending');
+
+	// 	btnAccepted?.addEventListener('click', () => {
+	// 		if (acceptedSection) acceptedSection.style.display = 'block';
+	// 		if (pendingSection) pendingSection.style.display = 'none';
+	// 		btnAccepted?.classList.add('active');
+	// 		btnPending?.classList.remove('active');
+	// 	});
+
+	// 	btnPending?.addEventListener('click', () => {
+	// 		if (acceptedSection) acceptedSection.style.display = 'none';
+	// 		if (pendingSection) pendingSection.style.display = 'block';
+	// 		btnAccepted?.classList.remove('active');
+	// 		btnPending?.classList.add('active');
+	// 	});
+
+	// 	document.getElementById("start-platformer")?.addEventListener('click', () => {
+	// 		handleViewTransitions("platformer", "vue2");
+	// 	});
+
+
+	// 	/***********************************************************************/
+	// 	/*************************UserManagement*******************************/
+	// 	/***********************************************************************/
+
+	// 	const accessProfileBtn = document.getElementById('modif_profile');
+	// 	const changeAvatarBtn = document.getElementById('uploadForm');
+	// 	const deleteBtn = document.getElementById('delete_btn');
+	// 	const anonymizeBtn = document.getElementById('anonymize_btn');
+	// 	const exportBtn = document.getElementById('export_btn');
+	// 	const updateProfileBtn = document.getElementById('updateProfileForm');
+	// 	const deconnect_btn_navBar = document.getElementById('deconnect_btn_navBar');
+	// 	const deconnect_btn = document.getElementById('deconnect_btn');
+	// 	const login1v1Btn = document.getElementById('choose_your_opponent_1v1_form');
+	// 	const login2v2Btn = document.getElementById('choose_your_opponent_multi_form');
+	// 	const add_friend_section = document.getElementById('add_friend_section');
+
+	// 	accessProfileBtn?.addEventListener('submit', (event) => { accessProfileInfo(event); });
+	// 	changeAvatarBtn?.addEventListener('submit', (event) => { changeProfilePicture(event); });
+	// 	deleteBtn?.addEventListener('click', () => { delete_account(); });
+	// 	anonymizeBtn?.addEventListener('click', () => { anonymize_user(); });
+	// 	exportBtn?.addEventListener('click', () => { export_data(); });
+	// 	code_validation_id?.addEventListener('submit', (event) => { activate2FA(event); });
+	// 	updateProfileBtn?.addEventListener('submit', (event) => { updateProfileInfo(event); });
+	// 	deconnect_btn_navBar?.addEventListener('click', async () => { await logout(); });
+	// 	deconnect_btn?.addEventListener('click', async () => { await logout(); });
+	// 	login1v1Btn?.addEventListener('submit', async (event) => { await login_1v1(event); });
+	// 	login2v2Btn?.addEventListener('submit', async (event) => { await login_2v2(event); });
+	// 	choose_your_opponent_platformer_form?.addEventListener('submit', async (event) => { await login_platformer(event); });
+	// 	add_friend_section?.addEventListener('submit', (event) => { addFriend(event); });
+
+	// }
 }
 
 

@@ -98,7 +98,7 @@ export function showLoadingScreen(duration = 3000, nextView = null)
 			targetView = nextView;
 		}
 		
-		createLoadingOverlay();
+		// createLoadingOverlay();
 		
 		setTimeout(() => {
 			removeLoadingOverlay();

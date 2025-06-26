@@ -93,17 +93,17 @@ export function handleViewTransitions(viewName, previousView) {
 		previousView = 'default';
 	if (viewName === 'vue1' && previousView === 'default') {
 		changeView('vue1', true);
-		setTimeout(() => {
+		// setTimeout(() => {
 			window.currentView = 'vue1';
-			createLoadingOverlay();
-		}, 1200);
+			// createLoadingOverlay();
+		// }, 1200);
 		setTimeout(() => {
 			changeView('vue2', true);
 		}, 3500);
 		setTimeout(() => removeLoadingOverlay(), 5000);
 	}
 	if (viewName === 'vue3' && previousView === 'vue2') {
-		createLoadingOverlay();
+		// createLoadingOverlay();
 		setTimeout(() => {
 			changeView('vue3', true);
 			window.currentView = 'vue3';
@@ -116,9 +116,9 @@ export function handleViewTransitions(viewName, previousView) {
 	if (viewName === 'vue2' && (previousView === 'vue4' || previousView === 'winner')) {
 		isLoading = true;
 		changeView('vue3', true);
-		setTimeout(() => {
-			createLoadingOverlay();
-		}, 1500);
+		// setTimeout(() => {
+			// createLoadingOverlay();
+		// }, 1500);
 		setTimeout(() => {
 			changeView('vue2', true);
 			window.currentView = 'vue2';
@@ -130,7 +130,7 @@ export function handleViewTransitions(viewName, previousView) {
 	}
 	if (viewName === 'vue1' && previousView === 'vue2') {
 		isLoading = true;
-		createLoadingOverlay();
+		// createLoadingOverlay();
 		setTimeout(() => {
 			changeView('vue1', true);
 		}, 1500);
@@ -141,7 +141,7 @@ export function handleViewTransitions(viewName, previousView) {
 		}, 5000);
 	}
 	if (viewName === 'tournament_game_start' && previousView === 'tournament') {
-		createLoadingOverlay();
+		// createLoadingOverlay();
 		setTimeout(() => {
 			changeView('vue3', true);
 			window.currentView = 'vue3';
@@ -154,9 +154,9 @@ export function handleViewTransitions(viewName, previousView) {
 	if (viewName === 'tournament' && previousView === 'vue4') {
 		isLoading = true;
 		changeView('vue3', true);
-		setTimeout(() => {
-			createLoadingOverlay();
-		}, 1500);
+		// setTimeout(() => {
+			// createLoadingOverlay();
+		// }, 1500);
 		setTimeout(() => {
 			changeView('tournament', true);
 			window.currentView = 'tournament';

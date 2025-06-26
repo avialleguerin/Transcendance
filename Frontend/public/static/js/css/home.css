@@ -15,22 +15,28 @@
 
 	background: rgba(0, 0, 0, 0.3);
 	backdrop-filter: blur(3px);
+	-webkit-backdrop-filter: blur(3px);
+	-moz-backdrop-filter: blur(3px);
+	/* Fallback for browsers that don't support backdrop-filter */
+	@supports not (backdrop-filter: blur(3px)) {
+		background: rgba(0, 0, 0, 0.7);
+	}
 }
 
 .login-form {
-	position: absolute;
+	/* position: absolute; */
 	top: 50%;
 	left: 20%;
 
 	transform: translateY(-50%);
-	width: 30%;
-	height: 55%;
+	/* width: 30%;
+	height: 55%; */
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
 
-	background-image: url("../../../srcs/game/assets/image/homeV2.svg");
+	/* background-image: url("../../../srcs/game/assets/image/homeV2.svg"); */
 	background-size: 100% auto;
 	background-repeat: no-repeat;
 	background-position: center;

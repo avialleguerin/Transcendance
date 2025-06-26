@@ -8,7 +8,9 @@ export function notif(message: string, success = true) {
 		if (!notificationContainer)
 			return;
 		notificationContainer.style.display = 'flex';
-		notification.innerHTML = `<div style='display:flex; align-items:center;'><span>${message}</span></div>`;
+		notification.innerHTML = message;
+		notification.classList.remove('hidden');
+		notification.classList.add(`${success ? 'bg-green-500' : 'bg-red-500'}`);
 		if (success)
 			notification.className = `success_notif`
 		else
