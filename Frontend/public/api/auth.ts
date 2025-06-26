@@ -32,8 +32,7 @@ export async function login(event: Event): Promise<void> {
 			const { connectWebSocket } = await import('./websocket.js')
 			connectWebSocket()
 			gameMenuView(true, "");
-			$form("loginForm").reset();
-			$input("login-password").value = "";
+			$form("login-form").reset();
 		} else
 			$input("login-password").value = "";
 	} catch (err) { notif(`Connexion failed`, false); }
@@ -221,7 +220,12 @@ export async function register(event: Event) {
 		const data = await fetchAPI('/request/user/create-account', 'POST', { username, password });
 		
 		if (data.success)
-			updateUI({removeClass: ["create_account_id", "loginform_id"], resetForms: ["registerForm"]});
+		{
+			$("register-div")?.classList.add("hidden");
+			$("login-div")?.classList.remove("hidden");
+			$form("register-form")?.reset();
+		}
+			// updateUI({removeClass: ["create_account_id", "loginform_id"], resetForms: ["registerForm"]});
 	} catch (err) { console.error(`register: ${err}`); }
 }
 

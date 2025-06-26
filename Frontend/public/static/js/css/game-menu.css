@@ -24,7 +24,7 @@
 	padding: 0.5rem 1rem;
 	border-radius: 0.25rem;
 	box-shadow: 0 10px 15px -3px rgb(255, 0, 0), 0 4px 6px -2px rgb(255, 0, 0);
-	font-family: 'Black Ops One', sans-serif;
+	/* font-family: 'Black Ops One', sans-serif; */
 }
 
 .success_notif {
@@ -33,7 +33,7 @@
 	padding: 0.5rem 1rem;
 	border-radius: 0.25rem;
 	box-shadow: 0 10px 15px -3px rgb(4, 255, 0), 0 4px 6px -2px rgb(55, 255, 0);
-	font-family: 'Black Ops One', sans-serif;
+	/* font-family: 'Black Ops One', sans-serif; */
 }
 
 .container_menu {
@@ -82,7 +82,7 @@
 }
 
 #btn_jouer h1 {
-	font-family: 'Black Ops One', sans-serif;
+	/* font-family: 'Black Ops One', sans-serif; */
 	animation: blink 1.5s infinite;
 	font-size: 2vw;
 	text-align: center;
@@ -131,7 +131,7 @@
 	border-radius: 15px;
 	box-shadow: 0 10px 25px rgba(0, 0, 0, 0);
 	width: 10%;
-	font-family: 'Black Ops One', sans-serif;
+	/* font-family: 'Black Ops One', sans-serif; */
 }
 
 .view2-content , .view3-content , .view4-content , .view5-content , .view6-content , .view7-content , .view8-content {
@@ -152,7 +152,7 @@
 	font-size: 1.2vw;
 	position: relative;
 	top: -15%;
-	font-family: 'Black Ops One', sans-serif;
+	/* font-family: 'Black Ops One', sans-serif; */
 }
 
 

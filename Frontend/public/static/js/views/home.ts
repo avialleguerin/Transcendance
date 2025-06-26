@@ -100,6 +100,12 @@ export default class Home extends AbstractView {
 					background: transparent !important;
 					border: none !important;
 					padding: 0 !important;
+					width: auto !important;
+					height: auto !important;
+					position: absolute;
+					right: 0;
+					top: 50%;
+					transform: translateY(-50%);
 				}
 				
 				/* Login form styles */
@@ -107,19 +113,66 @@ export default class Home extends AbstractView {
 					width: 50vw;
 					max-width: 600px;
 					min-width: 400px;
-					border-radius: 8px;
+					border-radius: 12px;
 					padding: 40px;
 					text-align: center;
-					border: 1px solid rgba(255, 255, 255, 0.5);
-					backdrop-filter: blur(8px);
+					position: relative;
+					backdrop-filter: blur(16px);
 					-webkit-backdrop-filter: blur(8px);
 					-moz-backdrop-filter: blur(8px);
+					box-shadow: -1px -1px 8px rgba(255, 255, 255, 0.0), 2px 2px 16px rgba(0, 0, 0, 0.2);
 					/* Fallback for browsers that don't support backdrop-filter */
 					@supports not (backdrop-filter: blur(8px)) and not (-webkit-backdrop-filter: blur(8px)) {
 						background: rgba(255, 255, 255, 0.7);
 					}
 				}
 				
+				.wrapper::before {
+					content: '';
+					position: absolute;
+					top: 0;
+					left: 0;
+					right: 0;
+					bottom: 0;
+					border-radius: 8px;
+					padding: 1px;
+					background: linear-gradient(45deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1), transparent);
+					-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+					-webkit-mask-composite: subtract;
+					mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+					mask-composite: subtract;
+					pointer-events: none;
+				}
+				.wrapper-register {
+					width: 50vw;
+					max-width: 600px;
+					min-width: 400px;
+					border-radius: 8px;
+					padding: 40px;
+					text-align: center;
+					position: relative;
+					backdrop-filter: blur(32px);
+					-webkit-backdrop-filter: blur(8px);
+					-moz-backdrop-filter: blur(8px);
+					box-shadow: -3px -3px 8px rgba(255, 255, 255, 0.0), 2px 2px 16px rgba(0, 0, 0, 0.4);
+				}
+				
+				.wrapper-register::before {
+					content: '';
+					position: absolute;
+					top: 0;
+					left: 0;
+					right: 0;
+					bottom: 0;
+					border-radius: 12px;
+					padding: 1px;
+					background: linear-gradient(45deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1), transparent);
+					-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+					-webkit-mask-composite: subtract;
+					mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+					mask-composite: subtract;
+					pointer-events: none;
+				}
 				#login-div {
 					width: 50vw;
 					max-width: 600px;
@@ -152,12 +205,13 @@ export default class Home extends AbstractView {
 					color: #000;
 					font-weight: 600;
 					border: none;
-					padding: 12px 20px;
+					padding: 8px 16px;
 					cursor: pointer;
-					border-radius: 3px;
+					border-radius: 4px;
 					font-size: 16px;
 					border: 2px solid transparent;
 					transition: 0.3s ease;
+					width: 100%;
 				}
 				
 				button:hover {
@@ -208,265 +262,254 @@ export default class Home extends AbstractView {
 					opacity: 1;
 					transform: translateY(0);
 				}
-				.notification-container {
-					position: fixed;
-					top: 0;
-					left: 0;
-					right: 0;
-					display: flex;
-					justify-content: center;
-					z-index: 9999;
-					margin-top: 20px;
-				}
-				
-				.notification-message {
-					padding: 10px 20px;
-					border-radius: 4px;
-					box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-					font-weight: 500;
-					transition: all 0.3s ease;
-					opacity: 0;
-					transform: translateY(-20px);
-				}
-				
-				.notification-success {
-					background-color: #48bb78;
-					color: white;
-				}
-				
-				.notification-error {
-					background-color: #f56565;
-					color: white;
-				}
-				
-				.notification-visible {
-					opacity: 1;
-					transform: translateY(0);
-				}
 			</style>
 			<div class="fixed top-0 left-0 w-full h-full flex items-center z-10 pointer-events-auto bg-black bg-opacity-30 backdrop-blur-sm">
+				<!-- Forms Container -->
 				<div class="w-1/2 h-full flex items-center justify-end pr-8">
-					<!-- Forms will be placed here -->
+					<div id="login-div" class="wrapper">
+						<h2 id="login-title">Welcome back !</h2>
+						<form id="login-form">
+							<div class="input-field">
+								<input type="text" id="login-username" name="username" required>
+								<label for="login-username">Username</label>
+							</div>
+							
+							<div class="input-field">
+								<div class="relative w-full">								<input type="password" id="login-password" name="password" required>
+								<label for="login-password">Password</label>
+								<button type="button" class="toggle-password absolute right-0 top-1/2 transform -translate-y-1/2 text-white opacity-70 hover:opacity-100">
+									<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 616 0z" />
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+									</svg>
+								</button>
+								</div>
+							</div>
+							
+							<button type="submit" id="login-submit" class="mt-6">Login</button>
+							
+							<div class="flex items-center my-6">
+								<div class="flex-1 h-px bg-white opacity-30"></div>
+								<span class="px-4 text-white text-sm opacity-70">or</span>
+								<div class="flex-1 h-px bg-white opacity-30"></div>
+							</div>
+							
+							<div class="flex justify-center">
+								<button type="button" id="google-signin-btn" class="flex items-center justify-center gap-2 bg-white text-gray-800 rounded py-2 px-4 w-full">
+									<img src="/assets/image/gg_icon.png" alt="Google" class="w-5 h-5">
+									<span>Sign in with Google</span>
+								</button>
+							</div>
+							
+							<div class="register">
+								<p class="text-sm">Don't have an account? <a href="#" id="create-Account" class="text-blue-300 underline transition-colors duration-200 hover:text-white">Register</a></p>
+							</div>
+						</form>
+					</div>
+					<div id="register-div" class="wrapper-register hidden">
+						<h2 id="register-title">Create an account</h2>
+						<form id="register-form">
+							<div class="input-field">
+								<input type="text" id="register-username" name="username" required>
+								<label for="register-username">Username</label>
+							</div>
+							
+							<div class="input-field">
+								<div class="relative w-full">
+									<input type="password" id="register-password" name="password" required>
+									<label for="register-password">Password</label>
+									<button type="button" class="toggle-password absolute right-0 top-1/2 transform -translate-y-1/2 text-white opacity-70 hover:opacity-100">
+										<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 616 0z" />
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+										</svg>
+									</button>
+								</div>
+							</div>
+							
+							<div class="input-field">
+								<div class="relative w-full">
+									<input type="password" id="register-confirm-password" name="confirmPassword" required>
+									<label for="register-confirm-password">Confirm Password</label>
+									<button type="button" class="toggle-password absolute right-0 top-1/2 transform -translate-y-1/2 text-white opacity-70 hover:opacity-100">
+										<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 616 0z" />
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+										</svg>
+									</button>
+								</div>
+							</div>
+							
+							<div class="flex items-start my-4 w-full">
+								<input type="checkbox" id="accept-cgu" name="accept-cgu" required class="w-auto flex-shrink-0 mt-1 mr-3">
+								<label for="accept-cgu" class="flex-1 text-left text-sm break-words whitespace-normal text-white">J'accepte les <a href="#" id="show-cgu" class="text-blue-300 underline transition-colors duration-200 hover:text-white">Conditions Générales d'Utilisation</a></label>
+							</div>
+							
+							<button type="submit" id="register-submit">Register</button>
+							
+							<div class="flex items-center my-6">
+								<div class="flex-1 h-px bg-white opacity-30"></div>
+								<span class="px-4 text-white text-sm opacity-70">or</span>
+								<div class="flex-1 h-px bg-white opacity-30"></div>
+							</div>
+							
+							<div class="flex justify-center">
+								<button type="button" id="google-signup-btn" class="flex items-center justify-center gap-2 bg-white text-gray-800 rounded py-2 px-4 w-full">
+									<img src="/assets/image/gg_icon.png" alt="Google" class="w-5 h-5">
+									<span>Sign up with Google</span>
+								</button>
+							</div>
+							
+							<div class="register">
+								<p class="text-sm">Already have an account? <a href="#" id="login-link" class="text-blue-300 underline transition-colors duration-200 hover:text-white">Login</a></p>
+							</div>
+						</form>
+					</div>
 				</div>
+				
 				<div class="fixed top-4 right-20">
-					<h1 class="text-4xl lg:text-5xl font-black text-white drop-shadow-lg" style="font-family: 'Black Ops One', sans-serif; text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.7);"> TRANSCENDENCE </h1>
+					<h1 class="text-4xl lg:text-5xl font-black text-white drop-shadow-lg"> SOCKER PONG  </h1>
 				</div>
 
 				<div id="cgu-modal" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-60 hidden justify-center items-center z-50 overflow-y-auto backdrop-blur-lg">
-					<div class="w-4/5 max-w-4xl max-h-4/5 bg-white bg-opacity-10 backdrop-blur-2xl rounded-3xl p-8 shadow-2xl overflow-y-auto border border-white border-opacity-15" style="scrollbar-width: none; -ms-overflow-style: none;">
+					<div class="w-4/5 max-w-4xl h-3/4 max-h-screen bg-white bg-opacity-10 rounded-lg p-8 shadow-2xl overflow-y-auto border border-white border-opacity-50" style="scrollbar-width: none; -ms-overflow-style: none;">
 						<style>
 							.cgu-content::-webkit-scrollbar { display: none; }
 						</style>
-						<h1 class="text-center text-3xl text-white mb-8 drop-shadow-md" style="font-family: 'Black Ops One', sans-serif; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); letter-spacing: 1px;">Terms of Use</h1>
+						<h1 class="text-center text-3xl text-white mb-8 drop-shadow-md">Terms of Use</h1>
 						<div class="text-white text-opacity-90 leading-relaxed mb-5 px-3">
-							<h2 class="text-xl mt-6 text-blue-300 drop-shadow-sm" style="font-family: 'Black Ops One', sans-serif; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4); letter-spacing: 0.5px;">1. Introduction</h2>
+							<h2 class="text-xl mt-6 text-blue-300 drop-shadow-sm">1. Introduction</h2>
 							<p>Welcome to Transcendence. By using our application, you accept these terms of use.</p>
 							<p>Data controller: Transcendence Project Team - 42 School<br>
 							Contact: ozasahin@student.42lyon.fr<br>
 							Data Protection Officer (DPO): Mr. SAHIN O.</p>
 							
-							<h2 class="text-xl mt-6 text-blue-300 drop-shadow-sm" style="font-family: 'Black Ops One', sans-serif; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4); letter-spacing: 0.5px;">2. Service Description</h2>
+							<h2 class="text-xl mt-6 text-blue-300 drop-shadow-sm">2. Service Description</h2>
 							<p>Transcendence is an online gaming platform allowing users to play Pong and other games, communicate and interact with other users.</p>
 							
-							<h2 class="text-xl mt-6 text-blue-300 drop-shadow-sm" style="font-family: 'Black Ops One', sans-serif; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4); letter-spacing: 0.5px;">3. Registration and Account</h2>
+							<h2 class="text-xl mt-6 text-blue-300 drop-shadow-sm">3. Registration and Account</h2>
 							<p>To use our service, you must create an account with accurate and up-to-date information. We only collect data necessary for providing our services.</p>
 							
-							<h2 class="text-xl mt-6 text-blue-300 drop-shadow-sm" style="font-family: 'Black Ops One', sans-serif; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4); letter-spacing: 0.5px;">4. User Behavior</h2>
+							<h2 class="text-xl mt-6 text-blue-300 drop-shadow-sm">4. User Behavior</h2>
 							<p>Users agree to respect other members and not publish offensive or illegal content.</p>
 							
-							<h2 class="text-xl mt-6 text-blue-300 drop-shadow-sm" style="font-family: 'Black Ops One', sans-serif; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4); letter-spacing: 0.5px;">5. Intellectual Property</h2>
+							<h2 class="text-xl mt-6 text-blue-300 drop-shadow-sm">5. Intellectual Property</h2>
 							<p>All intellectual property rights related to Transcendence belong to their respective owners.</p>
 							
-							<h2 class="text-xl mt-6 text-blue-300 drop-shadow-sm" style="font-family: 'Black Ops One', sans-serif; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4); letter-spacing: 0.5px;">6. Data Protection</h2>
+							<h2 class="text-xl mt-6 text-blue-300 drop-shadow-sm">6. Data Protection</h2>
 							<p>We are committed to protecting your personal data in accordance with the General Data Protection Regulation (GDPR).</p>
-							<h3 class="text-lg mt-4 text-blue-200 ml-3" style="font-family: 'Black Ops One', sans-serif;">6.1 Data collected</h3>
-							<p>We collect the following categories of data:
-							<ul class="ml-5">
-								<li class="mb-1">Identification data (internal ID, username, avatar)</li>
-								<li class="mb-1">Authentication data (via Google Sign-In)</li>
-								<li class="mb-1">Profile data (status, preferences)</li>
-								<li class="mb-1">Usage data (game history, scores, rankings)</li>
-							</ul>
-							</p>
-							<h3 class="text-lg mt-4 text-blue-200 ml-3" style="font-family: 'Black Ops One', sans-serif;">6.2 Processing purposes</h3>
-							<p>Your data is processed for the following purposes:
-							<ul class="ml-5">
-								<li class="mb-1">Provision of the Transcendence online game service</li>
-								<li class="mb-1">User account administration</li>
-								<li class="mb-1">Social features (friends)</li>
-								<li class="mb-1">Recording game statistics and rankings</li>
-							</ul>
-							</p>
-							<h3 class="text-lg mt-4 text-blue-200 ml-3" style="font-family: 'Black Ops One', sans-serif;">6.3 Retention period</h3>
+							<div>
+								<h3 class="text-lg mt-4 text-blue-200 ml-3">6.1 Data collected</h3>
+								<p>We collect the following categories of data:
+								<ul class="ml-5 list-disc">
+									<li class="mb-1">Identification data (internal ID, username, avatar)</li>
+									<li class="mb-1">Authentication data (via Google Sign-In)</li>
+									<li class="mb-1">Profile data (status, preferences)</li>
+									<li class="mb-1">Usage data (game history, scores, rankings)</li>
+								</ul>
+								</p>
+							</div>
+							<div>
+								<h3 class="text-lg mt-4 text-blue-200 ml-3">6.2 Processing purposes</h3>
+								<p>Your data is processed for the following purposes:</p>
+								<ul class="ml-5 list-disc">
+									<li class="mb-1">Provision of the Transcendence online game service</li>
+									<li class="mb-1">User account administration</li>
+									<li class="mb-1">Social features (friends)</li>
+									<li class="mb-1">Recording game statistics and rankings</li>
+								</ul>
+							</div>
+							<h3 class="text-lg mt-4 text-blue-200 ml-3">6.3 Retention period</h3>
 							<p>Your data is kept for the duration of the project and up to 1 month after the final evaluation.</p>
-							<h3 class="text-lg mt-4 text-blue-200 ml-3" style="font-family: 'Black Ops One', sans-serif;">6.4 Data recipients</h3>
-							<p>Your data may be accessible to:
-							<ul class="ml-5">
-								<li class="mb-1">Project team members</li>
-								<li class="mb-1">Teaching staff and evaluators at École 42</li>
-								<li class="mb-1">Other users (only for public profile data)</li>
-							</ul>
-							</p>
-							<h3 class="text-lg mt-4 text-blue-200 ml-3" style="font-family: 'Black Ops One', sans-serif;">6.5 Your rights</h3>
-							<p>In accordance with GDPR, you have the following rights:
-							<ul class="ml-5">
-								<li class="mb-1">Right of access to your data</li>
-								<li class="mb-1">Right to rectification</li>
-								<li class="mb-1">Right to erasure ("right to be forgotten")</li>
-								<li class="mb-1">Right to restriction of processing</li>
-								<li class="mb-1">Right to data portability</li>
-								<li class="mb-1">Right to object</li>
-							</ul>
-							To exercise these rights, contact us at: ozasahin@student.42lyon.fr
-							</p>
-							<h3 class="text-lg mt-4 text-blue-200 ml-3" style="font-family: 'Black Ops One', sans-serif;">6.6 Security measures</h3>
-							<p>We implement the following technical and organizational measures:
-							<ul class="ml-5">
-								<li class="mb-1">Encryption of passwords and sensitive data</li>
-								<li class="mb-1">Secure authentication (Google Sign-In)</li>
-								<li class="mb-1">Two-factor authentication (2FA)</li>
-								<li class="mb-1">Secure sessions with expiration (JWT)</li>
-								<li class="mb-1">Protection against common web vulnerabilities</li>
-							</ul>
-							</p>
+							<div>
+								<h3 class="text-lg mt-4 text-blue-200 ml-3">6.4 Data recipients</h3>
+								<p>Your data may be accessible to:
+								<ul class="ml-5 list-disc">
+									<li class="mb-1">Project team members</li>
+									<li class="mb-1">Teaching staff and evaluators at École 42</li>
+									<li class="mb-1">Other users (only for public profile data)</li>
+								</ul>
+								</p>
+							</div>
+							<div>
+								<h3 class="text-lg mt-4 text-blue-200 ml-3">6.5 Your rights</h3>
+								<p>In accordance with GDPR, you have the following rights:
+								<ul class="ml-5 list-disc">
+									<li class="mb-1">Right of access to your data</li>
+									<li class="mb-1">Right to rectification</li>
+									<li class="mb-1">Right to erasure ("right to be forgotten")</li>
+									<li class="mb-1">Right to restriction of processing</li>
+									<li class="mb-1">Right to data portability</li>
+									<li class="mb-1">Right to object</li>
+								</ul>
+								To exercise these rights, contact us at: ozasahin@student.42lyon.fr
+								</p>
+							</div>
+							<div>
+								<h3 class="text-lg mt-4 text-blue-200 ml-3">6.6 Security measures</h3>
+								<p>We implement the following technical and organizational measures:
+								<ul class="ml-5 list-disc">
+									<li class="mb-1">Encryption of passwords and sensitive data</li>
+									<li class="mb-1">Secure authentication (Google Sign-In)</li>
+									<li class="mb-1">Two-factor authentication (2FA)</li>
+									<li class="mb-1">Secure sessions with expiration (JWT)</li>
+									<li class="mb-1">Protection against common web vulnerabilities</li>
+								</ul>
+								</p>
+							</div>
 							
-							<h2 class="text-xl mt-6 text-blue-300 drop-shadow-sm" style="font-family: 'Black Ops One', sans-serif; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4); letter-spacing: 0.5px;">7. Terms Modification</h2>
+							<h2 class="text-xl mt-6 text-blue-300 drop-shadow-sm">7. Terms Modification</h2>
 							<p>We reserve the right to modify these terms at any time. Users will be notified of important changes.</p>
 							
-							<h2 class="text-xl mt-6 text-blue-300 drop-shadow-sm" style="font-family: 'Black Ops One', sans-serif; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4); letter-spacing: 0.5px;">8. Duration and Termination</h2>
+							<h2 class="text-xl mt-6 text-blue-300 drop-shadow-sm">8. Duration and Termination</h2>
 							<p>Access to our service may be suspended or terminated in case of non-compliance with these terms.</p>
 							
-							<h2 class="text-xl mt-6 text-blue-300 drop-shadow-sm" style="font-family: 'Black Ops One', sans-serif; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4); letter-spacing: 0.5px;">9. Data Transfers</h2>
+							<h2 class="text-xl mt-6 text-blue-300 drop-shadow-sm">9. Data Transfers</h2>
 							<p>No personal data is transferred outside the European Union. All data is hosted on servers located in the EU.</p>
 						</div>
-						<button id="cgu-back-button" class="block w-40 mx-auto mt-8 px-4 py-3 bg-white bg-opacity-15 text-white border-none rounded-xl cursor-pointer transition-all duration-300 backdrop-blur-sm border border-white border-opacity-10 tracking-wide hover:bg-opacity-25 hover:shadow-white hover:shadow-md hover:-translate-y-1" style="font-family: 'Black Ops One', sans-serif;">Back</button>
+						<button id="cgu-back-button" class="block w-40 mx-auto mt-8 px-4 py-2 bg-white text-black font-semibold border-none rounded cursor-pointer transition-all duration-300 hover:bg-gray-200" style="font-family: 'Open Sans', sans-serif;">Back</button>
 					</div>
 				</div>
 
 				<div id="privacy-policy-modal" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-60 hidden justify-center items-center z-50 overflow-y-auto backdrop-blur-lg">
-					<div class="w-4/5 max-w-4xl max-h-4/5 bg-white bg-opacity-10 backdrop-blur-2xl rounded-3xl p-8 shadow-2xl overflow-y-auto border border-white border-opacity-15" style="scrollbar-width: none; -ms-overflow-style: none;">
+					<div class="w-4/5 max-w-4xl h-3/4 max-h-screen bg-white bg-opacity-10 rounded-lg p-8 shadow-2xl overflow-y-auto border border-white border-opacity-50" style="scrollbar-width: none; -ms-overflow-style: none;">
 						<h1 class="text-center text-3xl text-white mb-8 drop-shadow-md" style="font-family: 'Black Ops One', sans-serif; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); letter-spacing: 1px;">Privacy Policy</h1>
 						<div class="text-white text-opacity-90 leading-relaxed mb-5 px-3">
-							<h2 class="text-xl mt-6 text-blue-300 drop-shadow-sm" style="font-family: 'Black Ops One', sans-serif; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4); letter-spacing: 0.5px;">1. Introduction</h2>
+							<h2 class="text-xl mt-6 text-blue-300 drop-shadow-sm">1. Introduction</h2>
 							<p>Welcome to our Privacy Policy. It describes how we collect, use, and protect your personal data.</p>
 
-							<h2 class="text-xl mt-6 text-blue-300 drop-shadow-sm" style="font-family: 'Black Ops One', sans-serif; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4); letter-spacing: 0.5px;">2. Data Collected</h2>
-							<p>We collect data about you when you use our service, including:</p>
-							<ul class="ml-5">
-								<li class="mb-1">Identification data (internal ID, username, avatar)</li>
-								<li class="mb-1">Authentication data (via Google Sign-In)</li>
-								<li class="mb-1">Profile data (status, preferences)</li>
-								<li class="mb-1">Usage data (game history, scores, rankings)</li>
-							</ul>
+							<div>
+								<h2 class="text-xl mt-6 text-blue-300 drop-shadow-sm">2. Data Collected</h2>
+								<p>We collect data about you when you use our service, including:</p>
+								<ul class="ml-5 list-disc">
+									<li class="mb-1">Identification data (internal ID, username, avatar)</li>
+									<li class="mb-1">Authentication data (via Google Sign-In)</li>
+									<li class="mb-1">Profile data (status, preferences)</li>
+									<li class="mb-1">Usage data (game history, scores, rankings)</li>
+								</ul>
+							</div>
 
-							<h2 class="text-xl mt-6 text-blue-300 drop-shadow-sm" style="font-family: 'Black Ops One', sans-serif; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4); letter-spacing: 0.5px;">3. Data Usage</h2>
-							<p>We use your data to:</p>
-							<ul class="ml-5">
-								<li class="mb-1">Provide and improve our service</li>
-								<li class="mb-1">Administer your account</li>
-								<li class="mb-1">Offer social features (friends)</li>
-								<li class="mb-1">Record your game statistics and rankings</li>
-							</ul>
+							<div>
+								<h2 class="text-xl mt-6 text-blue-300 drop-shadow-sm">3. Data Usage</h2>
+								<p>We use your data to:</p>
+								<ul class="ml-5 list-disc">
+									<li class="mb-1">Provide and improve our service</li>
+									<li class="mb-1">Administer your account</li>
+									<li class="mb-1">Offer social features (friends)</li>
+									<li class="mb-1">Record your game statistics and rankings</li>
+								</ul>
+							</div>
 
-							<h2 class="text-xl mt-6 text-blue-300 drop-shadow-sm" style="font-family: 'Black Ops One', sans-serif; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4); letter-spacing: 0.5px;">4. Your Rights</h2>
+							<h2 class="text-xl mt-6 text-blue-300 drop-shadow-sm">4. Your Rights</h2>
 							<p>In accordance with GDPR, you have the same rights as mentioned in the Terms of Use.</p>
 
-							<h2 class="text-xl mt-6 text-blue-300 drop-shadow-sm" style="font-family: 'Black Ops One', sans-serif; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4); letter-spacing: 0.5px;">5. Modifications</h2>
+							<h2 class="text-xl mt-6 text-blue-300 drop-shadow-sm">5. Modifications</h2>
 							<p>We reserve the right to modify this policy at any time. Users will be notified of important changes.</p>
 						</div>
-						<button id="privacy-policy-back-button" class="block w-40 mx-auto mt-8 px-4 py-3 bg-white bg-opacity-15 text-white border-none rounded-xl cursor-pointer transition-all duration-300 backdrop-blur-sm border border-white border-opacity-10 tracking-wide hover:bg-opacity-25 hover:shadow-white hover:shadow-md hover:-translate-y-1" style="font-family: 'Black Ops One', sans-serif;">Back</button>
+						<button id="privacy-policy-back-button" class="block w-40 mx-auto mt-8 px-4 py-2 bg-white text-black font-semibold border-none rounded cursor-pointer transition-all duration-300 hover:bg-gray-200" style="font-family: 'Open Sans', sans-serif;">Back</button>
 					</div>
 				</div>
-			<div class="fixed top-0 left-0 w-full h-full flex items-center z-10 pointer-events-auto bg-black bg-opacity-30 backdrop-blur-sm">
-				<div class="w-1/2 h-full flex items-center justify-end pr-8">
-					<div id="login-div" class="wrapper">
-						<h2 id="login-title">Login</h2>
-					<form id="login-form">
-						<div class="input-field">
-							<input type="text" id="login-username" name="username" required>
-							<label for="login-username">Username</label>
-						</div>
-						
-						<div class="input-field">
-							<div class="relative w-full">
-								<input type="password" id="login-password" name="password" required>
-								<label for="login-password">Password</label>
-								<button type="button" class="toggle-password absolute right-0 top-1/2 transform -translate-y-1/2 text-white opacity-70 hover:opacity-100">
-									<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-									</svg>
-								</button>
-							</div>
-						</div>
-						
-						<button type="submit" id="login-submit">Login</button>
-						
-						<div class="flex justify-center mt-6">
-							<button type="button" id="google-signin-btn" class="flex items-center justify-center gap-2 bg-white text-gray-800 rounded py-2 px-4 w-full">
-								<img src="/assets/image/gg_icon.png" alt="Google" class="w-5 h-5">
-								<span>Sign in with Google</span>
-							</button>
-						</div>
-						
-						<div class="register">
-							<p>Don't have an account? <a href="#" id="create-Account" class="text-gray-200 hover:underline">Register</a></p>
-						</div>
-					</form>					</div>
-					<div id="register-div" class="wrapper hidden">
-						<h2 id="register-title">Register</h2>
-					<form id="register-form">
-						<div class="input-field">
-							<input type="text" id="register-username" name="username" required>
-							<label for="register-username">Username</label>
-						</div>
-						
-						<div class="input-field">
-							<div class="relative w-full">
-								<input type="password" id="register-password" name="password" required>
-								<label for="register-password">Password</label>
-								<button type="button" class="toggle-password absolute right-0 top-1/2 transform -translate-y-1/2 text-white opacity-70 hover:opacity-100">
-									<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-									</svg>
-								</button>
-							</div>
-						</div>
-						
-						<div class="input-field">
-							<div class="relative w-full">
-								<input type="password" id="register-confirm-password" name="confirmPassword" required>
-								<label for="register-confirm-password">Confirm Password</label>
-								<button type="button" class="toggle-password absolute right-0 top-1/2 transform -translate-y-1/2 text-white opacity-70 hover:opacity-100">
-									<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-									</svg>
-								</button>
-							</div>
-						</div>
-						
-						<div class="flex items-start my-4 w-full">
-							<input type="checkbox" id="accept-cgu" name="accept-cgu" required class="w-auto flex-shrink-0 mt-1 mr-3">
-							<label for="accept-cgu" class="flex-1 text-left text-sm break-words whitespace-normal text-white">J'accepte les <a href="#" id="show-cgu" class="text-blue-300 underline transition-colors duration-200 hover:text-white">Conditions Générales d'Utilisation</a></label>
-						</div>
-						
-						<button type="submit" id="register-submit">Register</button>
-						
-						<div class="flex justify-center mt-6">
-							<button type="button" id="google-signup-btn" class="flex items-center justify-center gap-2 bg-white text-gray-800 rounded py-2 px-4 w-full">
-								<img src="/assets/image/gg_icon.png" alt="Google" class="w-5 h-5">
-								<span>Sign up with Google</span>
-							</button>
-						</div>
-						
-						<div class="register">
-							<p>Already have an account? <a href="#" id="login-link" class="text-gray-200 hover:underline">Login</a></p>
-						</div>
-					</form>
-					</div>
-				</div>
+			</div>
 `;}
 	createAccount() {
 		//*===== Form Management =====*/

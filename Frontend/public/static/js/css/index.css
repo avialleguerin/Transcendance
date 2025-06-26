@@ -64,7 +64,7 @@ body {
 	padding: 0.5rem 1rem;
 	border-radius: 0.25rem;
 	box-shadow: 0 10px 15px -3px rgb(255, 0, 0), 0 4px 6px -2px rgb(255, 0, 0);
-	font-family: 'Black Ops One', sans-serif;
+	/* font-family: 'Black Ops One', sans-serif; */
 }
 
 .success_notif {
@@ -73,7 +73,7 @@ body {
 	padding: 0.5rem 1rem;
 	border-radius: 0.25rem;
 	box-shadow: 0 10px 15px -3px rgb(4, 255, 0), 0 4px 6px -2px rgb(55, 255, 0);
-	font-family: 'Black Ops One', sans-serif;
+	/* font-family: 'Black Ops One', sans-serif; */
 }
 
 .persistent-popup {
@@ -128,7 +128,7 @@ body {
 	font-size: 14px;
 	cursor: pointer;
 	transition: background-color 0.3s;
-	font-family: 'Black Ops One', sans-serif;
+	/* font-family: 'Black Ops One', sans-serif; */
 }
 
 .popup-btn.necessary {

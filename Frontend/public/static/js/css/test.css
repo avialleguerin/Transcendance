@@ -75,7 +75,6 @@ h1 {
     transform: translate(50%, -50%);
     
     font-size: 2.5vw;
-    font-family: 'Black Ops One', sans-serif;
     color: rgb(255, 255, 255);
     text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.7);
 }

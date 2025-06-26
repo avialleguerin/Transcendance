@@ -65,7 +65,7 @@
 
 .login-form h1, .register-form h1 {
 	font-size: 1.2vw;
-	font-family: 'Black Ops One', sans-serif;
+	/* font-family: 'Black Ops One', sans-serif; */
 	color: rgb(255, 255, 255);
 	position: absolute;
 	top: 3%;
@@ -107,7 +107,7 @@
 .input-container label {
 	color: #fff;
 	font-size: 14px;
-	font-family: "Black Ops One", sans-serif;
+	/* font-family: "Black Ops One", sans-serif; */
 	width: 30%;
 	text-align: right;
 }
@@ -142,7 +142,7 @@ button {
 	color: rgb(0, 0, 0);
 	cursor: pointer;
 	transition: 0.3s;
-	font-family: "Black Ops One", sans-serif;
+	/* font-family: "Black Ops One", sans-serif; */
 }
 
 button:hover {
@@ -171,7 +171,7 @@ button:hover {
 	right: 5%;
 
 	font-size: 2.5vw;
-	font-family: 'Black Ops One', sans-serif;
+	/* font-family: 'Black Ops One', sans-serif; */
 	color: rgb(255, 255, 255);
 	text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.7);
 }
@@ -260,7 +260,7 @@ button:hover {
 	cursor: pointer;
 	margin-top: 10px;
 	transition: 0.3s;
-	font-family: "Black Ops One", sans-serif;
+	/* font-family: "Black Ops One", sans-serif; */
 }
 
 .cgu-container {
@@ -338,7 +338,7 @@ button:hover {
 
 .cgu-content h1 {
 	text-align: center;
-	font-family: "Black Ops One", sans-serif;
+	/* font-family: "Black Ops One", sans-serif; */
 	font-size: 28px;
 	color: #ffffff;
 	margin-bottom: 30px;
@@ -350,7 +350,7 @@ button:hover {
 	font-size: 20px;
 	margin-top: 25px;
 	color: #75c7ff;
-	font-family: "Black Ops One", sans-serif;
+	/* font-family: "Black Ops One", sans-serif; */
 	text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
 	letter-spacing: 0.5px;
 }
@@ -359,7 +359,7 @@ button:hover {
 	font-size: 16px;
 	margin-top: 15px;
 	color: #a0d8ff;
-	font-family: "Black Ops One", sans-serif;
+	/* font-family: "Black Ops One", sans-serif; */
 	margin-left: 10px;
 }
 
@@ -387,7 +387,7 @@ button:hover {
 	color: #ffffff;
 	border: none;
 	border-radius: 12px;
-	font-family: "Black Ops One", sans-serif;
+	/* font-family: "Black Ops One", sans-serif; */
 	cursor: pointer;
 	transition: all 0.3s;
 	backdrop-filter: blur(5px);
@@ -410,7 +410,7 @@ button:hover {
 .privacy-policy-container label {
     text-align: center;
     font-size: 14px;
-    font-family: "Black Ops One", sans-serif;
+    /* font-family: "Black Ops One", sans-serif; */
     color: #75c7ff;
 }
 
@@ -439,7 +439,7 @@ button:hover {
     color: #333;
     border-radius: 5px;
     padding: 8px;
-    font-family: 'Black Ops One', sans-serif;
+    /* font-family: 'Black Ops One', sans-serif; */
     font-size: 14px;
     cursor: pointer;
     transition: all 0.3s ease;
