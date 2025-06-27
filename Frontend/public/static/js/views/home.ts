@@ -1,5 +1,6 @@
 import AbstractView from "./AbstractView.js";
 import { login, register, verify2FA, initGoogleSignIn, tokenClient } from '../../../api/auth.js';
+import { $, $form } from '../../../api/utils.js';
 
 
 export default class Home extends AbstractView {
@@ -214,9 +215,9 @@ export default class Home extends AbstractView {
 					width: 100%;
 				}
 				
-				button:hover {
-					color: #fff;
-					border-color: #fff;
+				button:hover {	
+					color: #ffff06;
+					border-color: #ffff06;
 					background: rgba(255, 255, 255, 0.15);
 				}
 				
@@ -525,18 +526,18 @@ export default class Home extends AbstractView {
 		registerFormBtn?.addEventListener("submit", async (event) => { await register(event); });
 		doubleAuthForm?.addEventListener("submit", async (event) => { await verify2FA(event); });
 
-		createAccountButton?.addEventListener("click", () => {
+		createAccountButton?.addEventListener("click", (event) => {
+			event.preventDefault();
 			loginDiv?.classList.add("hidden");
 			registerDiv?.classList.remove("hidden");
-			(document.getElementById("login-username") as HTMLInputElement).value = "";
-			(document.getElementById("login-password") as HTMLInputElement).value = "";
+			$form("login-form")?.reset();
 		});
 
-		loginLink?.addEventListener("click", (e) => {
-			e.preventDefault();
+		loginLink?.addEventListener("click", (event) => {
+			event.preventDefault();
 			registerDiv?.classList.add("hidden");
 			loginDiv?.classList.remove("hidden");
-			(document.getElementById("register-form") as HTMLFormElement).reset();
+			$form("register-form")?.reset();
 		});
 
 		//*===== CGU and Privacy Policy Management =====*/
@@ -544,8 +545,8 @@ export default class Home extends AbstractView {
 		const cguModal = document.getElementById("cgu-modal");
 		const cguBackButton = document.getElementById("cgu-back-button");
 		
-		showCguLink?.addEventListener("click", (e) => { 
-			e.preventDefault(); 
+		showCguLink?.addEventListener("click", (event) => { 
+			event.preventDefault(); 
 			cguModal?.classList.remove("hidden");
 			cguModal?.classList.add("flex");
 		});
@@ -558,8 +559,8 @@ export default class Home extends AbstractView {
 		const privacyPolicyModal = document.getElementById("privacy-policy-modal");
 		const privacyPolicyBackButton = document.getElementById("privacy-policy-back-button");
 
-		showPrivacyPolicyLink?.addEventListener("click", (e) => { 
-			e.preventDefault(); 
+		showPrivacyPolicyLink?.addEventListener("click", (event) => { 
+			event.preventDefault(); 
 			privacyPolicyModal?.classList.remove("hidden");
 			privacyPolicyModal?.classList.add("flex");
 		});
@@ -572,8 +573,8 @@ export default class Home extends AbstractView {
 		const togglePasswordButtons = document.querySelectorAll('.toggle-password');
 		
 		togglePasswordButtons.forEach(button => {
-			button.addEventListener('click', (e) => {
-				e.preventDefault();
+			button.addEventListener('click', (event) => {
+				event.preventDefault();
 				const input = button.parentElement?.querySelector('input[type="password"], input[type="text"]') as HTMLInputElement;
 				const svg = button.querySelector('svg');
 				
