@@ -91,7 +91,8 @@ export default class Game_menu extends AbstractView {
 			.grid-button:hover {
 				border: 1px solid #ffff03;
 				box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
-				transform: translateY(-2px);
+				background: linear-gradient(45deg, rgba(255, 234, 0, 1), rgba(153, 140, 0, 0.3));
+				transform: translateY(-10px) translateX(5px);
 			}
 
 			.grid-button:active {
