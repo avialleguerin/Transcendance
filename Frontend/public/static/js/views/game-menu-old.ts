@@ -30,135 +30,9 @@ export default class Game_menu extends AbstractView {
 
 	async getHtml(): Promise<string> {
 		return /*html*/`
-		<style>
-			/* Glassmorphism grid styles */
-			.grid-container {
-				position: fixed;
-				top: 0;
-				left: 0;
-				width: 100vw;
-				height: 40vh;
-				display: grid;
-				grid-template-columns: repeat(3, 1fr);
-				grid-template-rows: repeat(3, 1fr);
-				gap: 20px;
-				padding: 120px 100px;
-			}
-
-			.grid-button {
-				background: rgba(255, 234, 0, 0.05);
-				background-size: cover;
-				background-position: center;
-				background-blend-mode: overlay;
-				backdrop-filter: blur(16px);
-				-webkit-backdrop-filter: blur(16px);
-				-moz-backdrop-filter: blur(16px);
-				border: 0.2px solid rgba(255, 255, 1, 0.5);
-				border-radius: 7px;
-				box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-				color: #FFFFCA;
-				font-size: 28px;
-				font-weight: 600;
-				cursor: pointer;
-				transition: all 0.1s ease;
-				display: flex;
-				align-items: center;
-				justify-content: begin;
-				position: relative;
-				overflow: hidden;
-				height: 150px;
-				padding: 30px;
-				font-weight: 900;
-				font-style: italic;
-			}
-
-			.grid-button::before {
-				content: '';
-				position: absolute;
-				top: 0;
-				left: 0;
-				right: 0;
-				bottom: 0;
-				padding: 5px 10px;
-				background: linear-gradient(45deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1), transparent);
-				-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-				-webkit-mask-composite: subtract;
-				mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-				mask-composite: subtract;
-				pointer-events: none;
-			}
-
-			.grid-button:hover {
-				border: 1px solid #ffff03;
-				box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
-				transform: translateY(-2px);
-			}
-
-			.grid-button:active {
-				transform: translateY(0);
-				box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.5);
-			}
-
-			#stats-container {
-				position: fixed;
-				top: 30vh;
-				left: 50%;
-				transform: translateX(-50%);
-				width: 650px;
-				height: 500px;
-				font-size: 28px;
-				background: rgba(0, 0, 0, 0.45);
-				backdrop-filter: blur(16px);
-				-webkit-backdrop-filter: blur(16px);
-				-moz-backdrop-filter: blur(16px);
-				border: 1px solid rgba(255, 255, 255, 0.2);
-				border-radius: 7px;
-				box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-				text-align: center;
-				color: white;
-				padding: 20px;
-			}
-
-			#friends-container {
-				position: fixed;
-				top: 80vh;
-				left: 50%;
-				transform: translateX(-50%);
-				width: 650px;
-				height: 60px;
-				font-size: 28px;
-				background: rgba(0, 0, 0, 0.45);
-				backdrop-filter: blur(16px);
-				-webkit-backdrop-filter: blur(16px);
-				-moz-backdrop-filter: blur(16px);
-				border: 1px solid rgba(255, 255, 255, 0.2);
-				border-radius: 7px;
-				box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-				color: white;
-				text-align: center;
-				padding: 5px;
-			}
-
-			#logout-container {
-				position: fixed;
-				bottom: 35px;
-				left: 50%;
-				transform: translateX(-50%);
-				width: fit-content;
-				color: #ff0;
-				border: none;
-				border-radius: 5px;
-				padding: 10px 20px;
-				font-size: 24px;
-				text-align: center;
-				cursor: pointer;
-				transition: background-color 0.1s ease;
-			}
-
-		</style>
-
+		<link rel="stylesheet" href="./static/js/css/game-menu.css">
+		<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 		<div class="navbar_menu">
-		
 			<div class="profile_photo_circle_nav_bar" id="profile_photo_circle_nav_bar"><img src="${StorageKeys.PROFILE_PICTURE}" alt="profile picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;"></div>
 			<h1 id="player_name" class="player_name">${StorageKeys.PLAYER1}</h1>
 			<button class="option_navBar" id="option_btn_navBar">
@@ -315,34 +189,534 @@ export default class Game_menu extends AbstractView {
 			</div>
 		</div>
 
-		
+		<div class="panel_option_navbar" id="panel_option_navbar">
+			<button class="option-in-panel" id="option_btn_remove">
+				<img src="../../../srcs/game/assets/image/menu.svg" alt="leave">
+			</button>
+			<div class="friend_list_container">
+				<h1>FRIENDS LIST</h1>
 
-		<div class="grid-container">
-			<button class="grid-button" id="grid-btn-1">
-				ONE VS ONE
-			</button>
-			<button class="grid-button" id="grid-btn-2">
-				TWO VS TWO
-			</button>
-			<button class="grid-button" id="grid-btn-3">
-				TOURNAMENT
-			</button>
+				<div class="friend_tabs">
+					<button id="tab-accepted" class="tab-btn active">Friends</button>
+					<button id="tab-pending" class="tab-btn">On hold</button>
+					<div id="notify_friend_demand" title="Friend Request"></div>
+				</div>
+
+				<div class="friend_sections">
+					<div id="section-accepted" class="friend_section">
+						<div id="friends-accepted" class="friend_list_scrollable"></div>
+					</div>
+					<div id="section-pending" class="friend_section" style="display: none;">
+						<div id="friends-pending" class="friend_list_scrollable"></div>
+					</div>
+				</div>
+
+				<form class="add_friend_section" id="add_friend_section">
+					<input type="text" id="friend_name_input" placeholder="Username..." />
+					<button type="submit" id="add_friend_btn">Add</button>
+				</form>
+			</div>
+
+			<div class="game_history_navBar" id="game_history_navBar">
+				<div class="game_history_content_navBar">
+					<h1>GAME HISTORY</h1>
+
+					<table class="game_history_scrollable_navBar">
+						<tbody id="games-table"></tbody>
+					</table>
+				</div>
+			</div>
+			<button class="deconexion_navBar" id="deconnect_btn_navBar">Disconnect</button> <!-- onclick="logout()" -->
 		</div>
-		<div class="container" id="stats-container">
-			<div class="stats">
-				<h1>Statistics</h1>
-				<p id="games-played">Games Played: 0</p>
-				<p id="games-won">Games Won: 0</p>
-				<p id="games-lost">Games Lost: 0</p>
-				<p id="win-rate">Win Rate: 0%</p>
+		
+		<div class="view1" id="view1">
+			<div class="view1-content">
+				<button id="view1_btn" class="btn">GAME MODE</button>
+				<button id="settings_btn" class="btn">PROFILE</button>
 			</div>
 		</div>
-		<div class="container" id="friends-container">
-				<h1>Friends</h1>
+		<div class="back-home" id="back-home">
+			<button id="btn_back_home" class="btn">BACK</button>
 		</div>
-		<div class="container" id="logout-container">
-			<button id="logout-button">Logout</button>
+		<div id="container" class="container_menu">
+			<button id="btn_jouer" class="hidden">
+				<h1>ENTER</h1>
+			</button>
+			<!--<div id="view2" class="view2 flex flex-col items-center justify-center h-screen">
+				<button id="prepar_game_1v1" class="bg-white/10 backdrop-blur-md border border-white/20 shadow-lg p-6">1v1</button>
+				<button id="prepar_game_multi" class="bg-white/10 backdrop-blur-md border border-white/20 shadow-lg p-6">2v2</button>
+				<a id="tournament_view" class="bg-white/10 backdrop-blur-md border border-white/20 shadow-lg p-6" href="/tournament" data-link>TOURNAMENT</a>
+				<button id="platformer_view" class="bg-white/10 backdrop-blur-md border border-white/20 shadow-lg p-6">PLATFORMER</button>
+			</div> -->
+				
+
+
+				<!-- -------------------------------------------------------------->
+				<div class="view2" id="view2">
+					<div class="view2-content">
+						<h1>CHOOSE YOUR GAME MODE</h1>
+						<div id="game_mode_btn" class="game_mode_btn">
+							<button id="solo" class="bg-white/10 backdrop-blur-md border border-white/20 shadow-lg p-6">SOLO</button>
+							<button id="multiplayer" class="bg-white/10 backdrop-blur-md border border-white/20 shadow-lg p-6">MULTIPLAYER</button>
+							<a id="tournament_view" class="btn_tournament" href="/tournament" data-link>TOURNAMENT</a>
+							<button id="platformer_view" class="btn">PLATFORMER</button>
+						</div>
+					</div>
+				</div>
+				<div class="view3" id="view3">
+					<div class="view3-content">
+						<h1>SOLO GAME MODE</h1>
+						<div id="game_mode_btn" class="game_mode_btn">
+							<button id="prepar_game_1v1" class="btn">1v1</button>
+						</div>
+						<button id="back_to_menu_view3" class="btn">BACK TO MENU</button>
+					</div>
+				</div>
+				<div class="view4" id="view4">
+					<div class="view4-content">
+						<h1>MULTIPLAYER GAME MODE</h1>
+						<div id="game_mode_btn" class="game_mode_btn">
+							<button id="prepar_game_multi" class="btn">2v2</button>
+						</div>
+						<button id="back_to_menu_view4" class="btn">BACK TO MENU</button>
+					</div>
+				</div>
+				<div class="view5" id="view5">
+					<div class="view5-content">
+						<h1>PROFILE</h1>
+						<div id="select_parametres" class="select_parametres">
+							<button id="profile_parrametre_btn" class="btn">ACCOUNT</button>
+							<button id="parrametre_jeux_btn" class="btn">GAME CONTROLS</button>
+							<button id="Game_History_btn" class="btn">GAME HISTORY</button>
+						</div>
+					</div>
+				</div
+
+			<div class="parametres_jeu" id="parametres_jeu">
+					<div class="parametres_jeu_content" id="parametre_jeux_content">
+						<h1>GAME CONTROLS</h1>
+						<h2>PONG</h2>
+						<div class="parametre_mode_jeu">
+							<div class="mode_de_jeu_solo_parametre">
+							<h3>Solo Game Mode</h3>
+
+							<div class="joueur_touch">
+								<div class="joueur" id="joueur1">
+									<p>Player 1</p>
+									<div class="controls">
+										<p>Movement: W / S</p>
+										<p>PowerUP: Z / X / C</p>
+									</div>
+								</div>
+								<div class="joueur" id="joueur2">
+									<p>Player 2</p>
+									<div class="controls">
+										<p>Movement: ⬆ / ⬇</p>
+										<p>PowerUP: 1 / 2 / 3</p>
+									</div>
+								</div>
+							</div>
+
+							<div class="mode_de_jeu_multi_parametre">
+								<h3>Multiplayer Game Mode</h3>
+								<div class="joueur_touch">
+									<div class="joueur" id="joueur1">
+										<p>Player 1</p>
+										<div class="controls">
+											<p>Movement: W / S</p>
+											<p>PowerUP: Z / X / C</p>
+										</div>
+									</div>
+									<div class="joueur" id="joueur2">
+										<p>Player 2</p>
+										<div class="controls">
+											<p>Movement: E / D</p>
+											<p>PowerUP: Z / X / C</p>
+										</div>
+									</div>
+									<div class="joueur" id="joueur3">
+										<p>Player 3</p>
+										<div class="controls">
+											<p>Movement: I / K</p>
+											<p>PowerUP: 1 / 2 / 3</p>
+										</div>
+									</div>
+									<div class="joueur" id="joueur4">
+										<p>Player 4</p>
+										<div class="controls">
+											<p>Movement: ⬆ / ⬇</p>
+											<p>PowerUP: 1 / 2 / 3</p>
+										</div>
+									</div>
+								</div>
+								</div>
+							</div>
+						</div>
+					</div>
+			  </div>
+
+				<div class="parrametres_profile" id="parametres_profile">
+					<div class="parametres_profile_content">
+						<h1>ACCOUNT</h1>
+						<form id="modif_profile" class="modif_profile">
+							<label for="mdp">Password</label>
+							<input type="password" id="password" name="password" placeholder="Password" required>
+							<button type="submit" class="btn_valider_mdp">Validate</button>
+						</form>
+						<div class="profile_param_unlocked" id="profile_param_unlocked_id">
+							<div class="photo_profile">
+								<div class="profile_photo_container">
+									<div class="profile_photo_circle" id="profile_photo_circle"></div>
+									<form id="uploadForm" enctype="multipart/form-data">
+										<input type="file" name="image" id="profile_photo_input" accept="image/*" />
+										<button type="button" onclick="document.getElementById('profile_photo_input').click()">
+											Choose File
+										</button>
+										<div id="fileName"></div>
+										<button type="submit">Upload</button>
+									</form>
+								</div>
+							</div>
+							<form id="updateProfileForm"> 
+								<div class="input_container">
+									<label for="username">Change username</label>
+									<input type="text" id="change_username" name="username">
+								</div>
+								<div class="input_container">
+									<label for="password">Change password</label>
+									<input type="password" id="change_password" name="password" placeholder="******">
+								</div>
+								<div class="input_container">
+									<label for="confirm_password">Confirm new password</label>
+									<input type="password" id="confirm_change_password" name="confirm_password" placeholder="******">
+								</div>
+								<div id="fa_selector" class="fa_selector">
+									<p>2FA :<input type="checkbox" id="active_fa" class="active_fa" /></p>
+								</div>
+								<button type="submit" id="valid_profile_info" class="valid_profile_info_btn">Valider</button>
+							</form>
+							<div class="btn_deconnect">
+								<button id="deconnect_btn" class="btn_deconnect_btn" >Disconnect</button> 
+							</div>
+							<div class="btn_delete">
+								<button id="delete_btn" class="btn_delete_btn" >Delete account</button>
+							</div>
+							<div class="export_btn">
+								<button id="export_btn" class="btn_export_btn">Export data</button> 
+							</div>
+							<div class="anonymize_btn">
+								<button id="anonymize_btn" class="btn_anonymize_btn">Anonymize Account</button> 
+							</div>
+							<div class="cgu-container">
+								<label for="accept-cgu"><a href="#" id="show-cgu" class="cgu-link">Terms of Service</a></label>
+							</div>
+							<div class="privacy-policy-container">
+								<label for="accept-privacy-policy"><a href="#" id="show-privacy-policy" class="cgu-link">Privacy Policy</a></label>
+							</div>
+							
+						</div>
+					</div>
+				</div>
+
+				<div class="choose_your_opponent_1v1" id="choose_your_opponent_1v1_id">
+					<form class="choose_your_opponent_1v1_content" id="choose_your_opponent_1v1_form"> <!-- onsubmit="login_1v1(event)"-->
+						<h1>CONNECT YOUR OPPONENT</h1>
+						<div class="player-section">
+							<p>PLAYER 2</p>
+							<div class="input-container">
+								<label for="username2">Username :</label>
+								<input type="text" id="1v1-username2" name="username2" placeholder="Player 2 username" required>
+							</div>
+							<div class="input-container">
+								<label for="password2">Password :</label>
+								<input type="password" id="1v1-password2" name="password2" placeholder="Player 2 password" required>
+							</div>
+						</div>
+						<button type="submit" class="valider_opponent_btn_1v1" id="validate-opponent-login">Valider</button>
+					</form>
+				</div>
+
+				<div class="choose_your_opponent_platformer" id="choose_your_opponent_platformer_id">
+					<form class="choose_your_opponent_platformer_content" id="choose_your_opponent_platformer_form"> <!-- onsubmit="login_platformer(event)"-->
+						<h1>CONNECT YOUR OPPONENT</h1>
+						<div class="player-section">
+							<p>PLAYER 2</p>
+							<div class="input-container">
+								<label for="username2">Username :</label>
+								<input type="text" id="platformer-username2" name="username2" placeholder="Player 2 username" required>
+							</div>
+							<div class="input-container">
+								<label for="password2">Password :</label>
+								<input type="password" id="platformer-password2" name="password2" placeholder="Player 2 password" required>
+							</div>
+						</div>
+						<button type="submit" class="valider_opponent_btn_platformer" id="validate-opponent-platformer-login">Validate</button>
+						<a style="display:none" class="valider_opponent_btn_platformer" href="/platformer" id="start-platformer" data-link>Start</a>
+					</form>
+				</div>
+
+
+				<div class="choose_your_opponent_multi" id="choose_your_opponent_multi_id">
+					<form class="choose_your_opponent_multi_content" id="choose_your_opponent_multi_form"> <!-- onsubmit="login_2v2(event)"-->
+						<h1>CONNECT YOUR OPPONENTS</h1>
+
+						<div class="player-section">
+						<p>PLAYER 2</p>
+						<div class="input-container">
+							<label for="username2">Username :</label>
+							<input type="text" id="2v2-username2" name="username2" placeholder="Player 2 username" required>
+						</div>
+						<div class="input-container">
+							<label for="password2">Password :</label>
+							<input type="password" id="2v2-password2" name="password2" placeholder="Player 2 password" required>
+						</div>
+						</div>
+
+						<div class="player-section">
+						<p>PLAYER 3</p>
+						<div class="input-container">
+							<label for="username3">Username :</label>
+							<input type="text" id="2v2-username3" name="username3" placeholder="Player 3 username" required>
+						</div>
+						<div class="input-container">
+							<label for="password3">Password :</label>
+							<input type="password" id="2v2-password3" name="password3" placeholder="Player 3 password" required>
+						</div>
+						</div>
+
+						<div class="player-section">
+						<p>PLAYER 4</p>
+						<div class="input-container">
+							<label for="username4">Username :</label>
+							<input type="text" id="2v2-username4" name="username4" placeholder="Player 4 username" required>
+						</div>
+						<div class="input-container">
+							<label for="password4">Password :</label>
+							<input type="password" id="2v2-password4" name="password4" placeholder="Player 4 password" required>
+						</div>
+						</div>
+
+						<button type="submit" class="valider_opponent_btn" id="validate_multi_opponent">Validate</button>
+					</form>
+				</div>
+
+
+
+				<div class="view6" id="view6">
+					<div class="view6-content">
+						<h1 id="custom_ta_game">CUSTOMIZE YOUR GAME</h1>
+						<div class="powerUP">
+							<p>PowerUP: <span id="power_up_info_id" class="power_up_info"></span><span id="powerUP" class="active_powerUP"></span></p>
+							<div id="power_selector" class="power_selector">
+								<div class="powerUP_number">
+									<p>1</p>
+									<span id="number_powerUP_1" class="number_powerUP"></span>
+								</div>
+								<div class="powerUP_number">
+									<p>3</p>
+									<span id="number_powerUP_3" class="number_powerUP"></span>
+								</div>
+								<div class="powerUP_number">
+									<p>5</p>
+									<span id="number_powerUP_5" class="number_powerUP"></span>
+								</div>
+							</div>
+						</div>
+						<div class="skin" id="skin">
+							<p>Custom Skin: <span id="skin_perso" class="skin_perso"></span></p>
+						</div>
+						<a id="solo_1v1_btn" class="btn" href="/solo-game-1v1" class="nav-link" data-link>Start Game</a>
+					</div>
+				</div>
+	
+				<div class="view8" id="view8">
+					<div class="view8-content">
+						<h1 id="custom_ta_game_multi">CUSTOMIZE YOUR MULTIPLAYER GAME</h1>
+						<div class="powerUP">
+							<p>PowerUP: <span id="power_up_info_id_multi" class="power_up_info"></span><span id="powerUP_multi" class="active_powerUP"></span></p>
+							<div id="power_selector_game_multi" class="power_selector">
+								<div class="powerUP_number">
+									<p>1</p>
+									<span id="number_powerUP_1_game_multi" class="number_powerUP"></span>
+								</div>
+								<div class="powerUP_number">
+									<p>3</p>
+									<span id="number_powerUP_3_game_multi" class="number_powerUP"></span>
+								</div>
+								<div class="powerUP_number">
+									<p>5</p>
+									<span id="number_powerUP_5_game_multi" class="number_powerUP"></span>
+								</div>
+							</div>
+						</div>
+						<div class="skin" id="skin_multi">
+							<p>Custom Skin: <span id="skin_perso_game_multi" class="skin_perso"></span></p>
+						</div>
+						<a id="multiplayer_btn" class="btn" href="/multi-player-game" class="nav-link" data-link>Start Game</a>
+					</div>
+				</div>
+			</div>
+
+			<form id="code_validation_id" class="code_validation hidden"> <!-- onsubmit="activate2FA(event)"-->
+				<img id="qrCode" src="../../../srcs/game/assets/image/timer-reset.svg" style="width:auto" alt="delay">
+				<label for="code">code</label>
+				<input type="code" id="activate-2fa-code" name="code" placeholder="code" required>
+				<button type="submit" class="btn_valider_qr_code">Validate</button>
+				<button type="button" class="cancel_fa" id="cancel_fa">X</button>
+			</form>
+
+			<div class="game_history" id="game_history">
+				<div class="game_history_content">
+					<div class="game_history_header">
+						<div class="profile_photo_circle_Game_History" id="profile_photo_circle_Game_History"></div>
+						<h1 id="game_history_username"></h1>
+					</div>
+
+					<div class="game_statistics_history">
+						<h1>GAME STATISTICS</h1>
+					</div>
+					<div class="game_statistics_content_history">
+						<div class="game_statistics_info_group">
+							<div class="game_statistics_info_block">
+								<p>Games Won : <span id="games_won_history" class="games_won_history text-shadow-green"></span></p>
+								<p>Games Lost : <span id="games_lost_history" class="games_lost_history text-shadow-red"></span></p>
+							</div>
+							<div class="game_statistics_info_block">
+								<p>Games Played : <span id="games_played_history" class="games_lost_history"></span></p>
+								<p>Win Rate : <span id="win_rate_history" class="win_rate_history text-shadow-orange"></span></p>
+							</div>
+						</div>
+					</div>
+
+					
+					<div class="game_history_info">
+						<h1>GAME HISTORY</h1>
+					</div>
+					
+					<table class="game_history_scrollable">
+						<!-- Game 1 -->
+						<tbody id="games-table-big">
+						</tbody>
+					</table>
+
+					<div class="exit_game_history" id="exit_game_history">
+						<button id="exit_game_history_btn" class="exit_game_history_btn">
+							X
+						</button>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="back" id="back_to_select_mode_view6">
+				<button id="back_to_menu_view6" class="btn_back">BACK</button>
+			</div>
+			<div class="back" id="back_to_select_mode_platformer">
+				<button id="back_to_select_mode_platformer" class="btn_back">BACK</button>
+			</div>
+			<div class="back" id="back_to_select_mode_view7">
+				<button id="back_to_menu_view7" class="btn_back">BACK</button>
+			</div>
+			<div class="back" id="back_to_select_mode_view8">
+				<button id="back_to_menu_view8" class="btn_back">BACK</button>
+			</div>
+			<div class="choose_your_skin" id="choose_your_skin">
+				<h1>CUSTOMIZE YOUR SKIN</h1>
+				<div class="player1">
+					<button class="switch_skin_left" id="switch_skn_left_id1"></button>
+					<button class="switch_skin_right" id="switch_skn_right_id1"></button>
+					<p id="1v1-oponent-username1">${StorageKeys.PLAYER1}</p>
+				</div>
+				<div class="player2">
+					<button class="switch_skin_left" id="switch_skn_left_id2"></button>
+					<button class="switch_skin_right" id="switch_skn_right_id2"></button>
+					<p id="1v1-oponent-username2">${StorageKeys.PLAYER2}</p>
+				</div>
+				<button id="valide_ton_skin" class="btn">Confirm</button>
+			</div>
+
+			<div class="choose_your_skin_game_multi" id="choose_your_skin_game_multi">
+				<h1>CUSTOMIZE YOUR SKIN</h1>
+				<div class="player1_game_multi">
+					<button class="switch_skin_left" id="switch_skn_left_id1_game_multi"></button>
+					<button class="switch_skin_right" id="switch_skn_right_id1_game_multi"></button>
+					<p id="2v2-oponent-username1">${StorageKeys.PLAYER1}</p>
+				</div>
+				<div class="player2_game_multi">
+					<button class="switch_skin_left" id="switch_skn_left_id2_game_multi"></button>
+					<button class="switch_skin_right" id="switch_skn_right_id2_game_multi"></button>
+					<p id="2v2-oponent-username2">${StorageKeys.PLAYER2}</p>
+				</div>
+				<div class="player3_game_multi">
+					<button class="switch_skin_left" id="switch_skn_left_id3_game_multi"></button>
+					<button class="switch_skin_right" id="switch_skn_right_id3_game_multi"></button>
+					<p id="2v2-oponent-username3">${StorageKeys.PLAYER3}</p>
+				</div>
+				<div class="player4_game_multi">
+					<button class="switch_skin_left" id="switch_skn_left_id4_game_multi"></button>
+					<button class="switch_skin_right" id="switch_skn_right_id4_game_multi"></button>
+					<p id="2v2-oponent-username4">${StorageKeys.PLAYER4}</p>
+				</div>
+				<button id="valide_ton_skin_game_multi" class="btn">Confirm</button>
+			</div>
+			<div id="container_info_power_up" class="container_info_power_up">
+			<div class="text_powerUP">
+				<h1>Power-UP</h1>
+				<p class="explication_general">The Power-Up is a bonus that gives you an advantage over your opponent. By enabling this option, you will start the match with at least one Power-Up of each type. You can also customize this amount and start with three or five of each.</p>
+				<p class="explication_powerUP_grenade">The Flash Grenade Power-Up allows you to throw a grenade that will blind your opponent. But be careful! It works in a simple way: it completely darkens the game screen, meaning even the one who throws it gets blinded.</p>
+				<p class="explication_powerUP_teammate">The Teammate Power-Up lets you call in a new player to join the game for a short time. You can move them using E/D for player 1 and O/L for player 2.</p>
+				<p class="explication_powerUP_inverse">The Reverse Power-Up lets you invert your opponent’s controls for a short duration.</p>
+				<div class="delay_powerUP_1">
+					<img src="../../../srcs/game/assets/image/timer-reset.svg" alt="delay">
+					<p>COOLDOWN TIME: 10s</p>
+				</div>
+				<div class="delay_powerUP_2">
+					<img src="../../../srcs/game/assets/image/timer-reset.svg" alt="delay">
+					<p>COOLDOWN TIME: 15s</p>
+				</div>
+				<div class="delay_powerUP_3">
+					<img src="../../../srcs/game/assets/image/timer-reset.svg" alt="delay">
+					<p>COOLDOWN TIME: 10s</p>
+				</div>
+			</div>
+			<div class="container_image_powerUP">
+				<img src="../../../srcs/game/assets/image/grenade_no_bg.png" alt="grenade" class="grenade">
+				<img src="../../../srcs/game/assets/image/teammate_no_bg.png" alt="teammate" class="teammate">
+				<img src="../../../srcs/game/assets/image/reverse_no_bg.png" alt="inverse_player" class="inverse_player">
+			</div>
+			<div id="exit_powerUP_info" class="exit_powerUP_info">
+				<button id="exit_powerUP_info_btn" class="btn">
+					X
+				</button>
+			</div>
 		</div>
+
+		<div id="container_info_power_up_multi" class="container_info_power_up">
+			<div class="text_powerUP">
+				<h1>Power-UP</h1>
+				<p class="explication_general">The Power-Up is a bonus that gives you an advantage over your opponent. By enabling this option, you will start the match with at least one Power-Up of each type. You can also customize this amount and start with three or five of each.</p>
+				<p class="explication_powerUP_grenade_multi">The Flash Grenade Power-Up lets you throw a grenade that blinds your opponent. But be careful! It works simply: it completely darkens the game screen, meaning even the one who throws it is blinded.</p>
+				<p class="explication_powerUP_freeze">The Freeze Power-Up temporarily immobilizes the opposing team.</p>
+				<div class="delay_powerUP_1_multi">
+					<img src="../../../srcs/game/assets/image/timer-reset.svg" alt="delay">
+					<p>COOLDOWN TIME: 10s</p>
+				</div>
+				<div class="delay_powerUP_2_multi">
+					<img src="../../../srcs/game/assets/image/timer-reset.svg" alt="delay">
+					<p>COOLDOWN TIME: 10s</p>
+				</div>
+			</div>
+			<div class="container_image_powerUP_multi">
+				<img src="../../../srcs/game/assets/image/grenade_no_bg.png" alt="grenade" class="grenade">
+				<img src="../../../srcs/game/assets/image/freeze_no_bg.png" alt="freeze" class="freeze">
+			</div>
+			<div id="exit_powerUP_info_multi" class="exit_powerUP_info">
+				<button id="exit_powerUP_info_btn_multi" class="btn">
+					X
+				</button>
+			</div>
+		</div>
+		
 	`;}
 
 

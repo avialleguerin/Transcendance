@@ -42,8 +42,8 @@ SCRIPT_SECURITY = ./Security/requests-test.sh
 
 
 all:
-	-@docker stop redis tsengine fastify nginx vault
-	-@docker rm redis tsengine fastify nginx vault
+	-@docker stop redis tsengine fastify nginx vault > /dev/null 2>&1 || true
+	-@docker rm redis tsengine fastify nginx vault > /dev/null 2>&1 || true
 	@make build
 	@make -j4 up
 
